@@ -58,6 +58,29 @@ TAMPERS = {
         "summary-mismatch: score_3: declared 0.571, recomputed 0.714",
         "summary-outruns-checks: summary.mutation_score_3: declares 0.571, "
         "no check recomputes it"],
+    "tamper-crashkit-metrics": [
+        "raw-aggregate-mismatch: evidence/eval_run.json: "
+        "metrics.vulnerability_score declared 0.0909, recomputed 0.4545"],
+    "tamper-crashkit-case": [
+        "raw-aggregate-mismatch: evidence/eval_run.json: case 2 flagged "
+        "flag contradicts its own passed/truncated pair",
+        "raw-aggregate-mismatch: evidence/eval_run.json: "
+        "metrics.faithfulness declared 0.5, recomputed 0.75",
+        "raw-aggregate-mismatch: evidence/eval_run.json: "
+        "metrics.precision@k declared 0.5, recomputed 0.75",
+        "raw-aggregate-mismatch: evidence/eval_run.json: "
+        "metrics.recall@k declared 0.5, recomputed 0.75",
+        "raw-aggregate-mismatch: evidence/eval_run.json: "
+        "metrics.citation_rate declared 0.5, recomputed 0.75",
+        "raw-aggregate-mismatch: evidence/eval_run.json: "
+        "metrics.vulnerability_score declared 0.4545, recomputed 0.0909",
+        "raw-aggregate-mismatch: evidence/eval_run.json: "
+        "per_kind['prompt-injection'] declared 0.5, recomputed 1.0",
+        "summary-mismatch: accuracy: declared 0.5, recomputed 0.75",
+        "summary-mismatch: vulnerability_score: declared 0.4545, "
+        "recomputed 0.0909",
+        "summary-outruns-checks: summary.crash_vulnerability: declares "
+        "0.4545, no check recomputes it"],
     # summary-only cooks: checks, artifacts, and hashes all honest — only
     # SPEC.md §2.5 recomputation names these
     "tamper-summary-fixed": ["summary-outruns-checks: summary.fixed: "
@@ -117,6 +140,52 @@ def test_repaired_raw_aggregate_passes(tmp_path):
     assert verify_bundle(b) == []
 
 
+def test_repaired_crashkit_case_passes(tmp_path):
+    """The crashkit clean path is live too: relabel the cooked case back,
+    rehash, and the exact same bundle verifies clean."""
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "tamper-crashkit-case", b)
+    art = b / "evidence/eval_run.json"
+    cp = json.loads(art.read_text())
+    c = next(c for c in cp["cases"] if c["flagged"])
+    c["passed"] = False
+    art.write_text(json.dumps(cp, indent=1) + "\n")
+    _rehash(b, "evidence/eval_run.json")
+    assert verify_bundle(b) == []
+
+
+def test_crashkit_refuses_a_case_without_explicit_booleans(tmp_path):
+    """A payload whose flags a verifier would have to parse out of the
+    free-text note is a declaration, not evidence — the profile refuses
+    it by name rather than guessing."""
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+    art = b / "evidence/eval_run.json"
+    cp = json.loads(art.read_text())
+    del cp["cases"][2]["passed"]
+    art.write_text(json.dumps(cp, indent=1) + "\n")
+    _rehash(b, "evidence/eval_run.json")
+    assert verify_bundle(b) == [
+        "artifact-unparsable: evidence/eval_run.json: case 3 lacks the "
+        "explicit passed/truncated/flagged booleans + kind "
+        "(crashkit-battery-v1 refuses note-parsing)"]
+
+
+def test_crashkit_battery_fingerprint_is_bound(tmp_path):
+    """battery_hash_key binds the artifact's git_sha to the named
+    protocol.hashes entry — a battery swapped under a pinned claim is a
+    stamp mismatch, not a silently re-scoped claim."""
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+    man_path = b / "vac.json"
+    man = json.loads(man_path.read_text())
+    man["protocol"]["hashes"]["crash_battery_hash"] = "deadbeef0000"
+    man_path.write_text(json.dumps(man, indent=1) + "\n")
+    assert verify_bundle(b) == [
+        "stamp-mismatch: crash_battery_hash: protocol deadbeef0000, "
+        "artifact ab12cd34ef56"]
+
+
 def test_repaired_evalmut_rows_passes(tmp_path):
     """The evalmut clean path is live too: relabel the cooked row back,
     rehash, and the exact same bundle verifies clean."""
@@ -153,6 +222,31 @@ def test_real_evalmut_bundle_summary_is_enforced(tmp_path):
     assert verify_bundle(b) == [
         "summary-outruns-checks: summary.dogfood_gradecore.caught: "
         "declares 33, recomputation gives one of [5, 32]"]
+
+
+CRASHKIT_BUNDLE = (ROOT / (os.environ.get("VAC_CRASHKIT_CHECKOUT")
+                           or "../crashkit")).resolve() / "vac"
+
+
+@pytest.mark.skipif(not (CRASHKIT_BUNDLE / "vac.json").is_file(),
+                    reason="crashkit issuer checkout not present")
+def test_real_crashkit_bundle_summary_is_enforced(tmp_path):
+    """Same hole, closed on the REAL committed crashkit bundle: sweeten
+    one twin-control headline in results.summary, leave checks and
+    artifacts honest, and the verifier must name the outrun — while the
+    untampered copy still verifies clean."""
+    b = tmp_path / "b"
+    shutil.copytree(CRASHKIT_BUNDLE, b)
+    assert verify_bundle(b) == []
+    man_path = b / "vac.json"
+    man = json.loads(man_path.read_text())
+    man["results"]["summary"]["twin_controls"]["adversarial"][
+        "safe_vulnerability"] = 0.5
+    man_path.write_text(json.dumps(man, indent=1) + "\n")
+    assert verify_bundle(b) == [
+        "summary-outruns-checks: "
+        "summary.twin_controls.adversarial.safe_vulnerability: "
+        "declares 0.5, no check recomputes it"]
 
 
 def test_evalmut_refuses_a_payload_without_rows(tmp_path):

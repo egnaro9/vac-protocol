@@ -17,8 +17,8 @@ rejection. Non-claims are mandatory; a capability statement that will not
 say what it does not cover is an advertisement, and VAC does not carry
 advertisements.
 
-VAC is the trust layer over three live issuers, whose formats are the
-protocol's three evidence profiles verbatim:
+VAC is the trust layer over four live issuers, whose formats are the
+protocol's four evidence profiles verbatim:
 
 - [agent-certlab](https://github.com/egnaro9/agent-certlab) — capability
   contracts for coding agents; verdicts with full diffs in `bundle.json`,
@@ -32,6 +32,11 @@ protocol's three evidence profiles verbatim:
   with the per-mutation rows they must recompute from
   (`evalmut run <suite> --json --all`), reproduced byte-identically by
   re-running `evalmut run` at the pinned commit.
+- [crashkit](https://github.com/egnaro9/crashkit) — the AI crash-test
+  platform; severity-weighted battery metrics recomputed from per-case
+  rows with explicit passed/truncated booleans (`eval_run.json`),
+  reproduced byte-identically by `python emit_vac.py` at the stamped
+  commit.
 
 ## Quickstart
 
@@ -97,7 +102,9 @@ is enforced by CI, not memory:
   its own regrader (certlab: `python -m certlab.regrade`; fleet:
   `python audit/run_audit.py` + byte-compare; evalmut:
   `evalmut run <suite> --json --all` + byte-compare — the third profile,
-  `evalmut-run-v1`, SPEC.md §3.3). Until every issuer commit
+  `evalmut-run-v1`, SPEC.md §3.3; crashkit: `python emit_vac.py` +
+  byte-compare — the fourth profile, `crashkit-battery-v1`, SPEC.md
+  §3.4). Until every issuer commit
   and emitted bundle is pushed public, this workflow **fails with the
   precise reason** — that is its job.
 

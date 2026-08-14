@@ -39,7 +39,7 @@
   },
   {
    "path": "evidence/eval_run.json",
-   "sha256": "533aa1045a9b014cdf83201bca9308650df8ca19c4bbbd6ddaa29298863e69b0"
+   "sha256": "ac2871304ae829d993d03124335060d230a9ff47f4c2fcda3b4211447294c56a"
   },
   {
    "path": "evidence/evalmut_run.json",
@@ -64,7 +64,7 @@
    "fixed": 2,
    "board_rows": 2,
    "detection_rate_min": 0.5,
-   "mutation_score_3": 0.714,
+   "mutation_score_3": 0.571,
    "mutation_blind_spots": 1,
    "crash_accuracy": 0.5,
    "crash_vulnerability": 0.4545

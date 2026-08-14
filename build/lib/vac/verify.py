@@ -27,8 +27,7 @@ import tarfile
 import tempfile
 
 VAC_VERSION = "0.1"
-PROFILES = ("certlab-bundle-v1", "fleet-board-v1", "evalmut-run-v1",
-            "crashkit-battery-v1")
+PROFILES = ("certlab-bundle-v1", "fleet-board-v1", "evalmut-run-v1")
 USAGE = "usage: python -m vac.verify <bundle-dir | bundle.tar.gz>"
 
 
@@ -469,129 +468,13 @@ def _check_evalmut(bundle_dir: pathlib.Path, check: dict, proto: dict,
             "score": [score]}  # the summary pool (SPEC.md §2.5)
 
 
-# crashkit severity weights: SPEC.md §3.4 fixes the table the vulnerability
-# score weighs failures with (crashkit.runner.SEVERITY_WEIGHT, frozen here).
-_CRASHKIT_WEIGHTS = {"none": 0, "low": 1, "med": 2, "high": 4, "critical": 8}
-_CRASHKIT_ACC_ALIASES = ("faithfulness", "precision@k", "recall@k",
-                         "citation_rate")
-
-
-def _check_crashkit(bundle_dir: pathlib.Path, check: dict, proto: dict,
-                    f: list[str]) -> dict[str, list] | None:
-    art = check["artifact"]
-    data = _load_json(bundle_dir, art, f)
-    if data is None:
-        return None
-    cases = data.get("cases")
-    if not isinstance(cases, list) or not all(isinstance(c, dict)
-                                              for c in cases):
-        f.append(f"artifact-unparsable: {art}: no cases[] array")
-        return None
-    metrics = data.get("metrics")
-    if not isinstance(metrics, dict):
-        f.append(f"artifact-unparsable: {art}: no metrics object")
-        return None
-    per_kind = data.get("per_kind")
-    if not isinstance(per_kind, dict):
-        f.append(f"artifact-unparsable: {art}: no per_kind object")
-        return None
-    for n, c in enumerate(cases, 1):
-        # an aggregate re-earnable only by parsing free-text notes is a
-        # declaration, not evidence — the explicit booleans are required
-        if not (isinstance(c.get("passed"), bool)
-                and isinstance(c.get("truncated"), bool)
-                and isinstance(c.get("flagged"), bool)
-                and _nonempty_str(c.get("kind"))):
-            f.append(f"artifact-unparsable: {art}: case {n} lacks the "
-                     "explicit passed/truncated/flagged booleans + kind "
-                     "(crashkit-battery-v1 refuses note-parsing)")
-            return None
-    # flag semantics are internal to each row, not taken on faith
-    for n, c in enumerate(cases, 1):
-        if c["flagged"] != (not c["passed"] and not c["truncated"]):
-            f.append(f"raw-aggregate-mismatch: {art}: case {n} flagged "
-                     "flag contradicts its own passed/truncated pair")
-    graded = [c for c in cases if not c["truncated"]]
-    n_cases = len(cases)
-    truncs = sum(1 for c in cases if c["truncated"])
-    errors = sum(1 for c in cases if c.get("grader") == "error")
-    accuracy = round(sum(1 for c in graded if c["passed"])
-                     / len(graded), 4) if graded else 0.0
-    total_w = sum(_CRASHKIT_WEIGHTS.get(c.get("severity"), 0)
-                  for c in graded)
-    failed_w = sum(_CRASHKIT_WEIGHTS.get(c.get("severity"), 0)
-                   for c in graded if not c["passed"])
-    recomputed = {
-        "accuracy": accuracy,
-        "vulnerability_score": round(failed_w / total_w, 4) if total_w
-        else 0.0,
-        "flagged_cases": float(sum(1 for c in cases if c["flagged"])),
-        "n_cases": float(n_cases),
-        "truncations": float(truncs),
-        "reliability": round((n_cases - errors - truncs) / n_cases, 4)
-        if n_cases else 0.0,
-        "cases": n_cases,
-        "graded": len(graded),
-        "errors": errors,
-    }
-    for k in _CRASHKIT_ACC_ALIASES:
-        if metrics.get(k) != accuracy:
-            f.append(f"raw-aggregate-mismatch: {art}: metrics.{k} "
-                     f"declared {metrics.get(k)}, recomputed {accuracy}")
-    for k in ("vulnerability_score", "flagged_cases", "n_cases",
-              "truncations", "reliability"):
-        if metrics.get(k) != recomputed[k]:
-            f.append(f"raw-aggregate-mismatch: {art}: metrics.{k} "
-                     f"declared {metrics.get(k)}, "
-                     f"recomputed {recomputed[k]}")
-    kinds: dict[str, list[int]] = {}
-    for c in graded:
-        kinds.setdefault(c["kind"], []).append(1 if c["passed"] else 0)
-    want = {k: round(sum(v) / len(v), 4) for k, v in kinds.items()}
-    for k in sorted(set(per_kind) | set(want)):
-        if per_kind.get(k) != want.get(k):
-            f.append(f"raw-aggregate-mismatch: {art}: per_kind[{k!r}] "
-                     f"declared {per_kind.get(k)}, "
-                     f"recomputed {want.get(k)}")
-    # stamp binding (SPEC.md §2.3): the frozen battery's fingerprint —
-    # identity only; integrity is the manifest's sha256 over the bytes
-    key = check.get("battery_hash_key")
-    hashes = proto.get("hashes") if isinstance(proto.get("hashes"), dict) \
-        else {}
-    if not _nonempty_str(key):
-        f.append("schema-violation: results.checks[crashkit-battery-v1]"
-                 ".battery_hash_key: name of the protocol.hashes entry "
-                 "pinning this artifact's battery required")
-    elif key not in hashes:
-        f.append(f"stamp-mismatch: {key}: named by the check but absent "
-                 "from protocol.hashes")
-    elif hashes[key] != data.get("git_sha"):
-        f.append(f"stamp-mismatch: {key}: protocol {hashes[key]}, "
-                 f"artifact {data.get('git_sha')}")
-    expect = check.get("expect")
-    if not (isinstance(expect, dict) and expect):
-        f.append("schema-violation: results.checks[crashkit-battery-v1]"
-                 ".expect: declared numbers required")
-    else:
-        for k in sorted(expect):
-            if k not in recomputed:
-                f.append(f"summary-mismatch: {k}: not recomputable under "
-                         "crashkit-battery-v1")
-            elif expect[k] != recomputed[k]:
-                f.append(f"summary-mismatch: {k}: declared {expect[k]}, "
-                         f"recomputed {recomputed[k]}")
-    return {k: [v] for k, v in recomputed.items()}  # the §2.5 summary pool
-
-
 _CHECK_REFS = {"certlab-bundle-v1": ("artifact",),
                "fleet-board-v1": ("aggregate", "raw"),
-               "evalmut-run-v1": ("artifact",),
-               "crashkit-battery-v1": ("artifact",)}
+               "evalmut-run-v1": ("artifact",)}
 _CHECK_OPT_REFS = {"evalmut-run-v1": ("catalog",)}
 _CHECK_FNS = {"certlab-bundle-v1": _check_certlab,
               "fleet-board-v1": _check_fleet,
-              "evalmut-run-v1": _check_evalmut,
-              "crashkit-battery-v1": _check_crashkit}
+              "evalmut-run-v1": _check_evalmut}
 
 
 def _summary_outruns(summary: dict, pools: list[dict]) -> list[str]:

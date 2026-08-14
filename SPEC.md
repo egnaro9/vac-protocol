@@ -10,7 +10,7 @@ The design premise is **do not trust the issuer** — including us. Anything
 a reader must take on faith is a defect in the bundle, not a feature of
 the format.
 
-VAC is the trust layer over three live issuers, and its three evidence
+VAC is the trust layer over four live issuers, and its four evidence
 profiles are their formats verbatim:
 
 - [agent-certlab](https://github.com/egnaro9/agent-certlab) — capability
@@ -27,6 +27,12 @@ profiles are their formats verbatim:
   `evalmut run <suite> --json --all` (score, tally, and hole classes,
   plus the per-mutation rows they must recompute from), reproduced
   byte-identically by re-running `evalmut run` at the pinned commit.
+- [crashkit](https://github.com/egnaro9/crashkit) — the AI crash-test
+  platform: frozen adversarial/agentic batteries graded by deterministic
+  gradecore predicates under a severity-weighted vulnerability score.
+  Evidence is `eval_run.json` (metrics plus per-case rows carrying
+  explicit passed/truncated booleans), reproduced byte-identically by
+  `python emit_vac.py` at the stamped commit.
 
 ## 1. The object
 
@@ -141,7 +147,7 @@ is text, not a protocol-level identifier — see §7).
 ## 3. Evidence profiles
 
 A profile is a pair: an artifact format and the exact offline
-recomputation a verifier performs against it. v0.1 defines three.
+recomputation a verifier performs against it. v0.1 defines four.
 
 ### 3.1 `certlab-bundle-v1`
 
@@ -248,6 +254,56 @@ exit as failure has mis-stated `expected`.
 What this does not prove: that the graders actually produced these
 outcomes — that is `evalmut run` at the pinned commit reproducing the
 payload byte-identically; the replay block runs it.
+
+### 3.4 `crashkit-battery-v1`
+
+Check shape: `{"profile": "crashkit-battery-v1", "artifact": <path>,
+"battery_hash_key": <key>, "expect": {…}}` where `artifact` is a listed
+evidence path holding a crashkit `eval_run.json` payload: an object with
+`git_sha` (the frozen battery's content fingerprint), `metrics`,
+`per_kind`, and `cases` — each case carrying explicit boolean `passed`,
+`truncated`, `flagged` plus its `kind`, `severity`, and `grader`. A case
+without the explicit booleans and kind is `artifact-unparsable`: an
+aggregate a verifier could only re-earn by parsing free-text notes is a
+declaration, not evidence.
+
+Recomputation, over the case rows, with the severity table fixed by the
+profile (`none/low/med/high/critical` = `0/1/2/4/8` — the same weights
+crashkit grades with; an unknown severity weighs 0):
+
+- every case must satisfy `flagged == (NOT passed AND NOT truncated)` —
+  flag semantics are internal to each row, not taken on faith;
+- the **graded** set is the non-truncated cases; `accuracy` =
+  `round(passed / graded, 4)` (0.0 when nothing is graded) and MUST equal
+  each of the artifact's four accuracy aliases `metrics.faithfulness`,
+  `precision@k`, `recall@k`, `citation_rate`;
+- `vulnerability_score` = `round(Σ weight(severity) over graded failed /
+  Σ weight(severity) over graded, 4)` (0.0 when the denominator is 0)
+  MUST equal the artifact's;
+- `flagged_cases`, `n_cases`, `truncations` MUST equal their counts over
+  the rows, and `reliability` = `round((cases − errors − truncations) /
+  cases, 4)` (errors = rows with `grader == "error"`; 0.0 with no cases)
+  MUST equal the artifact's;
+- `per_kind` MUST equal, key for key in both directions,
+  `{kind: round(passed / total, 4)}` over the graded rows.
+
+Every key in `expect` MUST name a recomputed field and equal its value
+(`summary-mismatch`): `accuracy`, `vulnerability_score`, `flagged_cases`,
+`n_cases`, `truncations`, `reliability`, `cases`, `graded`, `errors`.
+
+Stamp binding per §2.3: `battery_hash_key` is REQUIRED and names the
+`protocol.hashes` entry that MUST equal the artifact's `git_sha` — the
+frozen battery fingerprint. This is identity, not integrity (the
+fingerprint is short); integrity is the manifest's full sha256 over the
+artifact bytes. A key absent from `protocol.hashes`, or a value that
+differs from `git_sha`, is `stamp-mismatch`.
+
+What this does not prove: that crashkit's graders produced these rows,
+or that the issuer's twin controls (a safe mock scoring exactly 0.0 and
+a vulnerable mock exactly 1.0, per its `control_policy`) actually held —
+that is `python emit_vac.py` at the pinned commit, which refuses on
+control drift and reproduces every artifact byte-identically; the replay
+block runs it.
 
 ## 4. Structural verification vs semantic replay
 
@@ -373,7 +429,8 @@ other value rather than guess. Additive, non-breaking fields may appear
 under unknown keys today; anything that changes verification semantics is
 a new version. Adding an evidence profile is additive in exactly this
 sense — it widens what a bundle may declare without changing how any
-existing bundle verifies — so `evalmut-run-v1` (§3.3) landed as a v0.1
-profile addition, no version bump. No timestamps appear anywhere in this format: time, where
+existing bundle verifies — so `evalmut-run-v1` (§3.3) and
+`crashkit-battery-v1` (§3.4) landed as v0.1 profile additions, no
+version bump. No timestamps appear anywhere in this format: time, where
 it matters, is expressed as commits and content hashes, which are
 checkable — dates are not.

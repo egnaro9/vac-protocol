@@ -1,7 +1,7 @@
 {
  "vac_version": "0.1",
  "claim": {
-  "capability": "toy-agent fixes seeded single-edit defects in the toy substrate, the toy board detects the toy fleet's defect classes, and the toy suite's mutation holes are exactly what its rows recompute to",
+  "capability": "toy-agent fixes seeded single-edit defects in the toy substrate, the toy board detects the toy fleet's defect classes, the toy suite's mutation holes are exactly what its rows recompute to, and the toy crash-test run's scores are exactly what its case rows recompute to",
   "scope": "exactly the synthetic task set, request set, and suite named by protocol.hashes; artifacts-only deterministic grading; nothing beyond it",
   "limitations": []
  },
@@ -16,20 +16,25 @@
  "protocol": {
   "issuer": "example/toy-issuer",
   "issuer_commit": "f1e2d3c",
-  "task": "toy-intervals + toy-board + toy-mutation-run",
+  "task": "toy-intervals + toy-board + toy-mutation-run + toy-crash-test",
   "hashes": {
    "taskset_hash": "00112233445566aa",
    "prompt_hash": "aabbccdd00112233",
    "fleet_commit": "f1e2d3c",
-   "suite_hash": "ffeeddcc99887766"
+   "suite_hash": "ffeeddcc99887766",
+   "crash_battery_hash": "ab12cd34ef56"
   },
-  "grading": "deterministic: policy (suite byte-identical) then tests; board rows recomputed from paired raw lines; mutation tallies and holes recomputed from per-row outcomes",
+  "grading": "deterministic: policy (suite byte-identical) then tests; board rows recomputed from paired raw lines; mutation tallies and holes recomputed from per-row outcomes; crash-test metrics recomputed from per-case rows under fixed severity weights",
   "control_policy": "null-agent scores 0/3 and oracle-agent 3/3 before any real verdict; a clean twin is graded beside every defective response"
  },
  "evidence": [
   {
    "path": "evidence/bundle.json",
    "sha256": "64931fe8d466c2cfdbf3c15013d8aa013bc54a2e340fb89737972ef3612550d4"
+  },
+  {
+   "path": "evidence/eval_run.json",
+   "sha256": "533aa1045a9b014cdf83201bca9308650df8ca19c4bbbd6ddaa29298863e69b0"
   },
   {
    "path": "evidence/evalmut_run.json",
@@ -55,7 +60,9 @@
    "board_rows": 2,
    "detection_rate_min": 0.5,
    "mutation_score_3": 0.571,
-   "mutation_blind_spots": 1
+   "mutation_blind_spots": 1,
+   "crash_accuracy": 0.5,
+   "crash_vulnerability": 0.4545
   },
   "checks": [
    {
@@ -96,6 +103,22 @@
      "operators": 5,
      "operators_exercised": 5
     }
+   },
+   {
+    "profile": "crashkit-battery-v1",
+    "artifact": "evidence/eval_run.json",
+    "battery_hash_key": "crash_battery_hash",
+    "expect": {
+     "accuracy": 0.5,
+     "vulnerability_score": 0.4545,
+     "flagged_cases": 2.0,
+     "n_cases": 5.0,
+     "truncations": 1.0,
+     "reliability": 0.6,
+     "cases": 5,
+     "graded": 4,
+     "errors": 1
+    }
    }
   ]
  },
@@ -107,8 +130,9 @@
    "python -m pip install -e ./issuer",
    "python -m toy_issuer.regrade evidence/bundle.json",
    "python issuer/audit/run_audit.py --check evidence/results.json",
-   "python -m toy_issuer.mutrun --check evidence/evalmut_run.json"
+   "python -m toy_issuer.mutrun --check evidence/evalmut_run.json",
+   "python -m toy_issuer.crashrun --check evidence/eval_run.json"
   ],
-  "expected": "regrade exits 0 reporting 'consistent'; audit and mutrun reproduce results.json and evalmut_run.json byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)"
+  "expected": "regrade exits 0 reporting 'consistent'; audit, mutrun, and crashrun reproduce results.json, evalmut_run.json, and eval_run.json byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)"
  }
 }
