@@ -3,7 +3,7 @@
 One VALID miniature bundle — fully synthetic (fictional issuer
 `example/toy-issuer`, fictional subject `toy-agent`), self-contained, and
 carrying one check per evidence profile so the single valid fixture
-exercises every clean path in the verifier — plus thirteen tampered
+exercises every clean path in the verifier — plus fifteen tampered
 variants, each the valid bundle with exactly one edit, each tripping
 exactly one named failure class:
 
@@ -34,6 +34,17 @@ exactly one named failure class:
                                 declared expect, and the summary all
                                 contradict the rows they must recompute
                                 from
+  tamper-modeldrift-rows        the newest stored drift point sweetened
+                                in the rows AND every hash fixed (the
+                                evidence pin and the protocol stamp) —
+                                standings, the re-rendered table, the
+                                declared expect, and the summary all
+                                contradict the rows they must recompute
+                                from
+  tamper-modeldrift-standings   the drift regression relabeled unchanged
+                                in the published standings AND re-hashed,
+                                rows honest — only recomputation from the
+                                stored rows names the lie
   tamper-summary-fixed          headline fixed-count inflated in
                                 results.summary ONLY — checks, artifacts,
                                 and hashes all honest; SPEC.md §2.5's
@@ -55,6 +66,7 @@ from __future__ import annotations
 import hashlib
 import json
 import pathlib
+import re
 import shutil
 import sys
 
@@ -310,6 +322,194 @@ def _crashkit_run() -> tuple[dict, dict]:
     return payload, expect
 
 
+DRIFT_SUITE_VERSION = "toy-suite-v1"
+DRIFT_TASKS = ["t-add", "t-sub", "t-mul", "t-div"]
+
+
+def _drift_point(t, acc, *, fails=None, graded=None, runs=None, spread=None,
+                 fails_runs=None, stamp=False) -> dict:
+    p = {"t": t, "acc": acc, "latency_ms": 120.0, "reliability": 1.0,
+         "refusal_rate": 0.0}
+    if runs is not None:
+        p["runs"] = runs
+    if spread is not None:
+        p["acc_spread"] = spread
+    if fails is not None:
+        p["fails"] = fails
+    if fails_runs is not None:
+        p["fails_runs"] = fails_runs
+    if graded is not None:
+        p["graded"] = graded
+    if stamp:
+        p["suite"] = DRIFT_SUITE_VERSION
+        p["suite_hash"] = SUITE_HASH
+    return p
+
+
+def _drift_board() -> tuple[dict, list, dict, dict, dict, str, dict]:
+    """model-drift-shaped stored rows + registry, and the four derived views
+    COMPUTED from them under the SPEC.md §3.5 formulas — like every fixture
+    here, aggregates are derived, never authored. The toy board exercises
+    every path: all five verdicts, a per-run floor with a below-floor
+    delta, a repeat offender, a one-off, a cross-provider probe alarm, and
+    the mock null control."""
+    d1, d2, d3 = ("2026-01-01T00:00:00Z", "2026-01-02T00:00:00Z",
+                  "2026-01-03T00:00:00Z")
+    series = {
+        "mock:stable": [_drift_point(d, 1.0, fails=[])
+                        for d in (d1, d2, d3)],
+        "alpha:a1": [
+            _drift_point(d1, 0.5, fails=["t-add", "t-sub"], graded=4),
+            _drift_point(d2, 0.75, fails=["t-add"], graded=4),
+            _drift_point(d3, 0.5, fails=["t-add", "t-sub"], graded=4,
+                         runs=3, spread=0.25,
+                         fails_runs=[["t-add", "t-sub"], ["t-add"],
+                                     ["t-add", "t-sub"]],
+                         stamp=True),
+        ],
+        "beta:b1": [
+            _drift_point(d1, 0.66, fails=["t-add", "t-mul"], graded=3),
+            _drift_point(d3, 0.9, fails=["t-add"], graded=3, stamp=True),
+        ],
+        "gamma:g1": [
+            _drift_point(d3, 0.25, fails=["t-add", "t-div", "t-mul"]),
+        ],
+    }
+    registry = [
+        {"id": "mock:stable", "label": "Mock (toy)", "tier": "mock"},
+        {"id": "alpha:a1", "label": "Alpha One", "tier": "flagship"},
+        {"id": "beta:b1", "label": "Beta One", "tier": "mid"},
+        {"id": "gamma:g1", "label": "Gamma One", "tier": "small"},
+        {"id": "delta:d1", "label": "Delta One", "tier": "flagship"},
+    ]
+    metrics = {"suite_version": DRIFT_SUITE_VERSION, "series": series}
+    fp = {"suite_version": DRIFT_SUITE_VERSION, "suite_hash": SUITE_HASH,
+          "tasks": len(DRIFT_TASKS), "task_ids": DRIFT_TASKS}
+
+    rows = []
+    for m in registry:
+        pts = series.get(m["id"]) or []
+        acc = delta = graded = when = None
+        if not pts:
+            verdict = "no-data"
+        else:
+            last = pts[-1]
+            graded = last.get("graded")
+            when = last["t"][:10]
+            acc = last["acc"]
+            if len(pts) < 2:
+                verdict = "baseline"
+            else:
+                delta = round(acc - pts[-2]["acc"], 4)
+                verdict = ("regressed" if delta < -1e-9
+                           else "improved" if delta > 1e-9 else "unchanged")
+        floor = 100.0 / graded if graded else None
+        rows.append({"id": m["id"], "label": m["label"], "when": when,
+                     "acc": acc, "delta": delta, "verdict": verdict,
+                     "graded": graded,
+                     "min_detectable_pts": round(floor, 3)
+                     if floor is not None else None,
+                     "below_floor": (floor is not None
+                                     and delta is not None
+                                     and 1e-9 < abs(delta * 100) < floor)})
+    standings = {"suite_version": DRIFT_SUITE_VERSION,
+                 "suite_hash": SUITE_HASH,
+                 "min_detectable_pts_full_grade":
+                     round(100.0 / len(DRIFT_TASKS), 3),
+                 "rows": rows}
+
+    repeat, once = [], []
+    for mid, pts in series.items():
+        if mid.startswith("mock:"):
+            continue
+        seen = [(p["t"], set(p.get("fails") or []))
+                for p in pts if "fails" in p]
+        counts: dict[str, int] = {}
+        latest: dict[str, str] = {}
+        for (_, prev), (t, cur) in zip(seen, seen[1:]):
+            for task in cur - prev:
+                counts[task] = counts.get(task, 0) + 1
+                latest[task] = f"broke on {t[:10]}"
+            for task in prev - cur:
+                counts[task] = counts.get(task, 0) + 1
+                latest[task] = f"recovered on {t[:10]}"
+        for row in sorted(({"task": t, "flips": n, "latest": latest[t]}
+                           for t, n in counts.items()),
+                          key=lambda r: (-r["flips"], r["task"])):
+            (repeat if row["flips"] > 1 else once).append(
+                {"model": mid, **row})
+    by_day: dict[str, dict[str, set]] = {}
+    for mid, pts in series.items():
+        if mid.startswith("mock:"):
+            continue
+        prov = mid.split(":", 1)[0]
+        for p in pts:
+            for task in p.get("fails") or []:
+                by_day.setdefault(p["t"][:10], {}) \
+                    .setdefault(task, set()).add(prov)
+    alarms = [{"day": day, "task": task, "providers": sorted(provs),
+               "n_providers": len(provs)}
+              for day, tasks in by_day.items()
+              for task, provs in tasks.items() if len(provs) >= 3]
+    alarms.sort(key=lambda a: (-a["n_providers"], a["day"], a["task"]))
+    flips = {"repeat_offenders": sorted(repeat,
+                                        key=lambda r: (-r["flips"],
+                                                       r["model"])),
+             "one_offs": once,
+             "probe_alarms": alarms,
+             "models_with_enough_history": sum(
+                 1 for pts in series.values()
+                 if sum(1 for p in pts if "fails" in p) >= 2)}
+
+    icon = {"regressed": "🔴", "improved": "🟢", "unchanged": "⚪",
+            "baseline": "🔵", "no-data": "⚫"}
+    lines = []
+    for r in rows:
+        if r["acc"] is None:
+            lines.append(f"| {r['label']} | — | — | — | ⚫ no runs yet |")
+            continue
+        d = "—" if r["delta"] is None else f"{r['delta'] * 100:+.1f} pts"
+        floor = 100.0 / r["graded"] if r["graded"] else None
+        if floor is None:
+            f_txt = "—"
+        elif r["delta"] is not None and 1e-9 < abs(r["delta"] * 100) < floor:
+            f_txt = f"±{floor:.1f} ⚠ below floor"
+        else:
+            f_txt = f"±{floor:.1f}"
+        lines.append(f"| {r['label']} | {r['acc'] * 100:.1f}% | {d} "
+                     f"| {f_txt} | {icon[r['verdict']]} {r['verdict']} |")
+    results_md = (
+        f"# Latest standings — suite `{DRIFT_SUITE_VERSION}`\n\n"
+        "_Auto-generated after each scheduled probe. Live chart: "
+        "[egnaro9.github.io/model-drift]"
+        "(https://egnaro9.github.io/model-drift/)._\n\n"
+        "**Min detectable** is the smallest movement a run could show: "
+        "`100 / graded calls`. Accuracy is scored over graded calls only "
+        "— a truncated call leaves the denominator rather than counting "
+        "as wrong — so the floor is not a constant, and a delta beneath "
+        "it is the denominator moving, not the model.\n\n"
+        "| Model | Accuracy | Δ vs previous | Min detectable | Status |\n"
+        "| --- | --- | --- | --- | --- |\n"
+        + "\n".join(lines) + "\n")
+
+    sentences = [
+        "<strong>Alpha One regressed 25.0 points</strong> — from 75.0% to "
+        "50.0% between its last two stored runs.",
+        "<strong>Beta One moved +24.0 points</strong>, under its own "
+        "33.3-point floor — the denominator, not the model.",
+    ]
+    html = " ".join(
+        ["A toy board over <strong>5 tracked models</strong>; 4 have "
+         "stored runs."] + sentences
+        + ["<em>Rebuilt from the stored toy rows, never hand-written.</em>"])
+    narrative = {"sentences": sentences, "html": html,
+                 "text": re.sub(r"\s+", " ",
+                                re.sub(r"<[^>]+>", "", html)).strip(),
+                 "models": len(registry), "clean": 4,
+                 "claims_fired": len(sentences)}
+    return metrics, registry, standings, flips, narrative, results_md, fp
+
+
 def valid_bundle() -> dict[str, str]:
     """{relative path: file text} for the valid fixture."""
     agg, raw_text = _fleet_board()
@@ -318,6 +518,31 @@ def valid_bundle() -> dict[str, str]:
     mut_applied = (mut_tally["caught"] + mut_tally["missed"]
                    + mut_tally["flagged"])
     crash_payload, crash_expect = _crashkit_run()
+    (dr_metrics, dr_registry, dr_standings, dr_flips, dr_narrative,
+     dr_results_md, dr_fp) = _drift_board()
+    dr_verdicts = {v: sum(1 for r in dr_standings["rows"]
+                          if r["verdict"] == v)
+                   for v in ("regressed", "improved", "unchanged",
+                             "baseline", "no-data")}
+    drift_expect = {
+        "rows": len(dr_standings["rows"]),
+        "regressed": dr_verdicts["regressed"],
+        "improved": dr_verdicts["improved"],
+        "unchanged": dr_verdicts["unchanged"],
+        "baseline": dr_verdicts["baseline"],
+        "no_data": dr_verdicts["no-data"],
+        "series": len(dr_metrics["series"]),
+        "points": sum(len(p) for p in dr_metrics["series"].values()),
+        "tasks": dr_fp["tasks"],
+        "min_detectable_pts_full_grade":
+            dr_standings["min_detectable_pts_full_grade"],
+        "probe_alarms": len(dr_flips["probe_alarms"]),
+        "repeat_offenders": len(dr_flips["repeat_offenders"]),
+        "one_offs": len(dr_flips["one_offs"]),
+        "models_with_enough_history":
+            dr_flips["models_with_enough_history"],
+        "claims_fired": dr_narrative["claims_fired"],
+    }
     evidence = {
         "evidence/bundle.json": _j(_certlab_bundle()),
         "evidence/results.json": _j(agg),
@@ -325,6 +550,14 @@ def valid_bundle() -> dict[str, str]:
         "evidence/evalmut_run.json": _j(mut_payload),
         "evidence/operators.json": _j(mut_ops),
         "evidence/eval_run.json": _j(crash_payload),
+        "evidence/metrics.json": _j(dr_metrics),
+        "evidence/models.json": _j(dr_registry),
+        "evidence/standings.json": _j(dr_standings),
+        "evidence/flips.json": json.dumps(dr_flips, indent=1,
+                                          sort_keys=True) + "\n",
+        "evidence/narrative.json": _j(dr_narrative),
+        "evidence/RESULTS.md": dr_results_md,
+        "evidence/suite-fingerprint.json": _j(dr_fp),
     }
     manifest = {
         "vac_version": "0.1",
@@ -333,9 +566,11 @@ def valid_bundle() -> dict[str, str]:
                           "toy substrate, the toy board detects the toy "
                           "fleet's defect classes, the toy suite's "
                           "mutation holes are exactly what its rows "
-                          "recompute to, and the toy crash-test run's "
+                          "recompute to, the toy crash-test run's "
                           "scores are exactly what its case rows recompute "
-                          "to",
+                          "to, and the toy drift board's standings, flips, "
+                          "and narrative are exactly what its stored rows "
+                          "recompute to",
             "scope": "exactly the synthetic task set, request set, and "
                      "suite named by protocol.hashes; artifacts-only "
                      "deterministic grading; nothing beyond it",
@@ -348,6 +583,9 @@ def valid_bundle() -> dict[str, str]:
                 "mutation rows cover the five toy operators only; the "
                 "three surviving holes are the finding, not a defect of "
                 "the fixture",
+                "drift rows cover four stored toy series over three days; "
+                "the single probe alarm is the finding, not a defect of "
+                "the fixture",
             ],
         },
         "subject": {
@@ -359,27 +597,36 @@ def valid_bundle() -> dict[str, str]:
             "issuer": "example/toy-issuer",
             "issuer_commit": COMMIT,
             "task": "toy-intervals + toy-board + toy-mutation-run "
-                    "+ toy-crash-test",
+                    "+ toy-crash-test + toy-drift-board",
             "hashes": {"taskset_hash": TASKSET_HASH,
                        "prompt_hash": PROMPT_HASH,
                        "fleet_commit": COMMIT,
                        "suite_hash": SUITE_HASH,
-                       "crash_battery_hash": CRASH_HASH},
+                       "crash_battery_hash": CRASH_HASH,
+                       "metrics_sha256":
+                           _sha(evidence["evidence/metrics.json"]),
+                       "registry_sha256":
+                           _sha(evidence["evidence/models.json"])},
             "grading": "deterministic: policy (suite byte-identical) then "
                        "tests; board rows recomputed from paired raw lines; "
                        "mutation tallies and holes recomputed from per-row "
                        "outcomes; crash-test metrics recomputed from "
-                       "per-case rows under fixed severity weights",
+                       "per-case rows under fixed severity weights; drift "
+                       "standings, flips, and the rendered table recomputed "
+                       "from the stored per-run rows",
             "control_policy": "null-agent scores 0/3 and oracle-agent 3/3 "
                               "before any real verdict; a clean twin is "
-                              "graded beside every defective response",
+                              "graded beside every defective response; the "
+                              "toy mock:stable drift series is the live "
+                              "null control, pinned at 100% with no "
+                              "failures",
         },
         "evidence": [
             {"path": p, "sha256": _sha(t)}
             for p, t in sorted(evidence.items())
         ],
         "results": {
-            "summary": {"tasks": 3, "fixed": 2, "board_rows": 2,
+            "summary": {"verdicts": 3, "fixed": 2, "board_rows": 2,
                         "detection_rate_min": 0.5,
                         "mutation_score_3": round(
                             mut_tally["caught"] / mut_applied, 3),
@@ -387,7 +634,13 @@ def valid_bundle() -> dict[str, str]:
                             mut_payload["holes"]["blind"]),
                         "crash_accuracy": crash_expect["accuracy"],
                         "crash_vulnerability": crash_expect[
-                            "vulnerability_score"]},
+                            "vulnerability_score"],
+                        "drift": {"rows": drift_expect["rows"],
+                                  "regressed": drift_expect["regressed"],
+                                  "probe_alarms":
+                                      drift_expect["probe_alarms"],
+                                  "claims_fired":
+                                      drift_expect["claims_fired"]}},
             "checks": [
                 {"profile": "certlab-bundle-v1",
                  "artifact": "evidence/bundle.json",
@@ -419,6 +672,15 @@ def valid_bundle() -> dict[str, str]:
                  "artifact": "evidence/eval_run.json",
                  "battery_hash_key": "crash_battery_hash",
                  "expect": crash_expect},
+                {"profile": "modeldrift-board-v1",
+                 "metrics": "evidence/metrics.json",
+                 "registry": "evidence/models.json",
+                 "standings": "evidence/standings.json",
+                 "flips": "evidence/flips.json",
+                 "narrative": "evidence/narrative.json",
+                 "results_md": "evidence/RESULTS.md",
+                 "fingerprint": "evidence/suite-fingerprint.json",
+                 "expect": drift_expect},
             ],
         },
         "replay": {
@@ -434,12 +696,15 @@ def valid_bundle() -> dict[str, str]:
                 "evidence/evalmut_run.json",
                 "python -m toy_issuer.crashrun --check "
                 "evidence/eval_run.json",
+                "python -m toy_issuer.driftboard --check "
+                "evidence/standings.json",
             ],
             "expected": "regrade exits 0 reporting 'consistent'; audit, "
-                        "mutrun, and crashrun reproduce results.json, "
-                        "evalmut_run.json, and eval_run.json "
-                        "byte-identically at the stamped commit (mutrun "
-                        "exits 1 by design: the toy suite has holes)",
+                        "mutrun, crashrun, and driftboard reproduce "
+                        "results.json, evalmut_run.json, eval_run.json, "
+                        "and the drift board artifacts byte-identically "
+                        "at the stamped commit (mutrun exits 1 by design: "
+                        "the toy suite has holes)",
         },
     }
     return {"vac.json": _j(manifest), **evidence}
@@ -453,8 +718,9 @@ def tampered_variants(valid: dict[str, str]) -> dict[str, dict[str, str]]:
     out["tamper-missing-artifact"] = t
 
     m = json.loads(valid["vac.json"])  # manifest hash disagrees with bytes
-    assert m["evidence"][0]["path"] == "evidence/bundle.json"
-    m["evidence"][0]["sha256"] = "0" * 64
+    e = next(e for e in m["evidence"]
+             if e["path"] == "evidence/bundle.json")
+    e["sha256"] = "0" * 64
     out["tamper-wrong-sha256"] = {**valid, "vac.json": _j(m)}
 
     m = json.loads(valid["vac.json"])  # declared count inflated, 2 -> 3
@@ -528,6 +794,34 @@ def tampered_variants(valid: dict[str, str]) -> dict[str, dict[str, str]]:
     c = next(c for c in cp["cases"] if c["flagged"])
     c["passed"] = True
     out["tamper-crashkit-case"] = _rehash_crash(cp)
+
+    def _rehash_drift(rel: str, text: str,
+                      fix_metrics_pin: bool = False) -> dict[str, str]:
+        man = json.loads(valid["vac.json"])
+        for e in man["evidence"]:
+            if e["path"] == rel:
+                e["sha256"] = _sha(text)
+        if fix_metrics_pin:
+            man["protocol"]["hashes"]["metrics_sha256"] = _sha(text)
+        return {**valid, rel: text, "vac.json": _j(man)}
+
+    # sweeten the newest stored drift point AND fix EVERY hash (evidence pin
+    # and protocol stamp alike — nothing stops the attacker fixing both) —
+    # the published standings, the re-rendered table, the declared expect,
+    # and the summary all contradict the rows they must recompute from
+    dm = json.loads(valid["evidence/metrics.json"])
+    dm["series"]["alpha:a1"][-1]["acc"] = 0.75
+    out["tamper-modeldrift-rows"] = _rehash_drift(
+        "evidence/metrics.json", _j(dm), fix_metrics_pin=True)
+
+    # relabel the drift regression as unchanged in the published standings
+    # AND fix the hash, rows honest — only recomputation from the stored
+    # rows names the lie
+    ds = json.loads(valid["evidence/standings.json"])
+    row = next(r for r in ds["rows"] if r["id"] == "alpha:a1")
+    row["delta"], row["verdict"] = 0.0, "unchanged"
+    out["tamper-modeldrift-standings"] = _rehash_drift(
+        "evidence/standings.json", _j(ds))
 
     # cook results.summary ONLY — checks, artifacts, and hashes all stay
     # honest (vac.json is never its own evidence, so nothing needs a

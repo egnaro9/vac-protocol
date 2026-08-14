@@ -10,7 +10,7 @@ The design premise is **do not trust the issuer** — including us. Anything
 a reader must take on faith is a defect in the bundle, not a feature of
 the format.
 
-VAC is the trust layer over four live issuers, and its four evidence
+VAC is the trust layer over five live issuers, and its five evidence
 profiles are their formats verbatim:
 
 - [agent-certlab](https://github.com/egnaro9/agent-certlab) — capability
@@ -33,6 +33,12 @@ profiles are their formats verbatim:
   Evidence is `eval_run.json` (metrics plus per-case rows carrying
   explicit passed/truncated booleans), reproduced byte-identically by
   `python emit_vac.py` at the stamped commit.
+- [model-drift](https://github.com/egnaro9/model-drift) — the public LLM
+  drift board. Evidence is the committed per-run rows (`metrics.json`
+  joined to the `models.json` registry) plus every published derived
+  view — standings, flip/probe-alarm analysis, narrative, `RESULTS.md` —
+  each recomputed offline from the rows, reproduced byte-identically by
+  `python3 emit_vac.py` at the stamped commit.
 
 ## 1. The object
 
@@ -147,7 +153,7 @@ is text, not a protocol-level identifier — see §7).
 ## 3. Evidence profiles
 
 A profile is a pair: an artifact format and the exact offline
-recomputation a verifier performs against it. v0.1 defines four.
+recomputation a verifier performs against it. v0.1 defines five.
 
 ### 3.1 `certlab-bundle-v1`
 
@@ -305,6 +311,84 @@ that is `python emit_vac.py` at the pinned commit, which refuses on
 control drift and reproduces every artifact byte-identically; the replay
 block runs it.
 
+### 3.5 `modeldrift-board-v1`
+
+Check shape: `{"profile": "modeldrift-board-v1", "metrics": <path>,
+"registry": <path>, "standings": <path>, "flips": <path>,
+"narrative": <path>, "results_md": <path>, "fingerprint": <path>,
+"expect": {…}}` — every value a listed evidence path: the stored per-run
+rows (`metrics` — an object whose `series` maps each model id to its
+ordered point list), the model registry (`registry` — the ordered array
+of tracked models), the four published derived views (`standings`,
+`flips`, `narrative`, `results_md`), and the frozen suite's fingerprint
+(`fingerprint` — `suite_version`, `suite_hash`, `tasks`, `task_ids`).
+
+Recomputation — the board's whole derivation layer re-earned from the
+rows:
+
+- **coherence**, over every stored point: `acc` and `reliability` in
+  [0,1]; `refusal_rate` null or in [0,1]; `latency_ms` >= 0;
+  `runs` >= 1; `acc_spread` >= 0; `fails` ⊆ `fingerprint.task_ids`;
+  `graded` (when present) an integer in 1..`fingerprint.tasks`;
+  per-series `t` never decreasing; `suite`/`suite_hash` stamps (when
+  present) equal to the fingerprint's; when `fails_runs` is present,
+  `fails` must be one of its own samples and every sample ⊆ `task_ids`;
+  and every `mock:*` point at `acc == 1.0` with empty `fails` — the live
+  null control, refused when it moved (a moved control indicts the
+  harness, not the models). A coherence violation ends the check:
+  nothing derived from sick rows is recomputable.
+- **standings**: one row per registry entry, in registry order, from the
+  last two stored points of its series — `acc` = the newest point's;
+  `delta` = `round(acc − previous, 4)`; verdict
+  regressed/improved/unchanged at ±1e-9, `baseline` with one stored
+  point, `no-data` with none; `graded` = the newest point's;
+  `min_detectable_pts` = `round(100/graded, 3)` (null without `graded`);
+  `below_floor` = `1e-9 < |delta×100| < 100/graded`; plus the
+  suite-level floor `min_detectable_pts_full_grade` =
+  `round(100/fingerprint.tasks, 3)` — the recomputed object MUST equal
+  the committed `standings` artifact exactly, key for key.
+- **results_md**: the standings table re-rendered from the RECOMPUTED
+  rows under the profile's pinned template (accuracy `{:.1f}%`, delta
+  `{:+.1f} pts`, floor `±{:.1f}` with the `⚠ below floor` suffix under
+  the same inequality, the five verdict icons 🔴🟢⚪🔵⚫, header naming
+  `fingerprint.suite_version`) MUST be byte-identical to the committed
+  file — a divergence means the board's two stores disagree.
+- **flips**: recomputed from the stored `fails` vectors — per non-mock
+  series a flip is a task entering or leaving the fails set between
+  consecutive fails-bearing points (per-model rows sorted by
+  (−flips, task)); `repeat_offenders` = pairs that flipped more than
+  once, sorted by (−flips, model); `one_offs` = exactly-once pairs in
+  series insertion order; `probe_alarms` = (day, task) pairs where >= 3
+  distinct providers (the id prefix before `:`) failed the task on one
+  UTC day, sorted by (−n_providers, day, task);
+  `models_with_enough_history` = series (mock included) with >= 2
+  fails-bearing points — MUST equal the committed `flips` artifact.
+- **narrative** internal coherence: `claims_fired` == `len(sentences)`
+  and `text` == the whitespace-normalized, tag-stripped `html`.
+  Byte-identical REGENERATION of the narrative is the replay block's job
+  (the claims generator at the stamped commit), not structural.
+
+Every key in `expect` MUST name a recomputed field and equal its value
+(`summary-mismatch`): `rows`, `regressed`, `improved`, `unchanged`,
+`baseline`, `no_data`, `series`, `points`, `tasks`,
+`min_detectable_pts_full_grade`, `probe_alarms`, `repeat_offenders`,
+`one_offs`, `models_with_enough_history`, `claims_fired`; these fifteen
+are also the §2.5 summary pool.
+
+Stamp binding per §2.3: `protocol.hashes.suite_hash` MUST equal the
+fingerprint's `suite_hash`, and `protocol.hashes.metrics_sha256` /
+`registry_sha256` MUST equal the evidence hashes of the `metrics` /
+`registry` artifacts (`stamp-mismatch` otherwise) — the derivations are
+claims about exactly those input bytes.
+
+What this does not prove: that the stored rows record real probe runs —
+the model responses are historical and nondeterministic by construction
+(the issuer's own first limitation), so no replay reproduces them — or
+that the narrative's sentences are what the issuer's claims generator
+emits. That is `python3 emit_vac.py` at the stamped commit re-deriving
+the whole bundle byte-identically from the committed rows; the replay
+block runs it.
+
 ## 4. Structural verification vs semantic replay
 
 Two distinct acts, never to be conflated:
@@ -429,8 +513,9 @@ other value rather than guess. Additive, non-breaking fields may appear
 under unknown keys today; anything that changes verification semantics is
 a new version. Adding an evidence profile is additive in exactly this
 sense — it widens what a bundle may declare without changing how any
-existing bundle verifies — so `evalmut-run-v1` (§3.3) and
-`crashkit-battery-v1` (§3.4) landed as v0.1 profile additions, no
+existing bundle verifies — so `evalmut-run-v1` (§3.3),
+`crashkit-battery-v1` (§3.4), and `modeldrift-board-v1` (§3.5) landed
+as v0.1 profile additions, no
 version bump. No timestamps appear anywhere in this format: time, where
 it matters, is expressed as commits and content hashes, which are
 checkable — dates are not.

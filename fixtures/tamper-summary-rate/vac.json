@@ -1,13 +1,14 @@
 {
  "vac_version": "0.1",
  "claim": {
-  "capability": "toy-agent fixes seeded single-edit defects in the toy substrate, the toy board detects the toy fleet's defect classes, the toy suite's mutation holes are exactly what its rows recompute to, and the toy crash-test run's scores are exactly what its case rows recompute to",
+  "capability": "toy-agent fixes seeded single-edit defects in the toy substrate, the toy board detects the toy fleet's defect classes, the toy suite's mutation holes are exactly what its rows recompute to, the toy crash-test run's scores are exactly what its case rows recompute to, and the toy drift board's standings, flips, and narrative are exactly what its stored rows recompute to",
   "scope": "exactly the synthetic task set, request set, and suite named by protocol.hashes; artifacts-only deterministic grading; nothing beyond it",
   "limitations": [
    "synthetic fixture: issuer and subject are fictional; this bundle exercises the verifier, not a real agent",
    "single-file, single-edit defects only; multi-file repair is not claimed",
    "board rows cover the two toy defect classes only",
-   "mutation rows cover the five toy operators only; the three surviving holes are the finding, not a defect of the fixture"
+   "mutation rows cover the five toy operators only; the three surviving holes are the finding, not a defect of the fixture",
+   "drift rows cover four stored toy series over three days; the single probe alarm is the finding, not a defect of the fixture"
   ]
  },
  "subject": {
@@ -21,18 +22,24 @@
  "protocol": {
   "issuer": "example/toy-issuer",
   "issuer_commit": "f1e2d3c",
-  "task": "toy-intervals + toy-board + toy-mutation-run + toy-crash-test",
+  "task": "toy-intervals + toy-board + toy-mutation-run + toy-crash-test + toy-drift-board",
   "hashes": {
    "taskset_hash": "00112233445566aa",
    "prompt_hash": "aabbccdd00112233",
    "fleet_commit": "f1e2d3c",
    "suite_hash": "ffeeddcc99887766",
-   "crash_battery_hash": "ab12cd34ef56"
+   "crash_battery_hash": "ab12cd34ef56",
+   "metrics_sha256": "90724f4ad3a540762e8144378e9425563ae73b9ffe91354aa31b3b3058519997",
+   "registry_sha256": "faafaa8b9bb2a628ae23a5837f4ce765a3e623314a4633e03ff50b31640dbc43"
   },
-  "grading": "deterministic: policy (suite byte-identical) then tests; board rows recomputed from paired raw lines; mutation tallies and holes recomputed from per-row outcomes; crash-test metrics recomputed from per-case rows under fixed severity weights",
-  "control_policy": "null-agent scores 0/3 and oracle-agent 3/3 before any real verdict; a clean twin is graded beside every defective response"
+  "grading": "deterministic: policy (suite byte-identical) then tests; board rows recomputed from paired raw lines; mutation tallies and holes recomputed from per-row outcomes; crash-test metrics recomputed from per-case rows under fixed severity weights; drift standings, flips, and the rendered table recomputed from the stored per-run rows",
+  "control_policy": "null-agent scores 0/3 and oracle-agent 3/3 before any real verdict; a clean twin is graded beside every defective response; the toy mock:stable drift series is the live null control, pinned at 100% with no failures"
  },
  "evidence": [
+  {
+   "path": "evidence/RESULTS.md",
+   "sha256": "d2beb88d2ef58ee678c80bd29464acf33a4b89330436ec5e108750fb8a3c6bde"
+  },
   {
    "path": "evidence/bundle.json",
    "sha256": "64931fe8d466c2cfdbf3c15013d8aa013bc54a2e340fb89737972ef3612550d4"
@@ -46,6 +53,22 @@
    "sha256": "fc46d3a737d7b9ee6502f2f8374db56ab6d337841f4fd0a9ba45f312548e18ed"
   },
   {
+   "path": "evidence/flips.json",
+   "sha256": "0d3a769fe92aec93a8a9eac9b5ddc17762fb8d2c5bfc228ee36045a5ed6f4438"
+  },
+  {
+   "path": "evidence/metrics.json",
+   "sha256": "90724f4ad3a540762e8144378e9425563ae73b9ffe91354aa31b3b3058519997"
+  },
+  {
+   "path": "evidence/models.json",
+   "sha256": "faafaa8b9bb2a628ae23a5837f4ce765a3e623314a4633e03ff50b31640dbc43"
+  },
+  {
+   "path": "evidence/narrative.json",
+   "sha256": "beb581968175d075e0d820ff8719d5aa8251e6b12723660a0c77d22c507b7289"
+  },
+  {
    "path": "evidence/operators.json",
    "sha256": "3f01832e9d2beb60c28140f4625e3170445cd894524810c28e357d041b2ad4f4"
   },
@@ -56,18 +79,32 @@
   {
    "path": "evidence/results.json",
    "sha256": "59804e843809100f7c335fa06b0bb7debc199834708db72dd4275ff318592772"
+  },
+  {
+   "path": "evidence/standings.json",
+   "sha256": "30086ad732c1f52fc66f743c6303cb2339a82365b7e6130aeeceb39686ab810b"
+  },
+  {
+   "path": "evidence/suite-fingerprint.json",
+   "sha256": "c636f37261a1d560caea88396f28c24db607a50f0b74a8e09cabe66bde130e36"
   }
  ],
  "results": {
   "summary": {
-   "tasks": 3,
+   "verdicts": 3,
    "fixed": 2,
    "board_rows": 2,
    "detection_rate_min": 0.9,
    "mutation_score_3": 0.571,
    "mutation_blind_spots": 1,
    "crash_accuracy": 0.5,
-   "crash_vulnerability": 0.4545
+   "crash_vulnerability": 0.4545,
+   "drift": {
+    "rows": 5,
+    "regressed": 1,
+    "probe_alarms": 1,
+    "claims_fired": 2
+   }
   },
   "checks": [
    {
@@ -124,6 +161,33 @@
      "graded": 4,
      "errors": 1
     }
+   },
+   {
+    "profile": "modeldrift-board-v1",
+    "metrics": "evidence/metrics.json",
+    "registry": "evidence/models.json",
+    "standings": "evidence/standings.json",
+    "flips": "evidence/flips.json",
+    "narrative": "evidence/narrative.json",
+    "results_md": "evidence/RESULTS.md",
+    "fingerprint": "evidence/suite-fingerprint.json",
+    "expect": {
+     "rows": 5,
+     "regressed": 1,
+     "improved": 1,
+     "unchanged": 1,
+     "baseline": 1,
+     "no_data": 1,
+     "series": 4,
+     "points": 9,
+     "tasks": 4,
+     "min_detectable_pts_full_grade": 25.0,
+     "probe_alarms": 1,
+     "repeat_offenders": 1,
+     "one_offs": 1,
+     "models_with_enough_history": 3,
+     "claims_fired": 2
+    }
    }
   ]
  },
@@ -136,8 +200,9 @@
    "python -m toy_issuer.regrade evidence/bundle.json",
    "python issuer/audit/run_audit.py --check evidence/results.json",
    "python -m toy_issuer.mutrun --check evidence/evalmut_run.json",
-   "python -m toy_issuer.crashrun --check evidence/eval_run.json"
+   "python -m toy_issuer.crashrun --check evidence/eval_run.json",
+   "python -m toy_issuer.driftboard --check evidence/standings.json"
   ],
-  "expected": "regrade exits 0 reporting 'consistent'; audit, mutrun, and crashrun reproduce results.json, evalmut_run.json, and eval_run.json byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)"
+  "expected": "regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)"
  }
 }

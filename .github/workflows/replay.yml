@@ -9,7 +9,8 @@ name: replay
 # certlab.regrade over the downloaded bundle; fleet: python audit/run_audit.py
 # then cmp byte-identity against the downloaded results; evalmut: evalmut run
 # <suite> --json --all then cmp byte-identity against the downloaded
-# payload). The commands are
+# payload; crashkit and model-drift: the issuer's own emit_vac.py then cmp
+# byte-identity against every downloaded artifact). The commands are
 # not trusted blindly: they were sha256-pinned through the registry and
 # reviewed at admission, and profile predicates below refuse the one known
 # soft exit (certlab's regrade exits 0 when it REFUSES a stale bundle — a
@@ -144,4 +145,42 @@ jobs:
             fi
           else
             echo "no evalmut-run-v1 check in this bundle; predicate not applicable"
+          fi
+      - name: crashkit predicate — every byte-compare ran AND succeeded
+        # Same two directions again: crashkit's replay re-runs its emitter
+        # (which itself refuses on twin-control drift, SPEC.md section 3.4)
+        # and cmp-compares all nine artifacts — a transcript with no cmp
+        # proves nothing, and a cmp that ran but FAILED must not ride on
+        # the shell's exit alone.
+        run: |
+          if jq -e '[.results.checks[].profile] | index("crashkit-battery-v1")' bundle/vac.json > /dev/null; then
+            if ! grep -q '+ cmp ' transcript.txt; then
+              echo "crashkit replay block executed no cmp — byte-identity with the downloaded artifacts was never checked"
+              exit 1
+            fi
+            if grep -E 'differ|EOF on' transcript.txt; then
+              echo "a byte-compare FAILED — the pinned commit does not reproduce the registered bytes"
+              exit 1
+            fi
+          else
+            echo "no crashkit-battery-v1 check in this bundle; predicate not applicable"
+          fi
+      - name: modeldrift predicate — every byte-compare ran AND succeeded
+        # Same two directions: model-drift's replay re-derives the whole
+        # bundle from the committed rows (emit_vac.py refuses when the two
+        # board stores disagree, SPEC.md section 3.5) and cmp-compares all
+        # eight artifacts, then runs the issuer's pytest suite as the
+        # semantic backstop; this predicate judges only the byte-compares.
+        run: |
+          if jq -e '[.results.checks[].profile] | index("modeldrift-board-v1")' bundle/vac.json > /dev/null; then
+            if ! grep -q '+ cmp ' transcript.txt; then
+              echo "modeldrift replay block executed no cmp — byte-identity with the downloaded artifacts was never checked"
+              exit 1
+            fi
+            if grep -E 'differ|EOF on' transcript.txt; then
+              echo "a byte-compare FAILED — the pinned commit does not reproduce the registered bytes"
+              exit 1
+            fi
+          else
+            echo "no modeldrift-board-v1 check in this bundle; predicate not applicable"
           fi

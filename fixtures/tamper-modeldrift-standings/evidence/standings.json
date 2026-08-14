@@ -1,0 +1,62 @@
+{
+ "suite_version": "toy-suite-v1",
+ "suite_hash": "ffeeddcc99887766",
+ "min_detectable_pts_full_grade": 25.0,
+ "rows": [
+  {
+   "id": "mock:stable",
+   "label": "Mock (toy)",
+   "when": "2026-01-03",
+   "acc": 1.0,
+   "delta": 0.0,
+   "verdict": "unchanged",
+   "graded": null,
+   "min_detectable_pts": null,
+   "below_floor": false
+  },
+  {
+   "id": "alpha:a1",
+   "label": "Alpha One",
+   "when": "2026-01-03",
+   "acc": 0.5,
+   "delta": 0.0,
+   "verdict": "unchanged",
+   "graded": 4,
+   "min_detectable_pts": 25.0,
+   "below_floor": false
+  },
+  {
+   "id": "beta:b1",
+   "label": "Beta One",
+   "when": "2026-01-03",
+   "acc": 0.9,
+   "delta": 0.24,
+   "verdict": "improved",
+   "graded": 3,
+   "min_detectable_pts": 33.333,
+   "below_floor": true
+  },
+  {
+   "id": "gamma:g1",
+   "label": "Gamma One",
+   "when": "2026-01-03",
+   "acc": 0.25,
+   "delta": null,
+   "verdict": "baseline",
+   "graded": null,
+   "min_detectable_pts": null,
+   "below_floor": false
+  },
+  {
+   "id": "delta:d1",
+   "label": "Delta One",
+   "when": null,
+   "acc": null,
+   "delta": null,
+   "verdict": "no-data",
+   "graded": null,
+   "min_detectable_pts": null,
+   "below_floor": false
+  }
+ ]
+}

@@ -1,0 +1,126 @@
+{
+ "suite_version": "toy-suite-v1",
+ "series": {
+  "mock:stable": [
+   {
+    "t": "2026-01-01T00:00:00Z",
+    "acc": 1.0,
+    "latency_ms": 120.0,
+    "reliability": 1.0,
+    "refusal_rate": 0.0,
+    "fails": []
+   },
+   {
+    "t": "2026-01-02T00:00:00Z",
+    "acc": 1.0,
+    "latency_ms": 120.0,
+    "reliability": 1.0,
+    "refusal_rate": 0.0,
+    "fails": []
+   },
+   {
+    "t": "2026-01-03T00:00:00Z",
+    "acc": 1.0,
+    "latency_ms": 120.0,
+    "reliability": 1.0,
+    "refusal_rate": 0.0,
+    "fails": []
+   }
+  ],
+  "alpha:a1": [
+   {
+    "t": "2026-01-01T00:00:00Z",
+    "acc": 0.5,
+    "latency_ms": 120.0,
+    "reliability": 1.0,
+    "refusal_rate": 0.0,
+    "fails": [
+     "t-add",
+     "t-sub"
+    ],
+    "graded": 4
+   },
+   {
+    "t": "2026-01-02T00:00:00Z",
+    "acc": 0.75,
+    "latency_ms": 120.0,
+    "reliability": 1.0,
+    "refusal_rate": 0.0,
+    "fails": [
+     "t-add"
+    ],
+    "graded": 4
+   },
+   {
+    "t": "2026-01-03T00:00:00Z",
+    "acc": 0.75,
+    "latency_ms": 120.0,
+    "reliability": 1.0,
+    "refusal_rate": 0.0,
+    "runs": 3,
+    "acc_spread": 0.25,
+    "fails": [
+     "t-add",
+     "t-sub"
+    ],
+    "fails_runs": [
+     [
+      "t-add",
+      "t-sub"
+     ],
+     [
+      "t-add"
+     ],
+     [
+      "t-add",
+      "t-sub"
+     ]
+    ],
+    "graded": 4,
+    "suite": "toy-suite-v1",
+    "suite_hash": "ffeeddcc99887766"
+   }
+  ],
+  "beta:b1": [
+   {
+    "t": "2026-01-01T00:00:00Z",
+    "acc": 0.66,
+    "latency_ms": 120.0,
+    "reliability": 1.0,
+    "refusal_rate": 0.0,
+    "fails": [
+     "t-add",
+     "t-mul"
+    ],
+    "graded": 3
+   },
+   {
+    "t": "2026-01-03T00:00:00Z",
+    "acc": 0.9,
+    "latency_ms": 120.0,
+    "reliability": 1.0,
+    "refusal_rate": 0.0,
+    "fails": [
+     "t-add"
+    ],
+    "graded": 3,
+    "suite": "toy-suite-v1",
+    "suite_hash": "ffeeddcc99887766"
+   }
+  ],
+  "gamma:g1": [
+   {
+    "t": "2026-01-03T00:00:00Z",
+    "acc": 0.25,
+    "latency_ms": 120.0,
+    "reliability": 1.0,
+    "refusal_rate": 0.0,
+    "fails": [
+     "t-add",
+     "t-div",
+     "t-mul"
+    ]
+   }
+  ]
+ }
+}

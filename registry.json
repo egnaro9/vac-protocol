@@ -283,6 +283,91 @@
    }
   },
   {
+   "name": "crashkit/vac",
+   "issuer": "egnaro9/crashkit",
+   "issuer_repo": "https://github.com/egnaro9/crashkit",
+   "issuer_commit": "2a8ffd1",
+   "bundle_path": "vac",
+   "capability": "crashkit's no-LLM-judge battery grading is deterministic end-to-end and its graders demonstrably bite: the adversarial and agentic twin-control mock runs score exactly 0.0 (safe) and 1.0 (vulnerable) severity-weighted vulnerability, the reused 35-task model-drift suite grades 1.0 accuracy on its stable mock, the never-touches grading-replay path re-earns 0.0/1.0 from the committed answer sets alone, and a 10-run flaky-mock variance report aggregates reproducibly \u2014 every declared number recomputable offline from committed per-case rows",
+   "subject": "suite-archetype: crashkit mock/replay grading path: adversarial + agentic + reused model-drift SUITE batteries under gradecore",
+   "summary": {
+    "twin_controls": {
+     "adversarial": {
+      "safe_vulnerability": 0.0,
+      "vulnerable_vulnerability": 1.0
+     },
+     "agentic": {
+      "safe_vulnerability": 0.0,
+      "vulnerable_vulnerability": 1.0
+     }
+    },
+    "grading_replay": {
+     "safe_vulnerability": 0.0,
+     "vulnerable_vulnerability": 1.0
+    },
+    "modeldrift_suite": {
+     "accuracy": 1.0,
+     "n_cases": 35.0
+    }
+   },
+   "profiles": [
+    "crashkit-battery-v1"
+   ],
+   "artifacts": [
+    {
+     "path": "adversarial_safe.eval_run.json",
+     "sha256": "632f37dae0d2739211eec7c96eabaec2b55e17c12809a9b8ff219a222f0d179d",
+     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/main/vac/adversarial_safe.eval_run.json"
+    },
+    {
+     "path": "adversarial_vulnerable.eval_run.json",
+     "sha256": "f63c6db88169e9a5ec54738f08709a2e91592a5f654beffb0d1facaddf2b6b7c",
+     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/main/vac/adversarial_vulnerable.eval_run.json"
+    },
+    {
+     "path": "agentic_safe.eval_run.json",
+     "sha256": "d144ce6cfef1fdd1e99863611e4769669392fb451292203b2ffad497bee32179",
+     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/main/vac/agentic_safe.eval_run.json"
+    },
+    {
+     "path": "agentic_vulnerable.eval_run.json",
+     "sha256": "488aac3787d572f0f261b0bc738ded555385dd4411e765acec47d330efc3997f",
+     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/main/vac/agentic_vulnerable.eval_run.json"
+    },
+    {
+     "path": "grade_replay_safe.eval_run.json",
+     "sha256": "4cafacb21e7a2887eeddd33c1dac9eab77946efe2303e9d93d11dfeb307c2760",
+     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/main/vac/grade_replay_safe.eval_run.json"
+    },
+    {
+     "path": "grade_replay_vulnerable.eval_run.json",
+     "sha256": "11d375ab7112cccb6685be1780af2f134cfc9711d1f2b31a07df1f077c72e97c",
+     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/main/vac/grade_replay_vulnerable.eval_run.json"
+    },
+    {
+     "path": "suite_stable.eval_run.json",
+     "sha256": "8373704a0961a34c8a95f2887bd03660316385c5bf58e527ce0ae4b936ffc13e",
+     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/main/vac/suite_stable.eval_run.json"
+    },
+    {
+     "path": "vac.json",
+     "sha256": "7cab4571ef17a602d5f5d8ae03032c72f49ac30e607d8ede0ea41b160cfd146f",
+     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/main/vac/vac.json"
+    },
+    {
+     "path": "variance_flaky_n10.report.json",
+     "sha256": "aa574b4dfd397cca040c76fd0c20c972a68db674d79e461da48e74b6246ad672",
+     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/main/vac/variance_flaky_n10.report.json"
+    }
+   ],
+   "status": "accepted",
+   "challenges": [],
+   "gates": {
+    "structural": "python -m vac.verify \u2014 clean at registry generation; re-proven against the fetched artifacts before every pages deploy",
+    "semantic": "NOT run at generation \u2014 delegated to .github/workflows/replay.yml (workflow_dispatch + weekly), which clones the issuer at issuer_commit and re-earns every verdict with the issuer's own regrader"
+   }
+  },
+  {
    "name": "evalmut/vac",
    "issuer": "egnaro9/evalmut",
    "issuer_repo": "https://github.com/egnaro9/evalmut",
@@ -347,6 +432,93 @@
      "path": "vac.json",
      "sha256": "85d2b64e551b9d34fa507f3dcfaa641a79542cb957335e51653b1c4c5ba881de",
      "url": "https://raw.githubusercontent.com/egnaro9/evalmut/main/vac/vac.json"
+    }
+   ],
+   "status": "accepted",
+   "challenges": [],
+   "gates": {
+    "structural": "python -m vac.verify \u2014 clean at registry generation; re-proven against the fetched artifacts before every pages deploy",
+    "semantic": "NOT run at generation \u2014 delegated to .github/workflows/replay.yml (workflow_dispatch + weekly), which clones the issuer at issuer_commit and re-earns every verdict with the issuer's own regrader"
+   }
+  },
+  {
+   "name": "model-drift/vac",
+   "issuer": "egnaro9/model-drift",
+   "issuer_repo": "https://github.com/egnaro9/model-drift",
+   "issuer_commit": "643d834",
+   "bundle_path": "vac",
+   "capability": "the public drift board's derivation layer recomputes deterministically and byte-identically offline from the repo-committed per-run rows: the standings table (17 rows \u2014 accuracy, delta vs previous run, verdict, and the min-detectable-regression floor 100/graded-calls), the generated narrative paragraph (3 claims fired), and the per-task flip / probe-alarm analysis (78 repeat offenders, 129 probe alarms), under frozen suite 2026-07-v3 (35 tasks, mechanical graders only, no LLM judge)",
+   "subject": "suite-archetype: model-drift public board \u2014 the derivation layer over dashboard/metrics.json",
+   "summary": {
+    "standings": {
+     "rows": 17,
+     "regressed": 6,
+     "improved": 0,
+     "unchanged": 11,
+     "baseline": 0,
+     "no_data": 0
+    },
+    "stored_rows": {
+     "series": 17,
+     "points": 511
+    },
+    "suite": {
+     "tasks": 35,
+     "min_detectable_pts_full_grade": 2.857
+    },
+    "flips": {
+     "probe_alarms": 129,
+     "repeat_offenders": 78,
+     "one_offs": 55,
+     "models_with_enough_history": 17
+    },
+    "narrative": {
+     "claims_fired": 3
+    }
+   },
+   "profiles": [
+    "modeldrift-board-v1"
+   ],
+   "artifacts": [
+    {
+     "path": "RESULTS.md",
+     "sha256": "85478db50e66e5d366056097f0882cb62a44b544a80979fa05e33e70d85bf5e6",
+     "url": "https://raw.githubusercontent.com/egnaro9/model-drift/main/vac/RESULTS.md"
+    },
+    {
+     "path": "flips.json",
+     "sha256": "f2f29ab52d2bb0cef55ab56031cf812237d7ced86770068a82ff717dc6282cf1",
+     "url": "https://raw.githubusercontent.com/egnaro9/model-drift/main/vac/flips.json"
+    },
+    {
+     "path": "metrics.json",
+     "sha256": "dd1c7f7df7d542c211ead790688d2ccb3997d388d0390a520fcc8a9a58b89ad5",
+     "url": "https://raw.githubusercontent.com/egnaro9/model-drift/main/vac/metrics.json"
+    },
+    {
+     "path": "models.json",
+     "sha256": "00792e5b1c54543b40e657729c6b94ea251c59b4d19ff94eaf5733d17d6a1116",
+     "url": "https://raw.githubusercontent.com/egnaro9/model-drift/main/vac/models.json"
+    },
+    {
+     "path": "narrative.json",
+     "sha256": "51b4a5b2b179bece3114e28d3e17429e55e287bedc1875b2909763c9be88af50",
+     "url": "https://raw.githubusercontent.com/egnaro9/model-drift/main/vac/narrative.json"
+    },
+    {
+     "path": "standings.json",
+     "sha256": "4add0ef4169992090a52c3d9d66e03741b2f1bcd6d3de486f11aedf6b09eae1d",
+     "url": "https://raw.githubusercontent.com/egnaro9/model-drift/main/vac/standings.json"
+    },
+    {
+     "path": "suite-fingerprint.json",
+     "sha256": "88369aede328e1292f76c65dfe61cbab655efb633e35afc94c0b7e437e79106b",
+     "url": "https://raw.githubusercontent.com/egnaro9/model-drift/main/vac/suite-fingerprint.json"
+    },
+    {
+     "path": "vac.json",
+     "sha256": "639fed8732d90604eeef3eccec7c4ac72278733df1332c7a14bb2a8f2e6432df",
+     "url": "https://raw.githubusercontent.com/egnaro9/model-drift/main/vac/vac.json"
     }
    ],
    "status": "accepted",

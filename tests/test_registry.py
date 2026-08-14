@@ -54,9 +54,13 @@ def test_valid_committed_bundle_is_accepted(tmp_path):
     assert e["bundle_path"] == BP
     assert e["status"] == "accepted" and e["challenges"] == []
     assert [a["path"] for a in e["artifacts"]] == [
-        "evidence/bundle.json", "evidence/eval_run.json",
-        "evidence/evalmut_run.json", "evidence/operators.json",
-        "evidence/raw_results.jsonl", "evidence/results.json", "vac.json"]
+        "evidence/RESULTS.md", "evidence/bundle.json",
+        "evidence/eval_run.json", "evidence/evalmut_run.json",
+        "evidence/flips.json", "evidence/metrics.json",
+        "evidence/models.json", "evidence/narrative.json",
+        "evidence/operators.json", "evidence/raw_results.jsonl",
+        "evidence/results.json", "evidence/standings.json",
+        "evidence/suite-fingerprint.json", "vac.json"]
     for a in e["artifacts"]:
         assert a["sha256"] == _sha256(FIX / "valid" / a["path"])
         assert a["url"] == f"{RAW}/{a['path']}"

@@ -61,6 +61,24 @@ TAMPERS = {
     "tamper-crashkit-metrics": [
         "raw-aggregate-mismatch: evidence/eval_run.json: "
         "metrics.vulnerability_score declared 0.0909, recomputed 0.4545"],
+    "tamper-modeldrift-rows": [
+        "raw-aggregate-mismatch: evidence/standings.json: alpha:a1: acc "
+        "declared 0.5, recomputed 0.75",
+        "raw-aggregate-mismatch: evidence/standings.json: alpha:a1: delta "
+        "declared -0.25, recomputed 0.0",
+        "raw-aggregate-mismatch: evidence/standings.json: alpha:a1: "
+        "verdict declared 'regressed', recomputed 'unchanged'",
+        "raw-aggregate-mismatch: evidence/RESULTS.md: does not re-render "
+        "byte-identically from the recomputed standings rows",
+        "summary-mismatch: regressed: declared 1, recomputed 0",
+        "summary-mismatch: unchanged: declared 1, recomputed 2",
+        "summary-outruns-checks: summary.drift.regressed: declares 1, "
+        "recomputation gives 0"],
+    "tamper-modeldrift-standings": [
+        "raw-aggregate-mismatch: evidence/standings.json: alpha:a1: delta "
+        "declared 0.0, recomputed -0.25",
+        "raw-aggregate-mismatch: evidence/standings.json: alpha:a1: "
+        "verdict declared 'unchanged', recomputed 'regressed'"],
     "tamper-crashkit-case": [
         "raw-aggregate-mismatch: evidence/eval_run.json: case 2 flagged "
         "flag contradicts its own passed/truncated pair",
@@ -184,6 +202,93 @@ def test_crashkit_battery_fingerprint_is_bound(tmp_path):
     assert verify_bundle(b) == [
         "stamp-mismatch: crash_battery_hash: protocol deadbeef0000, "
         "artifact ab12cd34ef56"]
+
+
+def test_repaired_modeldrift_standings_passes(tmp_path):
+    """The drift clean path is live too: relabel the cooked standings row
+    back, rehash, and the exact same bundle verifies clean."""
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "tamper-modeldrift-standings", b)
+    art = b / "evidence/standings.json"
+    ds = json.loads(art.read_text())
+    row = next(r for r in ds["rows"] if r["id"] == "alpha:a1")
+    row["delta"], row["verdict"] = -0.25, "regressed"
+    art.write_text(json.dumps(ds, indent=1) + "\n")
+    _rehash(b, "evidence/standings.json")
+    assert verify_bundle(b) == []
+
+
+def test_modeldrift_mock_control_must_not_move(tmp_path):
+    """The live null control, enforced: a mock point carrying a failure
+    indicts the harness, not the models — the check names it and refuses
+    to derive anything from rows like that (so the one message is the
+    whole verdict, not the head of a cascade)."""
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+    art = b / "evidence/metrics.json"
+    dm = json.loads(art.read_text())
+    dm["series"]["mock:stable"][-1]["fails"] = ["t-add"]
+    art.write_text(json.dumps(dm, indent=1) + "\n")
+    _rehash(b, "evidence/metrics.json")
+    assert verify_bundle(b) == [
+        "raw-aggregate-mismatch: evidence/metrics.json: mock:stable[2]: "
+        "the deterministic control moved (acc 1.0, fails ['t-add'])"]
+
+
+def test_modeldrift_narrative_text_must_match_its_html(tmp_path):
+    """Narrative internal coherence: the plain-text mirror must be exactly
+    the whitespace-normalized, tag-stripped html — a sweetened text copy
+    is named, not passed through as prose."""
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+    art = b / "evidence/narrative.json"
+    narr = json.loads(art.read_text())
+    narr["text"] += " (all models improved)"
+    art.write_text(json.dumps(narr, indent=1) + "\n")
+    _rehash(b, "evidence/narrative.json")
+    assert verify_bundle(b) == [
+        "raw-aggregate-mismatch: evidence/narrative.json: text is not the "
+        "whitespace-normalized, tag-stripped html"]
+
+
+def test_modeldrift_input_bytes_are_pinned(tmp_path):
+    """metrics_sha256/registry_sha256 bind the derivations to the exact
+    input bytes they were run over — a protocol stamp that disagrees with
+    the evidence hash is a stamp mismatch."""
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+    man_path = b / "vac.json"
+    man = json.loads(man_path.read_text())
+    man["protocol"]["hashes"]["registry_sha256"] = "0" * 64
+    man_path.write_text(json.dumps(man, indent=1) + "\n")
+    assert verify_bundle(b) == [
+        "stamp-mismatch: registry_sha256: protocol " + "0" * 64
+        + ", artifact " + _sha256(FIX / "valid/evidence/models.json")]
+
+
+MODELDRIFT_BUNDLE = (ROOT / (os.environ.get("VAC_MODELDRIFT_CHECKOUT")
+                             or "../model-drift")).resolve() / "vac"
+
+
+@pytest.mark.skipif(not (MODELDRIFT_BUNDLE / "vac.json").is_file(),
+                    reason="model-drift issuer checkout not present")
+def test_real_modeldrift_bundle_summary_is_enforced(tmp_path):
+    """Same hole, closed on the REAL committed drift bundle: inflate one
+    headline number in results.summary, leave checks and artifacts honest,
+    and the verifier must name the outrun — while the untampered copy
+    still verifies clean. The tamper is relative to the committed value,
+    so the test survives the issuer's daily bundle supersession."""
+    b = tmp_path / "b"
+    shutil.copytree(MODELDRIFT_BUNDLE, b)
+    assert verify_bundle(b) == []
+    man_path = b / "vac.json"
+    man = json.loads(man_path.read_text())
+    v = man["results"]["summary"]["flips"]["probe_alarms"]
+    man["results"]["summary"]["flips"]["probe_alarms"] = v + 1
+    man_path.write_text(json.dumps(man, indent=1) + "\n")
+    assert verify_bundle(b) == [
+        "summary-outruns-checks: summary.flips.probe_alarms: "
+        f"declares {v + 1}, recomputation gives {v}"]
 
 
 def test_repaired_evalmut_rows_passes(tmp_path):

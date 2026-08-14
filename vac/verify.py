@@ -22,13 +22,14 @@ from __future__ import annotations
 import hashlib
 import json
 import pathlib
+import re
 import sys
 import tarfile
 import tempfile
 
 VAC_VERSION = "0.1"
 PROFILES = ("certlab-bundle-v1", "fleet-board-v1", "evalmut-run-v1",
-            "crashkit-battery-v1")
+            "crashkit-battery-v1", "modeldrift-board-v1")
 USAGE = "usage: python -m vac.verify <bundle-dir | bundle.tar.gz>"
 
 
@@ -583,15 +584,403 @@ def _check_crashkit(bundle_dir: pathlib.Path, check: dict, proto: dict,
     return {k: [v] for k, v in recomputed.items()}  # the §2.5 summary pool
 
 
+# modeldrift standings verdict icons: SPEC.md §3.5 pins the exact RESULTS.md
+# rendering so the committed table is re-earned byte for byte from the rows.
+_MODELDRIFT_ICON = {"regressed": "🔴", "improved": "🟢", "unchanged": "⚪",
+                    "baseline": "🔵", "no-data": "⚫"}
+
+
+def _modeldrift_standings_rows(series: dict, registry: list) -> list[dict]:
+    """One standings row per registry entry, in registry order, from the last
+    two stored points of its series (SPEC.md §3.5): verdicts at ±1e-9, delta
+    rounded to 4 places, the per-run floor 100/graded, and the below-floor
+    flag under the exact inequality the published table prints with."""
+    rows = []
+    for m in registry:
+        pts = series.get(m["id"]) or []
+        acc = delta = graded = when = None
+        if not pts:
+            verdict = "no-data"
+        else:
+            last = pts[-1]
+            g = last.get("graded")
+            graded = int(g) if g else None
+            when = (last.get("t") or "")[:10] or None
+            acc = last.get("acc")
+            if len(pts) < 2:
+                verdict = "baseline"
+            else:
+                delta = round(acc - pts[-2].get("acc"), 4)
+                verdict = ("regressed" if delta < -1e-9
+                           else "improved" if delta > 1e-9 else "unchanged")
+        floor = 100.0 / graded if graded else None
+        rows.append({
+            "id": m["id"], "label": m.get("label") or m["id"], "when": when,
+            "acc": acc, "delta": delta, "verdict": verdict, "graded": graded,
+            "min_detectable_pts": round(floor, 3) if floor is not None
+            else None,
+            "below_floor": (floor is not None and delta is not None
+                            and 1e-9 < abs(delta * 100) < floor),
+        })
+    return rows
+
+
+def _modeldrift_results_md(rows: list[dict], suite_version: str) -> str:
+    """The pinned standings template, rendered from RECOMPUTED rows — the
+    committed RESULTS.md must be byte-identical or the two disagree."""
+    out = []
+    for r in rows:
+        if r["acc"] is None:
+            out.append(f"| {r['label']} | — | — | — | ⚫ no runs yet |")
+            continue
+        d = "—" if r["delta"] is None else f"{r['delta'] * 100:+.1f} pts"
+        floor = 100.0 / r["graded"] if r["graded"] else None
+        if floor is None:
+            f_txt = "—"
+        elif r["delta"] is not None and 1e-9 < abs(r["delta"] * 100) < floor:
+            f_txt = f"±{floor:.1f} ⚠ below floor"
+        else:
+            f_txt = f"±{floor:.1f}"
+        out.append(f"| {r['label']} | {r['acc'] * 100:.1f}% | {d} | {f_txt} "
+                   f"| {_MODELDRIFT_ICON[r['verdict']]} {r['verdict']} |")
+    return (
+        f"# Latest standings — suite `{suite_version}`\n\n"
+        "_Auto-generated after each scheduled probe. Live chart: "
+        "[egnaro9.github.io/model-drift]"
+        "(https://egnaro9.github.io/model-drift/)._\n\n"
+        "**Min detectable** is the smallest movement a run could show: "
+        "`100 / graded calls`. Accuracy is scored over graded calls only — a "
+        "truncated call leaves the denominator rather than counting as wrong "
+        "— so the floor is not a constant, and a delta beneath it is the "
+        "denominator moving, not the model.\n\n"
+        "| Model | Accuracy | Δ vs previous | Min detectable | Status |\n"
+        "| --- | --- | --- | --- | --- |\n"
+        + "\n".join(out) + "\n"
+    )
+
+
+def _modeldrift_flips(series: dict) -> dict:
+    """The flip / probe-alarm analysis recomputed from the stored `fails`
+    vectors (SPEC.md §3.5): a flip is a task entering or leaving the fails
+    set between consecutive fails-bearing points of one non-mock series;
+    a probe alarm is a (day, task) failing across >= 3 distinct providers —
+    models from different labs do not regress in unison."""
+    repeat, once = [], []
+    for mid, pts in series.items():
+        if mid.startswith("mock:"):
+            continue
+        seen = [(p.get("t", ""), set(p.get("fails") or []))
+                for p in pts if "fails" in p]
+        counts: dict[str, int] = {}
+        latest: dict[str, str] = {}
+        for (_, prev), (t, cur) in zip(seen, seen[1:]):
+            for task in cur - prev:
+                counts[task] = counts.get(task, 0) + 1
+                latest[task] = f"broke on {(t or '')[:10]}"
+            for task in prev - cur:
+                counts[task] = counts.get(task, 0) + 1
+                latest[task] = f"recovered on {(t or '')[:10]}"
+        for row in sorted(({"task": t, "flips": n, "latest": latest[t]}
+                           for t, n in counts.items()),
+                          key=lambda r: (-r["flips"], r["task"])):
+            (repeat if row["flips"] > 1 else once).append(
+                {"model": mid, **row})
+    by_day: dict[str, dict[str, set]] = {}
+    for mid, pts in series.items():
+        if mid.startswith("mock:"):
+            continue
+        prov = mid.split(":", 1)[0] if ":" in mid else mid
+        for p in pts:
+            if "fails" not in p:
+                continue
+            for task in p.get("fails") or []:
+                by_day.setdefault((p.get("t") or "")[:10], {}) \
+                    .setdefault(task, set()).add(prov)
+    alarms = [{"day": day, "task": task, "providers": sorted(provs),
+               "n_providers": len(provs)}
+              for day, tasks in by_day.items()
+              for task, provs in tasks.items() if len(provs) >= 3]
+    alarms.sort(key=lambda a: (-a["n_providers"], a["day"], a["task"]))
+    return {
+        "repeat_offenders": sorted(repeat,
+                                   key=lambda r: (-r["flips"], r["model"])),
+        "one_offs": once,
+        "probe_alarms": alarms,
+        "models_with_enough_history": sum(
+            1 for pts in series.values()
+            if sum(1 for p in pts if "fails" in p) >= 2),
+    }
+
+
+def _bad_unit(v) -> bool:
+    return isinstance(v, bool) or not isinstance(v, (int, float))
+
+
+def _check_modeldrift(bundle_dir: pathlib.Path, check: dict, proto: dict,
+                      f: list[str]) -> dict[str, list] | None:
+    met_rel, reg_rel = check["metrics"], check["registry"]
+    stand_rel, flips_rel = check["standings"], check["flips"]
+    narr_rel, md_rel = check["narrative"], check["results_md"]
+    fp_rel = check["fingerprint"]
+    metrics = _load_json(bundle_dir, met_rel, f)
+    registry = _load_json(bundle_dir, reg_rel, f)
+    stand = _load_json(bundle_dir, stand_rel, f)
+    flips = _load_json(bundle_dir, flips_rel, f)
+    narr = _load_json(bundle_dir, narr_rel, f)
+    fp = _load_json(bundle_dir, fp_rel, f)
+    if None in (metrics, registry, stand, flips, narr, fp):
+        return None
+    series = metrics.get("series") if isinstance(metrics, dict) else None
+    if not (isinstance(series, dict)
+            and all(isinstance(pts, list)
+                    and all(isinstance(p, dict) for p in pts)
+                    for pts in series.values())):
+        f.append(f"artifact-unparsable: {met_rel}: no series object of "
+                 "point lists")
+        return None
+    if not (isinstance(registry, list)
+            and all(isinstance(m, dict) and _nonempty_str(m.get("id"))
+                    for m in registry)):
+        f.append(f"artifact-unparsable: {reg_rel}: no model registry array "
+                 "with ids")
+        return None
+    task_ids = fp.get("task_ids") if isinstance(fp, dict) else None
+    if not (isinstance(task_ids, list) and task_ids
+            and all(_nonempty_str(t) for t in task_ids)
+            and _nonempty_str(fp.get("suite_version"))
+            and _nonempty_str(fp.get("suite_hash"))):
+        f.append(f"artifact-unparsable: {fp_rel}: suite_version, "
+                 "suite_hash, and task_ids[] required")
+        return None
+    if not (isinstance(stand, dict) and isinstance(stand.get("rows"), list)
+            and all(isinstance(r, dict) for r in stand["rows"])):
+        f.append(f"artifact-unparsable: {stand_rel}: no rows[] array")
+        return None
+    if not isinstance(flips, dict):
+        f.append(f"artifact-unparsable: {flips_rel}: no flip-analysis "
+                 "object")
+        return None
+    if not (isinstance(narr, dict) and isinstance(narr.get("sentences"), list)
+            and isinstance(narr.get("html"), str)
+            and isinstance(narr.get("text"), str)):
+        f.append(f"artifact-unparsable: {narr_rel}: sentences[], html, and "
+                 "text required")
+        return None
+    tasks = len(task_ids)
+    if fp.get("tasks") != tasks:
+        f.append(f"raw-aggregate-mismatch: {fp_rel}: tasks declared "
+                 f"{fp.get('tasks')!r}, recomputed {tasks} (len of task_ids)")
+        return None
+    # per-point coherence: the invariants a stored row must satisfy before
+    # any claim is derived from it — nothing derived from sick rows is
+    # recomputable, so a violation ends the check
+    ids = set(task_ids)
+    before = len(f)
+    for mid, pts in series.items():
+        prev_t = ""
+        mock = mid.startswith("mock:")
+        for i, p in enumerate(pts):
+            w = f"{met_rel}: {mid}[{i}]"
+            t = p.get("t")
+            t = t if isinstance(t, str) else ""
+            if t < prev_t:
+                f.append(f"raw-aggregate-mismatch: {w}: t {t!r} precedes "
+                         f"{prev_t!r}")
+            prev_t = t
+            for k in ("acc", "reliability"):
+                v = p.get(k)
+                if _bad_unit(v) or not 0 <= v <= 1:
+                    f.append(f"raw-aggregate-mismatch: {w}: {k} {v!r} "
+                             "outside [0,1]")
+            rr = p.get("refusal_rate")
+            if rr is not None and (_bad_unit(rr) or not 0 <= rr <= 1):
+                f.append(f"raw-aggregate-mismatch: {w}: refusal_rate {rr!r} "
+                         "outside [0,1]")
+            lat = p.get("latency_ms")
+            if _bad_unit(lat) or lat < 0:
+                f.append(f"raw-aggregate-mismatch: {w}: latency_ms {lat!r} "
+                         "not a number >= 0")
+            runs = p.get("runs", 1)
+            if _bad_unit(runs) or runs < 1:
+                f.append(f"raw-aggregate-mismatch: {w}: runs {runs!r} < 1")
+            spread = p.get("acc_spread", 0)
+            if _bad_unit(spread) or spread < 0:
+                f.append(f"raw-aggregate-mismatch: {w}: acc_spread "
+                         f"{spread!r} < 0")
+            unknown = sorted(set(p.get("fails") or []) - ids)
+            if unknown:
+                f.append(f"raw-aggregate-mismatch: {w}: fails name tasks "
+                         f"outside the suite: {unknown}")
+            g = p.get("graded")
+            if g is not None and (isinstance(g, bool)
+                                  or not isinstance(g, int)
+                                  or not 1 <= g <= tasks):
+                f.append(f"raw-aggregate-mismatch: {w}: graded {g!r} "
+                         f"outside 1..{tasks}")
+            if p.get("suite") not in (None, fp["suite_version"]):
+                f.append(f"raw-aggregate-mismatch: {w}: suite "
+                         f"{p['suite']!r} is not {fp['suite_version']!r}")
+            if p.get("suite_hash") not in (None, fp["suite_hash"]):
+                f.append(f"raw-aggregate-mismatch: {w}: suite_hash "
+                         f"{p['suite_hash']!r} is not {fp['suite_hash']!r}")
+            fr = p.get("fails_runs")
+            if fr is not None and not (isinstance(fr, list)
+                                       and all(isinstance(s, list)
+                                               for s in fr)):
+                f.append(f"raw-aggregate-mismatch: {w}: fails_runs {fr!r} "
+                         "is not a list of samples")
+            elif fr is not None:
+                for j, sample in enumerate(fr):
+                    unknown = sorted(set(sample) - ids)
+                    if unknown:
+                        f.append(f"raw-aggregate-mismatch: {w}: "
+                                 f"fails_runs[{j}] names tasks outside the "
+                                 f"suite: {unknown}")
+                if (p.get("fails") or []) not in fr:
+                    f.append(f"raw-aggregate-mismatch: {w}: fails is not "
+                             "one of its own fails_runs samples")
+            # the live null control: a moved mock indicts the harness, not
+            # the models — nothing derived from rows like that is evidence
+            if mock and (p.get("acc") != 1.0 or (p.get("fails") or [])):
+                f.append(f"raw-aggregate-mismatch: {w}: the deterministic "
+                         f"control moved (acc {p.get('acc')!r}, fails "
+                         f"{p.get('fails')!r})")
+    if len(f) > before:
+        return None
+    # standings: the whole published object re-earned from the rows and
+    # compared exactly — top-level stamps, floor, and every row, every key
+    floor_full = round(100.0 / tasks, 3)
+    want_rows = _modeldrift_standings_rows(series, registry)
+    want_stand = {"suite_version": fp["suite_version"],
+                  "suite_hash": fp["suite_hash"],
+                  "min_detectable_pts_full_grade": floor_full,
+                  "rows": want_rows}
+    for k in ("suite_version", "suite_hash", "min_detectable_pts_full_grade"):
+        if stand.get(k) != want_stand[k]:
+            f.append(f"raw-aggregate-mismatch: {stand_rel}: {k} declared "
+                     f"{stand.get(k)!r}, recomputed {want_stand[k]!r}")
+    extra = sorted(set(stand) - set(want_stand))
+    if extra:
+        f.append(f"raw-aggregate-mismatch: {stand_rel}: unexpected keys "
+                 f"{extra}")
+    got_rows = stand["rows"]
+    if [r.get("id") for r in got_rows] != [r["id"] for r in want_rows]:
+        f.append(f"raw-aggregate-mismatch: {stand_rel}: rows do not cover "
+                 f"the registry in registry order (declared {len(got_rows)}, "
+                 f"recomputed {len(want_rows)})")
+    else:
+        for got, want in zip(got_rows, want_rows):
+            for k, v in want.items():
+                if got.get(k) != v:
+                    f.append(f"raw-aggregate-mismatch: {stand_rel}: "
+                             f"{want['id']}: {k} declared {got.get(k)!r}, "
+                             f"recomputed {v!r}")
+            extra = sorted(set(got) - set(want))
+            if extra:
+                f.append(f"raw-aggregate-mismatch: {stand_rel}: "
+                         f"{want['id']}: unexpected keys {extra}")
+    # the published table, re-rendered from the RECOMPUTED rows under the
+    # pinned template — byte-identity or the board's two stores disagree
+    try:
+        md = (bundle_dir / md_rel).read_bytes()
+    except OSError as e:  # unreachable for a trusted artifact; named anyway
+        f.append(f"artifact-unparsable: {md_rel}: {e}")
+        return None
+    if _modeldrift_results_md(want_rows, fp["suite_version"]).encode() != md:
+        f.append(f"raw-aggregate-mismatch: {md_rel}: does not re-render "
+                 "byte-identically from the recomputed standings rows")
+    # flip analysis, re-earned from the stored fails vectors
+    want_flips = _modeldrift_flips(series)
+    mw = want_flips["models_with_enough_history"]
+    if flips.get("models_with_enough_history") != mw:
+        f.append(f"raw-aggregate-mismatch: {flips_rel}: "
+                 "models_with_enough_history declared "
+                 f"{flips.get('models_with_enough_history')!r}, "
+                 f"recomputed {mw!r}")
+    for k in ("repeat_offenders", "one_offs", "probe_alarms"):
+        got = flips.get(k)
+        if got != want_flips[k]:
+            n_got = len(got) if isinstance(got, list) else got
+            f.append(f"raw-aggregate-mismatch: {flips_rel}: {k} does not "
+                     f"recompute from the fails vectors (declared {n_got}, "
+                     f"recomputed {len(want_flips[k])})")
+    extra = sorted(set(flips) - set(want_flips))
+    if extra:
+        f.append(f"raw-aggregate-mismatch: {flips_rel}: unexpected keys "
+                 f"{extra}")
+    # narrative internal coherence only: byte-identical REGENERATION of the
+    # paragraph is the replay block's job (the claims generator at the
+    # stamped commit), not structural
+    strip = re.sub(r"\s+", " ",
+                   re.sub(r"<[^>]+>", "", narr["html"])).strip()
+    if narr.get("claims_fired") != len(narr["sentences"]):
+        f.append(f"raw-aggregate-mismatch: {narr_rel}: claims_fired "
+                 f"declared {narr.get('claims_fired')!r}, recomputed "
+                 f"{len(narr['sentences'])} (one per sentence)")
+    if narr["text"] != strip:
+        f.append(f"raw-aggregate-mismatch: {narr_rel}: text is not the "
+                 "whitespace-normalized, tag-stripped html")
+    # stamp binding (SPEC.md §2.3): the pinned suite and the exact input
+    # bytes the derivations were run over
+    hashes = proto.get("hashes") if isinstance(proto.get("hashes"), dict) \
+        else {}
+    if hashes.get("suite_hash") != fp["suite_hash"]:
+        f.append(f"stamp-mismatch: suite_hash: protocol "
+                 f"{hashes.get('suite_hash')}, artifact {fp['suite_hash']}")
+    for key, rel in (("metrics_sha256", met_rel),
+                     ("registry_sha256", reg_rel)):
+        actual = _sha256(bundle_dir / rel)
+        if hashes.get(key) != actual:
+            f.append(f"stamp-mismatch: {key}: protocol {hashes.get(key)}, "
+                     f"artifact {actual}")
+    verdicts: dict[str, int] = {}
+    for r in want_rows:
+        verdicts[r["verdict"]] = verdicts.get(r["verdict"], 0) + 1
+    recomputed = {
+        "rows": len(want_rows),
+        "regressed": verdicts.get("regressed", 0),
+        "improved": verdicts.get("improved", 0),
+        "unchanged": verdicts.get("unchanged", 0),
+        "baseline": verdicts.get("baseline", 0),
+        "no_data": verdicts.get("no-data", 0),
+        "series": len(series),
+        "points": sum(len(pts) for pts in series.values()),
+        "tasks": tasks,
+        "min_detectable_pts_full_grade": floor_full,
+        "probe_alarms": len(want_flips["probe_alarms"]),
+        "repeat_offenders": len(want_flips["repeat_offenders"]),
+        "one_offs": len(want_flips["one_offs"]),
+        "models_with_enough_history": mw,
+        "claims_fired": len(narr["sentences"]),
+    }
+    expect = check.get("expect")
+    if not (isinstance(expect, dict) and expect):
+        f.append("schema-violation: results.checks[modeldrift-board-v1]"
+                 ".expect: declared numbers required")
+    else:
+        for k in sorted(expect):
+            if k not in recomputed:
+                f.append(f"summary-mismatch: {k}: not recomputable under "
+                         "modeldrift-board-v1")
+            elif expect[k] != recomputed[k]:
+                f.append(f"summary-mismatch: {k}: declared {expect[k]}, "
+                         f"recomputed {recomputed[k]}")
+    return {k: [v] for k, v in recomputed.items()}  # the §2.5 summary pool
+
+
 _CHECK_REFS = {"certlab-bundle-v1": ("artifact",),
                "fleet-board-v1": ("aggregate", "raw"),
                "evalmut-run-v1": ("artifact",),
-               "crashkit-battery-v1": ("artifact",)}
+               "crashkit-battery-v1": ("artifact",),
+               "modeldrift-board-v1": ("metrics", "registry", "standings",
+                                       "flips", "narrative", "results_md",
+                                       "fingerprint")}
 _CHECK_OPT_REFS = {"evalmut-run-v1": ("catalog",)}
 _CHECK_FNS = {"certlab-bundle-v1": _check_certlab,
               "fleet-board-v1": _check_fleet,
               "evalmut-run-v1": _check_evalmut,
-              "crashkit-battery-v1": _check_crashkit}
+              "crashkit-battery-v1": _check_crashkit,
+              "modeldrift-board-v1": _check_modeldrift}
 
 
 def _summary_outruns(summary: dict, pools: list[dict]) -> list[str]:

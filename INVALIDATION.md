@@ -29,7 +29,10 @@ semantic replay: NOT run by this tool. A structural PASS means the bundle is
     $ python -m pip install -e ./issuer
     $ python -m toy_issuer.regrade evidence/bundle.json
     $ python issuer/audit/run_audit.py --check evidence/results.json
-    expected: regrade exits 0 reporting 'consistent'; audit reproduces results.json byte-identically at the stamped commit
+    $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+    $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+    $ python -m toy_issuer.driftboard --check evidence/standings.json
+    expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
 ```
 
 Exit code 0 — and even the PASS refuses to overstate itself: the tool
@@ -46,7 +49,7 @@ $ python - <<'PY'
 import json, pathlib
 p = pathlib.Path("demo/vac.json")
 m = json.loads(p.read_text())
-e = m["evidence"][0]                      # evidence/bundle.json
+e = next(e for e in m["evidence"] if e["path"] == "evidence/bundle.json")
 e["sha256"] = ("0" if e["sha256"][0] != "0" else "1") + e["sha256"][1:]
 p.write_text(json.dumps(m, indent=1) + "\n")
 print("tampered", e["path"], "->", e["sha256"])
@@ -70,7 +73,10 @@ semantic replay: NOT run by this tool. A structural PASS means the bundle is
     $ python -m pip install -e ./issuer
     $ python -m toy_issuer.regrade evidence/bundle.json
     $ python issuer/audit/run_audit.py --check evidence/results.json
-    expected: regrade exits 0 reporting 'consistent'; audit reproduces results.json byte-identically at the stamped commit
+    $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+    $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+    $ python -m toy_issuer.driftboard --check evidence/standings.json
+    expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
 ```
 
 Exit code 1. The rejection is a **named reason carrying its own evidence**:
@@ -96,7 +102,10 @@ semantic replay: NOT run by this tool. A structural PASS means the bundle is
     $ python -m pip install -e ./issuer
     $ python -m toy_issuer.regrade evidence/bundle.json
     $ python issuer/audit/run_audit.py --check evidence/results.json
-    expected: regrade exits 0 reporting 'consistent'; audit reproduces results.json byte-identically at the stamped commit
+    $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+    $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+    $ python -m toy_issuer.driftboard --check evidence/standings.json
+    expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
 $ rm -rf demo
 ```
 
@@ -111,11 +120,13 @@ wired into every path a claim takes to the public:
 - **CI liveness** — the `invalidation-liveness` job in
   [ci.yml](.github/workflows/ci.yml) requires the committed valid fixture
   to pass and **every** committed tamper to be refused, on every push. The
-  six tampers cover distinct failure classes, one edit each:
+  fifteen tampers cover distinct failure classes, one edit each:
   `missing-artifact`, `sha256-mismatch`, an inflated verdict count
-  (`summary-mismatch`), `empty-limitations`, `missing-issuer-commit`, and a
-  cooked board row with a *fixed* hash that only recomputation from raw
-  evidence catches (`raw-aggregate-mismatch`).
+  (`summary-mismatch`), `empty-limitations`, `missing-issuer-commit`, a
+  cooked-rows and a cooked-aggregate tamper per recomputing profile —
+  each with a *fixed* hash, so only recomputation from the rows catches
+  it (`raw-aggregate-mismatch`) — and three summary-only cooks that only
+  the §2.5 outrun rule catches (`summary-outruns-checks`).
 - **Registry admission** — `python -m vac.registry` builds
   [registry.json](registry.json) exclusively from committed issuer bytes
   and records any bundle that fails verification as *pending with its

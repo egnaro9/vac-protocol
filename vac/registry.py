@@ -70,6 +70,14 @@ ISSUERS = [
      "checkout_env": "VAC_EVALMUT_CHECKOUT",
      "default_checkout": "../evalmut",
      "bundles": "vac"},
+    {"repo": "https://github.com/egnaro9/crashkit",
+     "checkout_env": "VAC_CRASHKIT_CHECKOUT",
+     "default_checkout": "../crashkit",
+     "bundles": "vac"},
+    {"repo": "https://github.com/egnaro9/model-drift",
+     "checkout_env": "VAC_MODELDRIFT_CHECKOUT",
+     "default_checkout": "../model-drift",
+     "bundles": "vac"},
 ]
 
 PROTOCOL_LINE = (

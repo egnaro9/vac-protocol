@@ -17,8 +17,8 @@ rejection. Non-claims are mandatory; a capability statement that will not
 say what it does not cover is an advertisement, and VAC does not carry
 advertisements.
 
-VAC is the trust layer over four live issuers, whose formats are the
-protocol's four evidence profiles verbatim:
+VAC is the trust layer over five live issuers, whose formats are the
+protocol's five evidence profiles verbatim:
 
 - [agent-certlab](https://github.com/egnaro9/agent-certlab) — capability
   contracts for coding agents; verdicts with full diffs in `bundle.json`,
@@ -37,6 +37,11 @@ protocol's four evidence profiles verbatim:
   rows with explicit passed/truncated booleans (`eval_run.json`),
   reproduced byte-identically by `python emit_vac.py` at the stamped
   commit.
+- [model-drift](https://github.com/egnaro9/model-drift) — the public LLM
+  drift board; standings, flip/probe-alarm analysis, narrative, and the
+  rendered table all recomputed from the committed per-run rows
+  (`metrics.json` joined to `models.json`), reproduced byte-identically
+  by `python3 emit_vac.py` at the stamped commit.
 
 ## Quickstart
 
@@ -51,19 +56,24 @@ It proves the bundle is *internally honest* — schema, hashes, closure
 (no unlisted files), stated limitations, stamp agreement, and every
 declared number recomputed from the committed artifacts (certlab verdict
 counts from `bundle.json`; fleet aggregates from `raw_results.jsonl`;
-evalmut tallies, score, and hole classes from the per-mutation rows).
+evalmut tallies, score, and hole classes from the per-mutation rows;
+crashkit metrics from the per-case rows under fixed severity weights;
+modeldrift standings, flips, and the rendered table from the stored
+per-run rows).
 It does **not** prove the issuer's grader agrees — that is **semantic
 replay**, the bundle's `replay` block says exactly how to run it, and the
 tool prints that distinction on every invocation so a green check is
 never mistaken for a replay.
 
 `fixtures/` is the verifier's own evidence: one valid synthetic bundle
-and eight tampered variants — missing artifact, wrong sha256, inflated
-verdict count, empty limitations, missing issuer commit, a cooked
-board row with a *fixed* hash that only recomputation from raw catches,
-and two evalmut tampers (a cooked mutation tally, and a missed mutation
-relabeled caught in the rows), both re-hashed so only recomputation from
-the per-mutation rows names them.
+(one check per profile) and fifteen tampered variants — missing
+artifact, wrong sha256, inflated verdict count, empty limitations,
+missing issuer commit, then a cooked-rows and a cooked-aggregate tamper
+per recomputing profile (a board row, a mutation tally and a relabeled
+mutation, crash-test metrics and a relabeled case, a sweetened drift
+point and cooked drift standings — every one re-hashed so only
+recomputation from the rows names it), and three summary-only cooks
+that only SPEC.md §2.5's outrun rule catches.
 CI requires the valid bundle to pass and **every** tamper to be refused
 (the invalidation-liveness job): a gate must prove it can block.
 
@@ -104,9 +114,10 @@ is enforced by CI, not memory:
   `evalmut run <suite> --json --all` + byte-compare — the third profile,
   `evalmut-run-v1`, SPEC.md §3.3; crashkit: `python emit_vac.py` +
   byte-compare — the fourth profile, `crashkit-battery-v1`, SPEC.md
-  §3.4). Until every issuer commit
-  and emitted bundle is pushed public, this workflow **fails with the
-  precise reason** — that is its job.
+  §3.4; model-drift: `python3 emit_vac.py` + byte-compare — the fifth
+  profile, `modeldrift-board-v1`, SPEC.md §3.5). Until every issuer
+  commit and emitted bundle is pushed public, this workflow **fails with
+  the precise reason** — that is its job.
 
 [INVALIDATION.md](INVALIDATION.md) is the public walkthrough of the gate
 refusing: one flipped hex digit, the verifier's real captured rejection,
