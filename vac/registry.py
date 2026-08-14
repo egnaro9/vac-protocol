@@ -22,9 +22,10 @@ hosted service, no operator between the reader and the evidence.
 Local mode hashes COMMITTED bytes (`git cat-file blob HEAD:<path>`), never the
 working tree, so a half-written emitter cannot leak into the registry. A
 configured bundle that is not yet admissible is recorded PENDING with its
-exact reason — vac.json absent from the committed tree, or structural
-verification naming its failures — never fabricated and never silently
-dropped; the scan is re-run mechanically once the issuer lands the fix.
+exact reason — the configured directory absent from the committed tree
+entirely, vac.json absent, or structural verification naming its failures —
+never fabricated and never silently dropped; the scan is re-run mechanically
+once the issuer lands the fix.
 Acceptance keeps SPEC.md section 5 rule 7 as the floor: no entry exists
 unless the verifier exits clean over the committed bytes. Everything emitted
 is byte-reproducible: content derives only from committed issuer trees; no
@@ -65,6 +66,10 @@ ISSUERS = [
      "checkout_env": "VAC_FLEET_CHECKOUT",
      "default_checkout": "../reference-fleet",
      "bundles": "board/vac"},
+    {"repo": "https://github.com/egnaro9/evalmut",
+     "checkout_env": "VAC_EVALMUT_CHECKOUT",
+     "default_checkout": "../evalmut",
+     "bundles": "vac"},
 ]
 
 PROTOCOL_LINE = (
@@ -183,7 +188,20 @@ def scan_issuer(cfg: dict) -> tuple[list[dict], list[dict]]:
     head_files = _git(checkout, "ls-tree", "-r", "--name-only",
                       "HEAD").decode().splitlines()
     entries, pending = [], []
-    for bp in _bundle_dirs(cfg["bundles"], head_files):
+    dirs = _bundle_dirs(cfg["bundles"], head_files)
+    if not dirs and not cfg["bundles"].endswith("/*"):
+        # a configured single-directory bundle with nothing committed is a
+        # named hole in the registry, not a silent absence (a glob names a
+        # family and may honestly be empty; a directory is a promise)
+        pending.append({
+            "name": f"{name}/{cfg['bundles'].rsplit('/', 1)[-1]}",
+            "issuer": issuer,
+            "issuer_repo": cfg["repo"],
+            "bundle_path": cfg["bundles"],
+            "reason": f"no committed files at {cfg['bundles']} — the "
+                      "issuer's vac emitter has not landed; re-run "
+                      "python -m vac.registry once it has"})
+    for bp in dirs:
         entry_name = f"{name}/{bp.rsplit('/', 1)[-1]}"
         if _git(checkout, "status", "--porcelain", "--", bp).strip():
             print(f"note: {entry_name}: working tree dirty under {bp}; "

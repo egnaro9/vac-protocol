@@ -7,7 +7,9 @@ name: replay
 # the issuer, check out the pinned commit, install, and re-earn the verdicts
 # with the issuer's own deterministic regrader (certlab: python -m
 # certlab.regrade over the downloaded bundle; fleet: python audit/run_audit.py
-# then cmp byte-identity against the downloaded results). The commands are
+# then cmp byte-identity against the downloaded results; evalmut: evalmut run
+# <suite> --json --all then cmp byte-identity against the downloaded
+# payload). The commands are
 # not trusted blindly: they were sha256-pinned through the registry and
 # reviewed at admission, and profile predicates below refuse the one known
 # soft exit (certlab's regrade exits 0 when it REFUSES a stale bundle — a
@@ -121,4 +123,25 @@ jobs:
             fi
           else
             echo "no fleet-board-v1 check in this bundle; predicate not applicable"
+          fi
+      - name: evalmut predicate — every byte-compare ran AND succeeded
+        # Same two directions as the fleet predicate: a replay block that
+        # never compared bytes proves nothing, and a cmp that ran but FAILED
+        # must not ride on the shell's exit alone. One evalmut-specific trap,
+        # named in SPEC.md section 3.3: `evalmut run` exits 1 BY DESIGN when
+        # the run finds serious holes — the finding IS the result — so the
+        # bundle's replay block must absorb that exit itself; this predicate
+        # judges only the byte-compares.
+        run: |
+          if jq -e '[.results.checks[].profile] | index("evalmut-run-v1")' bundle/vac.json > /dev/null; then
+            if ! grep -q '+ cmp ' transcript.txt; then
+              echo "evalmut replay block executed no cmp — byte-identity with the downloaded payload was never checked"
+              exit 1
+            fi
+            if grep -E 'differ|EOF on' transcript.txt; then
+              echo "a byte-compare FAILED — the pinned commit does not reproduce the registered bytes"
+              exit 1
+            fi
+          else
+            echo "no evalmut-run-v1 check in this bundle; predicate not applicable"
           fi

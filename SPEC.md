@@ -10,7 +10,7 @@ The design premise is **do not trust the issuer** — including us. Anything
 a reader must take on faith is a defect in the bundle, not a feature of
 the format.
 
-VAC is the trust layer over two live issuers, and its two evidence
+VAC is the trust layer over three live issuers, and its three evidence
 profiles are their formats verbatim:
 
 - [agent-certlab](https://github.com/egnaro9/agent-certlab) — capability
@@ -22,6 +22,11 @@ profiles are their formats verbatim:
   `board/results.json` (aggregate rows stamped with `fleet_commit`) plus
   `board/raw_results.jsonl` (per-request paired outcomes), reproduced
   byte-identically by `python audit/run_audit.py` at the stamped commit.
+- [evalmut](https://github.com/egnaro9/evalmut) — eval-suite mutation
+  testing over a mined operator battery. Evidence is the payload of
+  `evalmut run <suite> --json --all` (score, tally, and hole classes,
+  plus the per-mutation rows they must recompute from), reproduced
+  byte-identically by re-running `evalmut run` at the pinned commit.
 
 ## 1. The object
 
@@ -129,7 +134,7 @@ is text, not a protocol-level identifier — see §7).
 ## 3. Evidence profiles
 
 A profile is a pair: an artifact format and the exact offline
-recomputation a verifier performs against it. v0.1 defines two.
+recomputation a verifier performs against it. v0.1 defines three.
 
 ### 3.1 `certlab-bundle-v1`
 
@@ -182,6 +187,60 @@ Stamp binding per §2.3: the aggregate's `fleet_commit` vs
 What this does not prove: that the board's numbers came from real suite
 runs — that is `python audit/run_audit.py` at the stamped commit
 reproducing `results.json` byte-identically; the replay block runs it.
+
+### 3.3 `evalmut-run-v1`
+
+Check shape: `{"profile": "evalmut-run-v1", "artifact": <path>,
+"catalog": <path>?, "expect": {…}}` where `artifact` is a listed
+evidence path holding the payload of `evalmut run <suite> --json --all`:
+an object with `score`, `tally` (the five outcome counts
+`caught`/`missed`/`flagged`/`error`/`na`), `holes` (result rows keyed by
+class `vacuous`/`blind`/`error`/`brittle`/`coverage_gap`), and `results`
+— the per-mutation rows, each carrying `operator_id`, `family`,
+`polarity`, `op_type`, `outcome`. The `--all` form is REQUIRED: a
+payload whose `results` is null carries only aggregates, which are a
+declaration, not evidence (`artifact-unparsable`). `catalog`, when
+present, is a listed path holding `evalmut operators --json` — the
+operator battery, each entry with a unique non-empty `id` and a
+non-empty `real_origin` (the mined-provenance claim is checkable, not
+asserted).
+
+Recomputation, over the rows:
+
+- every row must be internally coherent: outcome `missed` requires
+  polarity `defect` and outcome `flagged` requires polarity `equivalent`
+  — outcome semantics are internal to each row, not taken on faith;
+- the artifact's `tally` must equal the outcome counts over the rows,
+  and its `score` must equal `caught / applied` exactly, where
+  `applied` = `caught + missed + flagged` (1.0 when nothing applied; the
+  payload carries the full-precision float);
+- each `holes` class must equal, as a multiset, the rows it is defined
+  over: `vacuous` = missed sanity rows, `blind` = missed kill rows,
+  `error` = error rows, `brittle` = flagged rows, `coverage_gap` =
+  missed diagnostic rows;
+- with `catalog` present: every row's `operator_id` names a catalog
+  entry and agrees with it on `family`, `polarity`, and `op_type`.
+
+Every key in `expect` MUST name a recomputed field and equal its value
+(`summary-mismatch`): the five outcome counts, `applied`, `results`
+(row count), `score_3` (= `round(score, 3)`), the hole-class counts
+`vacuous`/`blind`/`brittle`/`coverage_gap`, `operators_exercised`
+(distinct `operator_id`s over the rows), and — with `catalog` —
+`operators` (catalog size).
+
+No stamp binding: the payload is stampless by design (evalmut emits no
+clock, commit, or version into results). The pins that scope the claim —
+`issuer_commit`, the grader dependency version (e.g.
+`gradecore==0.10.0`), suite-file hashes — live in `protocol.hashes` and
+`subject.version` and are exercised by the replay block, not recomputed
+from this artifact. One replay trap, named here so `replay.expected` can
+state it: `evalmut run` exits 1 BY DESIGN when the run finds serious
+holes — the finding is the result, and a registry CI that reads that
+exit as failure has mis-stated `expected`.
+
+What this does not prove: that the graders actually produced these
+outcomes — that is `evalmut run` at the pinned commit reproducing the
+payload byte-identically; the replay block runs it.
 
 ## 4. Structural verification vs semantic replay
 
@@ -304,6 +363,9 @@ oversight:
 `vac_version` is the format contract. v0.1 verifiers MUST refuse any
 other value rather than guess. Additive, non-breaking fields may appear
 under unknown keys today; anything that changes verification semantics is
-a new version. No timestamps appear anywhere in this format: time, where
+a new version. Adding an evidence profile is additive in exactly this
+sense — it widens what a bundle may declare without changing how any
+existing bundle verifies — so `evalmut-run-v1` (§3.3) landed as a v0.1
+profile addition, no version bump. No timestamps appear anywhere in this format: time, where
 it matters, is expressed as commits and content hashes, which are
 checkable — dates are not.

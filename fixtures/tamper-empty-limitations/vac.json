@@ -1,8 +1,8 @@
 {
  "vac_version": "0.1",
  "claim": {
-  "capability": "toy-agent fixes seeded single-edit defects in the toy substrate, and the toy board detects the toy fleet's defect classes",
-  "scope": "exactly the synthetic task set and request set named by protocol.hashes; artifacts-only deterministic grading; nothing beyond it",
+  "capability": "toy-agent fixes seeded single-edit defects in the toy substrate, the toy board detects the toy fleet's defect classes, and the toy suite's mutation holes are exactly what its rows recompute to",
+  "scope": "exactly the synthetic task set, request set, and suite named by protocol.hashes; artifacts-only deterministic grading; nothing beyond it",
   "limitations": []
  },
  "subject": {
@@ -16,19 +16,28 @@
  "protocol": {
   "issuer": "example/toy-issuer",
   "issuer_commit": "f1e2d3c",
-  "task": "toy-intervals + toy-board",
+  "task": "toy-intervals + toy-board + toy-mutation-run",
   "hashes": {
    "taskset_hash": "00112233445566aa",
    "prompt_hash": "aabbccdd00112233",
-   "fleet_commit": "f1e2d3c"
+   "fleet_commit": "f1e2d3c",
+   "suite_hash": "ffeeddcc99887766"
   },
-  "grading": "deterministic: policy (suite byte-identical) then tests; board rows recomputed from paired raw lines",
+  "grading": "deterministic: policy (suite byte-identical) then tests; board rows recomputed from paired raw lines; mutation tallies and holes recomputed from per-row outcomes",
   "control_policy": "null-agent scores 0/3 and oracle-agent 3/3 before any real verdict; a clean twin is graded beside every defective response"
  },
  "evidence": [
   {
    "path": "evidence/bundle.json",
    "sha256": "64931fe8d466c2cfdbf3c15013d8aa013bc54a2e340fb89737972ef3612550d4"
+  },
+  {
+   "path": "evidence/evalmut_run.json",
+   "sha256": "fc46d3a737d7b9ee6502f2f8374db56ab6d337841f4fd0a9ba45f312548e18ed"
+  },
+  {
+   "path": "evidence/operators.json",
+   "sha256": "3f01832e9d2beb60c28140f4625e3170445cd894524810c28e357d041b2ad4f4"
   },
   {
    "path": "evidence/raw_results.jsonl",
@@ -44,7 +53,9 @@
    "tasks": 3,
    "fixed": 2,
    "board_rows": 2,
-   "detection_rate_min": 0.5
+   "detection_rate_min": 0.5,
+   "mutation_score_3": 0.571,
+   "mutation_blind_spots": 1
   },
   "checks": [
    {
@@ -64,6 +75,27 @@
     "expect": {
      "rows": 2
     }
+   },
+   {
+    "profile": "evalmut-run-v1",
+    "artifact": "evidence/evalmut_run.json",
+    "catalog": "evidence/operators.json",
+    "expect": {
+     "caught": 4,
+     "missed": 2,
+     "flagged": 1,
+     "error": 0,
+     "na": 1,
+     "applied": 7,
+     "results": 8,
+     "score_3": 0.571,
+     "vacuous": 0,
+     "blind": 1,
+     "brittle": 1,
+     "coverage_gap": 1,
+     "operators": 5,
+     "operators_exercised": 5
+    }
    }
   ]
  },
@@ -74,8 +106,9 @@
    "git -C issuer checkout f1e2d3c",
    "python -m pip install -e ./issuer",
    "python -m toy_issuer.regrade evidence/bundle.json",
-   "python issuer/audit/run_audit.py --check evidence/results.json"
+   "python issuer/audit/run_audit.py --check evidence/results.json",
+   "python -m toy_issuer.mutrun --check evidence/evalmut_run.json"
   ],
-  "expected": "regrade exits 0 reporting 'consistent'; audit reproduces results.json byte-identically at the stamped commit"
+  "expected": "regrade exits 0 reporting 'consistent'; audit and mutrun reproduce results.json and evalmut_run.json byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)"
  }
 }

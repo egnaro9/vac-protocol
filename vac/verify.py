@@ -27,7 +27,7 @@ import tarfile
 import tempfile
 
 VAC_VERSION = "0.1"
-PROFILES = ("certlab-bundle-v1", "fleet-board-v1")
+PROFILES = ("certlab-bundle-v1", "fleet-board-v1", "evalmut-run-v1")
 USAGE = "usage: python -m vac.verify <bundle-dir | bundle.tar.gz>"
 
 
@@ -299,10 +299,148 @@ def _check_fleet(bundle_dir: pathlib.Path, check: dict, proto: dict,
                  f"artifact {agg['fleet_commit']}")
 
 
+# evalmut hole classes: name -> (outcome, op_type or None) over the rows.
+_EVALMUT_HOLES = (("vacuous", "missed", "sanity"),
+                  ("blind", "missed", "kill"),
+                  ("error", "error", None),
+                  ("brittle", "flagged", None),
+                  ("coverage_gap", "missed", "diagnostic"))
+
+
+def _check_evalmut(bundle_dir: pathlib.Path, check: dict, proto: dict,
+                   f: list[str]) -> None:
+    art = check["artifact"]
+    data = _load_json(bundle_dir, art, f)
+    if data is None:
+        return
+    rows = data.get("results")
+    if not isinstance(rows, list) or not all(isinstance(r, dict)
+                                             for r in rows):
+        # without the per-mutation rows nothing is recomputable — the
+        # aggregate alone is a declaration, not evidence
+        f.append(f"artifact-unparsable: {art}: no results[] array "
+                 "(evalmut-run-v1 requires the --json --all payload)")
+        return
+    tally = data.get("tally")
+    if not isinstance(tally, dict):
+        f.append(f"artifact-unparsable: {art}: no tally object")
+        return
+    holes = data.get("holes")
+    if not isinstance(holes, dict):
+        f.append(f"artifact-unparsable: {art}: no holes object")
+        return
+    # outcome semantics are internal to each row, not taken on faith:
+    # MISSED is only meaningful for a defect, FLAGGED only for an equivalent
+    for n, r in enumerate(rows, 1):
+        if (r.get("outcome") == "missed" and r.get("polarity") != "defect") \
+                or (r.get("outcome") == "flagged"
+                    and r.get("polarity") != "equivalent"):
+            f.append(f"raw-aggregate-mismatch: {art}: row {n} outcome "
+                     f"{r.get('outcome')!r} contradicts its polarity "
+                     f"{r.get('polarity')!r}")
+    counts = {k: sum(1 for r in rows if r.get("outcome") == k)
+              for k in ("caught", "missed", "flagged", "error", "na")}
+    for k, v in counts.items():
+        if tally.get(k) != v:
+            f.append(f"raw-aggregate-mismatch: {art}: tally.{k} declared "
+                     f"{tally.get(k)}, recomputed {v}")
+    applied = counts["caught"] + counts["missed"] + counts["flagged"]
+    score = 1.0 if applied == 0 else counts["caught"] / applied
+    if data.get("score") != score:
+        f.append(f"raw-aggregate-mismatch: {art}: score declared "
+                 f"{data.get('score')}, recomputed {score}")
+
+    def canon(r: dict) -> str:
+        return json.dumps(r, sort_keys=True)
+
+    hole_counts: dict[str, int] = {}
+    for cls, outcome, op_type in _EVALMUT_HOLES:
+        want = [r for r in rows if r.get("outcome") == outcome
+                and (op_type is None or r.get("op_type") == op_type)]
+        hole_counts[cls] = len(want)
+        got = holes.get(cls)
+        got = [r for r in got if isinstance(r, dict)] \
+            if isinstance(got, list) else []
+        if sorted(map(canon, got)) != sorted(map(canon, want)):
+            f.append(f"raw-aggregate-mismatch: {art}: holes.{cls} does not "
+                     f"recompute from the rows (declared {len(got)}, "
+                     f"recomputed {len(want)})")
+    recomputed = {
+        **counts,
+        "applied": applied,
+        "results": len(rows),
+        "score_3": round(score, 3),
+        "vacuous": hole_counts["vacuous"],
+        "blind": hole_counts["blind"],
+        "brittle": hole_counts["brittle"],
+        "coverage_gap": hole_counts["coverage_gap"],
+        "operators_exercised": len({r.get("operator_id") for r in rows}),
+    }
+    # optional catalog binding: the operator battery is pinned as evidence,
+    # each entry carrying its mined provenance, and every row must agree
+    # with the catalog it claims to be drawn from
+    cat_rel = check.get("catalog")
+    if _nonempty_str(cat_rel):
+        cat = _load_json(bundle_dir, cat_rel, f)
+        if cat is not None:
+            if not (isinstance(cat, list)
+                    and all(isinstance(o, dict) for o in cat)):
+                f.append(f"artifact-unparsable: {cat_rel}: no operator array")
+            else:
+                ok = True
+                for i, o in enumerate(cat, 1):
+                    if not (_nonempty_str(o.get("id"))
+                            and _nonempty_str(o.get("real_origin"))):
+                        f.append(f"artifact-unparsable: {cat_rel}: catalog "
+                                 f"entry {i} lacks a non-empty "
+                                 "id/real_origin — the battery must be "
+                                 "mined, not asserted")
+                        ok = False
+                by_id = {o["id"]: o for o in cat if _nonempty_str(o.get("id"))}
+                if ok and len(by_id) != len(cat):
+                    f.append(f"artifact-unparsable: {cat_rel}: duplicate "
+                             "operator ids")
+                    ok = False
+                if ok:
+                    for n, r in enumerate(rows, 1):
+                        op = by_id.get(r.get("operator_id"))
+                        if op is None:
+                            f.append(f"raw-aggregate-mismatch: {art}: row "
+                                     f"{n} operator "
+                                     f"{r.get('operator_id')!r} is not in "
+                                     "the catalog")
+                            continue
+                        for k in ("family", "polarity", "op_type"):
+                            if r.get(k) != op.get(k):
+                                f.append(f"raw-aggregate-mismatch: {art}: "
+                                         f"row {n} {k} {r.get(k)!r} "
+                                         "contradicts the catalog's "
+                                         f"{op.get(k)!r}")
+                    recomputed["operators"] = len(cat)
+    expect = check.get("expect")
+    if not (isinstance(expect, dict) and expect):
+        f.append("schema-violation: results.checks[evalmut-run-v1].expect: "
+                 "declared counts required")
+    else:
+        for k in sorted(expect):
+            if k not in recomputed:
+                f.append(f"summary-mismatch: {k}: not recomputable under "
+                         "evalmut-run-v1")
+            elif expect[k] != recomputed[k]:
+                f.append(f"summary-mismatch: {k}: declared {expect[k]}, "
+                         f"recomputed {recomputed[k]}")
+    # no stamp binding: the payload is stampless by design (evalmut emits no
+    # clock, commit, or version into results); the pins that scope the claim
+    # live in protocol.hashes / subject.version and are exercised by replay
+
+
 _CHECK_REFS = {"certlab-bundle-v1": ("artifact",),
-               "fleet-board-v1": ("aggregate", "raw")}
+               "fleet-board-v1": ("aggregate", "raw"),
+               "evalmut-run-v1": ("artifact",)}
+_CHECK_OPT_REFS = {"evalmut-run-v1": ("catalog",)}
 _CHECK_FNS = {"certlab-bundle-v1": _check_certlab,
-              "fleet-board-v1": _check_fleet}
+              "fleet-board-v1": _check_fleet,
+              "evalmut-run-v1": _check_evalmut}
 
 
 def _coherence(bundle_dir: pathlib.Path, m: dict,
@@ -316,7 +454,10 @@ def _coherence(bundle_dir: pathlib.Path, m: dict,
         if not isinstance(c, dict) or c.get("profile") not in PROFILES:
             continue  # already named as unknown-profile
         usable = True
-        for ref_key in _CHECK_REFS[c["profile"]]:
+        refs = list(_CHECK_REFS[c["profile"]])
+        refs += [k for k in _CHECK_OPT_REFS.get(c["profile"], ())
+                 if k in c]  # optional refs, once named, are held to the bar
+        for ref_key in refs:
             r = c.get(ref_key)
             if not _nonempty_str(r) or r not in listed:
                 f.append(f"check-artifact-not-listed: {r!r}")

@@ -83,6 +83,46 @@
    }
   },
   {
+   "name": "agent-certlab/aider-machine-2026-08-14",
+   "issuer": "egnaro9/agent-certlab",
+   "issuer_repo": "https://github.com/egnaro9/agent-certlab",
+   "issuer_commit": "7954393",
+   "bundle_path": "certifications/aider-machine-2026-08-14",
+   "capability": "repair-seeded-defects:machine \u2014 aider-headless fixed 6/6 seeded defects under policy",
+   "subject": "agent: aider-headless",
+   "summary": {
+    "tasks": 6,
+    "fixed": 6,
+    "failure_modes": {}
+   },
+   "profiles": [
+    "certlab-bundle-v1"
+   ],
+   "artifacts": [
+    {
+     "path": "CONTRACT.md",
+     "sha256": "ab3c4d042ea97f4feb5e721d24ad265d2638e17a4e473899721e4c25bda1bcd6",
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/aider-machine-2026-08-14/CONTRACT.md"
+    },
+    {
+     "path": "bundle.json",
+     "sha256": "495c91b4593642d9eec281ea0c8d926ee1445e6ecd5cfb71fc31d52004c210ba",
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/aider-machine-2026-08-14/bundle.json"
+    },
+    {
+     "path": "vac.json",
+     "sha256": "f241fbd02141e1a7626d9deeef507827d3ee13a016ceb45097abb8f6c5a30bc4",
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/aider-machine-2026-08-14/vac.json"
+    }
+   ],
+   "status": "accepted",
+   "challenges": [],
+   "gates": {
+    "structural": "python -m vac.verify \u2014 clean at registry generation; re-proven against the fetched artifacts before every pages deploy",
+    "semantic": "NOT run at generation \u2014 delegated to .github/workflows/replay.yml (workflow_dispatch + weekly), which clones the issuer at issuer_commit and re-earns every verdict with the issuer's own regrader"
+   }
+  },
+  {
    "name": "agent-certlab/claude-code-2026-08-14",
    "issuer": "egnaro9/agent-certlab",
    "issuer_repo": "https://github.com/egnaro9/agent-certlab",
@@ -203,6 +243,46 @@
    }
   },
   {
+   "name": "agent-certlab/claude-code-machine-2026-08-14",
+   "issuer": "egnaro9/agent-certlab",
+   "issuer_repo": "https://github.com/egnaro9/agent-certlab",
+   "issuer_commit": "7954393",
+   "bundle_path": "certifications/claude-code-machine-2026-08-14",
+   "capability": "repair-seeded-defects:machine \u2014 claude-code-headless fixed 6/6 seeded defects under policy",
+   "subject": "agent: claude-code-headless",
+   "summary": {
+    "tasks": 6,
+    "fixed": 6,
+    "failure_modes": {}
+   },
+   "profiles": [
+    "certlab-bundle-v1"
+   ],
+   "artifacts": [
+    {
+     "path": "CONTRACT.md",
+     "sha256": "647add46c149a58bdd9528248422686d815c9a1215f3a667b7fb7452c8f7c7e3",
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/claude-code-machine-2026-08-14/CONTRACT.md"
+    },
+    {
+     "path": "bundle.json",
+     "sha256": "bd21e628a5c057babf4e55112ce778cec343b8cee529052af4f303b27482780e",
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/claude-code-machine-2026-08-14/bundle.json"
+    },
+    {
+     "path": "vac.json",
+     "sha256": "0e1698330e405f3e6296a5f367669c766297e69175dc356e2a33f1b89decc3a9",
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/claude-code-machine-2026-08-14/vac.json"
+    }
+   ],
+   "status": "accepted",
+   "challenges": [],
+   "gates": {
+    "structural": "python -m vac.verify \u2014 clean at registry generation; re-proven against the fetched artifacts before every pages deploy",
+    "semantic": "NOT run at generation \u2014 delegated to .github/workflows/replay.yml (workflow_dispatch + weekly), which clones the issuer at issuer_commit and re-earns every verdict with the issuer's own regrader"
+   }
+  },
+  {
    "name": "reference-fleet/vac",
    "issuer": "egnaro9/reference-fleet",
    "issuer_repo": "https://github.com/egnaro9/reference-fleet",
@@ -267,5 +347,13 @@
    }
   }
  ],
- "pending": []
+ "pending": [
+  {
+   "name": "evalmut/vac",
+   "issuer": "egnaro9/evalmut",
+   "issuer_repo": "https://github.com/egnaro9/evalmut",
+   "bundle_path": "vac",
+   "reason": "no committed files at vac \u2014 the issuer's vac emitter has not landed; re-run python -m vac.registry once it has"
+  }
+ ]
 }

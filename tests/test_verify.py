@@ -37,6 +37,22 @@ TAMPERS = {
         "detected declared 3, recomputed 2",
         "raw-aggregate-mismatch: toy-suite/toy-defect-b: "
         "detection_rate declared 0.75, recomputed 0.5"],
+    "tamper-evalmut-summary": [
+        "raw-aggregate-mismatch: evidence/evalmut_run.json: "
+        "tally.caught declared 5, recomputed 4"],
+    "tamper-evalmut-rows": [
+        "raw-aggregate-mismatch: evidence/evalmut_run.json: "
+        "tally.caught declared 4, recomputed 5",
+        "raw-aggregate-mismatch: evidence/evalmut_run.json: "
+        "tally.missed declared 2, recomputed 1",
+        "raw-aggregate-mismatch: evidence/evalmut_run.json: score "
+        "declared 0.5714285714285714, recomputed 0.7142857142857143",
+        "raw-aggregate-mismatch: evidence/evalmut_run.json: holes.blind "
+        "does not recompute from the rows (declared 1, recomputed 0)",
+        "summary-mismatch: blind: declared 1, recomputed 0",
+        "summary-mismatch: caught: declared 4, recomputed 5",
+        "summary-mismatch: missed: declared 2, recomputed 1",
+        "summary-mismatch: score_3: declared 0.571, recomputed 0.714"],
 }
 
 
@@ -84,6 +100,72 @@ def test_repaired_raw_aggregate_passes(tmp_path):
     agg_path.write_text(json.dumps(agg, indent=1) + "\n")
     _rehash(b, "evidence/results.json")
     assert verify_bundle(b) == []
+
+
+def test_repaired_evalmut_rows_passes(tmp_path):
+    """The evalmut clean path is live too: relabel the cooked row back,
+    rehash, and the exact same bundle verifies clean."""
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "tamper-evalmut-rows", b)
+    art = b / "evidence/evalmut_run.json"
+    mp = json.loads(art.read_text())
+    r = next(r for r in mp["results"] if r["operator_id"] == "toy-negate")
+    r["outcome"] = "missed"
+    art.write_text(json.dumps(mp, indent=1) + "\n")
+    _rehash(b, "evidence/evalmut_run.json")
+    assert verify_bundle(b) == []
+
+
+def test_evalmut_refuses_a_payload_without_rows(tmp_path):
+    """An aggregate with `results: null` (no --all) is a declaration, not
+    evidence — nothing is recomputable and the profile says so."""
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+    art = b / "evidence/evalmut_run.json"
+    mp = json.loads(art.read_text())
+    mp["results"] = None
+    art.write_text(json.dumps(mp, indent=1) + "\n")
+    _rehash(b, "evidence/evalmut_run.json")
+    assert verify_bundle(b) == [
+        "artifact-unparsable: evidence/evalmut_run.json: no results[] "
+        "array (evalmut-run-v1 requires the --json --all payload)"]
+
+
+def test_evalmut_rows_are_bound_to_the_catalog(tmp_path):
+    """A row must agree with the operator battery it claims to be drawn
+    from — reclassifying an operator in the catalog contradicts every row
+    that used it."""
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+    cat_path = b / "evidence/operators.json"
+    cat = json.loads(cat_path.read_text())
+    next(o for o in cat if o["id"] == "toy-negate")["op_type"] = "diagnostic"
+    cat_path.write_text(json.dumps(cat, indent=1) + "\n")
+    _rehash(b, "evidence/operators.json")
+    assert verify_bundle(b) == [
+        "raw-aggregate-mismatch: evidence/evalmut_run.json: row 5 op_type "
+        "'kill' contradicts the catalog's 'diagnostic'"]
+
+
+def test_evalmut_row_outcome_must_match_its_polarity(tmp_path):
+    """Outcome semantics are internal to each row: a MISSED on an
+    'equivalent' row is incoherent, and the holes multiset comparison
+    catches content drift even when the counts still agree."""
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+    art = b / "evidence/evalmut_run.json"
+    mp = json.loads(art.read_text())
+    r = next(r for r in mp["results"] if r["operator_id"] == "toy-negate")
+    r["polarity"] = "equivalent"
+    art.write_text(json.dumps(mp, indent=1) + "\n")
+    _rehash(b, "evidence/evalmut_run.json")
+    assert verify_bundle(b) == [
+        "raw-aggregate-mismatch: evidence/evalmut_run.json: row 5 outcome "
+        "'missed' contradicts its polarity 'equivalent'",
+        "raw-aggregate-mismatch: evidence/evalmut_run.json: holes.blind "
+        "does not recompute from the rows (declared 1, recomputed 1)",
+        "raw-aggregate-mismatch: evidence/evalmut_run.json: row 5 "
+        "polarity 'equivalent' contradicts the catalog's 'defect'"]
 
 
 def test_unlisted_file_breaks_closure(tmp_path):

@@ -17,8 +17,8 @@ rejection. Non-claims are mandatory; a capability statement that will not
 say what it does not cover is an advertisement, and VAC does not carry
 advertisements.
 
-VAC is the trust layer over two live issuers, whose formats are the
-protocol's two evidence profiles verbatim:
+VAC is the trust layer over three live issuers, whose formats are the
+protocol's three evidence profiles verbatim:
 
 - [agent-certlab](https://github.com/egnaro9/agent-certlab) — capability
   contracts for coding agents; verdicts with full diffs in `bundle.json`,
@@ -27,6 +27,11 @@ protocol's two evidence profiles verbatim:
   certified defect models; board aggregates stamped with `fleet_commit`,
   paired per-request evidence in `raw_results.jsonl`, reproduced
   byte-identically by `python audit/run_audit.py` at the stamped commit.
+- [evalmut](https://github.com/egnaro9/evalmut) — eval-suite mutation
+  testing over a mined operator battery; score, tally, and hole classes
+  with the per-mutation rows they must recompute from
+  (`evalmut run <suite> --json --all`), reproduced byte-identically by
+  re-running `evalmut run` at the pinned commit.
 
 ## Quickstart
 
@@ -40,16 +45,20 @@ The verifier is structural: zero network, zero issuer code, stdlib only.
 It proves the bundle is *internally honest* — schema, hashes, closure
 (no unlisted files), stated limitations, stamp agreement, and every
 declared number recomputed from the committed artifacts (certlab verdict
-counts from `bundle.json`; fleet aggregates from `raw_results.jsonl`).
+counts from `bundle.json`; fleet aggregates from `raw_results.jsonl`;
+evalmut tallies, score, and hole classes from the per-mutation rows).
 It does **not** prove the issuer's grader agrees — that is **semantic
 replay**, the bundle's `replay` block says exactly how to run it, and the
 tool prints that distinction on every invocation so a green check is
 never mistaken for a replay.
 
 `fixtures/` is the verifier's own evidence: one valid synthetic bundle
-and six tampered variants — missing artifact, wrong sha256, inflated
-verdict count, empty limitations, missing issuer commit, and a cooked
-board row with a *fixed* hash that only recomputation from raw catches.
+and eight tampered variants — missing artifact, wrong sha256, inflated
+verdict count, empty limitations, missing issuer commit, a cooked
+board row with a *fixed* hash that only recomputation from raw catches,
+and two evalmut tampers (a cooked mutation tally, and a missed mutation
+relabeled caught in the rows), both re-hashed so only recomputation from
+the per-mutation rows names them.
 CI requires the valid bundle to pass and **every** tamper to be refused
 (the invalidation-liveness job): a gate must prove it can block.
 
@@ -86,7 +95,9 @@ is enforced by CI, not memory:
   `python -m vac.verify`, then execute the bundle's replay block verbatim
   — clone the issuer at the pinned commit and re-earn the verdicts with
   its own regrader (certlab: `python -m certlab.regrade`; fleet:
-  `python audit/run_audit.py` + byte-compare). Until every issuer commit
+  `python audit/run_audit.py` + byte-compare; evalmut:
+  `evalmut run <suite> --json --all` + byte-compare — the third profile,
+  `evalmut-run-v1`, SPEC.md §3.3). Until every issuer commit
   and emitted bundle is pushed public, this workflow **fails with the
   precise reason** — that is its job.
 

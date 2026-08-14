@@ -2,8 +2,8 @@
 
 One VALID miniature bundle — fully synthetic (fictional issuer
 `example/toy-issuer`, fictional subject `toy-agent`), self-contained, and
-carrying one artifact per evidence profile so the single valid fixture
-exercises every clean path in the verifier — plus six tampered variants,
+carrying one check per evidence profile so the single valid fixture
+exercises every clean path in the verifier — plus eight tampered variants,
 each the valid bundle with exactly one edit, each tripping exactly one
 named failure class:
 
@@ -16,6 +16,13 @@ named failure class:
   tamper-raw-aggregate          aggregate row inflated AND re-hashed — the
                                 realistic attack: cook the board, fix the
                                 hash, hope nobody recomputes from raw
+  tamper-evalmut-summary        mutation tally cooked AND re-hashed, rows
+                                honest — only recomputation from the rows
+                                names the lie
+  tamper-evalmut-rows           a missed mutation relabeled caught in the
+                                rows AND re-hashed — tally, score, holes,
+                                and the declared counts all contradict the
+                                rows they must recompute from
 
 Byte-reproducible by construction: no timestamps, no randomness, stable
 key order. `python fixtures/make_fixtures.py [out_dir]` regenerates
@@ -33,6 +40,7 @@ import sys
 COMMIT = "f1e2d3c"
 TASKSET_HASH = "00112233445566aa"
 PROMPT_HASH = "aabbccdd00112233"
+SUITE_HASH = "ffeeddcc99887766"
 
 
 def _j(obj) -> str:
@@ -118,29 +126,120 @@ def _fleet_board() -> tuple[dict, str]:
     return agg, raw_text
 
 
+def _evalmut_run() -> tuple[dict, list[dict]]:
+    """evalmut-shaped `run --json --all` payload + `operators --json`
+    catalog: 8 rows over 5 toy operators, leaving one hole of each
+    surviving class (blind, brittle, coverage gap) so every recomputation
+    path is live."""
+    ops = [
+        {"id": "toy-blank", "family": "truncation", "polarity": "defect",
+         "op_type": "sanity", "field": "output",
+         "defect_shape": "blank output in place of the answer",
+         "real_origin": "toy corpus: a grader that passed an empty reply"},
+        {"id": "toy-truncate", "family": "truncation", "polarity": "defect",
+         "op_type": "kill", "field": "output",
+         "defect_shape": "reply cut off before it reaches the answer",
+         "real_origin": "toy corpus: a token-cap truncation shipped green"},
+        {"id": "toy-negate", "family": "presence-proxy", "polarity": "defect",
+         "op_type": "kill", "field": "output",
+         "defect_shape": "the checked keyword appears, but negated",
+         "real_origin": "toy corpus: a gate that greps for a token its own "
+                        "block message contains"},
+        {"id": "toy-typeflip", "family": "json", "polarity": "defect",
+         "op_type": "diagnostic", "field": "output",
+         "defect_shape": "json value type flipped under a key-presence check",
+         "real_origin": "toy corpus: a schema check that reads keys, "
+                        "never values"},
+        {"id": "toy-disclaimer", "family": "equivalent",
+         "polarity": "equivalent", "op_type": "kill", "field": "output",
+         "defect_shape": "trailing disclaimer after a complete answer",
+         "real_origin": "toy corpus: a verbatim matcher that failed "
+                        "appended boilerplate"},
+    ]
+    by_id = {o["id"]: o for o in ops}
+
+    def row(case, grader, op_id, outcome, detail, preview=""):
+        op = by_id[op_id]
+        return {"case_name": case, "grader_id": grader,
+                "operator_id": op_id, "family": op["family"],
+                "polarity": op["polarity"], "op_type": op["op_type"],
+                "outcome": outcome, "real_origin": op["real_origin"],
+                "defect_shape": op["defect_shape"], "detail": detail,
+                "mutant_preview": preview, "grader_error": None}
+
+    rows = [
+        row("toy-exact", "exact", "toy-blank", "caught", "rejected blank"),
+        row("toy-exact", "exact", "toy-truncate", "caught",
+            "rejected the cut-off reply"),
+        row("toy-exact", "exact", "toy-disclaimer", "flagged",
+            "failed a still-correct output", "42 (not financial advice)"),
+        row("toy-exact", "exact", "toy-typeflip", "na",
+            "n/a: operator not applicable here"),
+        row("toy-contains", "contains", "toy-negate", "missed",
+            "needs all of ['capital']", "I did NOT name the capital."),
+        row("toy-contains", "contains", "toy-typeflip", "missed",
+            "value type flipped, key still present"),
+        row("toy-contains", "contains", "toy-blank", "caught",
+            "rejected blank"),
+        row("toy-contains", "contains", "toy-disclaimer", "caught",
+            "accepted the equivalent"),
+    ]
+    counts = {k: sum(1 for r in rows if r["outcome"] == k)
+              for k in ("caught", "missed", "flagged", "error", "na")}
+    applied = counts["caught"] + counts["missed"] + counts["flagged"]
+    payload = {
+        "score": counts["caught"] / applied,
+        "tally": counts,
+        "holes": {
+            "vacuous": [r for r in rows if r["outcome"] == "missed"
+                        and r["op_type"] == "sanity"],
+            "blind": [r for r in rows if r["outcome"] == "missed"
+                      and r["op_type"] == "kill"],
+            "error": [r for r in rows if r["outcome"] == "error"],
+            "brittle": [r for r in rows if r["outcome"] == "flagged"],
+            "coverage_gap": [r for r in rows if r["outcome"] == "missed"
+                             and r["op_type"] == "diagnostic"],
+        },
+        "baseline_failures": [],
+        "results": rows,
+    }
+    return payload, ops
+
+
 def valid_bundle() -> dict[str, str]:
     """{relative path: file text} for the valid fixture."""
     agg, raw_text = _fleet_board()
+    mut_payload, mut_ops = _evalmut_run()
+    mut_tally = mut_payload["tally"]
+    mut_applied = (mut_tally["caught"] + mut_tally["missed"]
+                   + mut_tally["flagged"])
     evidence = {
         "evidence/bundle.json": _j(_certlab_bundle()),
         "evidence/results.json": _j(agg),
         "evidence/raw_results.jsonl": raw_text,
+        "evidence/evalmut_run.json": _j(mut_payload),
+        "evidence/operators.json": _j(mut_ops),
     }
     manifest = {
         "vac_version": "0.1",
         "claim": {
             "capability": "toy-agent fixes seeded single-edit defects in the "
-                          "toy substrate, and the toy board detects the toy "
-                          "fleet's defect classes",
-            "scope": "exactly the synthetic task set and request set named "
-                     "by protocol.hashes; artifacts-only deterministic "
-                     "grading; nothing beyond it",
+                          "toy substrate, the toy board detects the toy "
+                          "fleet's defect classes, and the toy suite's "
+                          "mutation holes are exactly what its rows "
+                          "recompute to",
+            "scope": "exactly the synthetic task set, request set, and "
+                     "suite named by protocol.hashes; artifacts-only "
+                     "deterministic grading; nothing beyond it",
             "limitations": [
                 "synthetic fixture: issuer and subject are fictional; this "
                 "bundle exercises the verifier, not a real agent",
                 "single-file, single-edit defects only; multi-file repair "
                 "is not claimed",
                 "board rows cover the two toy defect classes only",
+                "mutation rows cover the five toy operators only; the "
+                "three surviving holes are the finding, not a defect of "
+                "the fixture",
             ],
         },
         "subject": {
@@ -151,12 +250,15 @@ def valid_bundle() -> dict[str, str]:
         "protocol": {
             "issuer": "example/toy-issuer",
             "issuer_commit": COMMIT,
-            "task": "toy-intervals + toy-board",
+            "task": "toy-intervals + toy-board + toy-mutation-run",
             "hashes": {"taskset_hash": TASKSET_HASH,
                        "prompt_hash": PROMPT_HASH,
-                       "fleet_commit": COMMIT},
+                       "fleet_commit": COMMIT,
+                       "suite_hash": SUITE_HASH},
             "grading": "deterministic: policy (suite byte-identical) then "
-                       "tests; board rows recomputed from paired raw lines",
+                       "tests; board rows recomputed from paired raw lines; "
+                       "mutation tallies and holes recomputed from per-row "
+                       "outcomes",
             "control_policy": "null-agent scores 0/3 and oracle-agent 3/3 "
                               "before any real verdict; a clean twin is "
                               "graded beside every defective response",
@@ -167,7 +269,11 @@ def valid_bundle() -> dict[str, str]:
         ],
         "results": {
             "summary": {"tasks": 3, "fixed": 2, "board_rows": 2,
-                        "detection_rate_min": 0.5},
+                        "detection_rate_min": 0.5,
+                        "mutation_score_3": round(
+                            mut_tally["caught"] / mut_applied, 3),
+                        "mutation_blind_spots": len(
+                            mut_payload["holes"]["blind"])},
             "checks": [
                 {"profile": "certlab-bundle-v1",
                  "artifact": "evidence/bundle.json",
@@ -177,6 +283,24 @@ def valid_bundle() -> dict[str, str]:
                  "aggregate": "evidence/results.json",
                  "raw": "evidence/raw_results.jsonl",
                  "expect": {"rows": 2}},
+                {"profile": "evalmut-run-v1",
+                 "artifact": "evidence/evalmut_run.json",
+                 "catalog": "evidence/operators.json",
+                 "expect": {
+                     **mut_tally,
+                     "applied": mut_applied,
+                     "results": len(mut_payload["results"]),
+                     "score_3": round(mut_tally["caught"] / mut_applied, 3),
+                     "vacuous": len(mut_payload["holes"]["vacuous"]),
+                     "blind": len(mut_payload["holes"]["blind"]),
+                     "brittle": len(mut_payload["holes"]["brittle"]),
+                     "coverage_gap": len(
+                         mut_payload["holes"]["coverage_gap"]),
+                     "operators": len(mut_ops),
+                     "operators_exercised": len(
+                         {r["operator_id"]
+                          for r in mut_payload["results"]}),
+                 }},
             ],
         },
         "replay": {
@@ -188,10 +312,13 @@ def valid_bundle() -> dict[str, str]:
                 "python -m toy_issuer.regrade evidence/bundle.json",
                 "python issuer/audit/run_audit.py --check "
                 "evidence/results.json",
+                "python -m toy_issuer.mutrun --check "
+                "evidence/evalmut_run.json",
             ],
-            "expected": "regrade exits 0 reporting 'consistent'; audit "
-                        "reproduces results.json byte-identically at the "
-                        "stamped commit",
+            "expected": "regrade exits 0 reporting 'consistent'; audit and "
+                        "mutrun reproduce results.json and evalmut_run.json "
+                        "byte-identically at the stamped commit (mutrun "
+                        "exits 1 by design: the toy suite has holes)",
         },
     }
     return {"vac.json": _j(manifest), **evidence}
@@ -234,6 +361,29 @@ def tampered_variants(valid: dict[str, str]) -> dict[str, dict[str, str]]:
     out["tamper-raw-aggregate"] = {**valid,
                                    "evidence/results.json": agg_text,
                                    "vac.json": _j(m)}
+
+    def _rehash_mut(mp: dict) -> dict[str, str]:
+        text = _j(mp)
+        man = json.loads(valid["vac.json"])
+        for e in man["evidence"]:
+            if e["path"] == "evidence/evalmut_run.json":
+                e["sha256"] = _sha(text)
+        return {**valid, "evidence/evalmut_run.json": text,
+                "vac.json": _j(man)}
+
+    # cook the mutation tally AND fix the hash, rows honest — only
+    # recomputation from the rows names the lie
+    mp = json.loads(valid["evidence/evalmut_run.json"])
+    mp["tally"]["caught"] = 5
+    out["tamper-evalmut-summary"] = _rehash_mut(mp)
+
+    # relabel a missed mutation as caught in the rows AND fix the hash —
+    # the realistic attack on a mutation report: one label flipped, all
+    # aggregates left at their published values
+    mp = json.loads(valid["evidence/evalmut_run.json"])
+    r = next(r for r in mp["results"] if r["operator_id"] == "toy-negate")
+    r["outcome"] = "caught"
+    out["tamper-evalmut-rows"] = _rehash_mut(mp)
     return out
 
 

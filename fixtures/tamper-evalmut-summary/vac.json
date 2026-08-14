@@ -38,7 +38,7 @@
   },
   {
    "path": "evidence/evalmut_run.json",
-   "sha256": "fc46d3a737d7b9ee6502f2f8374db56ab6d337841f4fd0a9ba45f312548e18ed"
+   "sha256": "f7e40ee32412d5ad392eb6c78116b7e5451ef6f5c9b9d22a51a5fb6c737ff0f4"
   },
   {
    "path": "evidence/operators.json",
@@ -56,7 +56,7 @@
  "results": {
   "summary": {
    "tasks": 3,
-   "fixed": 3,
+   "fixed": 2,
    "board_rows": 2,
    "detection_rate_min": 0.5,
    "mutation_score_3": 0.571,
@@ -68,7 +68,7 @@
     "artifact": "evidence/bundle.json",
     "expect": {
      "verdicts": 3,
-     "fixed": 3,
+     "fixed": 2,
      "policy_ok": 3,
      "tests_ok": 2
     }

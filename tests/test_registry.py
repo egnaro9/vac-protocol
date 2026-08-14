@@ -54,7 +54,8 @@ def test_valid_committed_bundle_is_accepted(tmp_path):
     assert e["bundle_path"] == BP
     assert e["status"] == "accepted" and e["challenges"] == []
     assert [a["path"] for a in e["artifacts"]] == [
-        "evidence/bundle.json", "evidence/raw_results.jsonl",
+        "evidence/bundle.json", "evidence/evalmut_run.json",
+        "evidence/operators.json", "evidence/raw_results.jsonl",
         "evidence/results.json", "vac.json"]
     for a in e["artifacts"]:
         assert a["sha256"] == _sha256(FIX / "valid" / a["path"])
@@ -70,6 +71,23 @@ def test_absent_vac_json_is_pending_not_fabricated(tmp_path):
     (p,) = doc["pending"]
     assert p["name"] == "toy-issuer/toy-2026-08-14"
     assert "vac.json is not in the committed tree" in p["reason"]
+    assert "sha256" not in json.dumps(p)  # nothing invented for a pending row
+
+
+def test_absent_bundle_dir_is_pending_not_dropped(tmp_path):
+    """A configured single-directory bundle path with nothing committed
+    under it is a named hole in the registry, not a silent absence — the
+    evalmut case until its emitter lands."""
+    repo = _issuer(tmp_path)  # has certifications/... but no vac/
+    cfg = {"repo": "https://github.com/example/toy-issuer",
+           "checkout_env": "VAC_TEST_UNSET_ENV",
+           "default_checkout": str(repo), "bundles": "vac"}
+    doc = build([cfg])
+    assert doc["entries"] == []
+    (p,) = doc["pending"]
+    assert p["name"] == "toy-issuer/vac"
+    assert p["bundle_path"] == "vac"
+    assert "no committed files at vac" in p["reason"]
     assert "sha256" not in json.dumps(p)  # nothing invented for a pending row
 
 
