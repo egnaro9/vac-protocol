@@ -72,6 +72,11 @@ jobs:
       - name: structural verification of the downloaded bundle
         run: python -m vac.verify bundle
       - name: run the bundle's replay block verbatim at the pinned issuer
+        # shell: bash is load-bearing: Actions' default `bash -e {0}` has NO
+        # pipefail, so the tee pipe would mask a failing replay.sh with tee's
+        # exit 0 — a byte-divergent cmp would go green. `shell: bash` runs
+        # --noprofile --norc -eo pipefail.
+        shell: bash
         run: |
           jq -r '.replay.commands[]' bundle/vac.json > replay.sh
           echo "--- replay block (sha256-pinned via the registry) ---"
@@ -97,14 +102,21 @@ jobs:
           else
             echo "no certlab-bundle-v1 check in this bundle; predicate not applicable"
           fi
-      - name: fleet predicate — the byte-compare must have actually run
-        # cmp failing already failed the replay step; this guards the other
-        # direction — a replay block that never compared bytes proves
-        # nothing (an absence-assertion needs a liveness check).
+      - name: fleet predicate — every byte-compare ran AND succeeded
+        # Two directions, both required: a replay block that never compared
+        # bytes proves nothing (absence-assertion needs a liveness check),
+        # and a cmp that ran but FAILED must not ride on the shell's exit
+        # alone — this predicate holds even if the pipe semantics above ever
+        # regress. xtrace prints `+ cmp a b`; a failing cmp prints `a b
+        # differ` to the transcript, and a diverged file count is a hard no.
         run: |
           if jq -e '[.results.checks[].profile] | index("fleet-board-v1")' bundle/vac.json > /dev/null; then
             if ! grep -q '+ cmp ' transcript.txt; then
               echo "fleet replay block executed no cmp — byte-identity with the downloaded results was never checked"
+              exit 1
+            fi
+            if grep -E 'differ|EOF on' transcript.txt; then
+              echo "a byte-compare FAILED — the pinned commit does not reproduce the registered bytes"
               exit 1
             fi
           else

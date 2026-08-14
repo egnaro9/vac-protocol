@@ -64,7 +64,7 @@ ISSUERS = [
     {"repo": "https://github.com/egnaro9/reference-fleet",
      "checkout_env": "VAC_FLEET_CHECKOUT",
      "default_checkout": "../reference-fleet",
-     "bundles": "board"},
+     "bundles": "board/vac"},
 ]
 
 PROTOCOL_LINE = (
