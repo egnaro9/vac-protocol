@@ -53,24 +53,39 @@ board row with a *fixed* hash that only recomputation from raw catches.
 CI requires the valid bundle to pass and **every** tamper to be refused
 (the invalidation-liveness job): a gate must prove it can block.
 
-## Registry and replay — the seam
+## Registry and replay
 
-This commit ships the spec, the verifier, and the fixtures. The registry
-and CI replays land in a **follow-up commit by another builder**, against
-two seams left deliberately open:
+[registry.json](registry.json) is the registry: a file, reviewed like
+code. `python -m vac.registry` regenerates it mechanically by scanning the
+configured local issuer checkouts at their **committed HEAD trees** —
+hashing committed blobs, never the working tree — and running the
+structural verifier over every configured bundle. Each accepted entry pins
+name, issuer, `issuer_commit`, every artifact's sha256, and the raw URL on
+`main` those bytes must be servable from. A configured bundle that is not
+yet admissible (emitter not landed, or verification naming failures) is
+recorded **pending with its exact reason** — never fabricated, never
+silently dropped. Acceptance stays two-gated per SPEC.md §5, and each gate
+is enforced by CI, not memory:
 
-- **`registry.json`** (repo root): an array of entries
-  `{"bundle": <path or repo+commit>, "status": "accepted" | "confirmed" |
-  "narrowed" | "superseded" | "invalidated", "challenges": [...]}` —
-  semantics in SPEC.md §5–6. Acceptance is two-gated: structural
-  verification (this repo's tool), then semantic replay (the issuer's
-  tool, run by registry CI). Nothing in the verifier or spec needs to
-  change to add it.
-- **A `replay` CI job**: for each registered bundle, clone the issuer at
-  `replay.issuer_commit`, run `replay.commands`, compare against
-  `replay.expected`. The bundle format already carries everything such a
-  job needs; the existing `invalidation-liveness` job in
-  [ci.yml](.github/workflows/ci.yml) is the pattern to extend.
+- **[pages.yml](.github/workflows/pages.yml)** — the registry page
+  ([index.html](index.html)) may deploy only after the fixtures prove the
+  verifier can pass *and block*, and `python -m vac.registry
+  --check-fetched` rebuilds the registry from the artifacts **fetched at
+  their public URLs** byte-identically. The page can say "pending"; it
+  cannot overstate.
+- **[replay.yml](.github/workflows/replay.yml)** — the independent replay
+  (weekly + on demand): per accepted entry, download every artifact by its
+  registry URL, refuse any byte that does not hash to its pin, re-run
+  `python -m vac.verify`, then execute the bundle's replay block verbatim
+  — clone the issuer at the pinned commit and re-earn the verdicts with
+  its own regrader (certlab: `python -m certlab.regrade`; fleet:
+  `python audit/run_audit.py` + byte-compare). Until every issuer commit
+  and emitted bundle is pushed public, this workflow **fails with the
+  precise reason** — that is its job.
+
+[INVALIDATION.md](INVALIDATION.md) is the public walkthrough of the gate
+refusing: one flipped hex digit, the verifier's real captured rejection,
+restore, pass.
 
 Explicitly refused in v0.1 (SPEC.md §7): signatures, URIs/identity
 schemes, accounts, hosted registry, Docker images. The trust object is
