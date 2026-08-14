@@ -1,0 +1,112 @@
+name: replay
+# The INDEPENDENT REPLAY — the second acceptance gate (SPEC.md sections 4-5),
+# run by CI on a machine that saw none of the evidence being made. For every
+# accepted registry entry: download the artifacts at their registry URLs,
+# refuse any byte that does not hash to its pin, re-run structural
+# verification, then execute the bundle's own replay block VERBATIM — clone
+# the issuer, check out the pinned commit, install, and re-earn the verdicts
+# with the issuer's own deterministic regrader (certlab: python -m
+# certlab.regrade over the downloaded bundle; fleet: python audit/run_audit.py
+# then cmp byte-identity against the downloaded results). The commands are
+# not trusted blindly: they were sha256-pinned through the registry and
+# reviewed at admission, and profile predicates below refuse the one known
+# soft exit (certlab's regrade exits 0 when it REFUSES a stale bundle — a
+# refusal is not a replay).
+#
+# Until every issuer has pushed the pinned commits and emitted bundles to its
+# public main, this workflow FAILS — with the precise reason each time (HTTP
+# 404 on an artifact, an unknown issuer_commit, a pending registry entry).
+# That is its job: a claim whose evidence cannot be fetched and replayed by a
+# stranger is not yet a claim.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "43 5 * * 1"
+permissions:
+  contents: read
+jobs:
+  pending:
+    # A pending entry is a named hole in the registry; this job failing IS
+    # the report, one precise reason per entry.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e .
+      - name: every configured bundle must be past pending
+        run: python -m vac.registry --list-pending
+  entries:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.m.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e .
+      - id: m
+        name: accepted entries become the replay matrix
+        run: echo "matrix=$(python -m vac.registry --emit-matrix)" >> "$GITHUB_OUTPUT"
+  replay:
+    needs: entries
+    strategy:
+      fail-fast: false
+      matrix:
+        entry: ${{ fromJSON(needs.entries.outputs.matrix) }}
+    name: ${{ matrix.entry.name }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"   # fleet replay shells out to `npx promptfoo`
+      - run: pip install -e .
+      - name: download every artifact by registry URL, refusing hash drift
+        run: python -m vac.registry --fetch-bundle "${{ matrix.entry.name }}" --dest bundle
+      - name: structural verification of the downloaded bundle
+        run: python -m vac.verify bundle
+      - name: run the bundle's replay block verbatim at the pinned issuer
+        run: |
+          jq -r '.replay.commands[]' bundle/vac.json > replay.sh
+          echo "--- replay block (sha256-pinned via the registry) ---"
+          cat replay.sh
+          echo "--- expected: $(jq -r '.replay.expected' bundle/vac.json)"
+          cd bundle
+          bash -euxo pipefail ../replay.sh 2>&1 | tee ../transcript.txt
+      - name: certlab predicate — 'consistent' or it did not happen
+        # regrade exits 0 both when verdicts recompute identical AND when it
+        # refuses a bundle whose task-set hashes drifted ("stale-code"). A
+        # refusal at the pinned commit means the pin is wrong; silence is
+        # never success here.
+        run: |
+          if jq -e '[.results.checks[].profile] | index("certlab-bundle-v1")' bundle/vac.json > /dev/null; then
+            if grep -Eq 'stale-code|cannot regrade' transcript.txt; then
+              echo "regrade REFUSED at the pinned commit — issuer_commit/replay commit does not regrade this bundle (drifted task set or wrong pin)"
+              exit 1
+            fi
+            if ! grep -q 'consistent' transcript.txt; then
+              echo "regrade never reported 'consistent' — the verdicts were not re-earned"
+              exit 1
+            fi
+          else
+            echo "no certlab-bundle-v1 check in this bundle; predicate not applicable"
+          fi
+      - name: fleet predicate — the byte-compare must have actually run
+        # cmp failing already failed the replay step; this guards the other
+        # direction — a replay block that never compared bytes proves
+        # nothing (an absence-assertion needs a liveness check).
+        run: |
+          if jq -e '[.results.checks[].profile] | index("fleet-board-v1")' bundle/vac.json > /dev/null; then
+            if ! grep -q '+ cmp ' transcript.txt; then
+              echo "fleet replay block executed no cmp — byte-identity with the downloaded results was never checked"
+              exit 1
+            fi
+          else
+            echo "no fleet-board-v1 check in this bundle; predicate not applicable"
+          fi
