@@ -1,0 +1,215 @@
+{
+ "registry_version": "0.1",
+ "protocol": "acceptance is two-gated (SPEC.md section 5): structural verification by python -m vac.verify \u2014 at generation, and again over FETCHED artifacts before every pages deploy \u2014 then semantic replay by the issuer's own deterministic regrader in .github/workflows/replay.yml",
+ "entries": [
+  {
+   "name": "agent-certlab/aider-intervals-2026-08-14",
+   "issuer": "egnaro9/agent-certlab",
+   "issuer_repo": "https://github.com/egnaro9/agent-certlab",
+   "issuer_commit": "7213f39",
+   "bundle_path": "certifications/aider-intervals-2026-08-14",
+   "capability": "repair-seeded-defects:intervals \u2014 aider-headless fixed 6/6 seeded defects under policy",
+   "subject": "agent: aider-headless",
+   "summary": {
+    "tasks": 6,
+    "fixed": 6,
+    "failure_modes": {}
+   },
+   "profiles": [
+    "certlab-bundle-v1"
+   ],
+   "artifacts": [
+    {
+     "path": "CONTRACT.md",
+     "sha256": "424d276e523ce82a42dd2581533a0a36fdd3d0c8717d25f98670ec1d61036956",
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/aider-intervals-2026-08-14/CONTRACT.md"
+    },
+    {
+     "path": "bundle.json",
+     "sha256": "d6591c34042124fa96f0a6cc5665e9d66a1d5996061e1a80b83f4de98e769603",
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/aider-intervals-2026-08-14/bundle.json"
+    },
+    {
+     "path": "vac.json",
+     "sha256": "7d1c6dacf45516507a5e88f446e9a4d32c173fb4a8e9dd6789a5d9ae720ddf0b",
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/aider-intervals-2026-08-14/vac.json"
+    }
+   ],
+   "status": "accepted",
+   "challenges": [],
+   "gates": {
+    "structural": "python -m vac.verify \u2014 clean at registry generation; re-proven against the fetched artifacts before every pages deploy",
+    "semantic": "NOT run at generation \u2014 delegated to .github/workflows/replay.yml (workflow_dispatch + weekly), which clones the issuer at issuer_commit and re-earns every verdict with the issuer's own regrader"
+   }
+  },
+  {
+   "name": "agent-certlab/aider-ledger-2026-08-14",
+   "issuer": "egnaro9/agent-certlab",
+   "issuer_repo": "https://github.com/egnaro9/agent-certlab",
+   "issuer_commit": "7213f39",
+   "bundle_path": "certifications/aider-ledger-2026-08-14",
+   "capability": "repair-seeded-defects:ledger \u2014 aider-headless fixed 6/6 seeded defects under policy",
+   "subject": "agent: aider-headless",
+   "summary": {
+    "tasks": 6,
+    "fixed": 6,
+    "failure_modes": {}
+   },
+   "profiles": [
+    "certlab-bundle-v1"
+   ],
+   "artifacts": [
+    {
+     "path": "CONTRACT.md",
+     "sha256": "1dd22dd50afb209af96b8af4d1cc36786194ae46ded17ff82e03c9ac1773da6b",
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/aider-ledger-2026-08-14/CONTRACT.md"
+    },
+    {
+     "path": "bundle.json",
+     "sha256": "bb5112d6687c4cf5b269cc377f7a0ce6ed9c1261ce0b473682a8371ef418fb5b",
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/aider-ledger-2026-08-14/bundle.json"
+    },
+    {
+     "path": "vac.json",
+     "sha256": "fca22d869e8403b36f8531c95c024b6f4db7306373f47b89bfe11c5e607a062d",
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/aider-ledger-2026-08-14/vac.json"
+    }
+   ],
+   "status": "accepted",
+   "challenges": [],
+   "gates": {
+    "structural": "python -m vac.verify \u2014 clean at registry generation; re-proven against the fetched artifacts before every pages deploy",
+    "semantic": "NOT run at generation \u2014 delegated to .github/workflows/replay.yml (workflow_dispatch + weekly), which clones the issuer at issuer_commit and re-earns every verdict with the issuer's own regrader"
+   }
+  },
+  {
+   "name": "agent-certlab/claude-code-2026-08-14",
+   "issuer": "egnaro9/agent-certlab",
+   "issuer_repo": "https://github.com/egnaro9/agent-certlab",
+   "issuer_commit": "4330321",
+   "bundle_path": "certifications/claude-code-2026-08-14",
+   "capability": "repair-seeded-defects:intervals \u2014 claude-code-headless fixed 6/6 seeded defects under policy",
+   "subject": "agent: claude-code-headless",
+   "summary": {
+    "tasks": 6,
+    "fixed": 6,
+    "failure_modes": {}
+   },
+   "profiles": [
+    "certlab-bundle-v1"
+   ],
+   "artifacts": [
+    {
+     "path": "CONTRACT.md",
+     "sha256": "01b85efba64ae34e2fc9716ba4f791fb323674fbf9ff13df5b420c98d1636f90",
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/claude-code-2026-08-14/CONTRACT.md"
+    },
+    {
+     "path": "bundle.json",
+     "sha256": "7efe5c8051dcdfa2836176c70e7682a625346bafa34aed8d4752cdb078187ca3",
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/claude-code-2026-08-14/bundle.json"
+    },
+    {
+     "path": "vac.json",
+     "sha256": "a3cd26f1438f00be82fb3e379865a970b5e9316f50a7531a62bf8fcc332650bc",
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/claude-code-2026-08-14/vac.json"
+    }
+   ],
+   "status": "accepted",
+   "challenges": [],
+   "gates": {
+    "structural": "python -m vac.verify \u2014 clean at registry generation; re-proven against the fetched artifacts before every pages deploy",
+    "semantic": "NOT run at generation \u2014 delegated to .github/workflows/replay.yml (workflow_dispatch + weekly), which clones the issuer at issuer_commit and re-earns every verdict with the issuer's own regrader"
+   }
+  },
+  {
+   "name": "agent-certlab/claude-code-cloud-2026-08-14",
+   "issuer": "egnaro9/agent-certlab",
+   "issuer_repo": "https://github.com/egnaro9/agent-certlab",
+   "issuer_commit": "7ec0f94",
+   "bundle_path": "certifications/claude-code-cloud-2026-08-14",
+   "capability": "repair-seeded-defects:intervals \u2014 claude-code-headless fixed 6/6 seeded defects under policy",
+   "subject": "agent: claude-code-headless",
+   "summary": {
+    "tasks": 6,
+    "fixed": 6,
+    "failure_modes": {}
+   },
+   "profiles": [
+    "certlab-bundle-v1"
+   ],
+   "artifacts": [
+    {
+     "path": "CONTRACT.md",
+     "sha256": "104fb4c1a7aa609c094165140555b4ae06630b2fb14edde2e394316285e71a7c",
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/claude-code-cloud-2026-08-14/CONTRACT.md"
+    },
+    {
+     "path": "bundle.json",
+     "sha256": "05703dca2f110f30f4d2c581f986f9a5246769acf94ce38689de4851d7fdb6aa",
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/claude-code-cloud-2026-08-14/bundle.json"
+    },
+    {
+     "path": "vac.json",
+     "sha256": "1f2c7c4c2fbf00ebd20dbfc74ba2ccb459c6ccd6e9bc12c21632d21351b0bed4",
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/claude-code-cloud-2026-08-14/vac.json"
+    }
+   ],
+   "status": "accepted",
+   "challenges": [],
+   "gates": {
+    "structural": "python -m vac.verify \u2014 clean at registry generation; re-proven against the fetched artifacts before every pages deploy",
+    "semantic": "NOT run at generation \u2014 delegated to .github/workflows/replay.yml (workflow_dispatch + weekly), which clones the issuer at issuer_commit and re-earns every verdict with the issuer's own regrader"
+   }
+  },
+  {
+   "name": "agent-certlab/claude-code-ledger-2026-08-14",
+   "issuer": "egnaro9/agent-certlab",
+   "issuer_repo": "https://github.com/egnaro9/agent-certlab",
+   "issuer_commit": "8065d6e",
+   "bundle_path": "certifications/claude-code-ledger-2026-08-14",
+   "capability": "repair-seeded-defects:ledger \u2014 claude-code-headless fixed 6/6 seeded defects under policy",
+   "subject": "agent: claude-code-headless",
+   "summary": {
+    "tasks": 6,
+    "fixed": 6,
+    "failure_modes": {}
+   },
+   "profiles": [
+    "certlab-bundle-v1"
+   ],
+   "artifacts": [
+    {
+     "path": "CONTRACT.md",
+     "sha256": "ba9be44c6c9931f05b3435c2ac35c7138a15cb15850b26dcb159356b6bb3ce23",
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/claude-code-ledger-2026-08-14/CONTRACT.md"
+    },
+    {
+     "path": "bundle.json",
+     "sha256": "a0c5dc73096c0572f2debb279601aaa2c5f4ac8a774c4f47ce403f1b166db04a",
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/claude-code-ledger-2026-08-14/bundle.json"
+    },
+    {
+     "path": "vac.json",
+     "sha256": "96d5597864fb85c76d45e82505a19de10cffa7fb6b425a11a01d8e8d4d2053fb",
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/claude-code-ledger-2026-08-14/vac.json"
+    }
+   ],
+   "status": "accepted",
+   "challenges": [],
+   "gates": {
+    "structural": "python -m vac.verify \u2014 clean at registry generation; re-proven against the fetched artifacts before every pages deploy",
+    "semantic": "NOT run at generation \u2014 delegated to .github/workflows/replay.yml (workflow_dispatch + weekly), which clones the issuer at issuer_commit and re-earns every verdict with the issuer's own regrader"
+   }
+  }
+ ],
+ "pending": [
+  {
+   "name": "reference-fleet/board",
+   "issuer": "egnaro9/reference-fleet",
+   "issuer_repo": "https://github.com/egnaro9/reference-fleet",
+   "bundle_path": "board",
+   "reason": "refused at generation: structural: unlisted-file: index.html \u2014 fix the committed bundle and re-run python -m vac.registry"
+  }
+ ]
+}
