@@ -1,0 +1,85 @@
+{
+ "vac_version": "0.1",
+ "claim": {
+  "capability": "toy-agent fixes seeded single-edit defects in the toy substrate, and the toy board detects the toy fleet's defect classes",
+  "scope": "exactly the synthetic task set and request set named by protocol.hashes; artifacts-only deterministic grading; nothing beyond it",
+  "limitations": [
+   "synthetic fixture: issuer and subject are fictional; this bundle exercises the verifier, not a real agent",
+   "single-file, single-edit defects only; multi-file repair is not claimed",
+   "board rows cover the two toy defect classes only"
+  ]
+ },
+ "subject": {
+  "kind": "agent",
+  "id": "toy-agent",
+  "version": {
+   "build": "toy-1",
+   "model": null
+  }
+ },
+ "protocol": {
+  "issuer": "example/toy-issuer",
+  "issuer_commit": "f1e2d3c",
+  "task": "toy-intervals + toy-board",
+  "hashes": {
+   "taskset_hash": "00112233445566aa",
+   "prompt_hash": "aabbccdd00112233",
+   "fleet_commit": "f1e2d3c"
+  },
+  "grading": "deterministic: policy (suite byte-identical) then tests; board rows recomputed from paired raw lines",
+  "control_policy": "null-agent scores 0/3 and oracle-agent 3/3 before any real verdict; a clean twin is graded beside every defective response"
+ },
+ "evidence": [
+  {
+   "path": "evidence/bundle.json",
+   "sha256": "64931fe8d466c2cfdbf3c15013d8aa013bc54a2e340fb89737972ef3612550d4"
+  },
+  {
+   "path": "evidence/raw_results.jsonl",
+   "sha256": "423f8cc974e36ca6cb8d47e2e826c47a49d77f65990005bdac108c3ab9592854"
+  },
+  {
+   "path": "evidence/results.json",
+   "sha256": "c7167195fe2a2e8ec6c89bb98a65811557852503b04dc4bf763333d3f222e0a2"
+  }
+ ],
+ "results": {
+  "summary": {
+   "tasks": 3,
+   "fixed": 2,
+   "board_rows": 2,
+   "detection_rate_min": 0.5
+  },
+  "checks": [
+   {
+    "profile": "certlab-bundle-v1",
+    "artifact": "evidence/bundle.json",
+    "expect": {
+     "verdicts": 3,
+     "fixed": 2,
+     "policy_ok": 3,
+     "tests_ok": 2
+    }
+   },
+   {
+    "profile": "fleet-board-v1",
+    "aggregate": "evidence/results.json",
+    "raw": "evidence/raw_results.jsonl",
+    "expect": {
+     "rows": 2
+    }
+   }
+  ]
+ },
+ "replay": {
+  "issuer_commit": "f1e2d3c",
+  "commands": [
+   "git clone https://github.com/example/toy-issuer issuer",
+   "git -C issuer checkout f1e2d3c",
+   "python -m pip install -e ./issuer",
+   "python -m toy_issuer.regrade evidence/bundle.json",
+   "python issuer/audit/run_audit.py --check evidence/results.json"
+  ],
+  "expected": "regrade exits 0 reporting 'consistent'; audit reproduces results.json byte-identically at the stamped commit"
+ }
+}

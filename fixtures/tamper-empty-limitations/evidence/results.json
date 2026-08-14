@@ -1,0 +1,27 @@
+{
+ "schema": 1,
+ "protocol": "paired: detected = defective fails AND clean passes; rates exact over the fixed request set",
+ "fleet_commit": "f1e2d3c",
+ "rows": [
+  {
+   "suite": "toy-suite",
+   "member": "toy-defect-a",
+   "n": 4,
+   "detected": 4,
+   "detection_rate": 1.0,
+   "false_alarms": 0,
+   "false_alarm_rate": 0.0,
+   "engine": "python"
+  },
+  {
+   "suite": "toy-suite",
+   "member": "toy-defect-b",
+   "n": 4,
+   "detected": 2,
+   "detection_rate": 0.5,
+   "false_alarms": 1,
+   "false_alarm_rate": 0.25,
+   "engine": "python"
+  }
+ ]
+}

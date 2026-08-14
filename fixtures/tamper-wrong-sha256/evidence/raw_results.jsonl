@@ -1,0 +1,8 @@
+{"suite":"toy-suite","member":"toy-defect-a","i":0,"defective_failed":true,"clean_passed":true,"detected":true}
+{"suite":"toy-suite","member":"toy-defect-a","i":1,"defective_failed":true,"clean_passed":true,"detected":true}
+{"suite":"toy-suite","member":"toy-defect-a","i":2,"defective_failed":true,"clean_passed":true,"detected":true}
+{"suite":"toy-suite","member":"toy-defect-a","i":3,"defective_failed":true,"clean_passed":true,"detected":true}
+{"suite":"toy-suite","member":"toy-defect-b","i":0,"defective_failed":true,"clean_passed":true,"detected":true}
+{"suite":"toy-suite","member":"toy-defect-b","i":1,"defective_failed":true,"clean_passed":true,"detected":true}
+{"suite":"toy-suite","member":"toy-defect-b","i":2,"defective_failed":false,"clean_passed":true,"detected":false}
+{"suite":"toy-suite","member":"toy-defect-b","i":3,"defective_failed":true,"clean_passed":false,"detected":false}
