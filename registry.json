@@ -283,6 +283,80 @@
    }
   },
   {
+   "name": "evalmut/vac",
+   "issuer": "egnaro9/evalmut",
+   "issuer_repo": "https://github.com/egnaro9/evalmut",
+   "issuer_commit": "77e8c3e",
+   "bundle_path": "vac",
+   "capability": "eval-suite mutation testing over a mined operator battery: gradecore's own grader-family suite scores 32/35 with 3 holes, and the committed ports of promptfoo's documented deterministic assertions score 5/11 with 6 holes \u2014 every number recomputable from committed per-mutation rows",
+   "subject": "suite-archetype: demos/dogfood_gradecore.py + external/promptfoo_suite.py under the evalmut mined-operator battery",
+   "summary": {
+    "dogfood_gradecore": {
+     "score_3": 0.914,
+     "caught": 32,
+     "applied": 35,
+     "na": 150,
+     "holes": {
+      "blind": 1,
+      "coverage_gap": 2
+     }
+    },
+    "promptfoo_ports": {
+     "score_3": 0.455,
+     "caught": 5,
+     "applied": 11,
+     "na": 79,
+     "holes": {
+      "vacuous": 2,
+      "blind": 2,
+      "coverage_gap": 2
+     }
+    },
+    "operators": 18
+   },
+   "profiles": [
+    "evalmut-run-v1"
+   ],
+   "artifacts": [
+    {
+     "path": "dogfood_gradecore.json",
+     "sha256": "3c93ddb9b85509be4f3c58da169f5734fd2ee383b81476e0a9046d557076ff8b",
+     "url": "https://raw.githubusercontent.com/egnaro9/evalmut/main/vac/dogfood_gradecore.json"
+    },
+    {
+     "path": "dogfood_gradecore.txt",
+     "sha256": "b6863732bce748554455d3f8bd138c848f4ac47a3fd144f3c1bb694739feeaff",
+     "url": "https://raw.githubusercontent.com/egnaro9/evalmut/main/vac/dogfood_gradecore.txt"
+    },
+    {
+     "path": "operators.json",
+     "sha256": "0384713699df804e1867a2406fb7e5d631ef891152d018b4d778f63b8fb957ab",
+     "url": "https://raw.githubusercontent.com/egnaro9/evalmut/main/vac/operators.json"
+    },
+    {
+     "path": "promptfoo_findings.json",
+     "sha256": "03f51bf5530c6224d17ca24a2f17420534c7052a18b9585cc1a5648ef9c17e8e",
+     "url": "https://raw.githubusercontent.com/egnaro9/evalmut/main/vac/promptfoo_findings.json"
+    },
+    {
+     "path": "promptfoo_findings.txt",
+     "sha256": "389de693c5747ac9c987cefac88da9e4885ae6b1f022305af2eb71c01523e83f",
+     "url": "https://raw.githubusercontent.com/egnaro9/evalmut/main/vac/promptfoo_findings.txt"
+    },
+    {
+     "path": "vac.json",
+     "sha256": "85d2b64e551b9d34fa507f3dcfaa641a79542cb957335e51653b1c4c5ba881de",
+     "url": "https://raw.githubusercontent.com/egnaro9/evalmut/main/vac/vac.json"
+    }
+   ],
+   "status": "accepted",
+   "challenges": [],
+   "gates": {
+    "structural": "python -m vac.verify \u2014 clean at registry generation; re-proven against the fetched artifacts before every pages deploy",
+    "semantic": "NOT run at generation \u2014 delegated to .github/workflows/replay.yml (workflow_dispatch + weekly), which clones the issuer at issuer_commit and re-earns every verdict with the issuer's own regrader"
+   }
+  },
+  {
    "name": "reference-fleet/vac",
    "issuer": "egnaro9/reference-fleet",
    "issuer_repo": "https://github.com/egnaro9/reference-fleet",
@@ -347,13 +421,5 @@
    }
   }
  ],
- "pending": [
-  {
-   "name": "evalmut/vac",
-   "issuer": "egnaro9/evalmut",
-   "issuer_repo": "https://github.com/egnaro9/evalmut",
-   "bundle_path": "vac",
-   "reason": "no committed files at vac \u2014 the issuer's vac emitter has not landed; re-run python -m vac.registry once it has"
-  }
- ]
+ "pending": []
 }
