@@ -38,7 +38,7 @@ the claim, agent replay is not (each contract says this explicitly).
   stranger cannot follow is a defect in the bundle, not in the stranger.
 
 Challenges beyond replay are welcome under the
-[challenge protocol](SPEC.md#challenge-protocol): a **coverage challenge**
+[challenge protocol](SPEC.md#6-the-challenge-protocol): a **coverage challenge**
 ("your grader cannot detect failure class X") or a **scope challenge**
 ("your public wording claims more than the protocol establishes").
 

@@ -53,6 +53,13 @@ board row with a *fixed* hash that only recomputation from raw catches.
 CI requires the valid bundle to pass and **every** tamper to be refused
 (the invalidation-liveness job): a gate must prove it can block.
 
+## Try to falsify it
+
+[REPLAY_REQUEST.md](REPLAY_REQUEST.md) is the ten-minute path: verify a real
+capability contract structurally, then re-earn its verdicts with the
+issuer's own regrader — no API keys, no accounts. Confirmations,
+discrepancies, and blocked replays all get filed and published.
+
 ## Registry and replay
 
 [registry.json](registry.json) is the registry: a file, reviewed like
