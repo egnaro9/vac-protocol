@@ -1,0 +1,42 @@
+name: vac
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install -e ".[test]"
+      - run: python -m pytest tests/ -q
+
+  invalidation-liveness:
+    # The verifier must prove it can both pass and BLOCK: the committed
+    # valid bundle verifies clean, and every committed tampered variant
+    # must be refused. A gate that never fires certifies nothing.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e .
+      - name: valid bundle verifies clean
+        run: python -m vac.verify fixtures/valid
+      - name: every tampered bundle is refused
+        run: |
+          set -e
+          for d in fixtures/tamper-*; do
+            if python -m vac.verify "$d"; then
+              echo "LIVENESS FAILURE: $d verified clean — the gate cannot block"
+              exit 1
+            fi
+          done
+      - name: fixtures regenerate byte-identically
+        run: |
+          python fixtures/make_fixtures.py
+          git diff --exit-code fixtures/
