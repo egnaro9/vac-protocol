@@ -1,0 +1,55 @@
+name: registry
+on:
+  push:
+    branches: [main]
+    paths: ["index.html", "registry.json", "vac/**",
+            ".github/workflows/pages.yml"]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+jobs:
+  verify:
+    # The page may only deploy what is provably true at deploy time:
+    # first the verifier proves on the committed fixtures that it can both
+    # pass and BLOCK, then the registry is rebuilt from the artifacts
+    # FETCHED at the exact URLs the page will show — every sha256 re-earned,
+    # every bundle re-verified — and must regenerate registry.json
+    # byte-identically. Pending entries carry through verbatim: the page is
+    # allowed to say "pending", never to overstate.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e .
+      - name: the verifier can pass and can block (fixture liveness)
+        run: |
+          python -m vac.verify fixtures/valid
+          for d in fixtures/tamper-*; do
+            if python -m vac.verify "$d"; then
+              echo "LIVENESS FAILURE: $d verified clean — the gate cannot block"
+              exit 1
+            fi
+          done
+      - name: registry regenerates byte-identically from FETCHED artifacts
+        run: python -m vac.registry --check-fetched
+  deploy:
+    needs: verify
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: the page is exactly the registry plus its renderer
+        run: |
+          mkdir _site
+          cp index.html registry.json _site/
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site/
+      - id: deployment
+        uses: actions/deploy-pages@v4

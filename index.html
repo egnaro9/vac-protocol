@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VAC registry — verifiable agent claims</title>
+<style>
+  :root { --bg:#0d1117; --panel:#161b22; --ink:#e6edf3; --dim:#7d8590;
+          --amber:#f0b429; --green:#3fb950; --red:#f85149; --blue:#58a6ff; }
+  * { margin:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--ink);
+         font-family:"SF Mono",Menlo,Consolas,monospace; padding:40px 24px; }
+  .wrap { max-width:1080px; margin:0 auto; }
+  .kicker { color:var(--amber); font-size:13px; letter-spacing:.16em; }
+  h1 { font-size:26px; margin:10px 0 6px; }
+  .sub { color:var(--dim); font-size:14px; line-height:1.6; max-width:74ch; }
+  .sub b { color:var(--ink); }
+  .sub a, .foot a, td a { color:var(--blue); text-decoration:none; }
+  .proto { background:var(--panel); border:1px solid #30363d; border-radius:8px;
+           padding:14px 18px; margin:22px 0; font-size:13px; color:var(--dim);
+           line-height:1.7; }
+  .proto code, td code { color:var(--blue); }
+  .tablewrap { overflow-x:auto; }
+  table { border-collapse:collapse; width:100%; margin-top:8px; font-size:13px; }
+  th { text-align:left; color:var(--dim); font-weight:600; padding:8px 10px;
+       border-bottom:1px solid #30363d; font-size:12px; letter-spacing:.06em; }
+  td { padding:9px 10px; border-bottom:1px solid #21262d; vertical-align:top; }
+  .name { white-space:nowrap; font-weight:700; }
+  .cap { color:var(--ink); max-width:34ch; }
+  .dim { color:var(--dim); }
+  .badge { font-size:11px; font-weight:700; letter-spacing:.06em;
+           padding:1px 7px; border-radius:9px; border:1px solid #30363d; }
+  .s-accepted, .s-confirmed { color:var(--green); }
+  .s-narrowed { color:var(--amber); }
+  .s-superseded { color:var(--dim); }
+  .s-invalidated { color:var(--red); }
+  .s-pending { color:var(--amber); }
+  tr.pendrow td { color:var(--dim); }
+  .reason { color:var(--amber); }
+  .foot { margin-top:30px; color:var(--dim); font-size:13px; line-height:1.7; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">VAC REGISTRY — VERIFIABLE AGENT CLAIMS</div>
+  <h1>Do not trust this page. Re-earn it.</h1>
+  <p class="sub">Each row is a capability claim shipped as an
+  <b>evidence bundle</b>: a manifest, artifacts pinned by sha256, declared
+  numbers a verifier recomputes offline, and the exact commands that re-earn
+  every verdict from the issuer's own deterministic grader
+  (<a href="https://github.com/egnaro9/vac-protocol/blob/main/SPEC.md">SPEC.md</a>).
+  Acceptance is <b>two-gated</b>: structural verification by
+  <code style="color:var(--blue)">python -m vac.verify</code> — re-proven
+  against these exact fetched artifacts before this page is allowed to
+  deploy — then <b>semantic replay</b> by the issuer's own regrader in CI.
+  Every artifact below links to the bytes the hashes pin: fetch them and run
+  the verifier yourself.</p>
+
+  <div class="proto" id="proto">loading registry.json…</div>
+  <div class="tablewrap"><table id="tbl">
+    <thead><tr><th>bundle</th><th>capability claimed</th><th>subject</th>
+    <th>declared results (recomputed offline)</th><th>issuer commit</th>
+    <th>evidence</th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+
+  <p class="foot">
+    <b>Statuses</b> (SPEC.md section 6):
+    <span class="s-accepted">accepted</span> — both gates as recorded per
+    entry; <span class="s-confirmed">confirmed</span> — survived a
+    challenge; <span class="s-narrowed">narrowed</span> — over-reached,
+    superseded by a tighter claim;
+    <span class="s-superseded">superseded</span> — replaced by newer
+    evidence; <span class="s-invalidated">invalidated</span> — failed on
+    re-run, kept visible as a dead entry (registries do not delete);
+    <span class="s-pending">pending</span> — named as not yet admissible,
+    with its exact reason, rather than fabricated.<br><br>
+    A structural PASS means a bundle is <b>internally honest</b> — schema,
+    hashes, closure, stated limitations, stamps, every declared number
+    recomputed from the committed artifacts. It does not mean the issuer's
+    grader agrees: that is
+    <a href="https://github.com/egnaro9/vac-protocol/blob/main/.github/workflows/replay.yml">replay.yml</a>,
+    which downloads every artifact by the URL above, refuses any byte that
+    does not hash to its registry pin, and runs each bundle's replay block
+    at the pinned issuer commit — weekly, and on demand. A bundle that
+    passes structure but fails replay is a precise, reproducible accusation
+    against the issuer. To watch the structural gate refuse a cooked hash,
+    see
+    <a href="https://github.com/egnaro9/vac-protocol/blob/main/INVALIDATION.md">INVALIDATION.md</a>.
+  </p>
+</div>
+<script>
+const esc = s => String(s).replace(/[&<>"]/g,
+  c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const flat = (o, pre) => Object.entries(o || {}).flatMap(([k, v]) =>
+  (v && typeof v === 'object') ? flat(v, (pre ? pre + '.' : '') + k)
+    : [esc((pre ? pre + '.' : '') + k) + ' <b>' + esc(v) + '</b>']);
+fetch('registry.json').then(r => r.json()).then(d => {
+  const n = d.entries.length, m = d.pending.length;
+  document.getElementById('proto').innerHTML =
+    'registry_version <code>' + esc(d.registry_version) + '</code> · ' +
+    n + ' accepted · ' + m + ' pending<br>' + esc(d.protocol);
+  const tb = document.querySelector('#tbl tbody');
+  for (const e of d.entries) {
+    const sum = flat(e.summary).join(' · ') || '—';
+    const ch = e.challenges.length
+      ? ' · ' + e.challenges.length + ' challenge record(s)' : '';
+    tb.insertAdjacentHTML('beforeend',
+      '<tr><td class="name">' + esc(e.name) + '<br>' +
+      '<span class="badge s-' + esc(e.status) + '">' + esc(e.status) +
+      '</span></td>' +
+      '<td class="cap">' + esc(e.capability) + '</td>' +
+      '<td class="dim">' + esc(e.subject) + '</td>' +
+      '<td class="dim">' + sum + '<span class="dim">' + ch + '</span></td>' +
+      '<td><a href="' + esc(e.issuer_repo) + '/commit/' +
+      esc(e.issuer_commit) + '"><code>' + esc(e.issuer_commit) +
+      '</code></a></td>' +
+      '<td>' + e.artifacts.map(a =>
+        '<a href="' + esc(a.url) + '" title="sha256 ' + esc(a.sha256) +
+        '">' + esc(a.path) + '</a>').join('<br>') +
+      '<br><a class="dim" href="' + esc(e.issuer_repo) + '/tree/main/' +
+      esc(e.bundle_path) + '">(bundle dir)</a></td></tr>');
+  }
+  for (const p of d.pending) {
+    tb.insertAdjacentHTML('beforeend',
+      '<tr class="pendrow"><td class="name">' + esc(p.name) + '<br>' +
+      '<span class="badge s-pending">pending</span></td>' +
+      '<td colspan="4" class="reason">' + esc(p.reason) + '</td>' +
+      '<td><a class="dim" href="' + esc(p.issuer_repo) + '/tree/main/' +
+      esc(p.bundle_path) + '">(bundle dir)</a></td></tr>');
+  }
+  if (!n && !m) tb.insertAdjacentHTML('beforeend',
+    '<tr><td colspan="6" class="dim">registry is empty</td></tr>');
+}).catch(err => {
+  document.getElementById('proto').textContent =
+    'failed to load registry.json: ' + err;
+});
+</script>
+</body>
+</html>
