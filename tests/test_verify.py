@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import io
 import json
+import os
 import pathlib
 import shutil
 import subprocess
@@ -29,7 +30,9 @@ TAMPERS = {
         "sha256-mismatch: evidence/bundle.json: manifest " + "0" * 64
         + ", file " + _sha256(FIX / "valid/evidence/bundle.json")],
     "tamper-verdict-count": ["summary-mismatch: fixed: declared 3, "
-                             "recomputed 2"],
+                             "recomputed 2",
+                             "summary-outruns-checks: summary.fixed: "
+                             "declares 3, recomputation gives 2"],
     "tamper-empty-limitations": ["empty-limitations"],
     "tamper-missing-issuer-commit": ["missing-issuer-commit"],
     "tamper-raw-aggregate": [
@@ -52,7 +55,19 @@ TAMPERS = {
         "summary-mismatch: blind: declared 1, recomputed 0",
         "summary-mismatch: caught: declared 4, recomputed 5",
         "summary-mismatch: missed: declared 2, recomputed 1",
-        "summary-mismatch: score_3: declared 0.571, recomputed 0.714"],
+        "summary-mismatch: score_3: declared 0.571, recomputed 0.714",
+        "summary-outruns-checks: summary.mutation_score_3: declares 0.571, "
+        "no check recomputes it"],
+    # summary-only cooks: checks, artifacts, and hashes all honest — only
+    # SPEC.md §2.5 recomputation names these
+    "tamper-summary-fixed": ["summary-outruns-checks: summary.fixed: "
+                             "declares 3, recomputation gives 2"],
+    "tamper-summary-rate": ["summary-outruns-checks: "
+                            "summary.detection_rate_min: declares 0.9, "
+                            "no check recomputes it"],
+    "tamper-summary-score": ["summary-outruns-checks: "
+                             "summary.mutation_score_3: declares 0.714, "
+                             "no check recomputes it"],
 }
 
 
@@ -114,6 +129,30 @@ def test_repaired_evalmut_rows_passes(tmp_path):
     art.write_text(json.dumps(mp, indent=1) + "\n")
     _rehash(b, "evidence/evalmut_run.json")
     assert verify_bundle(b) == []
+
+
+EVALMUT_BUNDLE = (ROOT / (os.environ.get("VAC_EVALMUT_CHECKOUT")
+                          or "../evalmut")).resolve() / "vac"
+
+
+@pytest.mark.skipif(not (EVALMUT_BUNDLE / "vac.json").is_file(),
+                    reason="evalmut issuer checkout not present")
+def test_real_evalmut_bundle_summary_is_enforced(tmp_path):
+    """The hole an adversarial verifier demonstrated live, closed on the
+    REAL committed bundle: inflate one headline number in results.summary,
+    leave checks and artifacts honest (vac.json is never its own evidence,
+    so every hash stays clean), and the verifier must name the outrun —
+    while the untampered copy still verifies clean."""
+    b = tmp_path / "b"
+    shutil.copytree(EVALMUT_BUNDLE, b)
+    assert verify_bundle(b) == []
+    man_path = b / "vac.json"
+    man = json.loads(man_path.read_text())
+    man["results"]["summary"]["dogfood_gradecore"]["caught"] = 33
+    man_path.write_text(json.dumps(man, indent=1) + "\n")
+    assert verify_bundle(b) == [
+        "summary-outruns-checks: summary.dogfood_gradecore.caught: "
+        "declares 33, recomputation gives one of [5, 32]"]
 
 
 def test_evalmut_refuses_a_payload_without_rows(tmp_path):

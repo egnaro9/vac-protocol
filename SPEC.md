@@ -119,6 +119,13 @@ A check's `profile` MUST be one of the profiles in §3
 recompute from committed artifacts do not exist, as far as VAC is
 concerned.
 
+"Derivable" is operational, not rhetorical: every numeric value in
+`summary`, at any nesting depth, must equal a quantity some check's §3
+recomputation produces — a summary key that names a recomputed field is
+held to that field's recomputed value(s) — and any numeric value no check
+re-earns is a verification failure (`summary-outruns-checks`).
+Non-numeric, descriptive values pass through.
+
 ### 2.6 `replay`
 
 | field | type | rule |
@@ -256,6 +263,7 @@ Two distinct acts, never to be conflated:
   `empty-limitations`, `missing-artifact`, `sha256-mismatch`,
   `unlisted-file`, `duplicate-artifact`, `unknown-profile`,
   `check-artifact-not-listed`, `artifact-unparsable`, `summary-mismatch`,
+  `summary-outruns-checks`,
   `raw-aggregate-mismatch`, `stamp-mismatch`, `missing-issuer-commit`,
   `issuer-commit-mismatch`, `unsafe-archive`).
 - **Semantic replay**: clone the issuer at `issuer_commit`, run its

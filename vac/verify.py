@@ -195,15 +195,15 @@ def _load_json(bundle_dir: pathlib.Path, rel: str, f: list[str]):
 
 
 def _check_certlab(bundle_dir: pathlib.Path, check: dict, proto: dict,
-                   f: list[str]) -> None:
+                   f: list[str]) -> dict[str, list] | None:
     art = check["artifact"]
     data = _load_json(bundle_dir, art, f)
     if data is None:
-        return
+        return None
     verdicts = data.get("verdicts")
     if not isinstance(verdicts, list):
         f.append(f"artifact-unparsable: {art}: no verdicts[] array")
-        return
+        return None
     recomputed = {
         "verdicts": len(verdicts),
         "fixed": sum(1 for v in verdicts if v.get("fixed") is True),
@@ -233,10 +233,29 @@ def _check_certlab(bundle_dir: pathlib.Path, check: dict, proto: dict,
             and data["harness_commit"] != ic:
         f.append(f"stamp-mismatch: harness_commit: protocol {ic}, "
                  f"artifact {data['harness_commit']}")
+    # the summary pool (SPEC.md §2.5): the four counts plus per-failure-mode
+    # counts over the verdicts — everything a headline may cite
+    pool = {k: [v] for k, v in recomputed.items()}
+    modes: dict[str, int] = {}
+    for v in verdicts:
+        if _nonempty_str(v.get("failure_mode")):
+            modes[v["failure_mode"]] = modes.get(v["failure_mode"], 0) + 1
+    for mode, cnt in modes.items():
+        pool.setdefault(mode, []).append(cnt)
+    return pool
+
+
+def _fleet_rates(lines: list) -> dict:
+    n = len(lines)
+    det = sum(1 for ln in lines if ln.get("detected") is True)
+    fa = sum(1 for ln in lines if ln.get("clean_passed") is not True)
+    return {"n": n, "detected": det, "false_alarms": fa,
+            "detection_rate": round(det / n, 3),
+            "false_alarm_rate": round(fa / n, 3)}
 
 
 def _check_fleet(bundle_dir: pathlib.Path, check: dict, proto: dict,
-                 f: list[str]) -> None:
+                 f: list[str]) -> dict[str, list] | None:
     agg = _load_json(bundle_dir, check["aggregate"], f)
     raw_rel = check["raw"]
     try:
@@ -244,13 +263,13 @@ def _check_fleet(bundle_dir: pathlib.Path, check: dict, proto: dict,
                (bundle_dir / raw_rel).read_text().splitlines() if ln.strip()]
     except (OSError, UnicodeDecodeError, json.JSONDecodeError) as e:
         f.append(f"artifact-unparsable: {raw_rel}: {e}")
-        return
+        return None
     if agg is None:
-        return
+        return None
     rows = agg.get("rows")
     if not isinstance(rows, list):
         f.append(f"artifact-unparsable: {check['aggregate']}: no rows[] array")
-        return
+        return None
     groups: dict[tuple, list] = {}
     for n, ln in enumerate(raw, 1):
         key = (ln.get("suite"), ln.get("member"))
@@ -278,13 +297,7 @@ def _check_fleet(bundle_dir: pathlib.Path, check: dict, proto: dict,
             f.append(f"raw-aggregate-mismatch: {key[0]}/{key[1]}: aggregate "
                      "row has no raw lines")
             continue
-        n = len(lines)
-        det = sum(1 for ln in lines if ln.get("detected") is True)
-        fa = sum(1 for ln in lines if ln.get("clean_passed") is not True)
-        rec = {"n": n, "detected": det, "false_alarms": fa,
-               "detection_rate": round(det / n, 3),
-               "false_alarm_rate": round(fa / n, 3)}
-        for k, v in rec.items():
+        for k, v in _fleet_rates(lines).items():
             if row.get(k) != v:
                 f.append(f"raw-aggregate-mismatch: {key[0]}/{key[1]}: {k} "
                          f"declared {row.get(k)}, recomputed {v}")
@@ -297,6 +310,25 @@ def _check_fleet(bundle_dir: pathlib.Path, check: dict, proto: dict,
             and agg["fleet_commit"] != ic:
         f.append(f"stamp-mismatch: fleet_commit: protocol {ic}, "
                  f"artifact {agg['fleet_commit']}")
+    # the summary pool (SPEC.md §2.5), earned from RAW lines only — the
+    # aggregate is the claim: per-(suite,member), per-suite, and whole-board
+    # stats, so a headline may cite any honest grouping level
+    pool: dict[str, list] = {"rows": [len(groups)],
+                             "suites": [len({s for s, _ in groups})]}
+    by_suite: dict = {}
+    for (suite, _member), lines in groups.items():
+        by_suite.setdefault(suite, []).extend(lines)
+        for k, v in _fleet_rates(lines).items():
+            pool.setdefault(k, []).append(v)
+    for lines in by_suite.values():
+        stats = _fleet_rates(lines)
+        stats["members"] = len({ln.get("member") for ln in lines})
+        for k, v in stats.items():
+            pool.setdefault(k, []).append(v)
+    if raw:
+        for k, v in _fleet_rates(raw).items():
+            pool.setdefault(k, []).append(v)
+    return pool
 
 
 # evalmut hole classes: name -> (outcome, op_type or None) over the rows.
@@ -308,11 +340,11 @@ _EVALMUT_HOLES = (("vacuous", "missed", "sanity"),
 
 
 def _check_evalmut(bundle_dir: pathlib.Path, check: dict, proto: dict,
-                   f: list[str]) -> None:
+                   f: list[str]) -> dict[str, list] | None:
     art = check["artifact"]
     data = _load_json(bundle_dir, art, f)
     if data is None:
-        return
+        return None
     rows = data.get("results")
     if not isinstance(rows, list) or not all(isinstance(r, dict)
                                              for r in rows):
@@ -320,15 +352,15 @@ def _check_evalmut(bundle_dir: pathlib.Path, check: dict, proto: dict,
         # aggregate alone is a declaration, not evidence
         f.append(f"artifact-unparsable: {art}: no results[] array "
                  "(evalmut-run-v1 requires the --json --all payload)")
-        return
+        return None
     tally = data.get("tally")
     if not isinstance(tally, dict):
         f.append(f"artifact-unparsable: {art}: no tally object")
-        return
+        return None
     holes = data.get("holes")
     if not isinstance(holes, dict):
         f.append(f"artifact-unparsable: {art}: no holes object")
-        return
+        return None
     # outcome semantics are internal to each row, not taken on faith:
     # MISSED is only meaningful for a defect, FLAGGED only for an equivalent
     for n, r in enumerate(rows, 1):
@@ -432,6 +464,8 @@ def _check_evalmut(bundle_dir: pathlib.Path, check: dict, proto: dict,
     # no stamp binding: the payload is stampless by design (evalmut emits no
     # clock, commit, or version into results); the pins that scope the claim
     # live in protocol.hashes / subject.version and are exercised by replay
+    return {**{k: [v] for k, v in recomputed.items()},
+            "score": [score]}  # the summary pool (SPEC.md §2.5)
 
 
 _CHECK_REFS = {"certlab-bundle-v1": ("artifact",),
@@ -443,6 +477,42 @@ _CHECK_FNS = {"certlab-bundle-v1": _check_certlab,
               "evalmut-run-v1": _check_evalmut}
 
 
+def _summary_outruns(summary: dict, pools: list[dict]) -> list[str]:
+    """SPEC.md §2.5: every number in results.summary must be re-earned by a
+    check's recomputation. A summary key that names a recomputed field is
+    held to that field's recomputed value(s); any other numeric value must
+    at least equal SOME recomputed quantity ("derivable from a check").
+    Non-numeric, descriptive values pass through."""
+    by_field: dict[str, set] = {}
+    for pool in pools:
+        for k, vs in pool.items():
+            by_field.setdefault(k, set()).update(vs)
+    all_vals: set = set().union(*by_field.values()) if by_field else set()
+    f: list[str] = []
+
+    def walk(node, path, key):
+        if isinstance(node, dict):
+            for k in sorted(node):
+                walk(node[k], f"{path}.{k}", k)
+        elif isinstance(node, list):
+            for i, v in enumerate(node):
+                walk(v, f"{path}[{i}]", key)
+        elif isinstance(node, bool) or not isinstance(node, (int, float)):
+            return
+        elif key in by_field:
+            if node not in by_field[key]:
+                got = sorted(by_field[key])
+                shown = got[0] if len(got) == 1 else f"one of {got}"
+                f.append(f"summary-outruns-checks: {path}: declares {node}, "
+                         f"recomputation gives {shown}")
+        elif node not in all_vals:
+            f.append(f"summary-outruns-checks: {path}: declares {node}, "
+                     "no check recomputes it")
+
+    walk(summary, "summary", "summary")
+    return f
+
+
 def _coherence(bundle_dir: pathlib.Path, m: dict,
                trusted: set[str]) -> list[str]:
     f: list[str] = []
@@ -450,8 +520,11 @@ def _coherence(bundle_dir: pathlib.Path, m: dict,
     proto = m.get("protocol") if isinstance(m.get("protocol"), dict) else {}
     listed = {e["path"] for e in m.get("evidence") or []
               if isinstance(e, dict) and _safe_relpath(e.get("path"))}
+    pools: list[dict] = []
+    complete = True  # every declared check contributed its recomputation
     for c in results.get("checks") or []:
         if not isinstance(c, dict) or c.get("profile") not in PROFILES:
+            complete = False
             continue  # already named as unknown-profile
         usable = True
         refs = list(_CHECK_REFS[c["profile"]])
@@ -464,8 +537,20 @@ def _coherence(bundle_dir: pathlib.Path, m: dict,
                 usable = False
             elif r not in trusted:
                 usable = False  # missing/hash-failed: already named
-        if usable:
-            _CHECK_FNS[c["profile"]](bundle_dir, c, proto, f)
+        if not usable:
+            complete = False
+            continue
+        pool = _CHECK_FNS[c["profile"]](bundle_dir, c, proto, f)
+        if pool is None:
+            complete = False  # unparsable artifact: already named
+        else:
+            pools.append(pool)
+    # summary enforcement (SPEC.md §2.5) runs only over a complete pool — a
+    # bundle whose checks cannot recompute already fails on those reasons,
+    # and "derivable" is undecidable against a half-built pool
+    summary = results.get("summary")
+    if complete and pools and isinstance(summary, dict):
+        f += _summary_outruns(summary, pools)
     return f
 
 

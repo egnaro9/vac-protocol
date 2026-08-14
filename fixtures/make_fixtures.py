@@ -3,7 +3,7 @@
 One VALID miniature bundle — fully synthetic (fictional issuer
 `example/toy-issuer`, fictional subject `toy-agent`), self-contained, and
 carrying one check per evidence profile so the single valid fixture
-exercises every clean path in the verifier — plus eight tampered variants,
+exercises every clean path in the verifier — plus eleven tampered variants,
 each the valid bundle with exactly one edit, each tripping exactly one
 named failure class:
 
@@ -23,6 +23,16 @@ named failure class:
                                 rows AND re-hashed — tally, score, holes,
                                 and the declared counts all contradict the
                                 rows they must recompute from
+  tamper-summary-fixed          headline fixed-count inflated in
+                                results.summary ONLY — checks, artifacts,
+                                and hashes all honest; SPEC.md §2.5's
+                                outrun rule is the sole line of defense
+  tamper-summary-rate           headline detection-rate floor sweetened in
+                                results.summary ONLY, to a number no check
+                                recomputes
+  tamper-summary-score          headline mutation score sweetened in
+                                results.summary ONLY, to a number no check
+                                recomputes
 
 Byte-reproducible by construction: no timestamps, no randomness, stable
 key order. `python fixtures/make_fixtures.py [out_dir]` regenerates
@@ -384,6 +394,21 @@ def tampered_variants(valid: dict[str, str]) -> dict[str, dict[str, str]]:
     r = next(r for r in mp["results"] if r["operator_id"] == "toy-negate")
     r["outcome"] = "caught"
     out["tamper-evalmut-rows"] = _rehash_mut(mp)
+
+    # cook results.summary ONLY — checks, artifacts, and hashes all stay
+    # honest (vac.json is never its own evidence, so nothing needs a
+    # rehash); only recomputation under SPEC.md §2.5 names these lies
+    m = json.loads(valid["vac.json"])  # headline fixed-count, 2 -> 3
+    m["results"]["summary"]["fixed"] = 3
+    out["tamper-summary-fixed"] = {**valid, "vac.json": _j(m)}
+
+    m = json.loads(valid["vac.json"])  # headline rate floor, 0.5 -> 0.9
+    m["results"]["summary"]["detection_rate_min"] = 0.9
+    out["tamper-summary-rate"] = {**valid, "vac.json": _j(m)}
+
+    m = json.loads(valid["vac.json"])  # headline score, 0.571 -> 0.714
+    m["results"]["summary"]["mutation_score_3"] = 0.714
+    out["tamper-summary-score"] = {**valid, "vac.json": _j(m)}
     return out
 
 
