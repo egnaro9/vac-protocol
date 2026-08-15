@@ -11,6 +11,7 @@ import io
 import json
 import os
 import pathlib
+import re
 import shutil
 import subprocess
 import sys
@@ -796,3 +797,496 @@ def test_a_root_anchored_tar_member_is_refused(tmp_path):
         dest.mkdir()
         with pytest.raises(ValueError):
             _extract_tar(tar, dest)
+
+
+# ---------------------------------------------------------------------------
+# Robustness: inputs that made the verifier CRASH instead of naming a
+# reason, an unbounded scan on an issuer-controlled field, and a
+# verdict that depended on the host rather than on the bundle.
+
+def test_non_object_rows_are_named_not_crashed(tmp_path):
+    """V-009. certlab and fleet validated the container but not its elements,
+    so .get() on a string raised AttributeError out of verify_bundle, breaking
+    the 'one named reason per failure' contract."""
+    for rel, key in (("evidence/bundle.json", "verdicts"),
+                     ("evidence/results.json", "rows")):
+        b = tmp_path / ("b" + key)
+        shutil.copytree(FIX / "valid", b)
+        _art_edit(b, rel, lambda d, k=key: d[k].append("not-a-dict"))
+        crashed, out = False, []
+        try:
+            out = verify_bundle(b)
+        except Exception:  # noqa: BLE001 - proving ANY escape is the defect
+            crashed = True
+        assert not crashed, "verify_bundle raised instead of naming a reason"
+        assert any("artifact-unparsable" in x for x in out)
+
+
+def test_a_scalar_container_is_named_not_crashed(tmp_path):
+    """V-010. `m.get("evidence") or []` guards None and [] but not a truthy
+    scalar: `5 or []` is 5, and `for e in 5` raises TypeError."""
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+    _man_edit(b, lambda m: m.update(evidence=5))
+    out = verify_bundle(b)  # must not raise
+    assert any("evidence" in x for x in out)
+
+
+def test_a_non_string_timestamp_is_named_not_coerced(tmp_path):
+    """V-012. A non-string `t` was coerced to "" with NO failure named, so the
+    chronology check was silently skipped for that point, and the value then
+    reached [:10] slices downstream and crashed."""
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+
+    def f(d):
+        for pts in d["series"].values():
+            for i, p in enumerate(pts):
+                p["t"] = 20260101 + i
+    _art_edit(b, "evidence/metrics.json", f)
+    out = verify_bundle(b)  # must not raise
+    assert any("is not a string" in x for x in out)
+
+
+def test_a_non_list_fails_vector_is_named_not_crashed(tmp_path):
+    """V-013. `fails` was fed to set()/sorted() unchecked: a scalar raised
+    TypeError, and a mixed str/int list raised on the sort against `ids`."""
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+
+    def f(d):
+        next(iter(d["series"].values()))[0]["fails"] = 7
+    _art_edit(b, "evidence/metrics.json", f)
+    out = verify_bundle(b)  # must not raise
+    assert any("fails" in x for x in out)
+
+
+def test_the_verdict_does_not_depend_on_the_host_locale(tmp_path):
+    """V-014. read_text() with no encoding= uses the LOCALE codec, so the same
+    bundle bytes verified differently on different hosts. A manifest carrying
+    UTF-8 byte 0x81 (undefined in cp1252) was rejected as invalid-json on a
+    Windows host and accepted under UTF-8 mode."""
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+    p = b / "vac.json"
+    m = json.loads(p.read_text(encoding="utf-8"))
+    m["claim"]["limitations"].append("Проверка не доказывает семантику.")
+    p.write_text(json.dumps(m, indent=1, ensure_ascii=False), encoding="utf-8")
+    assert b"\x81" in p.read_bytes()  # undefined in cp1252
+    assert verify_bundle(b) == []
+
+
+def test_a_deeply_nested_manifest_is_named_not_crashed(tmp_path):
+    """V-021. verify_bundle caught only UnicodeDecodeError/JSONDecodeError, so
+    a deeply nested manifest raised RecursionError with NO named reason and an
+    EMPTY stdout, against SPEC 4's "one named reason per failure"."""
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+    (b / "vac.json").write_text("[" * 200000 + "]" * 200000, encoding="utf-8")
+    crashed, out = False, []
+    try:
+        out = verify_bundle(b)
+    except BaseException:  # noqa: BLE001 - ANY escape is the defect
+        crashed = True
+    assert not crashed, "verify_bundle raised instead of naming a reason"
+    assert out and "invalid-json" in out[0]
+
+
+def test_issuer_text_cannot_repaint_the_terminal(tmp_path, capsys):
+    """V-020. The replay block is echoed AFTER the verdict line and was printed
+    raw, so ANSI escapes in replay.commands could clear the screen and paint a
+    forged PASS banner over a failing run. Drive the real CLI and inspect what
+    actually reaches stdout."""
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+    p = b / "vac.json"
+    man = json.loads(p.read_text(encoding="utf-8"))
+    esc = chr(27)
+    man["replay"]["commands"] = [
+        esc + "[2J" + esc + "[Hstructural verification: PASS (spoof)"]
+    man["claim"]["limitations"] = []          # force a failing verdict
+    p.write_text(json.dumps(man, indent=1) + "\n", encoding="utf-8")
+    main([str(b)])
+    printed = capsys.readouterr().out
+    assert "empty-limitations" in printed     # it really did fail
+    assert esc not in printed                 # and could not repaint anything
+
+
+@pytest.mark.parametrize("rel,mutate", [
+    ("evidence/eval_run.json",
+     lambda d: d["cases"][0].update(severity=[])),
+    ("evidence/evalmut_run.json",
+     lambda d: d["results"][0].update(operator_id=[])),
+    ("evidence/results.json",
+     lambda d: d["rows"][0].update(suite=[])),
+    ("evidence/metrics.json",
+     lambda d: next(iter(d["series"].values()))[0].update(
+         fails_runs=[[["nested"]]])),
+])
+def test_unhashable_issuer_values_are_named_not_crashed(tmp_path, rel, mutate):
+    """V-011 at every site, not just the one the first fix pinned.
+
+    Issuer JSON reaches dict keys and set elements in four places, and
+    `dict.get()` RAISES on an unhashable key rather than returning its
+    default. The first pass hardened crashkit `severity` only; a poisoning
+    sweep found the other three still reachable, one of them on a line the
+    fix diff itself had just added.
+    """
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+    _art_edit(b, rel, mutate)
+    crashed, out = False, []
+    try:
+        out = verify_bundle(b)
+    except Exception:  # noqa: BLE001 - ANY escape is the defect
+        crashed = True
+    assert not crashed, "verify_bundle raised instead of naming a reason"
+    assert out, "the poisoned value must be named, not silently accepted"
+
+
+def test_the_cli_names_a_reason_for_a_nested_manifest(tmp_path, capsys):
+    """V-021 at the CLI, not just in verify_bundle.
+
+    `_report` re-parses vac.json for the replay echo, and its except tuple
+    lacked RecursionError, so the shipped entry point printed a traceback
+    beside the named reason. A stranger runs `python -m vac.verify`, not
+    `verify_bundle`, so that is the level the contract has to hold at.
+    """
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+    (b / "vac.json").write_text("[" * 200000 + "]" * 200000, encoding="utf-8")
+    rc = main([str(b)])
+    printed = capsys.readouterr().out
+    assert rc == 1
+    assert "invalid-json" in printed
+    assert "structural verification: FAIL" in printed
+
+
+def test_a_nested_evidence_artifact_is_named_not_crashed(tmp_path):
+    """V-021 via an evidence artifact rather than the manifest: `_load_json`
+    had the same gap."""
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+    rel = "evidence/bundle.json"
+    (b / rel).write_text("[" * 200000 + "]" * 200000, encoding="utf-8")
+    _rehash(b, rel)
+    crashed, out = False, []
+    try:
+        out = verify_bundle(b)
+    except Exception:  # noqa: BLE001
+        crashed = True
+    assert not crashed, "verify_bundle raised instead of naming a reason"
+    assert any("artifact-unparsable" in x for x in out)
+
+
+def test_no_text_read_in_the_verifier_relies_on_the_host_locale():
+    """V-014, pinned structurally so it fails on ANY host.
+
+    The behavioural sibling test only goes red where the preferred encoding
+    is not UTF-8, so on this project's own CI (ubuntu, 3.11/3.12) it would
+    pass against the unfixed code and protect nothing. This one reads the
+    source instead: every text read must name its encoding.
+    """
+    bad = []
+    for mod in sorted((pathlib.Path(__file__).resolve().parents[1]
+                       / "vac").glob("*.py")):
+        src = mod.read_text(encoding="utf-8")
+        for m in re.findall(r"\.(?:read_text|write_text)\("
+                            r"(?![^()]*encoding)[^()]*\)", src):
+            bad.append(f"{mod.name}: {m}")
+    assert bad == [], f"text I/O without encoding=: {bad}"
+
+
+def test_the_narrative_strip_is_not_quadratic(tmp_path):
+    """V-017 through the real modeldrift check.
+
+    narrative.html is issuer-controlled and was fed to `<[^>]+>`, which
+    rescans to end-of-string from every start position when no '>' follows.
+    A bundle that verifies CLEAN could therefore burn unbounded CPU: this
+    input costs ~20s against the pre-fix code and is instant against
+    _strip_tags, which reproduces the same transform in linear time.
+    """
+    import time
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+    rel = "evidence/narrative.json"
+    art = b / rel
+    d = json.loads(art.read_text(encoding="utf-8"))
+    d["html"] = "<" * 120000
+    art.write_text(json.dumps(d, indent=1) + "\n", encoding="utf-8")
+    _rehash(b, rel)
+    start = time.monotonic()
+    verify_bundle(b)
+    assert time.monotonic() - start < 4.0
+
+
+def _set_fleet_ids(b, value):
+    """Rewrite suite/member consistently in BOTH fleet artifacts."""
+    agg = b / "evidence/results.json"
+    d = json.loads(agg.read_text(encoding="utf-8"))
+    for i, row in enumerate(d["rows"]):
+        row["member"] = value(i)
+    agg.write_text(json.dumps(d, indent=1) + "\n", encoding="utf-8")
+    _rehash(b, "evidence/results.json")
+
+    raw = b / "evidence/raw_results.jsonl"
+    order, out = [], []
+    for ln in raw.read_text(encoding="utf-8").splitlines():
+        if not ln.strip():
+            continue
+        o = json.loads(ln)
+        if o["member"] not in order:
+            order.append(o["member"])
+        o["member"] = value(order.index(o["member"]))
+        out.append(json.dumps(o))
+    raw.write_text("\n".join(out) + "\n", encoding="utf-8")
+    _rehash(b, "evidence/raw_results.jsonl")
+
+
+def test_integer_fleet_member_ids_are_still_accepted(tmp_path):
+    """SPEC 3.2 gives the row shape as {suite, member, ...} and types neither
+    field, so a board keyed by integer member ids is legal evidence. An
+    earlier version of the unhashable-key guard required strings and refused
+    this, which is a wider refusal than the defect warrants."""
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+    _set_fleet_ids(b, lambda i: i + 1)
+    assert verify_bundle(b) == []
+
+
+def test_integer_evalmut_operator_ids_are_still_accepted(tmp_path):
+    """SPEC 3.3 types the CATALOG's `id`, and the catalog is optional; the
+    row's operator_id is untyped. A catalogless bundle with integer operator
+    ids is legal and must not be refused."""
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+    p = b / "vac.json"
+    man = json.loads(p.read_text(encoding="utf-8"))
+    ids = {}
+    for c in man["results"]["checks"]:
+        if c.get("profile") == "evalmut-run-v1":
+            c.pop("catalog", None)          # catalog is optional per SPEC 3.3
+    man["evidence"] = [e for e in man["evidence"]
+                       if e["path"] != "evidence/operators.json"]
+    man["results"]["summary"].pop("mutation_blind_spots", None)
+    p.write_text(json.dumps(man, indent=1) + "\n", encoding="utf-8")
+    (b / "evidence/operators.json").unlink()
+
+    rel = "evidence/evalmut_run.json"
+    art = b / rel
+    d = json.loads(art.read_text(encoding="utf-8"))
+    for r in d["results"]:
+        ids.setdefault(r["operator_id"], len(ids) + 1)
+        r["operator_id"] = ids[r["operator_id"]]
+    for lst in d.get("holes", {}).values():
+        for r in lst:
+            if isinstance(r, dict) and "operator_id" in r:
+                r["operator_id"] = ids[r["operator_id"]]
+    art.write_text(json.dumps(d, indent=1) + "\n", encoding="utf-8")
+    _rehash(b, rel)
+    out = verify_bundle(b)
+    assert not any("operator_id" in x for x in out), out
+
+
+def test_a_clean_bundle_prints_on_a_non_utf8_console(tmp_path):
+    """An honest bundle whose replay block carries non-ASCII text must still
+    print a verdict on a console that is not UTF-8. The replay echo was
+    written raw, so on a cp1252 stdout the CLI died with UnicodeEncodeError
+    after a PASS: exit 1 and a traceback where the answer was 0."""
+    import contextlib
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+    p = b / "vac.json"
+    man = json.loads(p.read_text(encoding="utf-8"))
+    man["replay"]["commands"].append("# note: " + chr(26085) + chr(26412))
+    p.write_text(json.dumps(man, indent=1) + chr(10), encoding="utf-8")
+    assert verify_bundle(b) == []          # the bundle itself is honest
+    buf = io.TextIOWrapper(io.BytesIO(), encoding="cp1252", newline="")
+    with contextlib.redirect_stdout(buf):
+        rc = main([str(b)])
+    buf.flush()
+    assert rc == 0
+
+
+@pytest.mark.parametrize("codec", ["cp1252", "ascii"])
+def test_a_failing_bundle_prints_its_verdict_on_any_console(tmp_path, codec):
+    """The verifier's OWN verdict line carries an em dash, and it was printed
+    raw. cp1252 happens to contain U+2014, so a cp1252-only test cannot see
+    this; ascii cannot encode it and the CLI died after the FAIL reasons but
+    before the verdict, which is the one line a reader needs.
+    """
+    import contextlib
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+    p = b / "vac.json"
+    man = json.loads(p.read_text(encoding="utf-8"))
+    man["claim"]["limitations"] = []          # force a failing verdict
+    p.write_text(json.dumps(man, indent=1) + "\n", encoding="utf-8")
+    buf = io.TextIOWrapper(io.BytesIO(), encoding=codec, newline="")
+    with contextlib.redirect_stdout(buf):
+        rc = main([str(b)])
+    buf.flush()
+    printed = buf.buffer.getvalue().decode(codec)
+    assert rc == 1
+    assert "empty-limitations" in printed
+    assert "structural verification: FAIL" in printed
+
+
+def test_bidi_and_separator_controls_are_escaped(monkeypatch):
+    """Escaping C0/C1 is not enough on a UTF-8 console.
+
+    U+202E reverses the DISPLAYED order of a replay command the reader is
+    explicitly invited to copy and paste, and U+2028 renders as a newline in
+    many log viewers, which is enough to forge an output line of the
+    verifier's own. Legitimate text must still pass through untouched.
+
+    The offending characters are built with chr() rather than written as
+    literals, so this file does not itself contain invisible reordering
+    marks.
+    """
+    from vac.verify import _printable
+
+    class _Utf8:
+        encoding = "utf-8"
+
+    monkeypatch.setattr(sys, "stdout", _Utf8())
+    for cp in (0x202E, 0x202D, 0x200F, 0x2028, 0x2029, 0x2066):
+        bad = chr(cp)
+        assert bad not in _printable("x" + bad + "y")
+
+    ok = "".join(chr(c) for c in (0x41F, 0x440, 0x43E, 0x432, 0x435, 0x440,
+                                  0x43A, 0x430))          # Cyrillic
+    ok += " " + "".join(chr(c) for c in (0x65E5, 0x672C))  # CJK
+    ok += " " + chr(0x2014) + " " + chr(0x1F534) + " ok"   # em dash, emoji
+    assert _printable(ok) == ok
+
+
+def _nest(depth, leaf):
+    """Build a nested dict in Python, without the JSON decoder.
+
+    The earlier version of these tests built the fixture with
+    json.loads('{"a":' * 3000), which RecursionErrors inside the DECODER on
+    some interpreters before the verifier is ever reached. That made the test
+    green on one host and red on another, which is the same host-dependence
+    the patch exists to remove. Building the structure directly recurses in
+    neither the decoder nor the test.
+    """
+    node = leaf
+    for _ in range(depth):
+        node = {"a": node}
+    return node
+
+
+def test_the_summary_traversal_is_iterative():
+    """SPEC 2.5's walk covers results.summary, which the issuer writes and can
+    nest to whatever depth the decoder on THIS host happened to allow. A
+    recursive walk therefore fails at a depth that varies by interpreter. An
+    explicit stack has no such limit, so the depth below is far past any
+    default recursion limit and must still be handled.
+    """
+    from vac.verify import _summary_outruns
+    deep = _nest(20000, 1)
+    out = _summary_outruns(deep, [{"a": [1]}])   # must not raise
+    assert isinstance(out, list)
+
+
+def test_the_draft_traversal_is_iterative():
+    """Same property for the TODO walk, which covers the whole manifest."""
+    from vac.verify import _todo_failures
+    out = _todo_failures(_nest(20000, "x"))      # must not raise
+    assert isinstance(out, list)
+
+
+def test_a_recursion_error_does_not_erase_the_other_reasons(tmp_path,
+                                                            monkeypatch):
+    """Defence in depth for the traversals that are not iterative yet.
+
+    The backstop must APPEND. An earlier version returned a fresh list, which
+    handed the issuer a switch: anything that induced a RecursionError deleted
+    every other named reason, a smuggled unlisted file included, while still
+    exiting 1 so nothing looked wrong. Injected rather than induced, so the
+    test does not depend on where this interpreter's stack gives out.
+    """
+    import vac.verify as V
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+    (b / "evidence" / "SECRET.txt").write_text("smuggled", encoding="utf-8")
+    p = b / "vac.json"
+    man = json.loads(p.read_text(encoding="utf-8"))
+    man["claim"]["limitations"] = []
+    p.write_text(json.dumps(man, indent=1) + "\n", encoding="utf-8")
+
+    def _boom(*a, **k):
+        raise RecursionError("injected")
+
+    monkeypatch.setattr(V, "_coherence", _boom)
+    out = V.verify_bundle(b)
+    assert any("unlisted-file: evidence/SECRET.txt" in x for x in out), out
+    assert any("empty-limitations" in x for x in out), out
+    assert any("nesting too deep" in x for x in out), out
+
+
+# --- Each refusal below is pinned by its exact reason text, not by "some
+# artifact-unparsable fired". The repo's refusal-coverage job mutates each
+# f.append site away and requires a test to notice; an assertion that only
+# checks the list is non-empty survives that mutation via collateral damage.
+
+def _write_raw(b, lines):
+    rel = "evidence/raw_results.jsonl"
+    (b / rel).write_text("\n".join(lines) + "\n", encoding="utf-8")
+    _rehash(b, rel)
+
+
+def test_a_raw_line_that_is_not_an_object_is_refused(tmp_path):
+    """The fleet raw payload is one JSON object per line. A bare scalar line
+    reached ln.get() and raised AttributeError out of verify_bundle."""
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+    raw = (b / "evidence/raw_results.jsonl").read_text(
+        encoding="utf-8").splitlines()
+    _write_raw(b, raw + ["42"])
+    assert ("artifact-unparsable: evidence/raw_results.jsonl: every line "
+            "must be an object") in verify_bundle(b)
+
+
+def test_a_raw_line_with_an_unhashable_member_is_refused(tmp_path):
+    """(suite, member) becomes a dict key and a set element, and dict.get()
+    RAISES on an unhashable key rather than returning its default."""
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+    raw = (b / "evidence/raw_results.jsonl").read_text(
+        encoding="utf-8").splitlines()
+    first = json.loads(raw[0])
+    first["member"] = []
+    _write_raw(b, [json.dumps(first)] + raw[1:])
+    assert ("artifact-unparsable: evidence/raw_results.jsonl: line 1 "
+            "suite/member must be scalar identifiers") in verify_bundle(b)
+
+
+def test_an_aggregate_row_with_an_unhashable_member_is_refused(tmp_path):
+    """Same hazard on the aggregate side, where the duplicate-row check this
+    branch adds is itself the line that would raise."""
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+    rel = "evidence/results.json"
+    art = b / rel
+    d = json.loads(art.read_text(encoding="utf-8"))
+    d["rows"][0]["member"] = []
+    art.write_text(json.dumps(d, indent=1) + "\n", encoding="utf-8")
+    _rehash(b, rel)
+    assert ("artifact-unparsable: evidence/results.json: row 1 "
+            "suite/member must be scalar identifiers") in verify_bundle(b)
+
+
+def test_an_evalmut_row_with_an_unhashable_operator_id_is_refused(tmp_path):
+    """operator_id reaches a set element and the catalog dict lookup."""
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+    rel = "evidence/evalmut_run.json"
+    art = b / rel
+    d = json.loads(art.read_text(encoding="utf-8"))
+    d["results"][0]["operator_id"] = []
+    art.write_text(json.dumps(d, indent=1) + "\n", encoding="utf-8")
+    _rehash(b, rel)
+    assert ("artifact-unparsable: evidence/evalmut_run.json: row 1 "
+            "operator_id must be a scalar identifier") in verify_bundle(b)

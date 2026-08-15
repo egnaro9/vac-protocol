@@ -915,7 +915,9 @@ def main(out_dir: pathlib.Path) -> None:
         for rel, text in sorted(files.items()):
             p = d / rel
             p.parent.mkdir(parents=True, exist_ok=True)
-            p.write_text(text)
+            # utf-8 + no newline translation: the fixtures are pinned by
+            # sha256, so a locale codec or a CRLF rewrite breaks byte identity
+            p.write_text(text, encoding="utf-8", newline="")
         print(f"{name}: {len(files)} file(s)")
 
 

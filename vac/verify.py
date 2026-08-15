@@ -56,15 +56,27 @@ def _nonempty_str(v) -> bool:
     return isinstance(v, str) and bool(v.strip())
 
 
+def _hashable(v) -> bool:
+    """SPEC 3.2/3.3 do not type suite/member/operator_id, so an integer id is
+    legal evidence. What actually breaks the verifier is a list or dict
+    reaching a tuple key or a set element, where dict.get() RAISES rather
+    than returning its default. Guard exactly that, and nothing wider."""
+    try:
+        hash(v)
+    except TypeError:
+        return False
+    return True
+
+
 def _safe_relpath(p) -> bool:
     """Relative, forward-slash, no traversal, not the manifest itself."""
     if not _nonempty_str(p) or p == "vac.json" or "\\" in p:
         return False
     if any(c < " " or c == "\x7f" for c in p):
         return False  # control chars: a terminal-injection channel
-    # A drive-anchored name ("C:/x", "C:x") is NOT absolute under
-    # PurePosixPath but IS under Windows semantics, where `bundle / "C:/x"`
-    # discards the bundle root entirely and reads outside the bundle.
+    # A drive-anchored name ("C:/x", "C:x") is NOT absolute under PurePosixPath
+    # but IS under Windows semantics, where `bundle / "C:/x"` discards the
+    # bundle root entirely and reads outside the bundle.
     win = pathlib.PureWindowsPath(p)
     if win.drive or win.is_absolute():
         return False
@@ -83,17 +95,20 @@ _TODO_PREFIX = "TODO("
 def _todo_failures(m) -> list[str]:
     f: list[str] = []
 
-    def walk(node, path):
+    # Iterative: the manifest is issuer-controlled, and a recursive walk
+    # blows the stack at a depth that varies by interpreter, which would make
+    # the verdict depend on the host.
+    stack = [(m, "")]
+    while stack:
+        node, path = stack.pop()
         if isinstance(node, dict):
-            for k in sorted(node):
-                walk(node[k], f"{path}.{k}" if path else k)
+            for k in sorted(node, reverse=True):
+                stack.append((node[k], f"{path}.{k}" if path else k))
         elif isinstance(node, list):
-            for i, v in enumerate(node):
-                walk(v, f"{path}[{i}]")
+            for i in range(len(node) - 1, -1, -1):
+                stack.append((node[i], f"{path}[{i}]"))
         elif isinstance(node, str) and node.startswith(_TODO_PREFIX):
             f.append(f"draft-incomplete: {path} is an unauthored TODO")
-
-    walk(m, "")
     return f
 
 
@@ -203,7 +218,8 @@ def _verify_artifacts(bundle_dir: pathlib.Path,
                       m: dict) -> tuple[list[str], set[str]]:
     """Returns (failures, paths whose bytes are hash-verified and usable)."""
     f: list[str] = []
-    entries = [e for e in m.get("evidence") or []
+    ev = m.get("evidence")
+    entries = [e for e in (ev if isinstance(ev, list) else [])
                if isinstance(e, dict) and _safe_relpath(e.get("path"))]
     listed = {e["path"] for e in entries}
     trusted: set[str] = set()
@@ -233,15 +249,13 @@ def _verify_artifacts(bundle_dir: pathlib.Path,
 # Evidence profiles (SPEC.md §3): declared numbers re-earned from artifacts.
 def _load_json(bundle_dir: pathlib.Path, rel: str, f: list[str],
                want: type = dict):
-    """`want` is the shape SPEC 3 gives this artifact.
-
-    Without it a bare scalar (notably the literal `null`) parsed fine and
-    carried no evidence, taking the failure path WITHOUT naming a failure;
-    and an array reached a caller that calls .get() on it immediately.
-    """
+    """`want` is the shape SPEC 3 gives this artifact. Without it a bare
+    scalar (notably the literal `null`) parsed fine and carried no evidence,
+    and an array reached a caller that immediately calls .get() on it."""
     try:
-        data = json.loads((bundle_dir / rel).read_text())
-    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as e:
+        data = json.loads((bundle_dir / rel).read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError,
+            RecursionError) as e:
         f.append(f"artifact-unparsable: {rel}: {e}")
         return None
     if not isinstance(data, want):
@@ -261,7 +275,8 @@ def _check_certlab(bundle_dir: pathlib.Path, check: dict, proto: dict,
     if data is None:
         return None
     verdicts = data.get("verdicts")
-    if not isinstance(verdicts, list):
+    if not (isinstance(verdicts, list)
+            and all(isinstance(v, dict) for v in verdicts)):
         f.append(f"artifact-unparsable: {art}: no verdicts[] array")
         return None
     recomputed = {
@@ -346,18 +361,29 @@ def _check_fleet(bundle_dir: pathlib.Path, check: dict, proto: dict,
     raw_rel = check["raw"]
     try:
         raw = [json.loads(ln) for ln in
-               (bundle_dir / raw_rel).read_text().splitlines() if ln.strip()]
-    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as e:
+               (bundle_dir / raw_rel).read_text(
+                   encoding="utf-8").splitlines() if ln.strip()]
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError,
+            RecursionError) as e:
         f.append(f"artifact-unparsable: {raw_rel}: {e}")
         return None
     if agg is None:
         return None
     rows = agg.get("rows")
-    if not isinstance(rows, list):
-        f.append(f"artifact-unparsable: {check['aggregate']}: no rows[] array")
+    if not (isinstance(rows, list) and all(isinstance(r, dict) for r in rows)):
+        f.append(f"artifact-unparsable: {check['aggregate']}: "
+                 "no rows[] array")
+        return None
+    if not all(isinstance(ln, dict) for ln in raw):
+        f.append(f"artifact-unparsable: {raw_rel}: every line must be "
+                 "an object")
         return None
     groups: dict[tuple, list] = {}
     for n, ln in enumerate(raw, 1):
+        if not (_hashable(ln.get("suite")) and _hashable(ln.get("member"))):
+            f.append(f"artifact-unparsable: {raw_rel}: line {n} suite/member "
+                     "must be scalar identifiers")
+            return None
         key = (ln.get("suite"), ln.get("member"))
         # the paired protocol is internal to each line, not taken on faith
         if ln.get("detected") != (ln.get("defective_failed") is True
@@ -375,7 +401,11 @@ def _check_fleet(bundle_dir: pathlib.Path, check: dict, proto: dict,
                 f.append(f"summary-mismatch: rows: declared {expect[k]}, "
                          f"recomputed {len(rows)}")
     seen: set[tuple] = set()
-    for row in rows:
+    for n, row in enumerate(rows, 1):
+        if not (_hashable(row.get("suite")) and _hashable(row.get("member"))):
+            f.append(f"artifact-unparsable: {check['aggregate']}: row {n} "
+                     "suite/member must be scalar identifiers")
+            return None
         key = (row.get("suite"), row.get("member"))
         if key in seen:
             f.append(f"raw-aggregate-mismatch: {key[0]}/{key[1]}: duplicate "
@@ -499,6 +529,12 @@ def _check_evalmut(bundle_dir: pathlib.Path, check: dict, proto: dict,
     # outcome semantics are internal to each row, not taken on faith:
     # MISSED is only meaningful for a defect, FLAGGED only for an equivalent
     for n, r in enumerate(rows, 1):
+        # operator_id reaches a set element and a catalog dict lookup, both of
+        # which raise on an unhashable value
+        if not _hashable(r.get("operator_id")):
+            f.append(f"artifact-unparsable: {art}: row {n} operator_id must "
+                     "be a scalar identifier")
+            return None
         if (r.get("outcome") == "missed" and r.get("polarity") != "defect") \
                 or (r.get("outcome") == "flagged"
                     and r.get("polarity") != "equivalent"):
@@ -706,9 +742,24 @@ def _check_crashkit(bundle_dir: pathlib.Path, check: dict, proto: dict,
     # denominator: re-casing "critical" to "Critical" on the FAILED rows alone
     # drops them to weight 0 and the score divides to a clean, false 0.0 through
     # the ordinary arithmetic path. Refuse the label instead of scoring it.
-    unknown = sorted({c.get("severity") for c in graded
-                      if c.get("severity") not in _CRASHKIT_WEIGHTS},
-                     key=lambda v: (v is None, str(v)))
+    # Test hashability first: `x in {...}` and a set comprehension both RAISE
+    # on a list or dict, so an issuer-supplied one would escape as a TypeError
+    # rather than as this named refusal.
+    unknown: list = []
+    seen_h: set = set()
+    seen_u: list = []
+    for c in graded:
+        s = c.get("severity")
+        if _hashable(s):
+            if s in _CRASHKIT_WEIGHTS or s in seen_h:
+                continue
+            seen_h.add(s)
+        else:
+            if any(s == u for u in seen_u):
+                continue
+            seen_u.append(s)
+        unknown.append(s)
+    unknown.sort(key=lambda v: (v is None, str(v)))
     if unknown:
         labels = ", ".join(repr(u) for u in unknown[:4])
         f.append(f"artifact-unparsable: {art}: severity {labels} outside the "
@@ -906,6 +957,35 @@ def _modeldrift_flips(series: dict) -> dict:
             1 for pts in series.values()
             if sum(1 for p in pts if "fails" in p) >= 2),
     }
+
+
+def _strip_tags(html: str) -> str:
+    """Exactly what `re.sub(r"<[^>]+>", "", html)` produces, in linear time.
+
+    The regex form rescans to end-of-string from every start position when no
+    ">" follows, which is quadratic in an issuer-controlled field. The
+    semantics are preserved deliberately: "<>" does not match (the class needs
+    one or more), and a "<" with no later ">" stays literal text -- SPEC 3.5
+    pins the committed narrative against this transform, so redefining it
+    would flip verdicts on honest bundles.
+    """
+    out, i, n = [], 0, len(html)
+    while i < n:
+        lt = html.find("<", i)
+        if lt < 0:
+            out.append(html[i:])
+            break
+        gt = html.find(">", lt + 1)
+        if gt < 0:               # no closing ">": the remainder is literal
+            out.append(html[i:])
+            break
+        if gt == lt + 1:         # "<>" is not a match for `<[^>]+>`
+            out.append(html[i:lt + 1])
+            i = lt + 1
+            continue
+        out.append(html[i:lt])
+        i = gt + 1
+    return "".join(out)
 
 
 def _bad_unit(v) -> bool:
@@ -1180,7 +1260,10 @@ def _check_modeldrift(bundle_dir: pathlib.Path, check: dict, proto: dict,
         for i, p in enumerate(pts):
             w = f"{met_rel}: {mid}[{i}]"
             t = p.get("t")
-            t = t if isinstance(t, str) else ""
+            if not isinstance(t, str):
+                f.append(f"raw-aggregate-mismatch: {w}: t {t!r} is not a "
+                         "string")
+                continue  # do not then blame the coercion we just made
             if t < prev_t:
                 f.append(f"raw-aggregate-mismatch: {w}: t {t!r} precedes "
                          f"{prev_t!r}")
@@ -1205,7 +1288,14 @@ def _check_modeldrift(bundle_dir: pathlib.Path, check: dict, proto: dict,
             if _bad_unit(spread) or spread < 0:
                 f.append(f"raw-aggregate-mismatch: {w}: acc_spread "
                          f"{spread!r} < 0")
-            unknown = sorted(set(p.get("fails") or []) - ids)
+            fails = p.get("fails")
+            if fails is not None and not (isinstance(fails, list)
+                                          and all(isinstance(t_, str)
+                                                  for t_ in fails)):
+                f.append(f"raw-aggregate-mismatch: {w}: fails {fails!r} is "
+                         "not a list of task ids")
+                continue
+            unknown = sorted(set(fails or []) - ids)
             if unknown:
                 f.append(f"raw-aggregate-mismatch: {w}: fails name tasks "
                          f"outside the suite: {unknown}")
@@ -1224,6 +1314,8 @@ def _check_modeldrift(bundle_dir: pathlib.Path, check: dict, proto: dict,
             fr = p.get("fails_runs")
             if fr is not None and not (isinstance(fr, list)
                                        and all(isinstance(s, list)
+                                               and all(isinstance(t_, str)
+                                                       for t_ in s)
                                                for s in fr)):
                 f.append(f"raw-aggregate-mismatch: {w}: fails_runs {fr!r} "
                          "is not a list of samples")
@@ -1309,8 +1401,7 @@ def _check_modeldrift(bundle_dir: pathlib.Path, check: dict, proto: dict,
     # narrative internal coherence only: byte-identical REGENERATION of the
     # paragraph is the replay block's job (the claims generator at the
     # stamped commit), not structural
-    strip = re.sub(r"\s+", " ",
-                   re.sub(r"<[^>]+>", "", narr["html"])).strip()
+    strip = re.sub(r"\s+", " ", _strip_tags(narr["html"])).strip()
     if narr.get("claims_fired") != len(narr["sentences"]):
         f.append(f"raw-aggregate-mismatch: {narr_rel}: claims_fired "
                  f"declared {narr.get('claims_fired')!r}, recomputed "
@@ -1402,15 +1493,20 @@ def _summary_outruns(summary: dict, pools: list[dict]) -> list[str]:
     all_vals: set = set().union(*by_field.values()) if by_field else set()
     f: list[str] = []
 
-    def walk(node, path, key):
+    # Iterative, for the same reason as _todo_failures: results.summary is
+    # issuer-controlled and nests to whatever depth the decoder allowed, and a
+    # recursive walk turns that into a host-dependent verdict.
+    stack = [(summary, "summary", "summary")]
+    while stack:
+        node, path, key = stack.pop()
         if isinstance(node, dict):
-            for k in sorted(node):
-                walk(node[k], f"{path}.{k}", k)
+            for k in sorted(node, reverse=True):
+                stack.append((node[k], f"{path}.{k}", k))
         elif isinstance(node, list):
-            for i, v in enumerate(node):
-                walk(v, f"{path}[{i}]", key)
+            for i in range(len(node) - 1, -1, -1):
+                stack.append((node[i], f"{path}[{i}]", key))
         elif isinstance(node, bool):
-            return
+            continue
         elif isinstance(node, str) and _NUMERIC_STR.fullmatch(node.strip()):
             # A lie typed as a string used to walk straight through: retype
             # every summary number as "9999" and nothing was ever compared --
@@ -1420,7 +1516,7 @@ def _summary_outruns(summary: dict, pools: list[dict]) -> list[str]:
                      "string; a numeric headline must be a JSON number so it "
                      "can be recomputed")
         elif not isinstance(node, (int, float)):
-            return
+            continue
         elif key in by_field:
             if node not in by_field[key]:
                 got = sorted(by_field[key])
@@ -1430,8 +1526,6 @@ def _summary_outruns(summary: dict, pools: list[dict]) -> list[str]:
         elif node not in all_vals:
             f.append(f"summary-outruns-checks: {path}: declares {node}, "
                      "no check recomputes it")
-
-    walk(summary, "summary", "summary")
     return f
 
 
@@ -1440,7 +1534,8 @@ def _coherence(bundle_dir: pathlib.Path, m: dict,
     f: list[str] = []
     results = m.get("results") if isinstance(m.get("results"), dict) else {}
     proto = m.get("protocol") if isinstance(m.get("protocol"), dict) else {}
-    listed = {e["path"] for e in m.get("evidence") or []
+    _ev = m.get("evidence")
+    listed = {e["path"] for e in (_ev if isinstance(_ev, list) else [])
               if isinstance(e, dict) and _safe_relpath(e.get("path"))}
     pools: list[dict] = []
     # Reference-scan EVERY check first, malformed ones included. A check that
@@ -1453,10 +1548,11 @@ def _coherence(bundle_dir: pathlib.Path, m: dict,
             covered |= {v for v in c.values()
                         if isinstance(v, str) and v in listed}
     complete = True  # every declared check contributed its recomputation
-    for c in results.get("checks") or []:
+    _checks = results.get("checks")
+    for c in (_checks if isinstance(_checks, list) else []):
         if not isinstance(c, dict) or c.get("profile") not in PROFILES:
             complete = False
-            continue  # already named as unknown-profile
+            continue  # already named by _validate_manifest
         usable = True
         refs = list(_CHECK_REFS[c["profile"]])
         refs += [k for k in _CHECK_OPT_REFS.get(c["profile"], ())
@@ -1507,18 +1603,28 @@ def verify_bundle(bundle_dir: pathlib.Path) -> list[str]:
     if not vac.is_file():
         return ["missing-manifest: no vac.json in bundle"]
     try:
-        m = json.loads(vac.read_text())
-    except (UnicodeDecodeError, json.JSONDecodeError) as e:
+        m = json.loads(vac.read_text(encoding="utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError, RecursionError) as e:
         return [f"invalid-json: vac.json: {e}"]
+    except OSError as e:
+        return [f"missing-manifest: vac.json: {e}"]
     if not isinstance(m, dict):
         return ["invalid-json: vac.json: top level must be an object"]
     todo = _todo_failures(m)
     if todo:
         return todo  # a draft is refused wholesale (SPEC.md §2.7)
-    failures = _validate_manifest(m)
-    art_failures, trusted = _verify_artifacts(bundle_dir, m)
-    failures += art_failures
-    failures += _coherence(bundle_dir, m, trusted)
+    failures: list[str] = []
+    try:
+        failures += _validate_manifest(m)
+        art_failures, trusted = _verify_artifacts(bundle_dir, m)
+        failures += art_failures
+        failures += _coherence(bundle_dir, m, trusted)
+    except RecursionError:
+        # Defence in depth: the traversals are iterative, but a future one may
+        # not be. APPEND rather than replace, because returning a fresh list
+        # would let an issuer delete every other reason, a smuggled
+        # unlisted-file included, just by padding a structure with depth.
+        failures.append("invalid-json: vac.json: nesting too deep to verify")
     return failures
 
 
@@ -1564,17 +1670,51 @@ def _extract_tar(tar_path: pathlib.Path, dest: pathlib.Path) -> None:
 def _bundle_root(extracted: pathlib.Path) -> pathlib.Path:
     if (extracted / "vac.json").is_file():
         return extracted
+    # _extract_tar has already refused an archive with entries beside the
+    # bundle root, so a lone subdirectory here is the bundle
     subdirs = [p for p in extracted.iterdir() if p.is_dir()]
     if len(subdirs) == 1 and (subdirs[0] / "vac.json").is_file():
         return subdirs[0]
     return extracted  # verify_bundle names the missing manifest
 
 
+# Escaped alongside C0/C1: bidi overrides reverse the DISPLAYED order of a
+# replay command the reader is invited to copy and paste, and the Unicode
+# line/paragraph separators render as a newline in many viewers, which is
+# enough to forge an output line of the verifier's own.
+_UNSAFE_PRINT = frozenset("\u200e\u200f\u2028\u2029\u202a\u202b\u202c"
+                          "\u202d\u202e\u2066\u2067\u2068\u2069")
+
+
+def _printable(s: str) -> str:
+    """Issuer text, safe to print: no terminal control, no encode error.
+
+    Escaping C0/C1 stops the text repainting the terminal, but it does not
+    make it ENCODABLE, and stdout is not UTF-8 everywhere. Without the second
+    pass a structurally CLEAN bundle carrying non-ASCII replay text exits 1
+    with a traceback on a cp1252 console.
+    """
+    def _esc(c):
+        n = ord(c)
+        return f"\\x{n:02x}" if n < 0x100 else f"\\u{n:04x}"
+
+    out = "".join(c if (c >= " " and c != "\x7f"
+                        and not ("\x80" <= c <= "\x9f")
+                        and c not in _UNSAFE_PRINT)
+                  else _esc(c) for c in str(s))
+    enc = getattr(sys.stdout, "encoding", None) or "utf-8"
+    return out.encode(enc, "backslashreplace").decode(enc, "replace")
+
+
 def _report(name: str, root: pathlib.Path, failures: list[str]) -> int:
     for reason in failures:
-        print(f"FAIL {reason}")
-    verdict = "PASS" if not failures else f"FAIL — {len(failures)} named reason(s)"
-    print(f"structural verification: {verdict} ({name})")
+        print(f"FAIL {_printable(reason)}")
+    verdict = ("PASS" if not failures
+               else f"FAIL — {len(failures)} named reason(s)")
+    # the verdict line carries an em dash and a caller-supplied name, so it
+    # needs the same treatment as issuer text: an stdout without U+2014 would
+    # otherwise raise before the verdict was ever printed
+    print(_printable(f"structural verification: {verdict} ({name})"))
     print("  proved offline: manifest schema, artifact presence + sha256, "
           "bundle closure,")
     print("  stated limitations, stamp agreement, declared results recomputed "
@@ -1586,13 +1726,17 @@ def _report(name: str, root: pathlib.Path, failures: list[str]) -> int:
     print("  verdicts, run the bundle's replay block at the pinned "
           "issuer_commit:")
     try:  # best-effort echo of the replay recipe; never affects the verdict
-        replay = json.loads((root / "vac.json").read_text()).get("replay", {})
-        for cmd in replay.get("commands", []):
-            print(f"    $ {cmd}")
+        replay = json.loads(
+            (root / "vac.json").read_text(encoding="utf-8")).get("replay", {})
+        cmds = replay.get("commands")
+        for cmd in (cmds if isinstance(cmds, list) else []):
+            print(f"    $ {_printable(cmd)}")
         if _nonempty_str(replay.get("expected")):
-            print(f"    expected: {replay['expected']}")
-    except (OSError, UnicodeDecodeError, json.JSONDecodeError, AttributeError):
-        print("    (replay block unreadable — see failures above)")
+            print(f"    expected: {_printable(replay['expected'])}")
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError, AttributeError,
+            TypeError, RecursionError):
+        print(_printable("    (replay block unreadable — see "
+                         "failures above)"))
     return 1 if failures else 0
 
 
@@ -1609,9 +1753,9 @@ def main(argv: list[str] | None = None) -> int:
             try:
                 _extract_tar(target, pathlib.Path(td))
             except (ValueError, OSError, tarfile.TarError) as e:
-                print(f"FAIL unsafe-archive: {e}")
-                print(f"structural verification: FAIL — 1 named reason(s) "
-                      f"({target.name})")
+                print(_printable(f"FAIL unsafe-archive: {e}"))
+                print(_printable("structural verification: FAIL — 1 named "
+                                 f"reason(s) ({target.name})"))
                 return 1
             root = _bundle_root(pathlib.Path(td))
             return _report(target.name, root, verify_bundle(root))

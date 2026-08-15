@@ -153,7 +153,7 @@ def _entry(issuer: str, repo_url: str, bundle_path: str,
     failures = verify_bundle(bundle_dir)
     if failures:
         return None, [f"structural: {f}" for f in failures]
-    man = json.loads((bundle_dir / "vac.json").read_text())
+    man = json.loads((bundle_dir / "vac.json").read_text(encoding="utf-8"))
     man_issuer = "/".join(
         str(man["protocol"]["issuer"]).rstrip("/").split("/")[-2:])
     if man_issuer != issuer:
@@ -285,7 +285,7 @@ def check_fetched(reg_path: pathlib.Path = REGISTRY,
     if not reg_path.is_file():
         return [f"registry.json missing at {reg_path} — "
                 "run python -m vac.registry"]
-    committed = reg_path.read_text()
+    committed = reg_path.read_text(encoding="utf-8")
     doc = json.loads(committed)
     failures: list[str] = []
     rebuilt: list[dict] = []
@@ -338,7 +338,7 @@ def fetch_bundle(entry_name: str, dest: pathlib.Path,
                  fetch=_fetch) -> list[str]:
     """Download one accepted entry's artifacts into `dest`, refusing any byte
     that does not hash to its registry pin."""
-    doc = json.loads(reg_path.read_text())
+    doc = json.loads(reg_path.read_text(encoding="utf-8"))
     entry = next((e for e in doc.get("entries") or []
                   if e["name"] == entry_name), None)
     if entry is None:
@@ -408,7 +408,7 @@ def main(argv: list[str] | None = None) -> int:
                   "sha256-verified against the registry")
         return 1 if failures else 0
     if args == ["--emit-matrix"]:
-        doc = json.loads(REGISTRY.read_text())
+        doc = json.loads(REGISTRY.read_text(encoding="utf-8"))
         m = matrix(doc)
         if not m:
             print(f"no accepted entries in registry.json — nothing to "
@@ -419,7 +419,7 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps(m, separators=(",", ":")))
         return 0
     if args == ["--list-pending"]:
-        doc = json.loads(REGISTRY.read_text())
+        doc = json.loads(REGISTRY.read_text(encoding="utf-8"))
         for p in doc.get("pending") or []:
             print(f"PENDING {p['name']}: {p['reason']}")
         if doc.get("pending"):
