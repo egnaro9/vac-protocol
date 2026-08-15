@@ -560,3 +560,239 @@ def test_fixtures_regenerate_byte_identically(tmp_path):
     fresh = {p.relative_to(tmp_path).as_posix(): p.read_bytes()
              for p in tmp_path.rglob("*") if p.is_file()}
     assert committed == fresh
+
+
+# ---------------------------------------------------------------------------
+# Adversarial audit: each test below reproduces a bundle that the
+# verifier accepted while its declared numbers were false, or a
+# path that escaped the bundle. Every one FAILS against the
+# pre-fix verifier.
+
+BS = chr(92)
+
+
+def _man_edit(b, fn):
+    p = b / "vac.json"
+    m = json.loads(p.read_text(encoding="utf-8"))
+    fn(m)
+    p.write_text(json.dumps(m, indent=1) + "\n", encoding="utf-8")
+
+
+def _art_edit(b, rel, fn):
+    p = b / rel
+    d = json.loads(p.read_text(encoding="utf-8"))
+    fn(d)
+    p.write_text(json.dumps(d, indent=1) + "\n", encoding="utf-8")
+    _rehash(b, rel)
+
+
+def test_a_check_that_is_not_an_object_is_refused(tmp_path):
+    """V-001. A bare profile-name STRING satisfied the schema pass, then
+    _coherence skipped it as 'already named as unknown-profile' having named
+    nothing. No profile ran, the pool stayed empty, and `if complete and pools`
+    switched off the SPEC 2.5 outrun rule with it: a total bypass."""
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+    _man_edit(b, lambda m: m["results"].update(
+        checks=["certlab-bundle-v1"], summary={"verdicts": 9999}))
+    out = verify_bundle(b)
+    assert "schema-violation: results.checks[0]: object required" in out
+
+
+def test_a_null_artifact_is_named_not_silently_skipped(tmp_path):
+    """V-002. _load_json returned None for both "parse failed" and "the content
+    is the literal null", and only the first named a reason. The silent path
+    set `complete = False` with nothing to show for it.
+
+    Note what this does NOT claim: SPEC 2.5 enforcement is still gated on
+    `complete and pools`, so the planted summary number below is still not
+    named. That gate is V-034, a separate protocol question left to the
+    maintainer. What is fixed here is only the silent skip."""
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+    (b / "evidence/bundle.json").write_bytes(b"null")
+    _rehash(b, "evidence/bundle.json")
+    _man_edit(b, lambda m: m["results"]["summary"].update(verdicts=99999))
+    out = verify_bundle(b)
+    assert any("artifact-unparsable: evidence/bundle.json" in x for x in out)
+    assert out != []
+
+
+def test_fleet_commit_hash_stamp_must_match_the_aggregate(tmp_path):
+    """V-004. SPEC 3.2 binds the aggregate's fleet_commit to BOTH
+    protocol.issuer_commit AND protocol.hashes.fleet_commit; 2.3 makes every
+    hash named in protocol.hashes equal its counterpart. Only the first
+    existed, so protocol.hashes.fleet_commit was a pin nothing read."""
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+    _man_edit(b, lambda m: m["protocol"]["hashes"].update(
+        fleet_commit="0000000"))
+    assert verify_bundle(b) == [
+        ("stamp-mismatch: hashes.fleet_commit: protocol 0000000, "
+         "artifact f1e2d3c")]
+
+
+def test_failure_mode_cannot_widen_the_summary_pool(tmp_path):
+    """V-005. failure_mode is issuer free text and became a summary-pool key
+    directly, letting the issuer redefine what a headline of that name is held
+    to. Setting it to 'fixed' on every verdict made summary.fixed = 3 verify
+    clean while the honest recomputation is 2."""
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+    def _tag(d):
+        for v in d["verdicts"]:
+            v["failure_mode"] = "fixed"
+
+    _art_edit(b, "evidence/bundle.json", _tag)
+    _man_edit(b, lambda m: m["results"]["summary"].update(fixed=3))
+    assert any("summary" in x and "fixed" in x for x in verify_bundle(b))
+
+
+def test_a_drive_anchored_evidence_path_is_refused(tmp_path):
+    """V-006. _safe_relpath vetted with PurePosixPath, for which 'C:/Windows/
+    win.ini' is not absolute; but `bundle / that` on Windows DISCARDS the
+    bundle root, so the verifier hashed a file outside the bundle and printed
+    its sha256: an arbitrary-read and content-confirmation oracle."""
+    from vac.verify import _safe_relpath
+    assert not _safe_relpath("C:/Windows/win.ini")
+    assert not _safe_relpath("C:evil")
+    assert not _safe_relpath("evidence/\x1b[2Kspoof.json")
+    assert _safe_relpath("evidence/bundle.json")
+
+
+def test_duplicate_aggregate_rows_are_refused(tmp_path):
+    """V-023. Coverage was checked with a SET, so duplicate (suite, member)
+    rows were each validated against the same raw group and never named, while
+    expect.rows compares against len(rows). SPEC 3.2 requires exact cover."""
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+    _art_edit(b, "evidence/results.json",
+              lambda d: d["rows"].extend(json.loads(json.dumps(d["rows"]))))
+    assert any("duplicate aggregate row" in x for x in verify_bundle(b))
+
+
+def _tar_with_raw_member(tar_path, raw_name, payload=b"OWNED"):
+    """Write a tar whose member NAME is exactly raw_name.
+
+    tarfile.add(arcname=...) normalizes the name (it strips a drive and folds
+    backslashes), so a test built with add() silently exercises the POSIX
+    shape that was already rejected. A real attacker writes the header
+    directly, which is what TarInfo + addfile does.
+    """
+    with tarfile.open(tar_path, "w:gz") as tf:
+        ti = tarfile.TarInfo(name=raw_name)
+        ti.size = len(payload)
+        tf.addfile(ti, io.BytesIO(payload))
+
+
+def test_a_tar_cannot_smuggle_files_beside_the_bundle_root(tmp_path):
+    """V-007. _bundle_root counted only DIRECTORIES, so an archive holding
+    my-claim/ plus a top-level sibling FILE still resolved the root to
+    my-claim/ and the closure scan never saw the sibling."""
+    tar = tmp_path / "b.tar.gz"
+    smuggled = tmp_path / "SMUGGLED.json"
+    smuggled.write_text('{"payload": "never listed, never hashed"}')
+    with tarfile.open(tar, "w:gz") as tf:
+        tf.add(FIX / "valid", arcname="my-claim")
+        tf.add(smuggled, arcname="SMUGGLED.json")
+    from vac.verify import _extract_tar
+    td = tmp_path / "x"
+    td.mkdir()
+    with pytest.raises(ValueError, match="beside the bundle root"):
+        _extract_tar(tar, td)
+
+
+def test_a_windows_separator_tar_member_is_refused(tmp_path):
+    """V-018. _extract_tar vetted only with PurePosixPath, for which the
+    single-component name r"..\\..\\evil.txt" has no ".." part, so the
+    member was accepted. On pythons inside the project's declared
+    requires-python window that lack tarfile's filter= kwarg, the fallback
+    then extracts it UNFILTERED and it lands outside the destination: an
+    arbitrary file write from verifying an untrusted bundle."""
+    from vac.verify import _extract_tar
+    tar = tmp_path / "evil.tar.gz"
+    _tar_with_raw_member(tar, ".." + BS + ".." + BS + "evil.txt")
+    with tarfile.open(tar) as tf:  # the raw name survived into the header
+        assert BS in tf.getmembers()[0].name
+    dest = tmp_path / "d"
+    dest.mkdir()
+    with pytest.raises(ValueError):
+        _extract_tar(tar, dest)
+
+
+def test_a_drive_letter_tar_member_is_refused(tmp_path):
+    """V-018, second accepted shape: a drive-anchored member name."""
+    from vac.verify import _extract_tar
+    tar = tmp_path / "evil2.tar.gz"
+    _tar_with_raw_member(tar, "C:/evil.txt")
+    dest = tmp_path / "d2"
+    dest.mkdir()
+    with pytest.raises(ValueError):
+        _extract_tar(tar, dest)
+
+
+def test_an_empty_tar_member_name_is_refused(tmp_path):
+    """A member named "" or "." passed the vetting loop (no ".." part, not
+    absolute) and then raised an OSError out of extractall, which main did
+    not catch."""
+    from vac.verify import _extract_tar
+    for name in ("", "."):
+        tar = tmp_path / f"m{len(name)}.tar.gz"
+        _tar_with_raw_member(tar, name)
+        dest = tmp_path / f"d{len(name)}"
+        dest.mkdir()
+        with pytest.raises(ValueError):
+            _extract_tar(tar, dest)
+
+
+def test_a_dot_rooted_archive_is_still_accepted(tmp_path):
+    """The honest counterpart to the empty-member-name guard.
+
+    `tar -czf b.tar.gz .` writes the archive's own root as a member literally
+    named "." , whose PurePosixPath has no parts at all. An earlier version of
+    the guard conflated that with the empty name and refused it, which is a
+    false reject against a mainstream tar invocation on a bundle that passes
+    today. Only an empty-named or dot-named FILE is the crash vector.
+    """
+    tar = tmp_path / "dot.tar.gz"
+    with tarfile.open(tar, "w:gz") as tf:
+        tf.add(FIX / "valid", arcname=".")
+    assert main([str(tar)]) == 0
+
+
+@pytest.mark.parametrize("rel", [
+    "evidence/bundle.json", "evidence/results.json",
+    "evidence/evalmut_run.json", "evidence/eval_run.json",
+])
+def test_a_top_level_array_artifact_is_named_not_crashed(tmp_path, rel):
+    """The other half of V-002. A scalar carries no evidence, and so does a
+    bare array, but four of the five profile checks call .get() on the loaded
+    artifact immediately, so `[]` raised AttributeError out of verify_bundle
+    with no named reason and no verdict line at all."""
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+    (b / rel).write_text("[]", encoding="utf-8")
+    _rehash(b, rel)
+    crashed, out = False, []
+    try:
+        out = verify_bundle(b)
+    except Exception:  # noqa: BLE001 - ANY escape is the defect
+        crashed = True
+    assert not crashed, "verify_bundle raised instead of naming a reason"
+    assert any("artifact-unparsable" in x for x in out)
+
+
+def test_a_root_anchored_tar_member_is_refused(tmp_path):
+    """V-018, third accepted shape. A Windows path needs BOTH a drive and a
+    root to be absolute, so a member named "\\evil.txt" has drive='',
+    is_absolute()=False and a single component with no "..": it passed a
+    check that tested only drive and is_absolute. On a python whose
+    extractall has no filter= kwarg it lands at C:\\evil.txt."""
+    from vac.verify import _extract_tar
+    for name in (BS + "evil.txt", BS, BS + "srv" + BS + "share" + BS + "e"):
+        tar = tmp_path / f"r{len(name)}.tar.gz"
+        _tar_with_raw_member(tar, name)
+        dest = tmp_path / f"rd{len(name)}"
+        dest.mkdir()
+        with pytest.raises(ValueError):
+            _extract_tar(tar, dest)

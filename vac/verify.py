@@ -59,6 +59,14 @@ def _safe_relpath(p) -> bool:
     """Relative, forward-slash, no traversal, not the manifest itself."""
     if not _nonempty_str(p) or p == "vac.json" or "\\" in p:
         return False
+    if any(c < " " or c == "\x7f" for c in p):
+        return False  # control chars: a terminal-injection channel
+    # A drive-anchored name ("C:/x", "C:x") is NOT absolute under
+    # PurePosixPath but IS under Windows semantics, where `bundle / "C:/x"`
+    # discards the bundle root entirely and reads outside the bundle.
+    win = pathlib.PureWindowsPath(p)
+    if win.drive or win.is_absolute():
+        return False
     pp = pathlib.PurePosixPath(p)
     return bool(pp.parts) and not pp.is_absolute() and ".." not in pp.parts
 
@@ -162,7 +170,11 @@ def _validate_manifest(m: dict) -> list[str]:
                  "profile check required")
     else:
         for i, c in enumerate(checks):
-            prof = c.get("profile") if isinstance(c, dict) else c
+            if not isinstance(c, dict):
+                f.append(f"schema-violation: results.checks[{i}]: "
+                         "object required")
+                continue
+            prof = c.get("profile")
             if prof not in PROFILES:
                 f.append(f"unknown-profile: results.checks[{i}]: {prof!r}")
 
@@ -218,12 +230,24 @@ def _verify_artifacts(bundle_dir: pathlib.Path,
 
 # --------------------------------------------------------------------------
 # Evidence profiles (SPEC.md §3): declared numbers re-earned from artifacts.
-def _load_json(bundle_dir: pathlib.Path, rel: str, f: list[str]):
+def _load_json(bundle_dir: pathlib.Path, rel: str, f: list[str],
+               want: type = dict):
+    """`want` is the shape SPEC 3 gives this artifact.
+
+    Without it a bare scalar (notably the literal `null`) parsed fine and
+    carried no evidence, taking the failure path WITHOUT naming a failure;
+    and an array reached a caller that calls .get() on it immediately.
+    """
     try:
-        return json.loads((bundle_dir / rel).read_text())
+        data = json.loads((bundle_dir / rel).read_text())
     except (OSError, UnicodeDecodeError, json.JSONDecodeError) as e:
         f.append(f"artifact-unparsable: {rel}: {e}")
         return None
+    if not isinstance(data, want):
+        name = "an object" if want is dict else "an array"
+        f.append(f"artifact-unparsable: {rel}: top level must be {name}")
+        return None
+    return data
 
 
 def _check_certlab(bundle_dir: pathlib.Path, check: dict, proto: dict,
@@ -273,7 +297,12 @@ def _check_certlab(bundle_dir: pathlib.Path, check: dict, proto: dict,
         if _nonempty_str(v.get("failure_mode")):
             modes[v["failure_mode"]] = modes.get(v["failure_mode"], 0) + 1
     for mode, cnt in modes.items():
-        pool.setdefault(mode, []).append(cnt)
+        # A genuine mode name stays a bare pool key, so a headline citing it
+        # is held STRICTLY to its own count. What is withheld is a mode whose
+        # name collides with a recomputed field: issuer free text must not
+        # redefine what `fixed`/`verdicts`/`policy_ok`/`tests_ok` are held to.
+        if mode not in recomputed:
+            pool.setdefault(mode, []).append(cnt)
     return pool
 
 
@@ -323,6 +352,10 @@ def _check_fleet(bundle_dir: pathlib.Path, check: dict, proto: dict,
     seen: set[tuple] = set()
     for row in rows:
         key = (row.get("suite"), row.get("member"))
+        if key in seen:
+            f.append(f"raw-aggregate-mismatch: {key[0]}/{key[1]}: duplicate "
+                     "aggregate row")
+            continue
         seen.add(key)
         lines = groups.get(key)
         if not lines:
@@ -342,6 +375,16 @@ def _check_fleet(bundle_dir: pathlib.Path, check: dict, proto: dict,
             and agg["fleet_commit"] != ic:
         f.append(f"stamp-mismatch: fleet_commit: protocol {ic}, "
                  f"artifact {agg['fleet_commit']}")
+    # SPEC 2.3: hashes NAMED in protocol.hashes MUST equal their counterparts
+    # inside the artifacts; SPEC 3.2 names fleet_commit for this profile.
+    hashes = proto.get("hashes")
+    if not isinstance(hashes, dict):
+        hashes = {}
+    if ("fleet_commit" in hashes and "fleet_commit" in agg
+            and hashes["fleet_commit"] != agg["fleet_commit"]):
+        f.append(f"stamp-mismatch: hashes.fleet_commit: protocol "
+                 f"{hashes['fleet_commit']}, artifact "
+                 f"{agg['fleet_commit']}")
     # the summary pool (SPEC.md §2.5), earned from RAW lines only — the
     # aggregate is the claim: per-(suite,member), per-suite, and whole-board
     # stats, so a headline may cite any honest grouping level
@@ -445,7 +488,7 @@ def _check_evalmut(bundle_dir: pathlib.Path, check: dict, proto: dict,
     # with the catalog it claims to be drawn from
     cat_rel = check.get("catalog")
     if _nonempty_str(cat_rel):
-        cat = _load_json(bundle_dir, cat_rel, f)
+        cat = _load_json(bundle_dir, cat_rel, f, want=list)
         if cat is not None:
             if not (isinstance(cat, list)
                     and all(isinstance(o, dict) for o in cat)):
@@ -753,7 +796,7 @@ def _check_modeldrift(bundle_dir: pathlib.Path, check: dict, proto: dict,
     narr_rel, md_rel = check["narrative"], check["results_md"]
     fp_rel = check["fingerprint"]
     metrics = _load_json(bundle_dir, met_rel, f)
-    registry = _load_json(bundle_dir, reg_rel, f)
+    registry = _load_json(bundle_dir, reg_rel, f, want=list)
     stand = _load_json(bundle_dir, stand_rel, f)
     flips = _load_json(bundle_dir, flips_rel, f)
     narr = _load_json(bundle_dir, narr_rel, f)
@@ -1076,9 +1119,13 @@ def _coherence(bundle_dir: pathlib.Path, m: dict,
         if not usable:
             complete = False
             continue
+        before = len(f)
         pool = _CHECK_FNS[c["profile"]](bundle_dir, c, proto, f)
         if pool is None:
-            complete = False  # unparsable artifact: already named
+            complete = False
+            if len(f) == before:  # fail closed: never skip a check silently
+                f.append(f"artifact-unparsable: {c['profile']}: check "
+                         "contributed no recomputation")
         else:
             pools.append(pool)
     # summary enforcement (SPEC.md §2.5) runs only over a complete pool — a
@@ -1115,14 +1162,40 @@ def verify_bundle(bundle_dir: pathlib.Path) -> list[str]:
 def _extract_tar(tar_path: pathlib.Path, dest: pathlib.Path) -> None:
     with tarfile.open(tar_path, "r:*") as tf:
         for mem in tf.getmembers():
+            # Vet under BOTH flavours. A member named with Windows separators
+            # ("..\\..\\evil") has no ".." part under PurePosixPath, so a
+            # posix-only check accepts a genuine escape, and on pythons
+            # without filter= the fallback below then writes it.
             pp = pathlib.PurePosixPath(mem.name)
-            if pp.is_absolute() or ".." in pp.parts \
-                    or not (mem.isfile() or mem.isdir()):
+            wp = pathlib.PureWindowsPath(mem.name)
+            if not pp.parts or not wp.parts:
+                # '.' and './' are the archive's own root entry, which is
+                # what "tar -czf b.tar.gz ." writes first. Only an
+                # empty-named FILE is the crash vector, where extractall
+                # raises an OSError straight out of main.
+                if mem.isdir():
+                    continue
+                raise ValueError(f"unsafe member {mem.name!r}")
+            if (pp.is_absolute() or ".." in pp.parts
+                    or wp.is_absolute() or wp.drive or wp.root
+                    or ".." in wp.parts
+                    or not (mem.isfile() or mem.isdir())):
                 raise ValueError(f"unsafe member {mem.name!r}")
         try:
             tf.extractall(dest, filter="data")
         except TypeError:  # no filter= on this python; members vetted above
             tf.extractall(dest)
+    # SPEC 1: a bundle ships as "a .tar.gz OF THE DIRECTORY", so anything
+    # sitting beside the bundle root is not part of the bundle and would
+    # never be reached by the closure walk. Name it here, where the cause is
+    # visible, rather than letting _bundle_root fall back and report a
+    # missing manifest that is plainly present one level down.
+    top = sorted(p.name for p in dest.iterdir())
+    if len(top) > 1 and not (dest / "vac.json").is_file():
+        raise ValueError(
+            "archive has entries beside the bundle root: "
+            + ", ".join(repr(t) for t in top)
+            + " (a bundle tar holds exactly the bundle directory; on macOS set COPYFILE_DISABLE=1)")
 
 
 def _bundle_root(extracted: pathlib.Path) -> pathlib.Path:
@@ -1172,7 +1245,7 @@ def main(argv: list[str] | None = None) -> int:
         with tempfile.TemporaryDirectory() as td:
             try:
                 _extract_tar(target, pathlib.Path(td))
-            except (ValueError, tarfile.TarError) as e:
+            except (ValueError, OSError, tarfile.TarError) as e:
                 print(f"FAIL unsafe-archive: {e}")
                 print(f"structural verification: FAIL — 1 named reason(s) "
                       f"({target.name})")
