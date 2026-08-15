@@ -18,10 +18,23 @@ import tarfile
 
 import pytest
 
-from vac.verify import _sha256, main, verify_bundle
+from vac.registry import ISSUERS
+from vac.verify import _sha256, _todo_failures, main, verify_bundle
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 FIX = ROOT / "fixtures"
+
+# The 16 reasons a fresh draft carries — vac.draft's own output over the
+# valid bundle's artifacts, every judgment field an unauthored marker.
+DRAFT_REASONS = [
+    f"draft-incomplete: {p} is an unauthored TODO" for p in (
+        "claim.capability", "claim.limitations[0]", "claim.scope",
+        "protocol.control_policy", "protocol.grading",
+        "protocol.hashes.TODO", "protocol.task",
+        "replay.commands[2]", "replay.commands[3]", "replay.expected",
+        "results.checks[0].TODO", "results.checks[0].profile",
+        "results.summary.TODO",
+        "subject.id", "subject.kind", "subject.version.TODO")]
 
 # tampered fixture -> the exact failure list verify_bundle must return
 TAMPERS = {
@@ -109,6 +122,10 @@ TAMPERS = {
     "tamper-summary-score": ["summary-outruns-checks: "
                              "summary.mutation_score_3: declares 0.714, "
                              "no check recomputes it"],
+    # the drafted-but-unfinished bundle: mechanical fields honest (every
+    # hash real, issuer and commit derived), judgment unauthored — refused
+    # wholesale, one named reason per marker
+    "tamper-draft-incomplete": DRAFT_REASONS,
 }
 
 
@@ -404,6 +421,51 @@ def test_evalmut_row_outcome_must_match_its_polarity(tmp_path):
         "does not recompute from the rows (declared 1, recomputed 1)",
         "raw-aggregate-mismatch: evidence/evalmut_run.json: row 5 "
         "polarity 'equivalent' contradicts the catalog's 'defect'"]
+
+
+def test_draft_refusal_preempts_every_other_check(tmp_path):
+    """A draft is a workpiece, not a claim: even with an artifact tampered
+    under it, the verifier names ONLY the unauthored markers — nothing
+    else about a draft is worth naming until it is authored (and the
+    refusal is a refusal either way, so nothing is hidden by it)."""
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "tamper-draft-incomplete", b)
+    (b / "evidence/bundle.json").write_text("{\"cooked\": true}\n")
+    assert verify_bundle(b) == DRAFT_REASONS
+
+
+def test_todo_scan_liveness():
+    """The absence assertion below is only meaningful if the scan can
+    fire: on the committed draft fixture it names all 16 markers."""
+    man = json.loads(
+        (FIX / "tamper-draft-incomplete/vac.json").read_text())
+    assert _todo_failures(man) == DRAFT_REASONS
+
+
+def _real_bundles() -> list:
+    """(name, bundle-dir) for every accepted registry entry, resolved
+    through the same checkout configuration the registry generator uses."""
+    checkouts = {}
+    for cfg in ISSUERS:
+        issuer = "/".join(cfg["repo"].rstrip("/").split("/")[-2:])
+        checkouts[issuer] = (ROOT / (os.environ.get(cfg["checkout_env"])
+                                     or cfg["default_checkout"])).resolve()
+    doc = json.loads((ROOT / "registry.json").read_text())
+    return [pytest.param(e["name"],
+                         checkouts[e["issuer"]] / e["bundle_path"],
+                         id=e["name"])
+            for e in doc["entries"]]
+
+
+@pytest.mark.parametrize("name,bundle", _real_bundles())
+def test_real_bundles_carry_no_todo_markers(name, bundle):
+    """The draft gate must be unable to fire on any accepted real bundle:
+    none contains a TODO( marker anywhere in its manifest (liveness for
+    this absence assertion is test_todo_scan_liveness above)."""
+    if not (bundle / "vac.json").is_file():
+        pytest.skip(f"issuer checkout not present for {name}")
+    man = json.loads((bundle / "vac.json").read_text())
+    assert _todo_failures(man) == []
 
 
 def test_unlisted_file_breaks_closure(tmp_path):

@@ -13,6 +13,11 @@ commit and run its deterministic regrader/audit — and the bundle's replay
 block records the exact commands. This tool prints that distinction on
 every run so a green check is never mistaken for a replay.
 
+One refusal precedes all of that: a manifest still carrying one of
+vac.draft's `TODO(` markers is a DRAFT — a workpiece, not a claim — and is
+refused wholesale (`draft-incomplete`, one named reason per marker) before
+any other verification runs.
+
 `python -m vac.verify <bundle-dir | bundle.tar.gz>` — exit 0 only when
 structurally clean; otherwise one named reason per failure, all of them.
 """
@@ -56,6 +61,31 @@ def _safe_relpath(p) -> bool:
         return False
     pp = pathlib.PurePosixPath(p)
     return bool(pp.parts) and not pp.is_absolute() and ".." not in pp.parts
+
+
+# --------------------------------------------------------------------------
+# Drafts (SPEC.md §2.7): a string value beginning `TODO(` is vac.draft's
+# unauthored-judgment marker. A manifest still carrying one is a draft —
+# refused wholesale, before any other verification, one named reason per
+# marker; nothing else about an unauthored manifest is worth naming.
+_TODO_PREFIX = "TODO("
+
+
+def _todo_failures(m) -> list[str]:
+    f: list[str] = []
+
+    def walk(node, path):
+        if isinstance(node, dict):
+            for k in sorted(node):
+                walk(node[k], f"{path}.{k}" if path else k)
+        elif isinstance(node, list):
+            for i, v in enumerate(node):
+                walk(v, f"{path}[{i}]")
+        elif isinstance(node, str) and node.startswith(_TODO_PREFIX):
+            f.append(f"draft-incomplete: {path} is an unauthored TODO")
+
+    walk(m, "")
+    return f
 
 
 # --------------------------------------------------------------------------
@@ -1072,6 +1102,9 @@ def verify_bundle(bundle_dir: pathlib.Path) -> list[str]:
         return [f"invalid-json: vac.json: {e}"]
     if not isinstance(m, dict):
         return ["invalid-json: vac.json: top level must be an object"]
+    todo = _todo_failures(m)
+    if todo:
+        return todo  # a draft is refused wholesale (SPEC.md §2.7)
     failures = _validate_manifest(m)
     art_failures, trusted = _verify_artifacts(bundle_dir, m)
     failures += art_failures

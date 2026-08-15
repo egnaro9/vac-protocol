@@ -150,6 +150,35 @@ Replay commands are opaque shell text addressed to a human or a CI job;
 VAC assigns no semantics to their contents (a clone URL inside a command
 is text, not a protocol-level identifier — see §7).
 
+### 2.7 Drafts
+
+`python -m vac.draft <bundle-dir>` scaffolds a manifest over the artifact
+files present. The split it enforces is the spec's own: **mechanical**
+fields are derived — sha256 for every file, `protocol.issuer` (owner/name
+from the enclosing repo's git remote), `protocol.issuer_commit` and
+`replay.issuer_commit` (HEAD; a dirty tree is a printed warning, not a
+refusal — drafting is not certifying), the replay skeleton's
+clone/checkout lines, and a `results.checks` skeleton naming the §3
+profiles to pick from — while **judgment** fields come out as markers:
+string values beginning `TODO(`, each carrying one line of guidance.
+`claim.capability`, `claim.scope`, `claim.limitations`, the `subject`
+fields, `protocol.task`/`hashes`/`grading`/`control_policy`, results
+semantics, and the replay run/compare lines are judgment. **The drafter
+never infers them — never `claim.scope` or `claim.limitations` in
+particular**: what a claim covers and what it does not cover are
+authored, and a tool that guessed them would manufacture exactly the
+advertisement §2.1 refuses to carry.
+
+The marker is grammar, not convention: a verifier MUST refuse any
+manifest containing a string value that begins `TODO(`, one named reason
+per marker (`draft-incomplete: <path> is an unauthored TODO`), and MUST
+refuse **before any other verification** — a draft is a workpiece, not a
+candidate claim, and nothing else about it is worth naming until it is
+authored (the refusal is a refusal either way, so the short-circuit can
+hide nothing). Additive in the §8 sense: the marker grammar is introduced
+here and appears in no accepted bundle — CI proves the registry clean of
+it — so no existing bundle changes how it verifies.
+
 ## 3. Evidence profiles
 
 A profile is a pair: an artifact format and the exact offline
@@ -399,7 +428,8 @@ Two distinct acts, never to be conflated:
   limitations are stated, stamps agree, and every declared number is
   recomputed from the artifacts themselves. Exit 0 only when clean;
   otherwise one **named reason per failure** (the vocabulary used in this
-  spec: `missing-manifest`, `invalid-json`, `schema-violation`,
+  spec: `missing-manifest`, `invalid-json`, `draft-incomplete`,
+  `schema-violation`,
   `empty-limitations`, `missing-artifact`, `sha256-mismatch`,
   `unlisted-file`, `duplicate-artifact`, `unknown-profile`,
   `check-artifact-not-listed`, `artifact-unparsable`, `summary-mismatch`,

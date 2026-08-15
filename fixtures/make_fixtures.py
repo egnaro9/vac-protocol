@@ -3,9 +3,10 @@
 One VALID miniature bundle — fully synthetic (fictional issuer
 `example/toy-issuer`, fictional subject `toy-agent`), self-contained, and
 carrying one check per evidence profile so the single valid fixture
-exercises every clean path in the verifier — plus fifteen tampered
-variants, each the valid bundle with exactly one edit, each tripping
-exactly one named failure class:
+exercises every clean path in the verifier — plus sixteen tampered
+variants (fifteen of them the valid bundle with exactly one edit, one the
+scaffolder's own unfinished draft), each tripping exactly one named
+failure class:
 
   tamper-missing-artifact       artifact listed in the manifest, file gone
   tamper-wrong-sha256           manifest hash disagrees with the file bytes
@@ -55,6 +56,13 @@ exactly one named failure class:
   tamper-summary-score          headline mutation score sweetened in
                                 results.summary ONLY, to a number no check
                                 recomputes
+  tamper-draft-incomplete       vac.draft's own output over the valid
+                                bundle's artifacts: mechanical fields
+                                (hashes, issuer, commit, clone/checkout)
+                                derived, every judgment field an
+                                unauthored TODO(...) marker — a draft is
+                                a workpiece, not a claim, and the
+                                verifier must refuse it wholesale
 
 Byte-reproducible by construction: no timestamps, no randomness, stable
 key order. `python fixtures/make_fixtures.py [out_dir]` regenerates
@@ -69,6 +77,8 @@ import pathlib
 import re
 import shutil
 import sys
+
+from vac.draft import draft_manifest
 
 COMMIT = "f1e2d3c"
 TASKSET_HASH = "00112233445566aa"
@@ -837,6 +847,17 @@ def tampered_variants(valid: dict[str, str]) -> dict[str, dict[str, str]]:
     m = json.loads(valid["vac.json"])  # headline score, 0.571 -> 0.714
     m["results"]["summary"]["mutation_score_3"] = 0.714
     out["tamper-summary-score"] = {**valid, "vac.json": _j(m)}
+
+    # the scaffolder's own output over the valid bundle's artifacts:
+    # mechanical fields derived (same hashes, same issuer/commit facts a
+    # git checkout would yield), every judgment field an unauthored
+    # TODO(...) marker — the verifier must refuse a draft wholesale,
+    # before any other verification
+    m = json.loads(valid["vac.json"])
+    out["tamper-draft-incomplete"] = {**valid, "vac.json": _j(
+        draft_manifest(m["evidence"], issuer="example/toy-issuer",
+                       commit=COMMIT,
+                       remote="https://github.com/example/toy-issuer"))}
     return out
 
 

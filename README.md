@@ -6,7 +6,9 @@ making them. A claim ships as a **Capability Evidence Bundle**: one
 directory with a manifest (`vac.json`), the evidence artifacts pinned by
 sha256, declared numbers that a verifier recomputes from those artifacts
 offline, and the exact commands to re-earn every verdict from the
-issuer's own deterministic grader. [SPEC.md](SPEC.md) is the format.
+issuer's own deterministic grader. [SPEC.md](SPEC.md) is the format;
+[REPLAY_REQUEST.md](REPLAY_REQUEST.md) is the standing invitation to
+falsify a live claim in ten minutes.
 
 The framing is deliberate: **here is the contract, the evidence, the
 verifier, and the replay instructions — do not trust us, run it.** A
@@ -66,16 +68,45 @@ tool prints that distinction on every invocation so a green check is
 never mistaken for a replay.
 
 `fixtures/` is the verifier's own evidence: one valid synthetic bundle
-(one check per profile) and fifteen tampered variants — missing
+(one check per profile) and sixteen tampered variants — missing
 artifact, wrong sha256, inflated verdict count, empty limitations,
 missing issuer commit, then a cooked-rows and a cooked-aggregate tamper
 per recomputing profile (a board row, a mutation tally and a relabeled
 mutation, crash-test metrics and a relabeled case, a sweetened drift
 point and cooked drift standings — every one re-hashed so only
-recomputation from the rows names it), and three summary-only cooks
-that only SPEC.md §2.5's outrun rule catches.
+recomputation from the rows names it), three summary-only cooks
+that only SPEC.md §2.5's outrun rule catches, and a drafted-but-unfinished
+bundle (every judgment field still a `TODO(...)` marker) that the draft
+gate refuses wholesale.
 CI requires the valid bundle to pass and **every** tamper to be refused
 (the invalidation-liveness job): a gate must prove it can block.
+
+## Drafting a bundle
+
+`python -m vac.draft` is the scaffolder for issuers: point it at a
+directory of evidence artifacts and it derives every **mechanical**
+manifest field — per-file sha256, issuer and pinned commit from the
+enclosing git repo (a dirty tree is a printed warning, not a refusal:
+drafting is not certifying), the replay skeleton's clone/checkout lines,
+a checks skeleton naming the profiles to pick from — and emits every
+**judgment** field as an explicit `TODO(...)` marker with one-line
+guidance:
+
+```
+python -m vac.draft my-claim/    # mechanical fields derived, judgment fields marked
+$EDITOR my-claim/vac.json        # a human authors capability, scope, limitations,
+                                 #   subject, protocol semantics, checks, replay
+python -m vac.verify my-claim/   # green only when every marker is gone and every
+                                 #   declared number re-earns from the artifacts
+```
+
+The split is enforced, not advisory: the verifier refuses any manifest
+still carrying a marker (`draft-incomplete: <path> is an unauthored
+TODO`) before checking anything else, so a draft can never be passed off
+as a claim. And the drafter never infers `claim.scope` or
+`claim.limitations` (SPEC.md §2.7): what a claim covers and what it does
+not cover are authored judgments — a tool that guessed them would
+manufacture exactly the advertisement VAC refuses to carry.
 
 ## Try to falsify it
 

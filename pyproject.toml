@@ -9,6 +9,7 @@ authors = [{name = "Erik Hill"}]
 
 [project.scripts]
 vac-verify = "vac.verify:main"
+vac-draft = "vac.draft:main"
 
 [project.optional-dependencies]
 test = ["pytest"]
