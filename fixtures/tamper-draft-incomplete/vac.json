@@ -84,7 +84,7 @@
   },
   "checks": [
    {
-    "profile": "TODO(results.checks[0].profile): pick one of: certlab-bundle-v1, fleet-board-v1, evalmut-run-v1, crashkit-battery-v1, crashkit-variance-v1, modeldrift-board-v1",
+    "profile": "TODO(results.checks[0].profile): pick one of: certlab-bundle-v1, fleet-board-v1, evalmut-run-v1, crashkit-battery-v1, crashkit-variance-v1, modeldrift-board-v1, rows-aggregate-v1",
     "TODO": "TODO(results.checks[0]): add the chosen profile's artifact reference keys and its expect object (SPEC.md \u00a73)"
    }
   ]

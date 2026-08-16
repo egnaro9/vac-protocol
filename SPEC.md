@@ -494,6 +494,46 @@ severity outside it is `artifact-unparsable`, named by the offending label):
 - every row must carry `runs == n`, so a declared run count cannot outrun the
   rows it summarises.
 
+### 3.7 `rows-aggregate-v1`
+
+The profile an issuer can use **without being us**.
+
+Every other profile in this section hard-codes one of our own artifact shapes.
+That is honest for the issuers it was written for and useless to anyone else: an
+outsider with their own format had no way to issue at all, which is what made
+the registry a closed loop. Here the issuer supplies the rows and declares the
+recipe, and the verifier recomputes every declared number from those rows.
+
+| field | rule |
+|---|---|
+| `artifact` | a JSON document that is, or contains, an array of row objects |
+| `rows_key` | the key holding that array; omit if the document *is* the array |
+| `recompute` | `{name: {op, field, round}}` — how each declared number is re-earned |
+| `expect` | the declared numbers, each held to its recomputation |
+
+`op` is drawn from a closed set: `count`, `sum`, `mean`, `rate_true`, `min`,
+`max`. The recipe is **data, not code**: there is no expression language and
+nothing is evaluated, so a verifier still owes the reader the same guarantee as
+every other profile. An unknown `op` is a `schema-violation`, not a default.
+Adding one is a spec change, deliberately, because each op is a promise about
+what a number means.
+
+Refusals this profile owes:
+
+- an empty `rows[]` is `artifact-unparsable`. Every aggregate over nothing is
+  vacuously satisfiable, which is the exact defect this family exists to refuse;
+- a field the recipe reads but a row lacks is named, with the first offending
+  row index;
+- a field whose type the op cannot take (`rate_true` over non-booleans, `mean`
+  over strings) is named rather than coerced;
+- a declared number the recipe does not recompute is a `summary-mismatch`. You
+  cannot declare a number and simply not explain where it came from.
+
+**What this does not do.** It recomputes arithmetic over rows the issuer
+supplies. It cannot tell you the rows are honest: that is what `replay` is for,
+and a bundle using this profile leans harder on its replay block than one using
+a profile that knows the issuer's grader. Say so in `claim.limitations`.
+
 ## 4. Structural verification vs semantic replay
 
 Two distinct acts, never to be conflated:

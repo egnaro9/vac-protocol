@@ -35,7 +35,7 @@ import tempfile
 VAC_VERSION = "0.1"
 PROFILES = ("certlab-bundle-v1", "fleet-board-v1", "evalmut-run-v1",
             "crashkit-battery-v1", "crashkit-variance-v1",
-            "modeldrift-board-v1")
+            "modeldrift-board-v1", "rows-aggregate-v1")
 USAGE = "usage: python -m vac.verify <bundle-dir | bundle.tar.gz>"
 
 
@@ -245,7 +245,10 @@ def _load_json(bundle_dir: pathlib.Path, rel: str, f: list[str],
         f.append(f"artifact-unparsable: {rel}: {e}")
         return None
     if not isinstance(data, want):
-        name = "an object" if want is dict else "an array"
+        name = ("an object" if want is dict
+                else "an array" if want is list
+                else " or ".join("an object" if w is dict else "an array"
+                                 for w in want))
         f.append(f"artifact-unparsable: {rel}: top level must be {name}")
         return None
     return data
@@ -989,6 +992,132 @@ def _check_crashkit_variance(bundle_dir: pathlib.Path, check: dict,
     return {k: [v] for k, v in recomputed.items()}
 
 
+# The closed set of aggregations an issuer may declare. No expression language,
+# no eval: a recipe names one op and one field, and the verifier recomputes it.
+# Adding an op is a spec change, deliberately, because every op is a promise the
+# verifier makes about what a number means.
+_ROW_OPS = ("count", "sum", "mean", "rate_true", "min", "max")
+
+
+def _rows_aggregate(rows: list[dict], op: str, field: str | None,
+                    places: int | None) -> float | None:
+    """None means the recipe cannot be computed over these rows."""
+    if op == "count":
+        return float(len(rows))
+    vals = [r.get(field) for r in rows]
+    if op == "rate_true":
+        if not all(isinstance(v, bool) for v in vals):
+            return None
+        return _round(sum(1 for v in vals if v) / len(rows), places)
+    if not all(isinstance(v, (int, float)) and not isinstance(v, bool)
+               for v in vals):
+        return None
+    if op == "sum":
+        return _round(sum(vals), places)
+    if op == "mean":
+        return _round(sum(vals) / len(rows), places)
+    if op == "min":
+        return _round(min(vals), places)
+    if op == "max":
+        return _round(max(vals), places)
+    return None
+
+
+def _round(v: float, places: int | None) -> float:
+    return float(v) if places is None else round(float(v), places)
+
+
+def _check_rows_aggregate(bundle_dir: pathlib.Path, check: dict, proto: dict,
+                          f: list[str]) -> dict[str, list] | None:
+    """SPEC.md §3.7 — the profile an issuer can use without being us.
+
+    Every other profile in §3 hard-codes one of our own artifact shapes, which
+    made the registry a closed loop: an outsider with their own format had no
+    way in. Here the issuer supplies the ROWS and declares the RECIPE, and the
+    verifier recomputes each declared number from the rows. The recipe is data,
+    not code, drawn from a closed op set, so the verifier still owes the reader
+    the same guarantee: no declared number is taken on faith.
+    """
+    art = check["artifact"]
+    # Unlike every other profile, this one accepts a bare array: an issuer whose
+    # artifact simply IS the rows should not have to wrap it to be verifiable.
+    # `want` still excludes scalars, so the 4-byte `null` forgery stays refused.
+    data = _load_json(bundle_dir, art, f, want=(dict, list))
+    if data is None:
+        return None
+
+    rows_key = check.get("rows_key")
+    rows = data if isinstance(data, list) else (
+        data.get(rows_key) if _nonempty_str(rows_key) else None)
+    if not isinstance(rows, list) or not all(isinstance(r, dict) for r in rows):
+        where = f"{rows_key!r}" if _nonempty_str(rows_key) else "the document"
+        f.append(f"artifact-unparsable: {art}: no array of row objects at "
+                 f"{where}")
+        return None
+    if not rows:
+        # An empty row set makes every aggregate vacuously satisfiable. This is
+        # the defect the whole profile family exists to refuse.
+        f.append(f"artifact-unparsable: {art}: rows[] is empty; no aggregate "
+                 "can be recomputed from nothing")
+        return None
+
+    recipe = check.get("recompute")
+    if not (isinstance(recipe, dict) and recipe):
+        f.append("schema-violation: results.checks[rows-aggregate-v1]"
+                 ".recompute: a recipe naming how each declared number is "
+                 "recomputed from the rows is required")
+        return None
+
+    recomputed: dict[str, float] = {}
+    for name in sorted(recipe):
+        spec = recipe[name]
+        if not isinstance(spec, dict):
+            f.append(f"schema-violation: recompute.{name}: object required")
+            return None
+        op = spec.get("op")
+        if op not in _ROW_OPS:
+            f.append(f"schema-violation: recompute.{name}.op: {op!r} is not "
+                     f"one of {'/'.join(_ROW_OPS)}")
+            return None
+        field = spec.get("field")
+        if op != "count" and not _nonempty_str(field):
+            f.append(f"schema-violation: recompute.{name}.field: required "
+                     f"for op {op!r}")
+            return None
+        places = spec.get("round")
+        if places is not None and not isinstance(places, int):
+            f.append(f"schema-violation: recompute.{name}.round: integer "
+                     "required")
+            return None
+        if op != "count":
+            missing = [i for i, r in enumerate(rows) if field not in r]
+            if missing:
+                f.append(f"raw-aggregate-mismatch: {art}: recompute.{name} "
+                         f"reads {field!r}, absent from row {missing[0]}")
+                return None
+        got = _rows_aggregate(rows, op, field, places)
+        if got is None:
+            f.append(f"raw-aggregate-mismatch: {art}: recompute.{name}: "
+                     f"{field!r} is not the type op {op!r} requires across "
+                     "every row")
+            return None
+        recomputed[name] = got
+
+    expect = check.get("expect")
+    if not (isinstance(expect, dict) and expect):
+        f.append("schema-violation: results.checks[rows-aggregate-v1].expect: "
+                 "declared numbers required")
+        return None
+    for k in sorted(expect):
+        if k not in recomputed:
+            f.append(f"summary-mismatch: {k}: declared but the recipe does "
+                     "not recompute it")
+        elif expect[k] != recomputed[k]:
+            f.append(f"summary-mismatch: {k}: declared {expect[k]}, "
+                     f"recomputed {recomputed[k]}")
+    return {k: [v] for k, v in recomputed.items()}
+
+
 def _check_modeldrift(bundle_dir: pathlib.Path, check: dict, proto: dict,
                       f: list[str]) -> dict[str, list] | None:
     met_rel, reg_rel = check["metrics"], check["registry"]
@@ -1242,6 +1371,7 @@ _CHECK_REFS = {"certlab-bundle-v1": ("artifact",),
                "evalmut-run-v1": ("artifact",),
                "crashkit-battery-v1": ("artifact",),
                "crashkit-variance-v1": ("artifact",),
+               "rows-aggregate-v1": ("artifact",),
                "modeldrift-board-v1": ("metrics", "registry", "standings",
                                        "flips", "narrative", "results_md",
                                        "fingerprint")}
@@ -1252,6 +1382,7 @@ _CHECK_FNS = {"certlab-bundle-v1": _check_certlab,
               "evalmut-run-v1": _check_evalmut,
               "crashkit-battery-v1": _check_crashkit,
               "crashkit-variance-v1": _check_crashkit_variance,
+              "rows-aggregate-v1": _check_rows_aggregate,
               "modeldrift-board-v1": _check_modeldrift}
 
 
