@@ -1,0 +1,16 @@
+# captured 2026-08-16T01:37:12Z  HEAD=f59fb62
+## control
+    $ python -m toy_issuer.driftboard --check evidence/standings.json
+    expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+exit=0
+## severity grep in tests
+matches: 0
+## weights table
+548:_CRASHKIT_WEIGHTS = {"none": 0, "low": 1, "med": 2, "high": 4, "critical": 8}
+594:    total_w = sum(_CRASHKIT_WEIGHTS.get(c.get("severity"), 0)
+596:    failed_w = sum(_CRASHKIT_WEIGHTS.get(c.get("severity"), 0)
+## spec line
+profile (`none/low/med/high/critical` = `0/1/2/4/8` — the same weights
+crashkit grades with; an unknown severity weighs 0):
+## registry copy
+        "summary": man["results"]["summary"],

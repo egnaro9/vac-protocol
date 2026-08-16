@@ -848,6 +848,50 @@ def tampered_variants(valid: dict[str, str]) -> dict[str, dict[str, str]]:
     m["results"]["summary"]["mutation_score_3"] = 0.714
     out["tamper-summary-score"] = {**valid, "vac.json": _j(m)}
 
+    # --- the four vacuous-pass forgeries (2026-08-15 self-audit) ---------
+    # Each one verified CLEAN before its fix: the check was present and live,
+    # and simply never ran. A fixture per fix so the invalidation sweep can
+    # prove the new refusal fires.
+
+    m = json.loads(valid["vac.json"])  # a lie typed as a string
+    m["results"]["summary"]["fixed"] = "9999"
+    out["tamper-summary-string"] = {**valid, "vac.json": _j(m)}
+
+    m = json.loads(valid["vac.json"])  # delete the check, keep the artifact
+    prof = "certlab-bundle-v1"
+    m["results"]["checks"] = [c for c in m["results"]["checks"]
+                              if c.get("profile") != prof]
+    out["tamper-check-deleted"] = {**valid, "vac.json": _j(m)}
+
+    # re-case severity on the FAILED rows only: their weight drops out of the
+    # numerator, the score divides to a clean false 0.0 by ordinary arithmetic
+    files = dict(valid)
+    art = "evidence/eval_run.json"
+    run = json.loads(files[art])
+    for c in run["cases"]:
+        if c.get("passed") is False and isinstance(c.get("severity"), str):
+            c["severity"] = c["severity"].capitalize()
+    files[art] = _j(run)
+    m = json.loads(files["vac.json"])
+    for e in m["evidence"]:                       # honest re-pin
+        if e["path"] == art:
+            e["sha256"] = _sha(files[art])
+    out["tamper-crashkit-severity"] = {**files, "vac.json": _j(m)}
+
+    # delete the stamps instead of faking them: every comparison is guarded on
+    # the artifact-side key existing, so absence skipped all of them
+    files = dict(valid)
+    art = "evidence/bundle.json"
+    b = json.loads(files[art])
+    for k in ("harness_commit", "taskset_hash", "prompt_hash"):
+        b.pop(k, None)
+    files[art] = _j(b)
+    m = json.loads(files["vac.json"])
+    for e in m["evidence"]:                       # honest re-pin
+        if e["path"] == art:
+            e["sha256"] = _sha(files[art])
+    out["tamper-stamp-deleted"] = {**files, "vac.json": _j(m)}
+
     # the scaffolder's own output over the valid bundle's artifacts:
     # mechanical fields derived (same hashes, same issuer/commit facts a
     # git checkout would yield), every judgment field an unauthored

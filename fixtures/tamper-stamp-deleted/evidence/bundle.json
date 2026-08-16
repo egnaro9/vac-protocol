@@ -1,0 +1,50 @@
+{
+ "schema": 1,
+ "agent_id": "toy-agent",
+ "agent_kind": "synthetic",
+ "model": null,
+ "grading": "artifacts-only; policy (suite byte-identical, allowed paths) then tests; fixed = both",
+ "verdicts": [
+  {
+   "task_id": "toy-off-by-one",
+   "defect_class": "boundary/off-by-one",
+   "policy_ok": true,
+   "tests_ok": true,
+   "fixed": true,
+   "failure_mode": "",
+   "changed_files": [
+    "toy.py"
+   ],
+   "diffs": {
+    "toy.py": "--- issued/toy.py\n+++ after/toy.py\n@@ -1 +1 @@\n-def contains(lo, hi, x): return lo <= x <= hi\n+def contains(lo, hi, x): return lo <= x < hi\n"
+   },
+   "agent_note": "exit 0"
+  },
+  {
+   "task_id": "toy-inverted-guard",
+   "defect_class": "inverted-condition",
+   "policy_ok": true,
+   "tests_ok": true,
+   "fixed": true,
+   "failure_mode": "",
+   "changed_files": [
+    "toy.py"
+   ],
+   "diffs": {
+    "toy.py": "--- issued/toy.py\n+++ after/toy.py\n@@ -2 +2 @@\n-def positive(n): return n < 0\n+def positive(n): return n > 0\n"
+   },
+   "agent_note": "exit 0"
+  },
+  {
+   "task_id": "toy-swapped-args",
+   "defect_class": "argument-order",
+   "policy_ok": true,
+   "tests_ok": false,
+   "fixed": false,
+   "failure_mode": "tests-failed",
+   "changed_files": [],
+   "diffs": {},
+   "agent_note": "exit 0; no edit made"
+  }
+ ]
+}

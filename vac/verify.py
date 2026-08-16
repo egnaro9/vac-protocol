@@ -280,15 +280,26 @@ def _check_certlab(bundle_dir: pathlib.Path, check: dict, proto: dict,
                          f"recomputed {recomputed[k]}")
     # stamp binding (SPEC.md §2.3): one commit, one task set, no forks
     hashes = proto.get("hashes") if isinstance(proto.get("hashes"), dict) else {}
+    # A comparison guarded on BOTH operands existing is not a check, it is a
+    # suggestion: the issuer supplies one operand and so decides whether the
+    # comparison happens at all. Deleting the key must cost what faking it does.
     for k in ("taskset_hash", "prompt_hash"):
-        if k in hashes and k in data and hashes[k] != data[k]:
+        if k not in hashes:
+            continue
+        if k not in data:
+            f.append(f"stamp-mismatch: {k}: named by protocol.hashes but "
+                     f"absent from {art}")
+        elif hashes[k] != data[k]:
             f.append(f"stamp-mismatch: {k}: protocol {hashes[k]}, "
                      f"artifact {data[k]}")
     ic = proto.get("issuer_commit")
-    if _nonempty_str(ic) and "harness_commit" in data \
-            and data["harness_commit"] != ic:
-        f.append(f"stamp-mismatch: harness_commit: protocol {ic}, "
-                 f"artifact {data['harness_commit']}")
+    if _nonempty_str(ic):
+        if "harness_commit" not in data:
+            f.append(f"stamp-mismatch: harness_commit: protocol declares "
+                     f"issuer_commit but {art} carries no harness_commit")
+        elif data["harness_commit"] != ic:
+            f.append(f"stamp-mismatch: harness_commit: protocol {ic}, "
+                     f"artifact {data['harness_commit']}")
     # the summary pool (SPEC.md §2.5): the four counts plus per-failure-mode
     # counts over the verdicts — everything a headline may cite
     pool = {k: [v] for k, v in recomputed.items()}
@@ -371,20 +382,27 @@ def _check_fleet(bundle_dir: pathlib.Path, check: dict, proto: dict,
             f.append(f"raw-aggregate-mismatch: {key[0]}/{key[1]}: raw lines "
                      "with no aggregate row")
     ic = proto.get("issuer_commit")
-    if _nonempty_str(ic) and "fleet_commit" in agg \
-            and agg["fleet_commit"] != ic:
-        f.append(f"stamp-mismatch: fleet_commit: protocol {ic}, "
-                 f"artifact {agg['fleet_commit']}")
+    if _nonempty_str(ic):
+        if "fleet_commit" not in agg:
+            f.append("stamp-mismatch: fleet_commit: protocol declares "
+                     "issuer_commit but the aggregate row carries no "
+                     "fleet_commit")
+        elif agg["fleet_commit"] != ic:
+            f.append(f"stamp-mismatch: fleet_commit: protocol {ic}, "
+                     f"artifact {agg['fleet_commit']}")
     # SPEC 2.3: hashes NAMED in protocol.hashes MUST equal their counterparts
     # inside the artifacts; SPEC 3.2 names fleet_commit for this profile.
     hashes = proto.get("hashes")
     if not isinstance(hashes, dict):
         hashes = {}
-    if ("fleet_commit" in hashes and "fleet_commit" in agg
-            and hashes["fleet_commit"] != agg["fleet_commit"]):
-        f.append(f"stamp-mismatch: hashes.fleet_commit: protocol "
-                 f"{hashes['fleet_commit']}, artifact "
-                 f"{agg['fleet_commit']}")
+    if "fleet_commit" in hashes:
+        if "fleet_commit" not in agg:
+            f.append("stamp-mismatch: hashes.fleet_commit: named by "
+                     "protocol.hashes but absent from the aggregate row")
+        elif hashes["fleet_commit"] != agg["fleet_commit"]:
+            f.append(f"stamp-mismatch: hashes.fleet_commit: protocol "
+                     f"{hashes['fleet_commit']}, artifact "
+                     f"{agg['fleet_commit']}")
     # the summary pool (SPEC.md §2.5), earned from RAW lines only — the
     # aggregate is the claim: per-(suite,member), per-suite, and whole-board
     # stats, so a headline may cite any honest grouping level
@@ -591,9 +609,21 @@ def _check_crashkit(bundle_dir: pathlib.Path, check: dict, proto: dict,
     errors = sum(1 for c in cases if c.get("grader") == "error")
     accuracy = round(sum(1 for c in graded if c["passed"])
                      / len(graded), 4) if graded else 0.0
-    total_w = sum(_CRASHKIT_WEIGHTS.get(c.get("severity"), 0)
-                  for c in graded)
-    failed_w = sum(_CRASHKIT_WEIGHTS.get(c.get("severity"), 0)
+    # A weight table that silently absorbs unknown labels hands the issuer the
+    # denominator: re-casing "critical" to "Critical" on the FAILED rows alone
+    # drops them to weight 0 and the score divides to a clean, false 0.0 through
+    # the ordinary arithmetic path. Refuse the label instead of scoring it.
+    unknown = sorted({c.get("severity") for c in graded
+                      if c.get("severity") not in _CRASHKIT_WEIGHTS},
+                     key=lambda v: (v is None, str(v)))
+    if unknown:
+        labels = ", ".join(repr(u) for u in unknown[:4])
+        f.append(f"artifact-unparsable: {art}: severity {labels} outside the "
+                 f"profile's frozen table "
+                 f"({'/'.join(_CRASHKIT_WEIGHTS)})")
+        return None
+    total_w = sum(_CRASHKIT_WEIGHTS[c["severity"]] for c in graded)
+    failed_w = sum(_CRASHKIT_WEIGHTS[c["severity"]]
                    for c in graded if not c["passed"])
     recomputed = {
         "accuracy": accuracy,
@@ -1056,6 +1086,9 @@ _CHECK_FNS = {"certlab-bundle-v1": _check_certlab,
               "modeldrift-board-v1": _check_modeldrift}
 
 
+_NUMERIC_STR = re.compile(r"[+-]?(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?%?")
+
+
 def _summary_outruns(summary: dict, pools: list[dict]) -> list[str]:
     """SPEC.md §2.5: every number in results.summary must be re-earned by a
     check's recomputation. A summary key that names a recomputed field is
@@ -1076,7 +1109,17 @@ def _summary_outruns(summary: dict, pools: list[dict]) -> list[str]:
         elif isinstance(node, list):
             for i, v in enumerate(node):
                 walk(v, f"{path}[{i}]", key)
-        elif isinstance(node, bool) or not isinstance(node, (int, float)):
+        elif isinstance(node, bool):
+            return
+        elif isinstance(node, str) and _NUMERIC_STR.fullmatch(node.strip()):
+            # A lie typed as a string used to walk straight through: retype
+            # every summary number as "9999" and nothing was ever compared --
+            # no artifact touched, no hash re-pinned. Descriptive prose still
+            # passes; a numeral wearing quotes does not get to skip the check.
+            f.append(f"summary-outruns-checks: {path}: declares {node!r} as a "
+                     "string; a numeric headline must be a JSON number so it "
+                     "can be recomputed")
+        elif not isinstance(node, (int, float)):
             return
         elif key in by_field:
             if node not in by_field[key]:
@@ -1100,6 +1143,15 @@ def _coherence(bundle_dir: pathlib.Path, m: dict,
     listed = {e["path"] for e in m.get("evidence") or []
               if isinstance(e, dict) and _safe_relpath(e.get("path"))}
     pools: list[dict] = []
+    # Reference-scan EVERY check first, malformed ones included. A check that
+    # exists but is refused for another reason has already been named; letting
+    # it also orphan its artifact would report one root cause twice. Only
+    # evidence that NO check mentions at all is genuinely unexamined.
+    covered: set = set()
+    for c in results.get("checks") or []:
+        if isinstance(c, dict):
+            covered |= {v for v in c.values()
+                        if isinstance(v, str) and v in listed}
     complete = True  # every declared check contributed its recomputation
     for c in results.get("checks") or []:
         if not isinstance(c, dict) or c.get("profile") not in PROFILES:
@@ -1128,6 +1180,17 @@ def _coherence(bundle_dir: pathlib.Path, m: dict,
                          "contributed no recomputation")
         else:
             pools.append(pool)
+    # An artifact no check reads is pinned but unexamined. Hardening made
+    # BREAKING a check a named refusal; DELETING one stayed free, and a deleted
+    # check moves its number out of the strictly-bound branch into the loose
+    # pool. Closure of the checks over the evidence is what makes "recomputed
+    # from artifacts" mean every artifact.
+    uncovered = sorted(listed - covered)
+    if uncovered:
+        shown = ", ".join(uncovered[:4])
+        more = f" (+{len(uncovered) - 4} more)" if len(uncovered) > 4 else ""
+        f.append(f"evidence-unchecked: {shown}{more}: listed in evidence "
+                 "but read by no check")
     # summary enforcement (SPEC.md §2.5) runs only over a complete pool — a
     # bundle whose checks cannot recompute already fails on those reasons,
     # and "derivable" is undecidable against a half-built pool
