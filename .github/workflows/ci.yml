@@ -41,7 +41,7 @@ jobs:
           VAC_CRASHKIT_CHECKOUT: _issuers/crashkit/vac
           VAC_EVALMUT_CHECKOUT: _issuers/evalmut/vac
           VAC_MODELDRIFT_CHECKOUT: _issuers/model-drift/vac
-        run: python tools/mutation_sweep.py --floor 0.94
+        run: python tools/mutation_sweep.py --floor 0.99
 
   invalidation-liveness:
     # The verifier must prove it can both pass and BLOCK: the committed

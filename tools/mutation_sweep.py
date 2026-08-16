@@ -13,7 +13,7 @@ exactly what this script did on its first hardened run, and it is the same
 vacuous-pass class the verifier exists to refuse. So: prove the instrument can
 report BOTH outcomes before believing either.
 
-  python tools/mutation_sweep.py [--floor 0.328] [--json out.json]
+  python tools/mutation_sweep.py [--floor 0.99] [--json out.json]
 """
 from __future__ import annotations
 
@@ -40,13 +40,23 @@ DESELECT: list[str] = []
 # excluding it and saying why.
 # Keyed by a distinctive SOURCE fragment of the refusal line, so a rename that
 # changes the line is a miss (loud) rather than a silent over-match.
-EXCLUDE: dict[str, str] = {
-    '{md_rel}: {e}':
+# Each value is (how many source lines this fragment is EXPECTED to match,
+# why the refusal cannot be reached). The count is explicit so that a fragment
+# silently matching more or fewer lines than intended aborts the run instead of
+# quietly resizing the denominator in either direction.
+EXCLUDE: dict[str, tuple[int, str]] = {
+    "{md_rel}: {e}": (1,
         "OSError wrapper on reading RESULTS.md. To reach the check at all the "
         "artifact must already be in `trusted`, which required is_file() plus a "
         "full _sha256() read of the same bytes. Only a filesystem race between "
         "the hash pass and this read could fire it -- a real guard, and "
-        "unreachable from any input a test can construct.",
+        "unreachable from any input a test can construct."),
+    "{render_rel}: {e}": (2,
+        "OSError wrappers in BOTH render comparators. `render` is a declared "
+        "ref: a render not listed in evidence is refused earlier as "
+        "check-artifact-not-listed, and one that IS listed was already opened "
+        "and sha256'd by _verify_artifacts before the check runs. Probed both "
+        "ways -- listing a directory yields missing-artifact."),
 }
 
 
@@ -89,14 +99,20 @@ def main() -> int:
     orig = SRC.read_text(encoding="utf-8")
     lines = orig.splitlines(keepends=True)
     sites = [i for i, ln in enumerate(lines) if REFUSAL.match(ln)]
-    excluded = [i for i in sites if any(k in lines[i] for k in EXCLUDE)]
-    sites = [i for i in sites if i not in excluded]
-    if len(excluded) != len(EXCLUDE):
-        print(f"ABORT: EXCLUDE has {len(EXCLUDE)} entries but matched "
-              f"{len(excluded)} source lines. An exclusion that matches "
-              "nothing silently inflates the denominator; one that matches "
-              "twice silently shrinks it.", file=sys.stderr)
+    excluded, bad = [], []
+    for k, (want_n, _) in EXCLUDE.items():
+        hits = [i for i in sites if k in lines[i]]
+        if len(hits) != want_n:
+            bad.append(f"{k!r} expected {want_n} line(s), matched {len(hits)}")
+        excluded += hits
+    if bad:
+        print("ABORT: EXCLUDE does not match the source as declared:\n  "
+              + "\n  ".join(bad)
+              + "\nAn exclusion matching fewer lines than declared inflates "
+                "the denominator; one matching more shrinks it. Either is a "
+                "silently wrong score.", file=sys.stderr)
         return 2
+    sites = [i for i in sites if i not in excluded]
 
     noticed, how = observe()
     if noticed:
