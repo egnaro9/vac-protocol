@@ -1,0 +1,36 @@
+{
+ "schema": 1,
+ "suite": "redaction-grader-v3",
+ "cases": [
+  {
+   "id": "pii-email",
+   "passed": true,
+   "score": 0.94,
+   "kind": "pii"
+  },
+  {
+   "id": "pii-phone",
+   "passed": true,
+   "score": 0.91,
+   "kind": "pii"
+  },
+  {
+   "id": "pii-ssn",
+   "passed": false,
+   "score": 0.42,
+   "kind": "pii"
+  },
+  {
+   "id": "secret-apikey",
+   "passed": true,
+   "score": 0.88,
+   "kind": "secret"
+  },
+  {
+   "id": "secret-pem",
+   "passed": true,
+   "score": 0.96,
+   "kind": "secret"
+  }
+ ]
+}

@@ -1,0 +1,87 @@
+{
+ "vac_version": "0.1",
+ "claim": {
+  "capability": "redaction-grader-v3 scores every case in its frozen suite deterministically, and the per-case rows it publishes recompute its headline numbers offline.",
+  "scope": "the 5-case frozen redaction suite (pii and secret kinds), graded offline with no model in the loop, at the pinned commit.",
+  "limitations": [
+   "5 cases is a smoke suite, not a benchmark; it says nothing about recall on inputs outside it.",
+   "rows-aggregate-v1 recomputes arithmetic over the rows we publish. It cannot tell a reader those rows are honest; only the replay block can.",
+   "one case (pii-ssn) fails and is reported as failing. The suite is not clean."
+  ]
+ },
+ "subject": {
+  "kind": "suite-archetype",
+  "id": "redaction-grader-v3",
+  "version": {
+   "suite_commit": "1d77e51",
+   "grader": "deterministic-regex-v3"
+  }
+ },
+ "protocol": {
+  "issuer": "someone-else/mytool",
+  "issuer_commit": "1d77e51",
+  "task": "offline redaction grading over a frozen 5-case suite",
+  "hashes": {
+   "suite_hash": "abc123def456"
+  },
+  "grading": "each case is graded by a fixed regex predicate over the output; no model, no sampling, no clock.",
+  "control_policy": "every case is graded twice, once against the redacted output and once against a clean twin that must score 0."
+ },
+ "evidence": [
+  {
+   "path": "results.json",
+   "sha256": "832bd15a039b8767f1d83c40b38754ee4f2b80883577d7d0b3fe02e09cfe619f"
+  }
+ ],
+ "results": {
+  "summary": {
+   "accuracy": 0.8,
+   "n_cases": 5.0,
+   "worst_case": 0.42,
+   "mean_score": 0.822
+  },
+  "checks": [
+   {
+    "profile": "rows-aggregate-v1",
+    "artifact": "results.json",
+    "rows_key": "cases",
+    "recompute": {
+     "accuracy": {
+      "op": "rate_true",
+      "field": "passed",
+      "round": 4
+     },
+     "n_cases": {
+      "op": "count"
+     },
+     "worst_case": {
+      "op": "min",
+      "field": "score",
+      "round": 4
+     },
+     "mean_score": {
+      "op": "mean",
+      "field": "score",
+      "round": 4
+     }
+    },
+    "expect": {
+     "accuracy": 0.8,
+     "n_cases": 5.0,
+     "worst_case": 0.42,
+     "mean_score": 0.822
+    }
+   }
+  ]
+ },
+ "replay": {
+  "issuer_commit": "1d77e51",
+  "commands": [
+   "git clone https://github.com/someone-else/mytool issuer && git -C issuer checkout 1d77e51",
+   "pip install -e ./issuer",
+   "( cd issuer && python -m mytool.grade --suite redaction-grader-v3 --out results.json )",
+   "cmp issuer/results.json results.json"
+  ],
+  "expected": "every command exits 0 and cmp stays silent: the grader re-runs the frozen suite at the pinned commit and re-emits results.json byte-identically."
+ }
+}

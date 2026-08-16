@@ -45,6 +45,17 @@ protocol's five evidence profiles verbatim:
   (`metrics.json` joined to `models.json`), reproduced byte-identically
   by `python3 emit_vac.py` at the stamped commit.
 
+## Issuing a bundle
+
+You do not need our artifact formats. `rows-aggregate-v1` takes rows in the shape
+you already publish, and you declare how each headline number is recomputed from
+them. [ISSUING.md](ISSUING.md) walks the whole path, with a worked example from a
+fictional outside issuer that verifies as-is.
+
+Every entry in the registry today was issued by one person. If you issue one, you
+are the first real test of whether this spec is writable against by someone who
+did not write it.
+
 ## Quickstart
 
 ```
