@@ -360,8 +360,6 @@ CRASHKIT_BUNDLE = (ROOT / (os.environ.get("VAC_CRASHKIT_CHECKOUT")
 EVALMUT_UNCHECKED = ("evidence-unchecked: dogfood_gradecore.txt, "
                      "promptfoo_findings.txt: listed in evidence but read by "
                      "no check")
-CRASHKIT_UNCHECKED = ("evidence-unchecked: variance_flaky_n10.report.json: "
-                      "listed in evidence but read by no check")
 
 
 
@@ -374,16 +372,13 @@ def test_real_crashkit_bundle_summary_is_enforced(tmp_path):
     untampered copy still verifies clean."""
     b = tmp_path / "b"
     shutil.copytree(CRASHKIT_BUNDLE, b)
-    # Same known gap: the variance report is pinned and read by no check, while
-    # this bundle's capability sentence claims it "aggregates reproducibly".
-    assert verify_bundle(b) == [CRASHKIT_UNCHECKED]
+    assert verify_bundle(b) == []
     man_path = b / "vac.json"
     man = json.loads(man_path.read_text())
     man["results"]["summary"]["twin_controls"]["adversarial"][
         "safe_vulnerability"] = 0.5
     man_path.write_text(json.dumps(man, indent=1) + "\n")
     assert verify_bundle(b) == [
-        CRASHKIT_UNCHECKED,
         "summary-outruns-checks: "
         "summary.twin_controls.adversarial.safe_vulnerability: "
         "declares 0.5, no check recomputes it"]

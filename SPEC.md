@@ -446,6 +446,32 @@ emits. That is `python3 emit_vac.py` at the stamped commit re-deriving
 the whole bundle byte-identically from the committed rows; the replay
 block runs it.
 
+### 3.6 `crashkit-variance-v1`
+
+`artifact` names an N-run variance report: a `per_task` array of rows, each
+carrying `runs`, `passes`, `severity`, `pass_rate`, `flaky`, `ever_failed`,
+plus a `metrics` object and a declared `n`.
+
+This profile exists because the closure rule in §2.5 caught an accepted bundle
+pinning exactly this artifact while no check recomputed a number in it — and
+that bundle's capability sentence claimed the report "aggregates reproducibly".
+The claim was true; nothing verified it.
+
+Recomputation, over the rows, with the same frozen severity table as §3.4 (a
+severity outside it is `artifact-unparsable`, named by the offending label):
+
+- each row's own flags must follow from its own counts —
+  `pass_rate == round(passes / runs, 4)`, `flaky == (0 < passes < runs)`,
+  `ever_failed == (passes < runs)`. A row that contradicts itself is a
+  declaration, not evidence;
+- `n_tasks` = the row count, `flaky_cases` = the count of flaky rows, and
+  `stability` = `round((n_tasks - flaky_cases) / n_tasks, 4)`;
+- `mean_vulnerability` = `round(Σ wᵢ·(runsᵢ − passesᵢ)/runsᵢ / Σ wᵢ, 4)` and
+  `worst_case_vulnerability` = `round(Σ{wᵢ : ever_failed} / Σ wᵢ, 4)`, with
+  `wᵢ` the row's severity weight;
+- every row must carry `runs == n`, so a declared run count cannot outrun the
+  rows it summarises.
+
 ## 4. Structural verification vs semantic replay
 
 Two distinct acts, never to be conflated:

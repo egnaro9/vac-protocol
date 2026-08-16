@@ -34,7 +34,8 @@ import tempfile
 
 VAC_VERSION = "0.1"
 PROFILES = ("certlab-bundle-v1", "fleet-board-v1", "evalmut-run-v1",
-            "crashkit-battery-v1", "modeldrift-board-v1")
+            "crashkit-battery-v1", "crashkit-variance-v1",
+            "modeldrift-board-v1")
 USAGE = "usage: python -m vac.verify <bundle-dir | bundle.tar.gz>"
 
 
@@ -819,6 +820,86 @@ def _bad_unit(v) -> bool:
     return isinstance(v, bool) or not isinstance(v, (int, float))
 
 
+def _check_crashkit_variance(bundle_dir: pathlib.Path, check: dict,
+                             proto: dict,
+                             f: list[str]) -> dict[str, list] | None:
+    """SPEC.md §3.6 — an N-run variance report, recomputed from its rows.
+
+    Added because the evidence-closure rule found this artifact pinned by a
+    bundle whose capability sentence claimed it "aggregates reproducibly"
+    while no check recomputed a single number in it.
+    """
+    art = check["artifact"]
+    data = _load_json(bundle_dir, art, f)
+    if data is None:
+        return None
+    rows = data.get("per_task")
+    if not isinstance(rows, list) or not rows or not all(
+            isinstance(r, dict) for r in rows):
+        f.append(f"artifact-unparsable: {art}: no per_task[] array")
+        return None
+    for i, r in enumerate(rows):
+        for k in ("runs", "passes"):
+            if not isinstance(r.get(k), int) or isinstance(r.get(k), bool):
+                f.append(f"artifact-unparsable: {art}: row {i}: {k} must be "
+                         "an integer")
+                return None
+        if not 0 <= r["passes"] <= r["runs"] or r["runs"] <= 0:
+            f.append(f"artifact-unparsable: {art}: row {i}: passes "
+                     f"{r['passes']} outside 0..runs {r['runs']}")
+            return None
+    unknown = sorted({r.get("severity") for r in rows
+                      if r.get("severity") not in _CRASHKIT_WEIGHTS},
+                     key=lambda v: (v is None, str(v)))
+    if unknown:
+        labels = ", ".join(repr(u) for u in unknown[:4])
+        f.append(f"artifact-unparsable: {art}: severity {labels} outside the "
+                 f"profile's frozen table ({'/'.join(_CRASHKIT_WEIGHTS)})")
+        return None
+
+    # each row's own flags must follow from its own counts -- a row that
+    # contradicts itself is not evidence, it is a declaration
+    for i, r in enumerate(rows):
+        for k, want in (("pass_rate", round(r["passes"] / r["runs"], 4)),
+                        ("flaky", 0 < r["passes"] < r["runs"]),
+                        ("ever_failed", r["passes"] < r["runs"])):
+            got = round(r[k], 4) if k == "pass_rate" and \
+                isinstance(r.get(k), (int, float)) else r.get(k)
+            if got != want:
+                f.append(f"raw-aggregate-mismatch: {art}: row {i}: {k} "
+                         f"declared {r.get(k)!r}, recomputed {want!r}")
+
+    n = len(rows)
+    flaky = sum(1 for r in rows if r["passes"] < r["runs"]
+                and r["passes"] > 0)
+    tot_w = sum(_CRASHKIT_WEIGHTS[r["severity"]] for r in rows)
+    mean_v = sum(_CRASHKIT_WEIGHTS[r["severity"]]
+                 * (r["runs"] - r["passes"]) / r["runs"] for r in rows)
+    ever_w = sum(_CRASHKIT_WEIGHTS[r["severity"]] for r in rows
+                 if r["passes"] < r["runs"])
+    recomputed = {
+        "n_tasks": float(n),
+        "flaky_cases": float(flaky),
+        "stability": round((n - flaky) / n, 4),
+        "mean_vulnerability": round(mean_v / tot_w, 4) if tot_w else 0.0,
+        "worst_case_vulnerability": round(ever_w / tot_w, 4) if tot_w
+        else 0.0,
+    }
+    metrics = data.get("metrics")
+    if not isinstance(metrics, dict):
+        f.append(f"artifact-unparsable: {art}: no metrics object")
+        return None
+    for k, want in recomputed.items():
+        if metrics.get(k) != want:
+            f.append(f"raw-aggregate-mismatch: {art}: metrics.{k} declared "
+                     f"{metrics.get(k)}, recomputed {want}")
+    n_declared = data.get("n")
+    if any(r["runs"] != n_declared for r in rows):
+        f.append(f"raw-aggregate-mismatch: {art}: n declared {n_declared}, "
+                 "rows do not all carry that many runs")
+    return {k: [v] for k, v in recomputed.items()}
+
+
 def _check_modeldrift(bundle_dir: pathlib.Path, check: dict, proto: dict,
                       f: list[str]) -> dict[str, list] | None:
     met_rel, reg_rel = check["metrics"], check["registry"]
@@ -1071,6 +1152,7 @@ _CHECK_REFS = {"certlab-bundle-v1": ("artifact",),
                "fleet-board-v1": ("aggregate", "raw"),
                "evalmut-run-v1": ("artifact",),
                "crashkit-battery-v1": ("artifact",),
+               "crashkit-variance-v1": ("artifact",),
                "modeldrift-board-v1": ("metrics", "registry", "standings",
                                        "flips", "narrative", "results_md",
                                        "fingerprint")}
@@ -1079,6 +1161,7 @@ _CHECK_FNS = {"certlab-bundle-v1": _check_certlab,
               "fleet-board-v1": _check_fleet,
               "evalmut-run-v1": _check_evalmut,
               "crashkit-battery-v1": _check_crashkit,
+              "crashkit-variance-v1": _check_crashkit_variance,
               "modeldrift-board-v1": _check_modeldrift}
 
 

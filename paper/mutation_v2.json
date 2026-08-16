@@ -1,0 +1,757 @@
+{
+ "score": 0.96,
+ "caught": 120,
+ "total": 125,
+ "results": [
+  {
+   "line": 94,
+   "caught": true,
+   "how": "tests",
+   "reason": "draft-incomplete"
+  },
+  {
+   "line": 109,
+   "caught": true,
+   "how": "tests",
+   "reason": "schema-violation"
+  },
+  {
+   "line": 114,
+   "caught": true,
+   "how": "tests",
+   "reason": "schema-violation"
+  },
+  {
+   "line": 125,
+   "caught": true,
+   "how": "tests",
+   "reason": "f.append(\"empty-limitations\")"
+  },
+  {
+   "line": 130,
+   "caught": true,
+   "how": "tests",
+   "reason": "schema-violation"
+  },
+  {
+   "line": 134,
+   "caught": true,
+   "how": "tests",
+   "reason": "schema-violation"
+  },
+  {
+   "line": 144,
+   "caught": true,
+   "how": "tests",
+   "reason": "schema-violation"
+  },
+  {
+   "line": 149,
+   "caught": true,
+   "how": "tests",
+   "reason": "schema-violation"
+  },
+  {
+   "line": 154,
+   "caught": true,
+   "how": "tests",
+   "reason": "schema-violation"
+  },
+  {
+   "line": 158,
+   "caught": true,
+   "how": "tests",
+   "reason": "schema-violation"
+  },
+  {
+   "line": 161,
+   "caught": true,
+   "how": "tests",
+   "reason": "duplicate-artifact"
+  },
+  {
+   "line": 167,
+   "caught": true,
+   "how": "tests",
+   "reason": "schema-violation"
+  },
+  {
+   "line": 170,
+   "caught": true,
+   "how": "tests",
+   "reason": "schema-violation"
+  },
+  {
+   "line": 175,
+   "caught": true,
+   "how": "tests",
+   "reason": "schema-violation"
+  },
+  {
+   "line": 180,
+   "caught": true,
+   "how": "tests",
+   "reason": "unknown-profile"
+  },
+  {
+   "line": 186,
+   "caught": true,
+   "how": "tests",
+   "reason": "f.append(\"missing-issuer-commit\")"
+  },
+  {
+   "line": 188,
+   "caught": true,
+   "how": "tests",
+   "reason": "issuer-commit-mismatch"
+  },
+  {
+   "line": 193,
+   "caught": true,
+   "how": "tests",
+   "reason": "schema-violation"
+  },
+  {
+   "line": 196,
+   "caught": true,
+   "how": "tests",
+   "reason": "schema-violation"
+  },
+  {
+   "line": 213,
+   "caught": true,
+   "how": "tests",
+   "reason": "missing-artifact"
+  },
+  {
+   "line": 219,
+   "caught": true,
+   "how": "tests",
+   "reason": "f.append(f\"sha256-mismatch: {e['path']}: \""
+  },
+  {
+   "line": 228,
+   "caught": true,
+   "how": "tests",
+   "reason": "unlisted-file"
+  },
+  {
+   "line": 245,
+   "caught": true,
+   "how": "tests",
+   "reason": "artifact-unparsable"
+  },
+  {
+   "line": 249,
+   "caught": true,
+   "how": "tests",
+   "reason": "artifact-unparsable"
+  },
+  {
+   "line": 262,
+   "caught": true,
+   "how": "tests",
+   "reason": "artifact-unparsable"
+  },
+  {
+   "line": 272,
+   "caught": true,
+   "how": "tests",
+   "reason": "schema-violation"
+  },
+  {
+   "line": 277,
+   "caught": true,
+   "how": "tests",
+   "reason": "summary-mismatch"
+  },
+  {
+   "line": 280,
+   "caught": true,
+   "how": "tests",
+   "reason": "summary-mismatch"
+  },
+  {
+   "line": 291,
+   "caught": true,
+   "how": "tests",
+   "reason": "stamp-mismatch"
+  },
+  {
+   "line": 294,
+   "caught": true,
+   "how": "tests",
+   "reason": "stamp-mismatch"
+  },
+  {
+   "line": 299,
+   "caught": true,
+   "how": "tests",
+   "reason": "stamp-mismatch"
+  },
+  {
+   "line": 302,
+   "caught": true,
+   "how": "tests",
+   "reason": "stamp-mismatch"
+  },
+  {
+   "line": 338,
+   "caught": true,
+   "how": "tests",
+   "reason": "artifact-unparsable"
+  },
+  {
+   "line": 344,
+   "caught": true,
+   "how": "tests",
+   "reason": "artifact-unparsable"
+  },
+  {
+   "line": 352,
+   "caught": false,
+   "how": "SURVIVED",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 359,
+   "caught": true,
+   "how": "tests",
+   "reason": "summary-mismatch"
+  },
+  {
+   "line": 362,
+   "caught": true,
+   "how": "tests",
+   "reason": "summary-mismatch"
+  },
+  {
+   "line": 368,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 374,
+   "caught": false,
+   "how": "SURVIVED",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 379,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 383,
+   "caught": false,
+   "how": "SURVIVED",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 388,
+   "caught": true,
+   "how": "tests",
+   "reason": "stamp-mismatch"
+  },
+  {
+   "line": 392,
+   "caught": true,
+   "how": "tests",
+   "reason": "stamp-mismatch"
+  },
+  {
+   "line": 401,
+   "caught": true,
+   "how": "tests",
+   "reason": "stamp-mismatch"
+  },
+  {
+   "line": 404,
+   "caught": true,
+   "how": "tests",
+   "reason": "stamp-mismatch"
+  },
+  {
+   "line": 447,
+   "caught": true,
+   "how": "tests",
+   "reason": "artifact-unparsable"
+  },
+  {
+   "line": 452,
+   "caught": true,
+   "how": "tests",
+   "reason": "artifact-unparsable"
+  },
+  {
+   "line": 456,
+   "caught": true,
+   "how": "tests",
+   "reason": "artifact-unparsable"
+  },
+  {
+   "line": 464,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 471,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 476,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 491,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 514,
+   "caught": true,
+   "how": "tests",
+   "reason": "artifact-unparsable"
+  },
+  {
+   "line": 520,
+   "caught": true,
+   "how": "tests",
+   "reason": "artifact-unparsable"
+  },
+  {
+   "line": 527,
+   "caught": true,
+   "how": "tests",
+   "reason": "artifact-unparsable"
+  },
+  {
+   "line": 534,
+   "caught": false,
+   "how": "SURVIVED",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 541,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 548,
+   "caught": true,
+   "how": "tests",
+   "reason": "schema-violation"
+  },
+  {
+   "line": 553,
+   "caught": true,
+   "how": "tests",
+   "reason": "summary-mismatch"
+  },
+  {
+   "line": 556,
+   "caught": true,
+   "how": "tests",
+   "reason": "summary-mismatch"
+  },
+  {
+   "line": 581,
+   "caught": true,
+   "how": "tests",
+   "reason": "artifact-unparsable"
+  },
+  {
+   "line": 585,
+   "caught": true,
+   "how": "tests",
+   "reason": "artifact-unparsable"
+  },
+  {
+   "line": 589,
+   "caught": true,
+   "how": "tests",
+   "reason": "artifact-unparsable"
+  },
+  {
+   "line": 598,
+   "caught": true,
+   "how": "tests",
+   "reason": "artifact-unparsable"
+  },
+  {
+   "line": 605,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 622,
+   "caught": true,
+   "how": "tests",
+   "reason": "artifact-unparsable"
+  },
+  {
+   "line": 644,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 649,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 658,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 667,
+   "caught": true,
+   "how": "tests",
+   "reason": "schema-violation"
+  },
+  {
+   "line": 671,
+   "caught": true,
+   "how": "tests",
+   "reason": "stamp-mismatch"
+  },
+  {
+   "line": 674,
+   "caught": true,
+   "how": "tests",
+   "reason": "stamp-mismatch"
+  },
+  {
+   "line": 678,
+   "caught": true,
+   "how": "tests",
+   "reason": "schema-violation"
+  },
+  {
+   "line": 683,
+   "caught": true,
+   "how": "tests",
+   "reason": "summary-mismatch"
+  },
+  {
+   "line": 686,
+   "caught": true,
+   "how": "tests",
+   "reason": "summary-mismatch"
+  },
+  {
+   "line": 839,
+   "caught": true,
+   "how": "tests",
+   "reason": "artifact-unparsable"
+  },
+  {
+   "line": 844,
+   "caught": true,
+   "how": "tests",
+   "reason": "artifact-unparsable"
+  },
+  {
+   "line": 848,
+   "caught": true,
+   "how": "tests",
+   "reason": "artifact-unparsable"
+  },
+  {
+   "line": 856,
+   "caught": true,
+   "how": "tests",
+   "reason": "artifact-unparsable"
+  },
+  {
+   "line": 869,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 890,
+   "caught": true,
+   "how": "tests",
+   "reason": "artifact-unparsable"
+  },
+  {
+   "line": 894,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 898,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 922,
+   "caught": true,
+   "how": "tests",
+   "reason": "artifact-unparsable"
+  },
+  {
+   "line": 928,
+   "caught": true,
+   "how": "tests",
+   "reason": "artifact-unparsable"
+  },
+  {
+   "line": 936,
+   "caught": true,
+   "how": "tests",
+   "reason": "artifact-unparsable"
+  },
+  {
+   "line": 941,
+   "caught": true,
+   "how": "tests",
+   "reason": "artifact-unparsable"
+  },
+  {
+   "line": 946,
+   "caught": true,
+   "how": "tests",
+   "reason": "artifact-unparsable"
+  },
+  {
+   "line": 951,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 967,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 973,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 977,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 981,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 985,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 988,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 992,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 998,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 1001,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 1004,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 1010,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 1016,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 1020,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 1025,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 1040,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 1044,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 1048,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 1055,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 1060,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 1070,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 1076,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 1084,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 1089,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 1097,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 1101,
+   "caught": true,
+   "how": "tests",
+   "reason": "raw-aggregate-mismatch"
+  },
+  {
+   "line": 1108,
+   "caught": true,
+   "how": "tests",
+   "reason": "stamp-mismatch"
+  },
+  {
+   "line": 1114,
+   "caught": true,
+   "how": "tests",
+   "reason": "stamp-mismatch"
+  },
+  {
+   "line": 1138,
+   "caught": true,
+   "how": "tests",
+   "reason": "schema-violation"
+  },
+  {
+   "line": 1143,
+   "caught": true,
+   "how": "tests",
+   "reason": "summary-mismatch"
+  },
+  {
+   "line": 1146,
+   "caught": true,
+   "how": "tests",
+   "reason": "summary-mismatch"
+  },
+  {
+   "line": 1198,
+   "caught": true,
+   "how": "sweep:tamper-summary-string",
+   "reason": "summary-outruns-checks"
+  },
+  {
+   "line": 1207,
+   "caught": true,
+   "how": "tests",
+   "reason": "summary-outruns-checks"
+  },
+  {
+   "line": 1210,
+   "caught": true,
+   "how": "tests",
+   "reason": "summary-outruns-checks"
+  },
+  {
+   "line": 1246,
+   "caught": true,
+   "how": "tests",
+   "reason": "check-artifact-not-listed"
+  },
+  {
+   "line": 1258,
+   "caught": false,
+   "how": "SURVIVED",
+   "reason": "artifact-unparsable"
+  },
+  {
+   "line": 1271,
+   "caught": true,
+   "how": "tests",
+   "reason": "evidence-unchecked"
+  }
+ ]
+}
