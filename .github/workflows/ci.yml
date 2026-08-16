@@ -25,8 +25,23 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      # The score is only comparable if the suite is. Without these checkouts
+      # the real-bundle tests SKIP, four mutants stop being caught, and the
+      # denominator changes -- a mutation score that depends on what happens
+      # to be on the machine is the same host-dependence class this verifier
+      # exists to refuse. Check them out so CI measures what a developer does.
+      - uses: actions/checkout@v4
+        with: {repository: egnaro9/crashkit, path: _issuers/crashkit}
+      - uses: actions/checkout@v4
+        with: {repository: egnaro9/evalmut, path: _issuers/evalmut}
+      - uses: actions/checkout@v4
+        with: {repository: egnaro9/model-drift, path: _issuers/model-drift}
       - run: pip install -e ".[test]"
-      - run: python tools/mutation_sweep.py --floor 0.94
+      - env:
+          VAC_CRASHKIT_CHECKOUT: _issuers/crashkit/vac
+          VAC_EVALMUT_CHECKOUT: _issuers/evalmut/vac
+          VAC_MODELDRIFT_CHECKOUT: _issuers/model-drift/vac
+        run: python tools/mutation_sweep.py --floor 0.94
 
   invalidation-liveness:
     # The verifier must prove it can both pass and BLOCK: the committed

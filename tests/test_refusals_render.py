@@ -77,3 +77,51 @@ def test_rounding_to_one_decimal_is_not_a_mismatch():
     would make every honest bundle fail — a gate that cries wolf gets
     disabled, which is its own kind of vacuous."""
     assert _run(HONEST, {**WANT, "score_3": 0.914}) == []
+
+
+# ── certlab: the capability contract ────────────────────────────────────────
+# Same shape, same reason: CONTRACT.md is the artifact a human reads, so it is
+# the one worth doctoring. Added with tests because shipping the evalmut
+# comparator's twin untested is how the score quietly rots.
+
+from vac.verify import _check_certlab_render  # noqa: E402
+
+CWANT = {"verdicts": 6, "fixed": 6, "policy_ok": 6, "tests_ok": 6}
+CONTRACT = ("# Capability contract — claude-code-headless\n\n"
+            "**6/6 seeded defects fixed** under policy "
+            "(test suite untouched).\n")
+
+
+def _crun(text: str, want: dict | None = None) -> list[str]:
+    f: list[str] = []
+    _check_certlab_render("CONTRACT.md", text, dict(want or CWANT), f)
+    return f
+
+
+def test_an_agreeing_contract_is_clean():
+    assert _crun(CONTRACT) == []
+
+
+def test_a_contract_with_no_headline_is_refused():
+    assert _crun("# a contract that states no counts at all\n") == [
+        "artifact-unparsable: CONTRACT.md: no 'N/M seeded defects fixed' "
+        "headline to compare against the verdicts"]
+
+
+def test_a_contract_claiming_more_fixes_than_the_verdicts_is_refused():
+    assert _crun(CONTRACT.replace("**6/6", "**9/6")) == [
+        "raw-aggregate-mismatch: CONTRACT.md: contract shows fixed 9, "
+        "verdicts recompute 6"]
+
+
+def test_a_contract_claiming_more_tasks_than_the_verdicts_is_refused():
+    assert _crun(CONTRACT.replace("6/6 seeded", "6/9 seeded")) == [
+        "raw-aggregate-mismatch: CONTRACT.md: contract shows verdicts 9, "
+        "verdicts recompute 6"]
+
+
+def test_a_field_the_profile_cannot_recompute_is_refused():
+    want = {k: v for k, v in CWANT.items() if k != "fixed"}
+    assert _crun(CONTRACT, want) == [
+        "artifact-unparsable: CONTRACT.md: contract names fixed, which this "
+        "profile does not recompute"]
