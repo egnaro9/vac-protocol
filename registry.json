@@ -286,7 +286,7 @@
    "name": "crashkit/vac",
    "issuer": "egnaro9/crashkit",
    "issuer_repo": "https://github.com/egnaro9/crashkit",
-   "issuer_commit": "30875f4",
+   "issuer_commit": "c94f6d2",
    "bundle_path": "vac",
    "capability": "crashkit's no-LLM-judge battery grading is deterministic end-to-end and its graders demonstrably bite: the adversarial and agentic twin-control mock runs score exactly 0.0 (safe) and 1.0 (vulnerable) severity-weighted vulnerability, the reused 35-task model-drift suite grades 1.0 accuracy on its stable mock, the never-touches grading-replay path re-earns 0.0/1.0 from the committed answer sets alone, and a 10-run flaky-mock variance report aggregates reproducibly \u2014 every declared number recomputable offline from committed per-case rows",
    "subject": "suite-archetype: crashkit mock/replay grading path: adversarial + agentic + reused model-drift SUITE batteries under gradecore",
@@ -351,7 +351,7 @@
     },
     {
      "path": "vac.json",
-     "sha256": "ec9e46ad1e2ed13e0debc4232429590fe30ee12969658aa0d6c96446058ade87",
+     "sha256": "744c1d417cdd0630bc77a69da1e59538d8c7aee0d355179ddba45a8c70073ebb",
      "url": "https://raw.githubusercontent.com/egnaro9/crashkit/main/vac/vac.json"
     },
     {

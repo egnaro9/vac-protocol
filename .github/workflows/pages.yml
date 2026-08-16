@@ -5,6 +5,12 @@ on:
     paths: ["index.html", "registry.json", "vac/**",
             ".github/workflows/pages.yml"]
   workflow_dispatch:
+  # Drift in a REFERENCED repo is invisible to a push-triggered gate: crashkit
+  # moved at 19:14 and this job only noticed six hours later, when an unrelated
+  # push happened to touch vac/**. A staleness check that cannot fire on its own
+  # is not a staleness check.
+  schedule:
+    - cron: "17 6 * * *"
 permissions:
   contents: read
   pages: write
