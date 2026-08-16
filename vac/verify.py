@@ -543,6 +543,18 @@ def _check_evalmut(bundle_dir: pathlib.Path, check: dict, proto: dict,
                                          "contradicts the catalog's "
                                          f"{op.get(k)!r}")
                     recomputed["operators"] = len(cat)
+    # An optional human-readable render of THIS payload. Optional to declare;
+    # once declared it is held to the payload, so a bundle cannot ship a
+    # report showing numbers the machine-checked artifact does not support.
+    render_rel = check.get("render")
+    if _nonempty_str(render_rel):
+        try:
+            text = (bundle_dir / render_rel).read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError) as e:
+            f.append(f"artifact-unparsable: {render_rel}: {e}")
+        else:
+            _check_evalmut_render(render_rel, text, recomputed, f)
+
     expect = check.get("expect")
     if not (isinstance(expect, dict) and expect):
         f.append("schema-violation: results.checks[evalmut-run-v1].expect: "
@@ -567,6 +579,45 @@ def _check_evalmut(bundle_dir: pathlib.Path, check: dict, proto: dict,
 _CRASHKIT_WEIGHTS = {"none": 0, "low": 1, "med": 2, "high": 4, "critical": 8}
 _CRASHKIT_ACC_ALIASES = ("faithfulness", "precision@k", "recall@k",
                          "citation_rate")
+
+
+_EVALMUT_RENDER = re.compile(
+    r"mutation score\s+([\d.]+)%\s+\((\d+) caught / (\d+) applied; (\d+) n/a\)")
+
+
+def _check_evalmut_render(art: str, text: str, want: dict,
+                          f: list[str]) -> None:
+    """A rendered report must agree with the payload it was rendered from.
+
+    Deliberately NOT a byte-identity re-render: reimplementing evalmut's
+    layout here would couple the verifier to its formatting and break on a
+    cosmetic change. What matters is that the human-readable artifact cannot
+    show different numbers from the machine-checked ones.
+
+    The regex finding nothing is a REFUSAL, not a pass. A "does the render
+    agree" check that silently succeeds on an unparseable render is the exact
+    defect this profile family exists to refuse.
+    """
+    m = _EVALMUT_RENDER.search(text)
+    if not m:
+        f.append(f"artifact-unparsable: {art}: no 'mutation score' headline "
+                 "to compare against the payload")
+        return
+    got = {"caught": int(m.group(2)), "applied": int(m.group(3)),
+           "na": int(m.group(4)), "score_3": round(float(m.group(1)) / 100, 3)}
+    # A field the payload does not recompute must be a REFUSAL, not a skip:
+    # silently comparing only the keys that happen to line up is how a
+    # comparator ends up comparing nothing.
+    missing = sorted(k for k in got if k not in want)
+    if missing:
+        f.append(f"artifact-unparsable: {art}: render headline names "
+                 f"{', '.join(missing)}, which this profile does not "
+                 "recompute")
+        return
+    for k in sorted(got):
+        if got[k] != want[k]:
+            f.append(f"raw-aggregate-mismatch: {art}: render shows {k} "
+                     f"{got[k]}, payload recomputes {want[k]}")
 
 
 def _check_crashkit(bundle_dir: pathlib.Path, check: dict, proto: dict,
@@ -1156,7 +1207,7 @@ _CHECK_REFS = {"certlab-bundle-v1": ("artifact",),
                "modeldrift-board-v1": ("metrics", "registry", "standings",
                                        "flips", "narrative", "results_md",
                                        "fingerprint")}
-_CHECK_OPT_REFS = {"evalmut-run-v1": ("catalog",)}
+_CHECK_OPT_REFS = {"evalmut-run-v1": ("catalog", "render")}
 _CHECK_FNS = {"certlab-bundle-v1": _check_certlab,
               "fleet-board-v1": _check_fleet,
               "evalmut-run-v1": _check_evalmut,

@@ -336,31 +336,18 @@ def test_real_evalmut_bundle_summary_is_enforced(tmp_path):
     while the untampered copy still verifies clean."""
     b = tmp_path / "b"
     shutil.copytree(EVALMUT_BUNDLE, b)
-    # KNOWN GAP, surfaced by the evidence-unchecked rule when it was added:
-    # this bundle pins two artifacts no check reads. Assert the gap EXACTLY
-    # rather than relaxing the rule, so the day the emitter covers them this
-    # line fails loudly instead of the baseline quietly drifting.
-    assert verify_bundle(b) == [EVALMUT_UNCHECKED]
+    assert verify_bundle(b) == []
     man_path = b / "vac.json"
     man = json.loads(man_path.read_text())
     man["results"]["summary"]["dogfood_gradecore"]["caught"] = 33
     man_path.write_text(json.dumps(man, indent=1) + "\n")
     assert verify_bundle(b) == [
-        EVALMUT_UNCHECKED,
         "summary-outruns-checks: summary.dogfood_gradecore.caught: "
         "declares 33, recomputation gives one of [5, 32]"]
 
 
 CRASHKIT_BUNDLE = (ROOT / (os.environ.get("VAC_CRASHKIT_CHECKOUT")
                            or "../crashkit")).resolve() / "vac"
-
-# The two live bundles each pin evidence no check reads. These constants name
-# that gap so the tests assert the TRUE current state; delete them (and the
-# assertions that use them) once the issuers cover the artifacts.
-EVALMUT_UNCHECKED = ("evidence-unchecked: dogfood_gradecore.txt, "
-                     "promptfoo_findings.txt: listed in evidence but read by "
-                     "no check")
-
 
 
 @pytest.mark.skipif(not (CRASHKIT_BUNDLE / "vac.json").is_file(),
