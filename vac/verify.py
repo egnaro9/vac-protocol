@@ -315,6 +315,16 @@ def _check_certlab(bundle_dir: pathlib.Path, check: dict, proto: dict,
         # redefine what `fixed`/`verdicts`/`policy_ok`/`tests_ok` are held to.
         if mode not in recomputed:
             pool.setdefault(mode, []).append(cnt)
+    # optional contract render: the human-readable artifact is the one worth
+    # doctoring, so once declared it is held to the verdicts it summarises
+    render_rel = check.get("render")
+    if _nonempty_str(render_rel):
+        try:
+            text = (bundle_dir / render_rel).read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError) as e:
+            f.append(f"artifact-unparsable: {render_rel}: {e}")
+        else:
+            _check_certlab_render(render_rel, text, recomputed, f)
     return pool
 
 
@@ -431,6 +441,34 @@ _EVALMUT_HOLES = (("vacuous", "missed", "sanity"),
                   ("error", "error", None),
                   ("brittle", "flagged", None),
                   ("coverage_gap", "missed", "diagnostic"))
+
+
+_CERTLAB_RENDER = re.compile(r"\*\*(\d+)/(\d+) seeded defects fixed\*\*")
+
+
+def _check_certlab_render(art: str, text: str, want: dict,
+                          f: list[str]) -> None:
+    """A capability contract must agree with the verdicts it summarises.
+
+    Same shape as the evalmut render check and for the same reason: the
+    contract is the artifact a human actually reads, so it is the one worth
+    doctoring. Not a byte-identity re-render -- the contract is prose plus a
+    table, and pinning its layout here would break on any wording change.
+    An unfindable headline is a REFUSAL, never a skip.
+    """
+    m = _CERTLAB_RENDER.search(text)
+    if not m:
+        f.append(f"artifact-unparsable: {art}: no 'N/M seeded defects fixed' "
+                 "headline to compare against the verdicts")
+        return
+    for k, got in (("fixed", int(m.group(1))), ("verdicts", int(m.group(2)))):
+        if k not in want:
+            f.append(f"artifact-unparsable: {art}: contract names {k}, which "
+                     "this profile does not recompute")
+            return
+        if got != want[k]:
+            f.append(f"raw-aggregate-mismatch: {art}: contract shows {k} "
+                     f"{got}, verdicts recompute {want[k]}")
 
 
 def _check_evalmut(bundle_dir: pathlib.Path, check: dict, proto: dict,
@@ -1207,7 +1245,8 @@ _CHECK_REFS = {"certlab-bundle-v1": ("artifact",),
                "modeldrift-board-v1": ("metrics", "registry", "standings",
                                        "flips", "narrative", "results_md",
                                        "fingerprint")}
-_CHECK_OPT_REFS = {"evalmut-run-v1": ("catalog", "render")}
+_CHECK_OPT_REFS = {"certlab-bundle-v1": ("render",),
+                   "evalmut-run-v1": ("catalog", "render")}
 _CHECK_FNS = {"certlab-bundle-v1": _check_certlab,
               "fleet-board-v1": _check_fleet,
               "evalmut-run-v1": _check_evalmut,

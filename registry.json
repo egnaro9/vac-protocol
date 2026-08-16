@@ -31,7 +31,7 @@
     },
     {
      "path": "vac.json",
-     "sha256": "4f00a8a2968e86bbafd294374cf7e2a32eb2a3c03533c34b442bbba39b656b3f",
+     "sha256": "d2a0a0250c2d1ab98df695bc3b6219516406a1ef736aa48cbb0ef84234ac0124",
      "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/aider-intervals-2026-08-14/vac.json"
     }
    ],
@@ -71,7 +71,7 @@
     },
     {
      "path": "vac.json",
-     "sha256": "f8f4e29453e887eda375894193d6ad73f20dcd0a537977f7616b31b3d5b096a8",
+     "sha256": "fb51a797f8d7dc7dfd62c8414df47fd5d4f803def6065029d5fad1f6f4824d1f",
      "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/aider-ledger-2026-08-14/vac.json"
     }
    ],
@@ -111,7 +111,7 @@
     },
     {
      "path": "vac.json",
-     "sha256": "f241fbd02141e1a7626d9deeef507827d3ee13a016ceb45097abb8f6c5a30bc4",
+     "sha256": "b05a6e48ce1e783deb991631edc2ccefc709365d3be9a67cd485a302aa483fe7",
      "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/aider-machine-2026-08-14/vac.json"
     }
    ],
@@ -151,7 +151,7 @@
     },
     {
      "path": "vac.json",
-     "sha256": "269eaa67c64bcb539e96c65ab97eda5c9290eafa9e105b69cbc4a31f8786427e",
+     "sha256": "885b607f0e56ae059e673bebb1d973ef0da7550ac98c24f5dc58f4d3a716606a",
      "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/claude-code-2026-08-14/vac.json"
     }
    ],
@@ -191,7 +191,7 @@
     },
     {
      "path": "vac.json",
-     "sha256": "0306e161eb041ddb703d9a19606cd80e83b428d2e08c73c3d2c5a4c34532ee6b",
+     "sha256": "70c89e63e46e2c163b255585fcbce5bb4cf624e7297cb1c76e5d2c17e288fb1e",
      "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/claude-code-cloud-2026-08-14/vac.json"
     }
    ],
@@ -231,7 +231,7 @@
     },
     {
      "path": "vac.json",
-     "sha256": "57adb226d065ba7dc80ad879302aa3b3b58e7c424bd9f19b4e2a6d3241bbd277",
+     "sha256": "2ff0c87383db920186417a1977eaa35acc1e049515d28b5e4431a84eb643c8bb",
      "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/claude-code-ledger-2026-08-14/vac.json"
     }
    ],
@@ -271,7 +271,7 @@
     },
     {
      "path": "vac.json",
-     "sha256": "0e1698330e405f3e6296a5f367669c766297e69175dc356e2a33f1b89decc3a9",
+     "sha256": "053d4d31d54e02a536f5e2eb9d45d96acfb613ad0d7eead8722c644d9248e91f",
      "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/claude-code-machine-2026-08-14/vac.json"
     }
    ],
@@ -286,7 +286,7 @@
    "name": "crashkit/vac",
    "issuer": "egnaro9/crashkit",
    "issuer_repo": "https://github.com/egnaro9/crashkit",
-   "issuer_commit": "c94f6d2",
+   "issuer_commit": "a71da57",
    "bundle_path": "vac",
    "capability": "crashkit's no-LLM-judge battery grading is deterministic end-to-end and its graders demonstrably bite: the adversarial and agentic twin-control mock runs score exactly 0.0 (safe) and 1.0 (vulnerable) severity-weighted vulnerability, the reused 35-task model-drift suite grades 1.0 accuracy on its stable mock, the never-touches grading-replay path re-earns 0.0/1.0 from the committed answer sets alone, and a 10-run flaky-mock variance report aggregates reproducibly \u2014 every declared number recomputable offline from committed per-case rows",
    "subject": "suite-archetype: crashkit mock/replay grading path: adversarial + agentic + reused model-drift SUITE batteries under gradecore",
@@ -311,7 +311,8 @@
     }
    },
    "profiles": [
-    "crashkit-battery-v1"
+    "crashkit-battery-v1",
+    "crashkit-variance-v1"
    ],
    "artifacts": [
     {
@@ -351,7 +352,7 @@
     },
     {
      "path": "vac.json",
-     "sha256": "744c1d417cdd0630bc77a69da1e59538d8c7aee0d355179ddba45a8c70073ebb",
+     "sha256": "7e3ebeaee89a185e543cedf80a09536f617e39d03e17728b9db38783dc56b6e3",
      "url": "https://raw.githubusercontent.com/egnaro9/crashkit/main/vac/vac.json"
     },
     {
@@ -371,7 +372,7 @@
    "name": "evalmut/vac",
    "issuer": "egnaro9/evalmut",
    "issuer_repo": "https://github.com/egnaro9/evalmut",
-   "issuer_commit": "77e8c3e",
+   "issuer_commit": "bf512ec",
    "bundle_path": "vac",
    "capability": "eval-suite mutation testing over a mined operator battery: gradecore's own grader-family suite scores 32/35 with 3 holes, and the committed ports of promptfoo's documented deterministic assertions score 5/11 with 6 holes \u2014 every number recomputable from committed per-mutation rows",
    "subject": "suite-archetype: demos/dogfood_gradecore.py + external/promptfoo_suite.py under the evalmut mined-operator battery",
@@ -430,7 +431,7 @@
     },
     {
      "path": "vac.json",
-     "sha256": "85d2b64e551b9d34fa507f3dcfaa641a79542cb957335e51653b1c4c5ba881de",
+     "sha256": "d1cae80412e79d9e08cafea8b89f466a99e235084d2bd293e00a3783e0196e8d",
      "url": "https://raw.githubusercontent.com/egnaro9/evalmut/main/vac/vac.json"
     }
    ],
