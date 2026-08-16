@@ -19,7 +19,8 @@ sites, 75 can be silently deleted with the entire test suite and every tamper fi
 still green** — a mutation score of **0.330**. All four hand-found forgeries fall inside
 the surviving classes, so the measurement does not merely agree with the manual audit, it
 predicts it. Worse, the CI job written specifically to prove the verifier can refuse
-caught **zero** of the 75.
+caught **zero** of the 75. Testing the refusals themselves then took the score to
+**0.941** — while fixing the four found defects had moved it by −0.002.
 
 This paper documents the class, four working forgeries against a verifier that had already
 been hardened once, the mutation score that anticipates them, why a 137-test suite and
@@ -280,6 +281,44 @@ The fix is the rule the paper already argues for, applied to itself: `tools/muta
 now **aborts unless the clean baseline is green**, on the grounds that a mutation score
 against a red baseline measures nothing. A liveness gate on the liveness instrument.
 
+### 5.3 What did move it: testing the refusals, not the bugs
+
+The survivors were never a mystery — they were a work list. I wrote **75 tests, one per
+surviving refusal**, organised by cluster rather than by defect.
+
+```
+                    fixing the four found bugs   0.330 -> 0.328
+       testing the refusals themselves (+75)     0.330 -> 0.941
+                                                 112/119, 189 tests, 20/20 fixtures
+```
+
+The discipline that made them worth anything is the same one the rest of this paper is
+about. Each test asserts the **exact** failure list, never a substring search, so it cannot
+pass on a cascade it did not cause. And for most of them, disabling the target refusal makes
+`verify_bundle` return `[]` — the cooked bundle verifies *clean* — which proves that refusal
+is the **sole** guard for its defect rather than one voice in a chorus. Several tests were
+rewritten mid-flight when that check revealed they were leaning on a stale-hash backstop
+instead of the arithmetic they claimed to pin.
+
+Seven refusals still survive, and the honest breakdown matters: **two are dead code, not
+untested.** `verify.py:863` is unreachable because a non-dict `flips.json` is already
+refused upstream by `_load_json`'s `want=dict`; `verify.py:990` is an `OSError` wrapper no
+bundle-shaped input can reach, since the artifact must already have been read and hashed to
+enter the check. Both were probed empirically rather than assumed, and no test was written
+to fake coverage of them.
+
+The comparison between the two rows above is the paper's practical claim. Fixing named
+defects and pinning each with a regression fixture — the instinctive post-audit response —
+moved coverage by −0.002. Systematically asking *"can this gate fail?"* of every gate moved
+it by +0.611. **The defects you find are a sample; the gates you own are the population.**
+
+A caveat on provenance, since this paper is about not trusting instruments: the 75 tests
+were written by six agents running concurrently against one working tree, and at least one
+observed a sibling mutating `vac/verify.py` underneath its own verification sweep. Their
+self-reported "mutation-checked" counts are therefore not independently trustworthy. The
+0.941 is a single serialized run of `tools/mutation_sweep.py` against a clean tree with the
+liveness gate satisfied. That number is the claim; the authors' self-reports are not.
+
 ## 6. Why 137 tests and 16 tamper fixtures missed all of this
 
 **Every fixture encodes a forgery I had already imagined.** `tamper-wrong-sha256` tests a
@@ -355,9 +394,12 @@ whole argument for mutation-testing eval suites rather than trusting their green
 - **Stamp keys named in `protocol.hashes` but absent from the artifact become a
   `stamp-mismatch`**, matching the two profiles that already fail closed.
 - **A tamper fixture per fix**, so the invalidation sweep proves each new refusal can fire.
-- **Wire the mutation sweep into CI as a floor.** §5 is a one-off measurement; without a
-  ratcheted threshold it will rot. The `invalidation-liveness` job should fail when the
-  score drops, not merely when a fixture stops being refused.
+- **Wire the mutation sweep into CI as a floor.** `tools/mutation_sweep.py --floor 0.94`
+  now exists; without a ratcheted threshold in CI the score will rot. The
+  `invalidation-liveness` job should fail when the score drops, not merely when a fixture
+  stops being refused.
+- **Delete the two unreachable refusals** (`verify.py:863`, `:990`) rather than leave them
+  as permanent survivors that make the denominator lie.
 - **Add a tamper fixture per surviving refusal class**, starting with the four in §4.
 
 ## 10. Limitations
