@@ -24,8 +24,9 @@ caught **zero** of the 75.
 This paper documents the class, four working forgeries against a verifier that had already
 been hardened once, the mutation score that anticipates them, why a 137-test suite and
 sixteen tamper fixtures did not catch any of them, and the uncomfortable observation that
-my *measuring* tools lied to me five separate times during the writing of this paper —
-twice inside the scripts I was using to hunt the bug.
+my *measuring* tools lied to me six separate times during the writing of this paper —
+three of them inside the scripts I was using to hunt the bug, one of which scored a
+perfect 1.000 while measuring nothing.
 
 ## 1. The instrument and the claim
 
@@ -238,6 +239,47 @@ it, so an unknown fraction of the 75 are unreachable or genuinely redundant rath
 untested. That fraction is not large enough to explain a 0.330 score, and the four
 independently-confirmed forgeries establish that at least some survivors are live.
 
+### 5.1 What hardening actually bought: nothing measurable
+
+I then fixed all four defects in §4 and added a tamper fixture per fix, so the
+`invalidation-liveness` job could prove each new refusal fires. Every forgery is now
+refused by name; all 20 fixtures are refused against a passing live control. Re-measuring:
+
+```
+BEFORE   37/112 = 0.330
+AFTER    39/119 = 0.328
+```
+
+**The score did not move.** Two of the four new fixtures kill a mutant; the other two kill
+none. And closing four holes required **seven new refusal statements, themselves untested**
+— `stamp-mismatch` survivors went from 4 to 8. Four bugs fixed, seven guards added, net
+coverage flat.
+
+This is the most useful number in the paper, because it refutes the intuition that produced
+it. Fixing named bugs and pinning each with a regression fixture is exactly what a careful
+engineer does after an audit, and by the only measure that asks *"can this gate fail?"* it
+bought nothing. Coverage does not follow the defects you happened to find. The mass here is
+26 surviving `raw-aggregate-mismatch` refusals concentrated in one profile's checker — none
+of which any audit had a reason to look at.
+
+### 5.2 The measurement lied first, and scored a perfect 1.000
+
+The first post-hardening run reported **119/119 = 1.000**.
+
+It was false. The harness ran `pytest -x`, and the baseline was *already red* — the two
+tests that assert the real evalmut and crashkit bundles verify clean, which the new
+evidence-unchecked rule had just (correctly) broken. pytest therefore exited nonzero for
+every mutant, every mutant scored "caught," and the score reported a perfect suite while
+measuring nothing at all.
+
+A tool built to detect checks that pass without checking produced a check that passed
+without checking, and the failure presented as the best possible result. Had I reported
+1.000 it would have been the most flattering and most worthless number in this project.
+
+The fix is the rule the paper already argues for, applied to itself: `tools/mutation_sweep.py`
+now **aborts unless the clean baseline is green**, on the grounds that a mutation score
+against a red baseline measures nothing. A liveness gate on the liveness instrument.
+
 ## 6. Why 137 tests and 16 tamper fixtures missed all of this
 
 **Every fixture encodes a forgery I had already imagined.** `tamper-wrong-sha256` tests a
@@ -268,14 +310,19 @@ subject.
    vacuous passes produced one.
 4. An agent's proof-of-concept for a fifth finding ran against a **stale local
    `origin/main`**. After `git fetch` the premise evaporated. The finding was void.
-5. Editing *this paper* to insert the §5 result, a `str.replace()` on the abstract matched
+5. The first post-hardening mutation run scored a perfect **1.000** against an
+   already-red baseline: `pytest -x` exited nonzero for every mutant, so all 119 scored
+   "caught." The tool built to find vacuous passes produced one, and it presented as the
+   best possible result (§5.2).
+6. Editing *this paper* to insert the §5 result, a `str.replace()` on the abstract matched
    nothing and returned the string unchanged. The build succeeded, the PDF regenerated, and
    the abstract still carried the old numbers. Python's `str.replace` cannot fail; it can
    only decline to do anything. The fix was to switch to an editor that **errors on
    no-match** — which is the entire thesis of this paper applied to a text edit.
 
-Five instrument failures, all producing plausible output, two of them inside tools written
-specifically to hunt this bug. The operational rules that survive:
+Six instrument failures, all producing plausible output, three of them inside tools written
+specifically to hunt this bug. The most dangerous was not the one that broke — it was the
+one that returned a perfect score. The operational rules that survive:
 
 - **Prove the instrument before the finding.** A liveness control adjacent to every sweep.
 - **Re-run the ruled-out list after any fix.** A stale exclusion is indistinguishable from

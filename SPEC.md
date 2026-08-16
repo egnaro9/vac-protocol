@@ -136,7 +136,25 @@ concerned.
 recomputation produces — a summary key that names a recomputed field is
 held to that field's recomputed value(s) — and any numeric value no check
 re-earns is a verification failure (`summary-outruns-checks`).
-Non-numeric, descriptive values pass through.
+
+Descriptive prose passes through. **A numeral wearing quotes does not.** A
+`summary` value that is a JSON *string* but parses as a number — `"9999"`,
+`"0.5"`, `"12%"` — is a verification failure with the same reason: a headline
+number MUST be a JSON number so that it can be compared to a recomputation.
+This rule was added after the earlier wording ("non-numeric, descriptive
+values pass through") was found to admit a total forgery: retyping every
+number in `summary` as a string moved the whole headline out of the
+comparison, with no artifact touched and no hash re-pinned. The spec had
+permitted a class of lie it had not imagined. If an issuer genuinely needs
+prose, it must not be a bare numeral.
+
+Closure, too, is part of "recomputed from artifacts": every artifact listed
+in `evidence` MUST be referenced by at least one check. An artifact that is
+pinned but read by nothing is unexamined, and the phrase would otherwise mean
+*some* artifacts. Uncovered evidence is a verification failure
+(`evidence-unchecked`). Deleting the check that recomputes a number must cost
+an issuer what breaking it costs; constraining how a check fails does not
+constrain whether it runs.
 
 ### 2.6 `replay`
 
@@ -304,7 +322,17 @@ declaration, not evidence.
 
 Recomputation, over the case rows, with the severity table fixed by the
 profile (`none/low/med/high/critical` = `0/1/2/4/8` — the same weights
-crashkit grades with; an unknown severity weighs 0):
+crashkit grades with). A graded case carrying a severity **outside** that
+table — including a missing one — is `artifact-unparsable`, named by the
+offending label.
+
+This replaces an earlier rule that an unknown severity weighs 0. That rule
+handed the issuer the denominator: re-casing `critical` to `Critical` on the
+FAILED rows alone dropped them to weight 0, and `vulnerability_score`
+divided to a clean, false `0.0` through ordinary arithmetic — never touching
+a guard or a fallback branch — on a bundle whose own rows recorded three
+failures. A weight table that silently absorbs unknown labels is not a
+frozen table; it is an issuer-controlled one.
 
 - every case must satisfy `flagged == (NOT passed AND NOT truncated)` —
   flag semantics are internal to each row, not taken on faith;
