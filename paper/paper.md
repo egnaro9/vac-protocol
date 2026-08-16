@@ -13,21 +13,20 @@ capital letter**.
 
 The unifying defect is not cryptographic and not exotic. It is a check that reports
 success along a path where it never examined anything. I use **vacuous pass** as a working
-label for it, not as a new discovery — the underlying idea is well-trodden ground (§3.1).
+label for it, not as a new discovery. The underlying idea is well-trodden ground (§3.1).
 
 I then stopped collecting anecdotes and measured it. Of this verifier's **112 refusal
 sites, 75 can be silently deleted with the entire test suite and every tamper fixture
-still green** — a mutation score of **0.330**. All four hand-found forgeries fall inside
+still green**, a mutation score of **0.330**. All four hand-found forgeries fall inside
 the surviving classes, so the measurement does not merely agree with the manual audit, it
 predicts it. Worse, the CI job written specifically to prove the verifier can refuse
 caught **zero** of the 75. Testing the refusals themselves then took the score to
-**0.941** — while fixing the four found defects had moved it by −0.002.
+**0.941**, while fixing the four found defects had moved it by −0.002.
 
 This paper documents the class, four working forgeries against a verifier that had already
 been hardened once, the mutation score that anticipates them, why a 137-test suite and
 sixteen tamper fixtures did not catch any of them, and the uncomfortable observation that
-my *measuring* tools lied to me six separate times during the writing of this paper —
-three of them inside the scripts I was using to hunt the bug, one of which scored a
+my *measuring* tools lied to me six separate times during the writing of this paper, three of them inside the scripts I was using to hunt the bug, one of which scored a
 perfect 1.000 while measuring nothing.
 
 ## 1. The instrument and the claim
@@ -44,7 +43,7 @@ That last clause is the load-bearing one. Everything in this paper is an attack 
 
 Accepted bundles are copied into a public registry (`vac/registry.py:171` copies
 `results.summary` verbatim) and rendered on a published page (`index.html:113`). A lie
-that survives the verifier is not academic — it is published.
+that survives the verifier is not academic. It is published.
 
 ## 2. The external audit
 
@@ -52,17 +51,16 @@ Giulio D'Erme (`GiulioDER`, author of `cca-audit`) ran a deep-tier audit after I
 open replay request. He filed two pull requests.
 
 His central finding: a bundle declaring `summary.verdicts: 9999` while the artifact held
-3 — with `evidence/bundle.json` replaced by the four bytes `null` and **its sha256
-re-pinned honestly** — exited 0 and printed `structural verification: PASS`. The hash
+3, with `evidence/bundle.json` replaced by the four bytes `null` and **its sha256
+re-pinned honestly**. Exited 0 and printed `structural verification: PASS`. The hash
 binding was intact. The recomputation ran over nothing, found no mismatch, and passed.
 
 Five distinct forgery paths in total, plus path traversal on an untested Python window.
 His second PR found something worse in kind: no `encoding=` on `read_text`/`write_text`,
-so **the same bytes produced opposite verdicts on a cp1252 host versus a UTF-8 host** —
-fatal for a protocol whose entire premise is that a stranger gets my answer offline.
+so **the same bytes produced opposite verdicts on a cp1252 host versus a UTF-8 host**. Fatal for a protocol whose entire premise is that a stranger gets my answer offline.
 
 Two things are worth recording because they cut the other way. First, **four of his
-strongest findings were refuted by my own SPEC**, not by argument — the specification had
+strongest findings were refuted by my own SPEC**, not by argument. The specification had
 already decided those cases, and said so. His remark on that is the best sentence anyone
 has written about this project: *documentation that refutes an auditor is rarer than the
 bugs.* Second, my `RESULTS.md` byte-identity check caught mojibake in his own audit
@@ -118,7 +116,7 @@ found" is only meaningful if you have separately established that the detector *
 
 All four run against `main` at `f59fb62`, after Giulio's soundness fix. Every run is
 preceded by a **liveness control**: `python -m vac.verify fixtures/valid` must exit 0. Without
-that control a sweep proves nothing — see §7, where exactly that went wrong twice.
+that control a sweep proves nothing. See §7, where exactly that went wrong twice.
 
 ### 4.1 The lie typed as a string
 
@@ -132,7 +130,7 @@ summary: {"verdicts": 3, "fixed": 2, ...}
 exit=0   structural verification: PASS
 ```
 
-`SPEC.md` §2.5 explicitly blesses this — *"non-numeric, descriptive values pass through."*
+`SPEC.md` §2.5 explicitly blesses this: *"non-numeric, descriptive values pass through."*
 This is therefore a **specification** hole, not an implementation slip. The spec permitted
 a class of lie it had not imagined.
 
@@ -165,7 +163,7 @@ failed_w = sum(_CRASHKIT_WEIGHTS.get(c.get("severity"), 0) ...)                 
 
 `.get(sev, 0)` maps any unrecognized label to zero. Re-case the severity on the **failed**
 cases only and their weight vanishes from the numerator while the passing cases keep
-theirs. The score divides to `0.0` through the ordinary arithmetic path — it never touches
+theirs. The score divides to `0.0` through the ordinary arithmetic path. It never touches
 a guard, an exception, or a fallback branch.
 
 ```
@@ -177,7 +175,7 @@ exit=0   structural verification: PASS
 ```
 
 `grep -rn severity tests/` returns **zero matches**. And `SPEC.md:306-307` states the rule
-plainly — *"an unknown severity weighs 0"* — so, as in §4.1, the specification wrote the
+plainly, *"an unknown severity weighs 0"*, so, as in §4.1, the specification wrote the
 hole down and called it a decision.
 
 A security score of `0.0` on a bundle with three failed cases is then copied verbatim into
@@ -217,7 +215,7 @@ comparison happens.
 The findings above were found by hand. That makes them anecdotes. To turn them into a
 measurement I applied the evalmut method to the verifier itself.
 
-`vac/verify.py` contains **112 refusal sites** — statements of the form
+`vac/verify.py` contains **112 refusal sites**. Statements of the form
 `failures.append("<reason>: …")`, each the sole point at which one class of bad bundle is
 rejected. I disabled them one at a time, replacing each with `pass`, and asked whether
 anything noticed. A mutant is *caught* if the 137-test suite fails, or the liveness control
@@ -225,8 +223,8 @@ breaks, or any of the 16 committed tamper fixtures stops being refused.
 
 ```
 112 mutants, one disabled refusal each
-   37 caught      — all 37 by the unit tests
-   75 SURVIVED    — undetected by the test suite AND the tamper sweep
+   37 caught     . All 37 by the unit tests
+   75 SURVIVED   . Undetected by the test suite AND the tamper sweep
 
 MUTATION SCORE  37/112 = 0.330
 
@@ -248,7 +246,7 @@ tests missed, that job caught **zero**. Each fixture exercises exactly one refus
 deleting any other refusal leaves all sixteen verdicts unchanged. The gate built
 specifically to prove the verifier can refuse has, against this mutation set, a score of 0.
 
-The strongest validation of the method is that it is not merely consistent with §4 — it
+The strongest validation of the method is that it is not merely consistent with §4. It
 **predicts** it. Each of the four hand-found forgeries lands in a survivor class:
 
 | §   | forgery                        | survivor class              |
@@ -280,18 +278,18 @@ AFTER    39/119 = 0.328
 
 **The score did not move.** Two of the four new fixtures kill a mutant; the other two kill
 none. And closing four holes required **seven new refusal statements, themselves untested**
-— `stamp-mismatch` survivors went from 4 to 8. Four bugs fixed, seven guards added, net
+The `stamp-mismatch` survivors went from 4 to 8. Four bugs fixed, seven guards added, net
 coverage flat.
 
 The precise claim, and it is narrower than the number invites: **the bug-specific
 regressions closed the four demonstrated vulnerabilities, and did not materially improve
-refusal-site liveness coverage** — because they sampled the failures that had been
+refusal-site liveness coverage**. Because they sampled the failures that had been
 discovered rather than exercising the remaining population of refusals. Much of the −0.002
 is denominator growth (seven new sites) rather than a real decline.
 
 It would be wrong to say the fixes "bought nothing." They closed four working forgeries and
-pinned each against return. What they did not do — and what a careful engineer would expect
-them to do — is make the *rest* of the gates any more likely to fail when they should. The
+pinned each against return. What they did not do, and what a careful engineer would expect
+them to do. Is make the *rest* of the gates any more likely to fail when they should. The
 mass was 26 surviving `raw-aggregate-mismatch` refusals concentrated in one profile's
 checker, which no audit had a reason to look at.
 
@@ -299,9 +297,9 @@ checker, which no audit had a reason to look at.
 
 The first post-hardening run reported **119/119 = 1.000**.
 
-It was false. The harness ran `pytest -x`, and the baseline was *already red* — the two
+It was false. The harness ran `pytest -x`, and the baseline was *already red*. The two
 tests that assert the real evalmut and crashkit bundles verify clean, which the new
-evidence-unchecked rule had just (correctly) broken. pytest therefore exited nonzero for
+evidence-unchecked rule had just (correctly) broken. Pytest therefore exited nonzero for
 every mutant, every mutant scored "caught," and the score reported a perfect suite while
 measuring nothing at all.
 
@@ -315,7 +313,7 @@ against a red baseline measures nothing. A liveness gate on the liveness instrum
 
 ### 5.3 What did move it: testing the refusals, not the bugs
 
-The survivors were never a mystery — they were a work list. I wrote **75 tests, one per
+The survivors were never a mystery. They were a work list. I wrote **75 tests, one per
 surviving refusal**, organised by cluster rather than by defect.
 
 ```
@@ -328,7 +326,7 @@ surviving refusal**, organised by cluster rather than by defect.
 The discipline that made them worth anything is the same one the rest of this paper is
 about. Each test asserts the **exact** failure list, never a substring search, so it cannot
 pass on a cascade it did not cause. And for most of them, disabling the target refusal makes
-`verify_bundle` return `[]` — the cooked bundle verifies *clean* — which proves that refusal
+`verify_bundle` return `[]`, the cooked bundle verifies *clean*, which proves that refusal
 is the **sole** guard for its defect rather than one voice in a chorus. Several tests were
 rewritten mid-flight when that check revealed they were leaning on a stale-hash backstop
 instead of the arithmetic they claimed to pin.
@@ -341,13 +339,12 @@ enter the check. Both were probed empirically rather than assumed, and no test w
 to fake coverage of them.
 
 The comparison between the two rows above is the paper's practical claim. Fixing named
-defects and pinning each with a regression fixture — the instinctive post-audit response —
-moved coverage by −0.002. Systematically asking *"can this gate fail?"* of every gate moved
+defects and pinning each with a regression fixture, the instinctive post-audit response, moved coverage by −0.002. Systematically asking *"can this gate fail?"* of every gate moved
 it by +0.611. **The defects you find are a sample; the gates you own are the population.**
 
 ### 5.4 The closure rule found the same gap in every issuer
 
-The rule from §4.2 — an artifact listed as evidence must be read by some check — was
+The rule from §4.2, an artifact listed as evidence must be read by some check, was
 written to close one forgery. Turned on the live registry it refused **every remaining
 issuer family**:
 
@@ -357,23 +354,23 @@ issuer family**:
 | evalmut | `dogfood_gradecore.txt`, `promptfoo_findings.txt` |
 | agent-certlab | `CONTRACT.md`, in all **seven** certifications |
 
-In every case the unchecked artifact was **the human-readable one** — the render, the
+In every case the unchecked artifact was **the human-readable one**. The render, the
 report, the contract. The machine-checked JSON was covered; the document a person actually
-reads carried a headline nothing recomputed. crashkit's capability sentence claimed its
+reads carried a headline nothing recomputed. Crashkit's capability sentence claimed its
 variance report "aggregates reproducibly"; certlab's contracts announced *"N/M seeded
 defects fixed"*. True claims, unverified.
 
-The fix in each case was to bind the render to its payload — not byte-identity re-rendering,
+The fix in each case was to bind the render to its payload. Not byte-identity re-rendering,
 which would couple the verifier to another repo's formatting, but holding the render's
 headline to the recomputed values, with an unparseable render refused rather than skipped.
 All three issuers were re-emitted and land clean; the registry re-pins byte-identically.
 
 **Stated as a hypothesis, because the sample cannot support more.** These are three repos
-by one author, in one suite, under one set of conventions — a within-author architectural
+by one author, in one suite, under one set of conventions, a within-author architectural
 pattern, not evidence about attacker behaviour or the industry. What it suggests, and what
 is testable: *report and render integrity is systematically underbound wherever JSON is
 treated as the authoritative artifact.* The mechanism is mundane enough to be plausible
-elsewhere — authors bind the machine-readable source and treat the rendered view as
+elsewhere: authors bind the machine-readable source and treat the rendered view as
 disposable, right up until the rendered view is the thing people read.
 
 Testing it properly means going outside this codebase: sample public attestations,
@@ -385,10 +382,10 @@ outcomes. That study is not in this paper.
 ### 5.5 And the measurement itself was host-dependent
 
 The CI floor failed on its first real push: 123/133 = 0.925 in CI against 0.953 locally.
-Part was my own omission — I had added a comparator and not tested it, which is exactly the
+Part was my own omission. I had added a comparator and not tested it, which is exactly the
 rot the floor exists to catch, and it caught me. But the rest was worse: without the sibling
 repo checkouts the real-bundle tests **skip**, four mutants stop being caught, and the
-denominator moves. The mutation score depended on what happened to be on the machine — the
+denominator moves. The mutation score depended on what happened to be on the machine. The
 same class as a verdict that changes with the filesystem encoding, which is the defect the
 external audit opened with. CI now checks out the issuers so it measures what a developer
 measures. The floor did not move.
@@ -407,8 +404,8 @@ hash that does not match its artifact. Giulio's attack re-pinned the hash *hones
 fixture set is a map of my own threat model, and a threat model cannot contain its own
 blind spot by construction.
 
-The sharper point is a tool I already own and never turned on. **evalmut** — my own
-flagship — injects known defects into a system and reports which checks stayed green. That
+The sharper point is a tool I already own and never turned on. **evalmut**. My own
+flagship. Injects known defects into a system and reports which checks stayed green. That
 is precisely the instrument for this class. `vac-protocol` *verifies evalmut bundles*; it
 has never been *mutated by* evalmut. The verifier is a grader, and I never graded the
 grader.
@@ -420,9 +417,9 @@ That gap is where the auditor walked in.
 This section exists because omitting it would make the paper an instance of its own
 subject.
 
-1. A tamper sweep printed *all 16 refused* while every invocation had exited 127 — a
+1. A tamper sweep printed *all 16 refused* while every invocation had exited 127. A
    startup failure, not a refusal. The loop scored "nonzero exit" as "correctly refused."
-2. Re-running the sweep months later, all 16 exited **2** — a wrong module path. Identical
+2. Re-running the sweep months later, all 16 exited **2**. A wrong module path. Identical
    symptom, different cause. The live control caught it; without the control the run
    would have read as a clean sweep.
 3. **Inside the script I wrote to hunt this bug**, a probe edit failed on a wrong filename
@@ -438,10 +435,10 @@ subject.
    nothing and returned the string unchanged. The build succeeded, the PDF regenerated, and
    the abstract still carried the old numbers. Python's `str.replace` cannot fail; it can
    only decline to do anything. The fix was to switch to an editor that **errors on
-   no-match** — which is the entire thesis of this paper applied to a text edit.
+   no-match**. Which is the entire thesis of this paper applied to a text edit.
 
 Six instrument failures, all producing plausible output, three of them inside tools written
-specifically to hunt this bug. The most dangerous was not the one that broke — it was the
+specifically to hunt this bug. The most dangerous was not the one that broke. It was the
 one that returned a perfect score. The operational rules that survive:
 
 - **Prove the instrument before the finding.** A liveness control adjacent to every sweep.
@@ -459,7 +456,7 @@ Any eval suite, CI gate, or verifier can be audited with two questions:
    fails to start, a pattern that matches nothing, a swallowed exception, an unknown enum
    value absorbed by a default.
 2. **Has the detector been proven able to fire, in this run, on this host?** Not "it has a
-   test" — a liveness control adjacent to the assertion.
+   test". A liveness control adjacent to the assertion.
 
 A gate that has never been observed failing has not been observed working. This is the
 whole argument for mutation-testing eval suites rather than trusting their green.
@@ -470,7 +467,7 @@ Four things, and nothing broader:
 
 1. A reproducible case study of five fail-open / vacuous-pass classes in an offline
    evidence-bundle verifier, each with a working forgery.
-2. A refusal-site deletion mutation operator and a liveness workflow for applying it —
+2. A refusal-site deletion mutation operator and a liveness workflow for applying it,
    including the gate that makes the measurement trustworthy.
 3. An empirical before/after on **one** real verifier, comparing discovered-bug regression
    testing against systematic refusal-site liveness testing.
@@ -489,7 +486,7 @@ independent issuers. The single external data point in the entire record is the 
   `SPEC.md:306-307` changes with it. A weight table that silently absorbs unknown labels
   hands the issuer control of the denominator.
 - **An evidence artifact not covered by any check becomes a named refusal.**
-- **Non-numeric summary values are compared, not skipped** — amend `SPEC.md` §2.5 rather
+- **Non-numeric summary values are compared, not skipped**. Amend `SPEC.md` §2.5 rather
   than patching around it.
 - **Stamp keys named in `protocol.hashes` but absent from the artifact become a
   `stamp-mismatch`**, matching the two profiles that already fail closed.
@@ -507,8 +504,8 @@ independent issuers. The single external data point in the entire record is the 
 - **Climb the coverage ladder**: artifact-read (done) -> field-binding (probed, gaps
   recorded) -> claim coverage, where every externally visible claim names its evidence
   source and the verifier's obligation over it.
-- **Pre-register a second operator family** before running it — comparison inversion,
-  boundary shifts, missing-key guard removal, enum/default perturbation — so the result is
+- **Pre-register a second operator family** before running it. Comparison inversion,
+  boundary shifts, missing-key guard removal, enum/default perturbation. So the result is
   not chosen after seeing the score.
 - **Cross-platform determinism in CI** (Linux/macOS/Windows), at minimum locale, encoding
   and path semantics. The encoding bug in Section 2 was found by a stranger, not by us.
@@ -518,15 +515,15 @@ independent issuers. The single external data point in the entire record is the 
 
 **What the score is and is not.** The operator disables refusal statements only; it does not
 mutate comparison operators, boundaries, or control flow. So the number is not an upper
-bound on anything — an upper bound constrains a broader unknown, and this constrains
+bound on anything. An upper bound constrains a broader unknown, and this constrains
 nothing outside its own population. It is a **complete score against a deliberately narrow
 operator over an enumerated set of refusal sites**, and 1.000 means that obligation is
 discharged, not that the verifier is correct.
 
 **The denominator is a source-level proxy.** A "refusal site" here is one
 `failures.append(…)` statement. That misses rejections expressed as raises, early returns,
-assertions, or exit-code propagation; reasons built indirectly through helpers; and — most
-importantly — **fail-open behaviour that happens before any refusal is reached**: parser
+assertions, or exit-code propagation; reasons built indirectly through helpers; and. Most
+importantly, **fail-open behaviour that happens before any refusal is reached**: parser
 defaults, canonicalisation, decoding, path resolution, duplicate-key handling, exception
 swallowing. The honest name for what is measured is **refusal-append liveness coverage**.
 
@@ -535,16 +532,15 @@ check *references* an artifact; nothing in it proves the check reads anything in
 check could open a file and bind none of it. `tests/test_refs_are_bound_not_just_read.py`
 now probes this mechanically by corrupting each referenced artifact and re-pinning honestly:
 4 of 12 refs verified clean, though on inspection three were the `schema` format-version
-field and one a non-load-bearing digit — unbound *fields* inside bound artifacts, not
+field and one a non-load-bearing digit. Unbound *fields* inside bound artifacts, not
 decorative refs. They are recorded in a `KNOWN_UNBOUND` inventory. The three-level ladder
-this exposes — artifact-read → field-binding → claim coverage — is roadmap, not result.
+this exposes, artifact-read → field-binding → claim coverage, is roadmap, not result.
 
-Whether a given survivor is reachable in practice is not established per-survivor —
-see the caveat in §5. Giulio's robustness PR is rebased and verified but **not landed** — two of
+Whether a given survivor is reachable in practice is not established per-survivor, see the caveat in §5. Giulio's robustness PR is rebased and verified but **not landed**, two of
 its new tests build fixtures with `json.loads('{"a":' * 3000)`, which RecursionErrors
 inside the *decoder* on CPython 3.11 before the verifier is called. The tests require the
 manifest to parse while a later traversal blows the stack, and that gap's width is
-interpreter-dependent — the same host-dependence class the patch exists to fix. Landing
+interpreter-dependent. The same host-dependence class the patch exists to fix. Landing
 it needs iterative traversals first.
 
 ## Acknowledgements
