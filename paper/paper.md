@@ -289,7 +289,8 @@ surviving refusal**, organised by cluster rather than by defect.
 ```
                     fixing the four found bugs   0.330 -> 0.328
        testing the refusals themselves (+75)     0.330 -> 0.941
-                                                 112/119, 189 tests, 20/20 fixtures
+            after closing every issuer's gap too     126/133 =  0.947
+                                                 217 tests, 20/20 fixtures
 ```
 
 The discipline that made them worth anything is the same one the rest of this paper is
@@ -311,6 +312,44 @@ The comparison between the two rows above is the paper's practical claim. Fixing
 defects and pinning each with a regression fixture — the instinctive post-audit response —
 moved coverage by −0.002. Systematically asking *"can this gate fail?"* of every gate moved
 it by +0.611. **The defects you find are a sample; the gates you own are the population.**
+
+### 5.4 The closure rule found the same gap in every issuer
+
+The rule from §4.2 — an artifact listed as evidence must be read by some check — was
+written to close one forgery. Turned on the live registry it refused **every remaining
+issuer family**:
+
+| issuer | pinned but unchecked |
+|---|---|
+| crashkit | `variance_flaky_n10.report.json` |
+| evalmut | `dogfood_gradecore.txt`, `promptfoo_findings.txt` |
+| agent-certlab | `CONTRACT.md`, in all **seven** certifications |
+
+In every case the unchecked artifact was **the human-readable one** — the render, the
+report, the contract. The machine-checked JSON was covered; the document a person actually
+reads carried a headline nothing recomputed. crashkit's capability sentence claimed its
+variance report "aggregates reproducibly"; certlab's contracts announced *"N/M seeded
+defects fixed"*. True claims, unverified.
+
+The fix in each case was to bind the render to its payload — not byte-identity re-rendering,
+which would couple the verifier to another repo's formatting, but holding the render's
+headline to the recomputed values, with an unparseable render refused rather than skipped.
+All three issuers were re-emitted and land clean; the registry re-pins byte-identically.
+
+**The generalisation: the artifact most worth doctoring is the one a human reads, and it is
+the one least likely to be checked.** Verification effort follows machine-readability, and
+attacker effort follows attention.
+
+### 5.5 And the measurement itself was host-dependent
+
+The CI floor failed on its first real push: 123/133 = 0.925 in CI against 0.953 locally.
+Part was my own omission — I had added a comparator and not tested it, which is exactly the
+rot the floor exists to catch, and it caught me. But the rest was worse: without the sibling
+repo checkouts the real-bundle tests **skip**, four mutants stop being caught, and the
+denominator moves. The mutation score depended on what happened to be on the machine — the
+same class as a verdict that changes with the filesystem encoding, which is the defect the
+external audit opened with. CI now checks out the issuers so it measures what a developer
+measures. The floor did not move.
 
 A caveat on provenance, since this paper is about not trusting instruments: the 75 tests
 were written by six agents running concurrently against one working tree, and at least one
