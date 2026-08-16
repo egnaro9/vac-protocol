@@ -14,6 +14,20 @@ jobs:
       - run: pip install -e ".[test]"
       - run: python -m pytest tests/ -q
 
+  refusal-coverage:
+    # The tamper fixtures prove the verifier CAN refuse. They do not prove each
+    # refusal is tested: at one point 80 of 119 could be deleted with every
+    # fixture still green. This job mutates each refusal and fails if the score
+    # drops. Raise the floor when it rises; never lower it to make a build pass.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e ".[test]"
+      - run: python tools/mutation_sweep.py --floor 0.94
+
   invalidation-liveness:
     # The verifier must prove it can both pass and BLOCK: the committed
     # valid bundle verifies clean, and every committed tampered variant

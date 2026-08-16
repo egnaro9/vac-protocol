@@ -33,6 +33,22 @@ REFUSAL = re.compile(r"^\s*(f|failures)\.append\(")
 # must be justified; an empty list is the healthy state.
 DESELECT: list[str] = []
 
+# Refusals deliberately excluded from the denominator, each with the reason it
+# cannot be reached by any bundle-shaped input. This list is a liability, not a
+# convenience: an entry here is a permanent survivor that would otherwise make
+# the score lie. Deleting a real guard to flatter a metric is worse than
+# excluding it and saying why.
+# Keyed by a distinctive SOURCE fragment of the refusal line, so a rename that
+# changes the line is a miss (loud) rather than a silent over-match.
+EXCLUDE: dict[str, str] = {
+    '{md_rel}: {e}':
+        "OSError wrapper on reading RESULTS.md. To reach the check at all the "
+        "artifact must already be in `trusted`, which required is_file() plus a "
+        "full _sha256() read of the same bytes. Only a filesystem race between "
+        "the hash pass and this read could fire it -- a real guard, and "
+        "unreachable from any input a test can construct.",
+}
+
 
 def _run(args: list[str], timeout: int = 300) -> int:
     return subprocess.run(args, capture_output=True, text=True,
@@ -73,13 +89,22 @@ def main() -> int:
     orig = SRC.read_text(encoding="utf-8")
     lines = orig.splitlines(keepends=True)
     sites = [i for i, ln in enumerate(lines) if REFUSAL.match(ln)]
+    excluded = [i for i in sites if any(k in lines[i] for k in EXCLUDE)]
+    sites = [i for i in sites if i not in excluded]
+    if len(excluded) != len(EXCLUDE):
+        print(f"ABORT: EXCLUDE has {len(EXCLUDE)} entries but matched "
+              f"{len(excluded)} source lines. An exclusion that matches "
+              "nothing silently inflates the denominator; one that matches "
+              "twice silently shrinks it.", file=sys.stderr)
+        return 2
 
     noticed, how = observe()
     if noticed:
         print(f"ABORT: baseline is not clean ({how}). A mutation score against "
               "a red baseline measures nothing.", file=sys.stderr)
         return 2
-    print(f"baseline clean; {len(sites)} refusal sites")
+    print(f"baseline clean; {len(sites)} refusal sites"
+          + (f" ({len(excluded)} excluded, see EXCLUDE)" if excluded else ""))
 
     results = []
     try:

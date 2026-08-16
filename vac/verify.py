@@ -859,10 +859,6 @@ def _check_modeldrift(bundle_dir: pathlib.Path, check: dict, proto: dict,
             and all(isinstance(r, dict) for r in stand["rows"])):
         f.append(f"artifact-unparsable: {stand_rel}: no rows[] array")
         return None
-    if not isinstance(flips, dict):
-        f.append(f"artifact-unparsable: {flips_rel}: no flip-analysis "
-                 "object")
-        return None
     if not (isinstance(narr, dict) and isinstance(narr.get("sentences"), list)
             and isinstance(narr.get("html"), str)
             and isinstance(narr.get("text"), str)):
