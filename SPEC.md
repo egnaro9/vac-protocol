@@ -149,7 +149,29 @@ permitted a class of lie it had not imagined. If an issuer genuinely needs
 prose, it must not be a bare numeral.
 
 Closure, too, is part of "recomputed from artifacts": every artifact listed
-in `evidence` MUST be referenced by at least one check. An artifact that is
+in `evidence` MUST be referenced by at least one check.
+
+**What this rule does and does not buy, stated plainly.** It establishes
+*artifact-read coverage*: a check names the artifact. It does NOT establish
+that the check binds anything inside it — a profile could reference a file and
+recompute nothing from it, satisfying closure while proving nothing. Today the
+gap is closed by author discipline, which this specification otherwise refuses
+to rely on. The ladder, and where v0.1 actually stands:
+
+1. **artifact-read coverage** — a check references the artifact. *Enforced
+   (`evidence-unchecked`).*
+2. **field-binding coverage** — each value the artifact contributes is compared
+   against a recomputation. *Not enforced.* Probed mechanically in
+   `tests/test_refs_are_bound_not_just_read.py`, which corrupts each referenced
+   artifact and re-pins honestly; known gaps are recorded there rather than
+   hidden.
+3. **claim coverage** — every externally visible claim names its evidence
+   source and the verifier's obligation over it. *Not enforced, and the real
+   target*: it is the level at which a rendered contract saying "6/6" is bound
+   to the verdicts, rather than merely accompanied by them.
+
+An issuer reading this should understand that a v0.1 PASS means level 1 plus
+whatever level 2 the individual profile happens to implement. An artifact that is
 pinned but read by nothing is unexamined, and the phrase would otherwise mean
 *some* artifacts. Uncovered evidence is a verification failure
 (`evidence-unchecked`). Deleting the check that recomputes a number must cost
