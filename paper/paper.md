@@ -320,7 +320,8 @@ surviving refusal**, organised by cluster rather than by defect.
                     fixing the four found bugs   0.330 -> 0.328
        testing the refusals themselves (+75)     0.330 -> 0.941
             after closing every issuer's gap too     126/133 =  0.947
-                                                 217 tests, 20/20 fixtures
+       testing every remaining refusal (2026-08-17)     143/143 =  1.000
+                                                 252 tests, 20/20 fixtures
 ```
 
 The discipline that made them worth anything is the same one the rest of this paper is
@@ -331,12 +332,20 @@ is the **sole** guard for its defect rather than one voice in a chorus. Several 
 rewritten mid-flight when that check revealed they were leaning on a stale-hash backstop
 instead of the arithmetic they claimed to pin.
 
-Seven refusals still survive, and the honest breakdown matters: **two are dead code, not
-untested.** `verify.py:863` is unreachable because a non-dict `flips.json` is already
-refused upstream by `_load_json`'s `want=dict`; `verify.py:990` is an `OSError` wrapper no
-bundle-shaped input can reach, since the artifact must already have been read and hashed to
-enter the check. Both were probed empirically rather than assumed, and no test was written
-to fake coverage of them.
+At the time of the 0.947 row, seven refusals still survived, and the honest breakdown
+mattered: **two were dead code, not untested.** One was unreachable because a non-dict
+`flips.json` is already refused upstream by `_load_json`'s `want=dict`; the other was an
+`OSError` wrapper no bundle-shaped input can reach, since the artifact must already have
+been read and hashed to enter the check. Both were probed empirically rather than assumed,
+and no test was written to fake coverage of them.
+
+**Update, 2026-08-17.** Those seven were subsequently closed and the score re-measured at
+**143/143 = 1.000** across 252 tests, with the sweep's own liveness gate passing first
+(baseline green) so this is not the vacuous 1.000 described in §6.1. CI now enforces
+`--floor 0.99`. The unreachable branches are excluded explicitly rather than counted as
+caught, and they have moved as the file changed, which is precisely why this paragraph no
+longer cites line numbers: a line number is a claim with a short shelf life, and an earlier
+draft of this passage went stale by citing two.
 
 The comparison between the two rows above is the paper's practical claim. Fixing named
 defects and pinning each with a regression fixture, the instinctive post-audit response, moved coverage by −0.002. Systematically asking *"can this gate fail?"* of every gate moved
@@ -491,7 +500,7 @@ independent issuers. The single external data point in the entire record is the 
 - **Stamp keys named in `protocol.hashes` but absent from the artifact become a
   `stamp-mismatch`**, matching the two profiles that already fail closed.
 - **A tamper fixture per fix**, so the invalidation sweep proves each new refusal can fire.
-- **Wire the mutation sweep into CI as a floor.** `tools/mutation_sweep.py --floor 0.94`
+- **Wire the mutation sweep into CI as a floor.** `tools/mutation_sweep.py --floor 0.99`
   now exists; without a ratcheted threshold in CI the score will rot. The
   `invalidation-liveness` job should fail when the score drops, not merely when a fixture
   stops being refused.
