@@ -1,0 +1,467 @@
+\begin{thebibliography}{57}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Ami et~al.(2021)Ami, Kafle, Moran, Nadkarni, and
+  Poshyvanyk]{ami2021muse}
+Amit~Seal Ami, Kaushal Kafle, Kevin Moran, Adwait Nadkarni, and Denys
+  Poshyvanyk.
+\newblock Systematic mutation-based evaluation of the soundness of
+  security-focused {Android} static analysis techniques.
+\newblock \emph{ACM Transactions on Privacy and Security}, 24\penalty0
+  (3):\penalty0 1--37, 2021.
+\newblock Article 15. \url{https://doi.org/10.1145/3439802}.
+
+\bibitem[Barr et~al.(2015)Barr, Harman, McMinn, Shahbaz, and
+  Yoo]{barr2015oracle}
+Earl~T. Barr, Mark Harman, Phil McMinn, Muzammil Shahbaz, and Shin Yoo.
+\newblock The oracle problem in software testing: A survey.
+\newblock \emph{IEEE Transactions on Software Engineering}, 41\penalty0
+  (5):\penalty0 507--525, 2015.
+\newblock \url{https://doi.org/10.1109/TSE.2014.2372785}.
+
+\bibitem[Beer et~al.(2001)Beer, Ben-David, Eisner, and Rodeh]{beer2001vacuity}
+Ilan Beer, Shoham Ben-David, Cindy Eisner, and Yoav Rodeh.
+\newblock Efficient detection of vacuity in temporal model checking.
+\newblock \emph{Formal Methods in System Design}, 18\penalty0 (2):\penalty0
+  141--163, 2001.
+\newblock \url{https://doi.org/10.1023/A:1008779610539}.
+
+\bibitem[Biderman et~al.(2024)Biderman, Schoelkopf, Sutawika, Gao, Tow,
+  et~al.]{biderman2024lessons}
+Stella Biderman, Hailey Schoelkopf, Lintang Sutawika, Leo Gao, Jonathan Tow,
+  et~al.
+\newblock Lessons from the trenches on reproducible evaluation of language
+  models.
+\newblock arXiv preprint arXiv:2405.14782, 2024.
+\newblock \url{https://arxiv.org/abs/2405.14782}.
+
+\bibitem[Birkholz et~al.(2023)Birkholz, Thaler, Richardson, Smith, and
+  Pan]{birkholz2023rats}
+Henk Birkholz, Dave Thaler, Michael Richardson, Ned Smith, and Wei Pan.
+\newblock Remote {ATtestation} procedures ({RATS}) architecture.
+\newblock RFC 9334, Internet Engineering Task Force, 2023.
+\newblock \url{https://www.rfc-editor.org/rfc/rfc9334.html}.
+
+\bibitem[Brubaker et~al.(2014)Brubaker, Jana, Ray, Khurshid, and
+  Shmatikov]{brubaker2014frankencerts}
+Chad Brubaker, Suman Jana, Baishakhi Ray, Sarfraz Khurshid, and Vitaly
+  Shmatikov.
+\newblock Using frankencerts for automated adversarial testing of certificate
+  validation in {SSL/TLS} implementations.
+\newblock In \emph{2014 IEEE Symposium on Security and Privacy (SP)}, pages
+  114--129. IEEE, 2014.
+\newblock \url{https://doi.org/10.1109/SP.2014.15}.
+
+\bibitem[Budd et~al.(1980)Budd, DeMillo, Lipton, and
+  Sayward]{budd1980theoretical}
+Timothy~A. Budd, Richard~A. DeMillo, Richard~J. Lipton, and Frederick~G.
+  Sayward.
+\newblock Theoretical and empirical studies on using program mutation to test
+  the functional correctness of programs.
+\newblock In \emph{Proceedings of the 7th ACM SIGPLAN-SIGACT Symposium on
+  Principles of Programming Languages (POPL '80)}, pages 220--233. ACM, 1980.
+\newblock \url{https://doi.org/10.1145/567446.567468}.
+
+\bibitem[Chen and Furia(2018)]{chen2018robustness}
+Yuting Chen and Carlo~A. Furia.
+\newblock Robustness testing of intermediate verifiers.
+\newblock In \emph{Automated Technology for Verification and Analysis (ATVA
+  2018)}, volume 11138 of \emph{Lecture Notes in Computer Science}, pages
+  91--108. Springer, 2018.
+\newblock \url{https://doi.org/10.1007/978-3-030-01090-4_6}.
+
+\bibitem[DeMillo et~al.(1978)DeMillo, Lipton, and Sayward]{demillo1978hints}
+Richard~A. DeMillo, Richard~J. Lipton, and Frederick~G. Sayward.
+\newblock Hints on test data selection: Help for the practicing programmer.
+\newblock \emph{Computer}, 11\penalty0 (4):\penalty0 34--41, 1978.
+\newblock \url{https://doi.org/10.1109/C-M.1978.218136}.
+
+\bibitem[Deng et~al.(2013)Deng, Offutt, and Li]{deng2013sdl}
+Lin Deng, Jeff Offutt, and Nan Li.
+\newblock Empirical evaluation of the statement deletion mutation operator.
+\newblock In \emph{2013 IEEE Sixth International Conference on Software
+  Testing, Verification and Validation (ICST 2013)}, pages 84--93. IEEE, 2013.
+\newblock \url{https://doi.org/10.1109/ICST.2013.20}.
+
+\bibitem[Fourn{\'e} et~al.(2023)Fourn{\'e}, Wermke, Enck, Fahl, and
+  Acar]{fourne2023flossing}
+Marcel Fourn{\'e}, Dominik Wermke, William Enck, Sascha Fahl, and Yasemin Acar.
+\newblock It's like flossing your teeth: On the importance and challenges of
+  reproducible builds for software supply chain security.
+\newblock In \emph{2023 IEEE Symposium on Security and Privacy (SP)}, pages
+  1527--1544. IEEE, 2023.
+\newblock \url{https://doi.org/10.1109/SP46215.2023.10179320}.
+
+\bibitem[Georgiev et~al.(2012)Georgiev, Iyengar, Jana, Anubhai, Boneh, and
+  Shmatikov]{georgiev2012dangerous}
+Martin Georgiev, Subodh Iyengar, Suman Jana, Rishita Anubhai, Dan Boneh, and
+  Vitaly Shmatikov.
+\newblock The most dangerous code in the world: validating {SSL} certificates
+  in non-browser software.
+\newblock In \emph{Proceedings of the 2012 ACM Conference on Computer and
+  Communications Security (CCS '12)}, pages 38--49. ACM, 2012.
+\newblock \url{https://doi.org/10.1145/2382196.2382204}.
+
+\bibitem[G{\"o}rz et~al.(2023)G{\"o}rz, Mathis, Hassler, G{\"u}ler, Holz,
+  Zeller, and Gopinath]{gorz2023fuzzers}
+Philipp G{\"o}rz, Bj{\"o}rn Mathis, Keno Hassler, Emre G{\"u}ler, Thorsten
+  Holz, Andreas Zeller, and Rahul Gopinath.
+\newblock Systematic assessment of fuzzers using mutation analysis.
+\newblock In \emph{32nd USENIX Security Symposium (USENIX Security '23)}, pages
+  4535--4552. USENIX Association, 2023.
+\newblock
+  \url{https://www.usenix.org/conference/usenixsecurity23/presentation/gorz}.
+
+\bibitem[Hamlet(1977)]{hamlet1977compiler}
+Richard~G. Hamlet.
+\newblock Testing programs with the aid of a compiler.
+\newblock \emph{IEEE Transactions on Software Engineering}, SE-3\penalty0
+  (4):\penalty0 279--290, 1977.
+\newblock \url{https://doi.org/10.1109/TSE.1977.231145}.
+
+\bibitem[Huo and Clause(2014)]{huo2014oracle}
+Chen Huo and James Clause.
+\newblock Improving oracle quality by detecting brittle assertions and unused
+  inputs in tests.
+\newblock In \emph{Proceedings of the 22nd ACM SIGSOFT International Symposium
+  on Foundations of Software Engineering (FSE 2014)}, pages 621--631. ACM,
+  2014.
+\newblock \url{https://doi.org/10.1145/2635868.2635917}.
+
+\bibitem[{in-toto project}(2023)]{intoto2023spec}
+{in-toto project}.
+\newblock in-toto specification, version 1.0.0.
+\newblock \url{https://github.com/in-toto/docs/blob/master/in-toto-spec.md},
+  2023.
+\newblock Dated 2023-06-02. Accessed 2026-08-18.
+
+\bibitem[{in-toto project}(2024)]{intoto2024attestation}
+{in-toto project}.
+\newblock Statement layer specification, in-toto attestation framework v1.
+\newblock
+  \url{https://github.com/in-toto/attestation/blob/main/spec/v1/statement.md},
+  2024.
+\newblock Accessed 2026-08-18.
+
+\bibitem[Inozemtseva and Holmes(2014)]{inozemtseva2014coverage}
+Laura Inozemtseva and Reid Holmes.
+\newblock Coverage is not strongly correlated with test suite effectiveness.
+\newblock In \emph{Proceedings of the 36th International Conference on Software
+  Engineering (ICSE 2014)}, pages 435--445. ACM, 2014.
+\newblock \url{https://doi.org/10.1145/2568225.2568271}.
+
+\bibitem[Jahangirova et~al.(2016)Jahangirova, Clark, Harman, and
+  Tonella]{jahangirova2016oracle}
+Gunel Jahangirova, David Clark, Mark Harman, and Paolo Tonella.
+\newblock Test oracle assessment and improvement.
+\newblock In \emph{Proceedings of the 25th International Symposium on Software
+  Testing and Analysis (ISSTA 2016)}, pages 247--258. ACM, 2016.
+\newblock \url{https://doi.org/10.1145/2931037.2931062}.
+
+\bibitem[Ji et~al.(2009)Ji, Chen, Xu, and Wang]{ji2009exception}
+Changbing Ji, Zhenyu Chen, Baowen Xu, and Ziyuan Wang.
+\newblock A new mutation analysis method for testing {Java} exception handling.
+\newblock In \emph{Proceedings of the 33rd Annual IEEE International Computer
+  Software and Applications Conference (COMPSAC 2009)}, volume~2, pages
+  556--561. IEEE, 2009.
+\newblock \url{https://doi.org/10.1109/COMPSAC.2009.192}.
+
+\bibitem[Jia and Harman(2011)]{jia2011mutation}
+Yue Jia and Mark Harman.
+\newblock An analysis and survey of the development of mutation testing.
+\newblock \emph{IEEE Transactions on Software Engineering}, 37\penalty0
+  (5):\penalty0 649--678, 2011.
+\newblock \url{https://doi.org/10.1109/TSE.2010.62}.
+
+\bibitem[Just et~al.(2014)Just, Jalali, Inozemtseva, Ernst, Holmes, and
+  Fraser]{just2014mutants}
+Ren{\'e} Just, Darioush Jalali, Laura Inozemtseva, Michael~D. Ernst, Reid
+  Holmes, and Gordon Fraser.
+\newblock Are mutants a valid substitute for real faults in software testing?
+\newblock In \emph{Proceedings of the 22nd ACM SIGSOFT International Symposium
+  on Foundations of Software Engineering (FSE 2014)}, pages 654--665. ACM,
+  2014.
+\newblock \url{https://doi.org/10.1145/2635868.2635929}.
+
+\bibitem[Kumar et~al.(2011)Kumar, Gupta, and Parjapat]{kumar2011mutants}
+Kapil Kumar, P.~K. Gupta, and Roshan Parjapat.
+\newblock New mutants generation for testing {Java} programs.
+\newblock In \emph{Computer Networks and Information Technologies},
+  Communications in Computer and Information Science, pages 290--294. Springer
+  Berlin Heidelberg, 2011.
+\newblock \url{https://doi.org/10.1007/978-3-642-19542-6_50}.
+
+\bibitem[Kupferman(2006)]{kupferman2006sanity}
+Orna Kupferman.
+\newblock Sanity checks in formal verification.
+\newblock In \emph{CONCUR 2006, Concurrency Theory}, Lecture Notes in Computer
+  Science, pages 37--51. Springer Berlin Heidelberg, 2006.
+\newblock \url{https://doi.org/10.1007/11817949_3}.
+
+\bibitem[Kupferman and Vardi(2003)]{kupferman2003vacuity}
+Orna Kupferman and Moshe~Y. Vardi.
+\newblock Vacuity detection in temporal model checking.
+\newblock \emph{International Journal on Software Tools for Technology
+  Transfer}, 4\penalty0 (2):\penalty0 224--233, 2003.
+\newblock \url{https://doi.org/10.1007/s100090100062}.
+
+\bibitem[Ladisa et~al.(2023)Ladisa, Plate, Martinez, and Barais]{ladisa2023sok}
+Piergiorgio Ladisa, Henrik Plate, Matias Martinez, and Olivier Barais.
+\newblock {SoK}: Taxonomy of attacks on open-source software supply chains.
+\newblock In \emph{2023 IEEE Symposium on Security and Privacy (SP)}, pages
+  1509--1526. IEEE, 2023.
+\newblock \url{https://doi.org/10.1109/SP46215.2023.10179304}.
+
+\bibitem[Lamb and Zacchiroli(2022)]{lamb2022reproducible}
+Chris Lamb and Stefano Zacchiroli.
+\newblock Reproducible builds: Increasing the integrity of software supply
+  chains.
+\newblock \emph{IEEE Software}, 39\penalty0 (2):\penalty0 62--70, 2022.
+\newblock \url{https://doi.org/10.1109/MS.2021.3073045}.
+
+\bibitem[Lipp et~al.(2022)Lipp, Banescu, and Pretschner]{lipp2022static}
+Stephan Lipp, Sebastian Banescu, and Alexander Pretschner.
+\newblock An empirical study on the effectiveness of static {C} code analyzers
+  for vulnerability detection.
+\newblock In \emph{Proceedings of the 31st ACM SIGSOFT International Symposium
+  on Software Testing and Analysis (ISSTA 2022)}, pages 544--555. ACM, 2022.
+\newblock \url{https://doi.org/10.1145/3533767.3534380}.
+
+\bibitem[Loise et~al.(2017)Loise, Devroey, Perrouin, Papadakis, and
+  Heymans]{loise2017security}
+Thomas Loise, Xavier Devroey, Gilles Perrouin, Mike Papadakis, and Patrick
+  Heymans.
+\newblock Towards security-aware mutation testing.
+\newblock In \emph{2017 IEEE International Conference on Software Testing,
+  Verification and Validation Workshops (ICSTW 2017)}, pages 97--102. IEEE,
+  2017.
+\newblock \url{https://doi.org/10.1109/ICSTW.2017.24}.
+
+\bibitem[Martin and Xie(2007)]{martin2007acpolicy}
+Evan Martin and Tao Xie.
+\newblock A fault model and mutation testing of access control policies.
+\newblock In \emph{Proceedings of the 16th International Conference on World
+  Wide Web (WWW 2007)}, pages 667--676. ACM, 2007.
+\newblock \url{https://doi.org/10.1145/1242572.1242663}.
+
+\bibitem[Maton et~al.(2024)Maton, Kapfhammer, and
+  McMinn]{maton2024pseudotested}
+Megan Maton, Gregory~M. Kapfhammer, and Phil McMinn.
+\newblock Exploring pseudo-testedness: Empirically evaluating extreme mutation
+  testing at the statement level.
+\newblock In \emph{2024 IEEE International Conference on Software Maintenance
+  and Evolution (ICSME 2024)}, pages 587--598. IEEE, 2024.
+\newblock \url{https://doi.org/10.1109/ICSME58944.2024.00059}.
+
+\bibitem[{MITRE Corporation}(2026{\natexlab{a}})]{cwe1288}
+{MITRE Corporation}.
+\newblock {CWE-1288}: Improper validation of consistency within input.
+\newblock Common Weakness Enumeration, version 4.20.
+  \url{https://cwe.mitre.org/data/definitions/1288.html}, 2026{\natexlab{a}}.
+\newblock Accessed 2026-08-18.
+
+\bibitem[{MITRE Corporation}(2026{\natexlab{b}})]{cwe390}
+{MITRE Corporation}.
+\newblock {CWE-390}: Detection of error condition without action.
+\newblock Common Weakness Enumeration, version 4.20.
+  \url{https://cwe.mitre.org/data/definitions/390.html}, 2026{\natexlab{b}}.
+\newblock Accessed 2026-08-18.
+
+\bibitem[{MITRE Corporation}(2026{\natexlab{c}})]{cwe636}
+{MITRE Corporation}.
+\newblock {CWE-636}: Not failing securely (`failing open').
+\newblock Common Weakness Enumeration, version 4.20.
+  \url{https://cwe.mitre.org/data/definitions/636.html}, 2026{\natexlab{c}}.
+\newblock Accessed 2026-08-18.
+
+\bibitem[{MITRE Corporation}(2026{\natexlab{d}})]{cwe703}
+{MITRE Corporation}.
+\newblock {CWE-703}: Improper check or handling of exceptional conditions.
+\newblock Common Weakness Enumeration, version 4.20.
+  \url{https://cwe.mitre.org/data/definitions/703.html}, 2026{\natexlab{d}}.
+\newblock Accessed 2026-08-18.
+
+\bibitem[{MITRE Corporation}(2026{\natexlab{e}})]{cwe754}
+{MITRE Corporation}.
+\newblock {CWE-754}: Improper check for unusual or exceptional conditions.
+\newblock Common Weakness Enumeration, version 4.20.
+  \url{https://cwe.mitre.org/data/definitions/754.html}, 2026{\natexlab{e}}.
+\newblock Accessed 2026-08-18.
+
+\bibitem[Newman et~al.(2022)Newman, Meyers, and
+  Torres-Arias]{newman2022sigstore}
+Zachary Newman, John~Speed Meyers, and Santiago Torres-Arias.
+\newblock Sigstore: Software signing for everybody.
+\newblock In \emph{Proceedings of the 2022 ACM SIGSAC Conference on Computer
+  and Communications Security (CCS '22)}, pages 2353--2367. ACM, 2022.
+\newblock \url{https://doi.org/10.1145/3548606.3560596}.
+
+\bibitem[Niedermayr et~al.(2016)Niedermayr, Juergens, and
+  Wagner]{niedermayr2016extreme}
+Rainer Niedermayr, Elmar Juergens, and Stefan Wagner.
+\newblock Will my tests tell me if i break this code?
+\newblock In \emph{Proceedings of the International Workshop on Continuous
+  Software Evolution and Delivery (CSED '16)}, pages 23--29. ACM, 2016.
+\newblock \url{https://doi.org/10.1145/2896941.2896944}.
+
+\bibitem[{\"O}rg{\aa}rd et~al.(2023){\"O}rg{\aa}rd, Gay, de~Oliveira~Neto, and
+  Viggedal]{orgard2023mutationci}
+Jonathan {\"O}rg{\aa}rd, Gregory Gay, Francisco~Gomes de~Oliveira~Neto, and Kim
+  Viggedal.
+\newblock Mutation testing in continuous integration: An exploratory industrial
+  case study.
+\newblock In \emph{2023 IEEE International Conference on Software Testing,
+  Verification and Validation Workshops (ICSTW 2023)}, pages 324--333. IEEE,
+  2023.
+\newblock \url{https://doi.org/10.1109/ICSTW58534.2023.00063}.
+
+\bibitem[Papadakis et~al.(2019)Papadakis, Kintis, Zhang, Jia, Traon, and
+  Harman]{papadakis2019mutation}
+Mike Papadakis, Marinos Kintis, Jie Zhang, Yue Jia, Yves~Le Traon, and Mark
+  Harman.
+\newblock Mutation testing advances: An analysis and survey.
+\newblock In \emph{Advances in Computers}, volume 112, pages 275--378.
+  Elsevier, 2019.
+\newblock \url{https://doi.org/10.1016/bs.adcom.2018.03.015}.
+
+\bibitem[Petrovi{\'c} and Ivankovi{\'c}(2018)]{petrovic2018google}
+Goran Petrovi{\'c} and Marko Ivankovi{\'c}.
+\newblock State of mutation testing at google.
+\newblock In \emph{Proceedings of the 40th International Conference on Software
+  Engineering: Software Engineering in Practice (ICSE-SEIP 2018)}, pages
+  163--171. ACM, 2018.
+\newblock \url{https://doi.org/10.1145/3183519.3183521}.
+
+\bibitem[{pitest project}(2026)]{pitest_faq}
+{pitest project}.
+\newblock Frequently asked questions: My tests normally run green but {PIT}
+  says the suite isn't green.
+\newblock \url{https://pitest.org/faq/}, 2026.
+\newblock Accessed 2026-08-18.
+
+\bibitem[Samuel et~al.(2010)Samuel, Mathewson, Cappos, and
+  Dingledine]{samuel2010tuf}
+Justin Samuel, Nick Mathewson, Justin Cappos, and Roger Dingledine.
+\newblock Survivable key compromise in software update systems.
+\newblock In \emph{Proceedings of the 17th ACM Conference on Computer and
+  Communications Security (CCS '10)}, pages 61--72. ACM, 2010.
+\newblock \url{https://doi.org/10.1145/1866307.1866315}.
+
+\bibitem[Schuler and Zeller(2011)]{schuler2011checkedcov}
+David Schuler and Andreas Zeller.
+\newblock Assessing oracle quality with checked coverage.
+\newblock In \emph{2011 Fourth IEEE International Conference on Software
+  Testing, Verification and Validation (ICST 2011)}, pages 90--99. IEEE, 2011.
+\newblock \url{https://doi.org/10.1109/ICST.2011.32}.
+
+\bibitem[Schuler and Zeller(2013)]{schuler2013checkedcov}
+David Schuler and Andreas Zeller.
+\newblock Checked coverage: an indicator for oracle quality.
+\newblock \emph{Software Testing, Verification and Reliability}, 23\penalty0
+  (7):\penalty0 531--551, 2013.
+\newblock \url{https://doi.org/10.1002/stvr.1497}.
+
+\bibitem[{sigstore/cosign maintainers}(2022)]{cve2022sigstore}
+{sigstore/cosign maintainers}.
+\newblock \texttt{cosign verify-attestation -{}-type} can report a false
+  positive if any attestation exists.
+\newblock GitHub Security Advisory GHSA-vjxv-45g9-9296, CVE-2022-35929.
+  \url{https://github.com/sigstore/cosign/security/advisories/GHSA-vjxv-45g9-9296},
+  2022.
+\newblock Affected: cosign $<$ 1.10.1. Severity ratings diverge across sources:
+  the advisory itself says Moderate, the GitHub CNA records CVSS 3.1 base 7.1
+  (High), and NVD scores the same CVE 9.8 (Critical). Accessed 2026-08-18.
+
+\bibitem[Simmonds et~al.(2010)Simmonds, Davies, Gurfinkel, and
+  Chechik]{simmonds2010vacuity}
+Jocelyn Simmonds, Jessica Davies, Arie Gurfinkel, and Marsha Chechik.
+\newblock Exploiting resolution proofs to speed up {LTL} vacuity detection for
+  {BMC}.
+\newblock \emph{International Journal on Software Tools for Technology
+  Transfer}, 12\penalty0 (5):\penalty0 319--335, 2010.
+\newblock \url{https://doi.org/10.1007/s10009-009-0134-1}.
+
+\bibitem[{SLSA project, Open Source Security Foundation}(2025)]{slsa2025spec}
+{SLSA project, Open Source Security Foundation}.
+\newblock {SLSA} specification v1.2, build track: Verifying artifacts.
+\newblock \url{https://slsa.dev/spec/v1.2/verifying-artifacts}, 2025.
+\newblock Status: Approved. Accessed 2026-08-18.
+
+\bibitem[Thompson(1984)]{thompson1984trusting}
+Ken Thompson.
+\newblock Reflections on trusting trust.
+\newblock \emph{Communications of the ACM}, 27\penalty0 (8):\penalty0 761--763,
+  1984.
+\newblock \url{https://doi.org/10.1145/358198.358210}.
+
+\bibitem[Torres-Arias et~al.(2019)Torres-Arias, Afzali, Kuppusamy, Curtmola,
+  and Cappos]{torresarias2019intoto}
+Santiago Torres-Arias, Hammad Afzali, Trishank~Karthik Kuppusamy, Reza
+  Curtmola, and Justin Cappos.
+\newblock in-toto: Providing farm-to-table guarantees for bits and bytes.
+\newblock In \emph{Proceedings of the 28th USENIX Security Symposium (USENIX
+  Security '19)}, pages 1393--1410. USENIX Association, 2019.
+\newblock
+  \url{https://www.usenix.org/conference/usenixsecurity19/presentation/torres-arias}.
+
+\bibitem[Untch(2009)]{untch2009sdl}
+Roland~H. Untch.
+\newblock On reduced neighborhood mutation analysis using a single mutagenic
+  operator.
+\newblock In \emph{Proceedings of the 47th Annual ACM Southeast Regional
+  Conference (ACM-SE 47)}, pages 1--4. ACM, 2009.
+\newblock \url{https://doi.org/10.1145/1566445.1566540}.
+
+\bibitem[Vera-P{\'e}rez et~al.(2019)Vera-P{\'e}rez, Danglot, Monperrus, and
+  Baudry]{veraperez2019pseudo}
+Oscar~Luis Vera-P{\'e}rez, Benjamin Danglot, Martin Monperrus, and Benoit
+  Baudry.
+\newblock A comprehensive study of pseudo-tested methods.
+\newblock \emph{Empirical Software Engineering}, 24\penalty0 (3):\penalty0
+  1195--1225, 2019.
+\newblock \url{https://doi.org/10.1007/s10664-018-9653-2}.
+
+\bibitem[Weyuker(1982)]{weyuker1982nontestable}
+Elaine~J. Weyuker.
+\newblock On testing non-testable programs.
+\newblock \emph{The Computer Journal}, 25\penalty0 (4):\penalty0 465--470,
+  1982.
+\newblock \url{https://doi.org/10.1093/comjnl/25.4.465}.
+
+\bibitem[Xia et~al.(2023)Xia, Bi, Xing, Lu, and Zhu]{xia2023sbom}
+Boming Xia, Tingting Bi, Zhenchang Xing, Qinghua Lu, and Liming Zhu.
+\newblock An empirical study on software bill of materials: Where we stand and
+  the road ahead.
+\newblock In \emph{Proceedings of the 45th IEEE/ACM International Conference on
+  Software Engineering (ICSE 2023)}, pages 2630--2642. IEEE, 2023.
+\newblock \url{https://doi.org/10.1109/ICSE48619.2023.00219}.
+
+\bibitem[Zhang and Mesbah(2015)]{zhang2015assertions}
+Yucheng Zhang and Ali Mesbah.
+\newblock Assertions are strongly correlated with test suite effectiveness.
+\newblock In \emph{Proceedings of the 2015 10th Joint Meeting on Foundations of
+  Software Engineering (ESEC/FSE 2015)}, pages 214--224. ACM, 2015.
+\newblock \url{https://doi.org/10.1145/2786805.2786858}.
+
+\bibitem[Zhao et~al.(2025)Zhao, Bangash, C{\^o}go, Adams, and
+  Hassan]{zhao2025lbops}
+Zhimin Zhao, Abdul~Ali Bangash, Filipe~Roseiro C{\^o}go, Bram Adams, and
+  Ahmed~E. Hassan.
+\newblock On the workflows and smells of leaderboard operations ({LBOps}): An
+  exploratory study of foundation model leaderboards.
+\newblock \emph{IEEE Transactions on Software Engineering}, 51\penalty0
+  (4):\penalty0 929--946, 2025.
+\newblock \url{https://doi.org/10.1109/TSE.2025.3533972}.
+
+\bibitem[Zhu et~al.(1997)Zhu, Hall, and May]{zhu1997adequacy}
+Hong Zhu, Patrick A.~V. Hall, and John H.~R. May.
+\newblock Software unit test coverage and adequacy.
+\newblock \emph{ACM Computing Surveys}, 29\penalty0 (4):\penalty0 366--427,
+  1997.
+\newblock \url{https://doi.org/10.1145/267580.267590}.
+
+\end{thebibliography}

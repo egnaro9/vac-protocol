@@ -1,0 +1,608 @@
+% Bibliography for "Four Ways to Forge a Bundle My Own Verifier Calls Clean".
+% Every entry below was resolved against a publisher or registry record.
+% Page ranges use single hyphens deliberately.
+
+% ---------------------------------------------------------------------------
+% Vacuity and sanity checking
+% ---------------------------------------------------------------------------
+
+@article{beer2001vacuity,
+  author  = {Ilan Beer and Shoham Ben-David and Cindy Eisner and Yoav Rodeh},
+  title   = {Efficient Detection of Vacuity in Temporal Model Checking},
+  journal = {Formal Methods in System Design},
+  volume  = {18},
+  number  = {2},
+  pages   = {141-163},
+  year    = {2001},
+  note    = {\url{https://doi.org/10.1023/A:1008779610539}}
+}
+
+@article{kupferman2003vacuity,
+  author  = {Orna Kupferman and Moshe Y. Vardi},
+  title   = {Vacuity detection in temporal model checking},
+  journal = {International Journal on Software Tools for Technology Transfer},
+  volume  = {4},
+  number  = {2},
+  pages   = {224-233},
+  year    = {2003},
+  note    = {\url{https://doi.org/10.1007/s100090100062}}
+}
+
+@inproceedings{kupferman2006sanity,
+  author    = {Orna Kupferman},
+  title     = {Sanity Checks in Formal Verification},
+  booktitle = {CONCUR 2006, Concurrency Theory},
+  series    = {Lecture Notes in Computer Science},
+  publisher = {Springer Berlin Heidelberg},
+  pages     = {37-51},
+  year      = {2006},
+  note      = {\url{https://doi.org/10.1007/11817949_3}}
+}
+
+@article{simmonds2010vacuity,
+  author  = {Jocelyn Simmonds and Jessica Davies and Arie Gurfinkel and Marsha Chechik},
+  title   = {Exploiting resolution proofs to speed up {LTL} vacuity detection for {BMC}},
+  journal = {International Journal on Software Tools for Technology Transfer},
+  volume  = {12},
+  number  = {5},
+  pages   = {319-335},
+  year    = {2010},
+  note    = {\url{https://doi.org/10.1007/s10009-009-0134-1}}
+}
+
+% ---------------------------------------------------------------------------
+% The oracle problem and oracle adequacy
+% ---------------------------------------------------------------------------
+
+@article{weyuker1982nontestable,
+  author  = {Elaine J. Weyuker},
+  title   = {On Testing Non-Testable Programs},
+  journal = {The Computer Journal},
+  volume  = {25},
+  number  = {4},
+  pages   = {465-470},
+  year    = {1982},
+  note    = {\url{https://doi.org/10.1093/comjnl/25.4.465}}
+}
+
+@article{barr2015oracle,
+  author  = {Earl T. Barr and Mark Harman and Phil McMinn and Muzammil Shahbaz and Shin Yoo},
+  title   = {The Oracle Problem in Software Testing: A Survey},
+  journal = {IEEE Transactions on Software Engineering},
+  volume  = {41},
+  number  = {5},
+  pages   = {507-525},
+  year    = {2015},
+  note    = {\url{https://doi.org/10.1109/TSE.2014.2372785}}
+}
+
+@inproceedings{jahangirova2016oracle,
+  author    = {Gunel Jahangirova and David Clark and Mark Harman and Paolo Tonella},
+  title     = {Test oracle assessment and improvement},
+  booktitle = {Proceedings of the 25th International Symposium on Software Testing and Analysis (ISSTA 2016)},
+  publisher = {ACM},
+  pages     = {247-258},
+  year      = {2016},
+  note      = {\url{https://doi.org/10.1145/2931037.2931062}}
+}
+
+@inproceedings{schuler2011checkedcov,
+  author    = {David Schuler and Andreas Zeller},
+  title     = {Assessing Oracle Quality with Checked Coverage},
+  booktitle = {2011 Fourth IEEE International Conference on Software Testing, Verification and Validation (ICST 2011)},
+  publisher = {IEEE},
+  pages     = {90-99},
+  year      = {2011},
+  note      = {\url{https://doi.org/10.1109/ICST.2011.32}}
+}
+
+@article{schuler2013checkedcov,
+  author  = {David Schuler and Andreas Zeller},
+  title   = {Checked coverage: an indicator for oracle quality},
+  journal = {Software Testing, Verification and Reliability},
+  volume  = {23},
+  number  = {7},
+  pages   = {531-551},
+  year    = {2013},
+  note    = {\url{https://doi.org/10.1002/stvr.1497}}
+}
+
+@inproceedings{huo2014oracle,
+  author    = {Chen Huo and James Clause},
+  title     = {Improving oracle quality by detecting brittle assertions and unused inputs in tests},
+  booktitle = {Proceedings of the 22nd ACM SIGSOFT International Symposium on Foundations of Software Engineering (FSE 2014)},
+  publisher = {ACM},
+  pages     = {621-631},
+  year      = {2014},
+  note      = {\url{https://doi.org/10.1145/2635868.2635917}}
+}
+
+@inproceedings{zhang2015assertions,
+  author    = {Yucheng Zhang and Ali Mesbah},
+  title     = {Assertions are strongly correlated with test suite effectiveness},
+  booktitle = {Proceedings of the 2015 10th Joint Meeting on Foundations of Software Engineering (ESEC/FSE 2015)},
+  publisher = {ACM},
+  pages     = {214-224},
+  year      = {2015},
+  note      = {\url{https://doi.org/10.1145/2786805.2786858}}
+}
+
+@inproceedings{inozemtseva2014coverage,
+  author    = {Laura Inozemtseva and Reid Holmes},
+  title     = {Coverage is not strongly correlated with test suite effectiveness},
+  booktitle = {Proceedings of the 36th International Conference on Software Engineering (ICSE 2014)},
+  publisher = {ACM},
+  pages     = {435-445},
+  year      = {2014},
+  note      = {\url{https://doi.org/10.1145/2568225.2568271}}
+}
+
+% ---------------------------------------------------------------------------
+% Mutation testing: origins, surveys, validity
+% ---------------------------------------------------------------------------
+
+@article{hamlet1977compiler,
+  author  = {Richard G. Hamlet},
+  title   = {Testing Programs with the Aid of a Compiler},
+  journal = {IEEE Transactions on Software Engineering},
+  volume  = {SE-3},
+  number  = {4},
+  pages   = {279-290},
+  year    = {1977},
+  note    = {\url{https://doi.org/10.1109/TSE.1977.231145}}
+}
+
+@article{demillo1978hints,
+  author  = {Richard A. DeMillo and Richard J. Lipton and Frederick G. Sayward},
+  title   = {Hints on Test Data Selection: Help for the Practicing Programmer},
+  journal = {Computer},
+  volume  = {11},
+  number  = {4},
+  pages   = {34-41},
+  year    = {1978},
+  note    = {\url{https://doi.org/10.1109/C-M.1978.218136}}
+}
+
+@inproceedings{budd1980theoretical,
+  author    = {Timothy A. Budd and Richard A. DeMillo and Richard J. Lipton and Frederick G. Sayward},
+  title     = {Theoretical and empirical studies on using program mutation to test the functional correctness of programs},
+  booktitle = {Proceedings of the 7th ACM SIGPLAN-SIGACT Symposium on Principles of Programming Languages (POPL '80)},
+  publisher = {ACM},
+  pages     = {220-233},
+  year      = {1980},
+  note      = {\url{https://doi.org/10.1145/567446.567468}}
+}
+
+@article{zhu1997adequacy,
+  author  = {Hong Zhu and Patrick A. V. Hall and John H. R. May},
+  title   = {Software unit test coverage and adequacy},
+  journal = {ACM Computing Surveys},
+  volume  = {29},
+  number  = {4},
+  pages   = {366-427},
+  year    = {1997},
+  note    = {\url{https://doi.org/10.1145/267580.267590}}
+}
+
+@article{jia2011mutation,
+  author  = {Yue Jia and Mark Harman},
+  title   = {An Analysis and Survey of the Development of Mutation Testing},
+  journal = {IEEE Transactions on Software Engineering},
+  volume  = {37},
+  number  = {5},
+  pages   = {649-678},
+  year    = {2011},
+  note    = {\url{https://doi.org/10.1109/TSE.2010.62}}
+}
+
+@incollection{papadakis2019mutation,
+  author    = {Mike Papadakis and Marinos Kintis and Jie Zhang and Yue Jia and Yves Le Traon and Mark Harman},
+  title     = {Mutation Testing Advances: An Analysis and Survey},
+  booktitle = {Advances in Computers},
+  volume    = {112},
+  publisher = {Elsevier},
+  pages     = {275-378},
+  year      = {2019},
+  note      = {\url{https://doi.org/10.1016/bs.adcom.2018.03.015}}
+}
+
+@inproceedings{just2014mutants,
+  author    = {Ren{\'e} Just and Darioush Jalali and Laura Inozemtseva and Michael D. Ernst and Reid Holmes and Gordon Fraser},
+  title     = {Are mutants a valid substitute for real faults in software testing?},
+  booktitle = {Proceedings of the 22nd ACM SIGSOFT International Symposium on Foundations of Software Engineering (FSE 2014)},
+  publisher = {ACM},
+  pages     = {654-665},
+  year      = {2014},
+  note      = {\url{https://doi.org/10.1145/2635868.2635929}}
+}
+
+@inproceedings{petrovic2018google,
+  author    = {Goran Petrovi{\'c} and Marko Ivankovi{\'c}},
+  title     = {State of Mutation Testing at Google},
+  booktitle = {Proceedings of the 40th International Conference on Software Engineering: Software Engineering in Practice (ICSE-SEIP 2018)},
+  publisher = {ACM},
+  pages     = {163-171},
+  year      = {2018},
+  note      = {\url{https://doi.org/10.1145/3183519.3183521}}
+}
+
+% ---------------------------------------------------------------------------
+% Statement deletion, extreme mutation, pseudo-tested code
+% ---------------------------------------------------------------------------
+
+@inproceedings{untch2009sdl,
+  author    = {Roland H. Untch},
+  title     = {On reduced neighborhood mutation analysis using a single mutagenic operator},
+  booktitle = {Proceedings of the 47th Annual ACM Southeast Regional Conference (ACM-SE 47)},
+  publisher = {ACM},
+  pages     = {1-4},
+  year      = {2009},
+  note      = {\url{https://doi.org/10.1145/1566445.1566540}}
+}
+
+@inproceedings{deng2013sdl,
+  author    = {Lin Deng and Jeff Offutt and Nan Li},
+  title     = {Empirical Evaluation of the Statement Deletion Mutation Operator},
+  booktitle = {2013 IEEE Sixth International Conference on Software Testing, Verification and Validation (ICST 2013)},
+  publisher = {IEEE},
+  pages     = {84-93},
+  year      = {2013},
+  note      = {\url{https://doi.org/10.1109/ICST.2013.20}}
+}
+
+@inproceedings{niedermayr2016extreme,
+  author    = {Rainer Niedermayr and Elmar Juergens and Stefan Wagner},
+  title     = {Will my tests tell me if I break this code?},
+  booktitle = {Proceedings of the International Workshop on Continuous Software Evolution and Delivery (CSED '16)},
+  publisher = {ACM},
+  pages     = {23-29},
+  year      = {2016},
+  note      = {\url{https://doi.org/10.1145/2896941.2896944}}
+}
+
+@article{veraperez2019pseudo,
+  author  = {Oscar Luis Vera-P{\'e}rez and Benjamin Danglot and Martin Monperrus and Benoit Baudry},
+  title   = {A comprehensive study of pseudo-tested methods},
+  journal = {Empirical Software Engineering},
+  volume  = {24},
+  number  = {3},
+  pages   = {1195-1225},
+  year    = {2019},
+  note    = {\url{https://doi.org/10.1007/s10664-018-9653-2}}
+}
+
+@inproceedings{maton2024pseudotested,
+  author    = {Megan Maton and Gregory M. Kapfhammer and Phil McMinn},
+  title     = {Exploring Pseudo-Testedness: Empirically Evaluating Extreme Mutation Testing at the Statement Level},
+  booktitle = {2024 IEEE International Conference on Software Maintenance and Evolution (ICSME 2024)},
+  publisher = {IEEE},
+  pages     = {587-598},
+  year      = {2024},
+  note      = {\url{https://doi.org/10.1109/ICSME58944.2024.00059}}
+}
+
+@inproceedings{ji2009exception,
+  author    = {Changbing Ji and Zhenyu Chen and Baowen Xu and Ziyuan Wang},
+  title     = {A New Mutation Analysis Method for Testing {Java} Exception Handling},
+  booktitle = {Proceedings of the 33rd Annual IEEE International Computer Software and Applications Conference (COMPSAC 2009)},
+  volume    = {2},
+  publisher = {IEEE},
+  pages     = {556-561},
+  year      = {2009},
+  note      = {\url{https://doi.org/10.1109/COMPSAC.2009.192}}
+}
+
+@incollection{kumar2011mutants,
+  author    = {Kapil Kumar and P. K. Gupta and Roshan Parjapat},
+  title     = {New Mutants Generation for Testing {Java} Programs},
+  booktitle = {Computer Networks and Information Technologies},
+  series    = {Communications in Computer and Information Science},
+  publisher = {Springer Berlin Heidelberg},
+  pages     = {290-294},
+  year      = {2011},
+  note      = {\url{https://doi.org/10.1007/978-3-642-19542-6_50}}
+}
+
+@inproceedings{loise2017security,
+  author    = {Thomas Loise and Xavier Devroey and Gilles Perrouin and Mike Papadakis and Patrick Heymans},
+  title     = {Towards Security-Aware Mutation Testing},
+  booktitle = {2017 IEEE International Conference on Software Testing, Verification and Validation Workshops (ICSTW 2017)},
+  publisher = {IEEE},
+  pages     = {97-102},
+  year      = {2017},
+  note      = {\url{https://doi.org/10.1109/ICSTW.2017.24}}
+}
+
+% ---------------------------------------------------------------------------
+% Mutation pointed at checkers rather than at code under test
+% ---------------------------------------------------------------------------
+
+@inproceedings{martin2007acpolicy,
+  author    = {Evan Martin and Tao Xie},
+  title     = {A fault model and mutation testing of access control policies},
+  booktitle = {Proceedings of the 16th International Conference on World Wide Web (WWW 2007)},
+  publisher = {ACM},
+  pages     = {667-676},
+  year      = {2007},
+  note      = {\url{https://doi.org/10.1145/1242572.1242663}}
+}
+
+@article{ami2021muse,
+  author  = {Amit Seal Ami and Kaushal Kafle and Kevin Moran and Adwait Nadkarni and Denys Poshyvanyk},
+  title   = {Systematic Mutation-Based Evaluation of the Soundness of Security-Focused {Android} Static Analysis Techniques},
+  journal = {ACM Transactions on Privacy and Security},
+  volume  = {24},
+  number  = {3},
+  pages   = {1-37},
+  year    = {2021},
+  note    = {Article 15. \url{https://doi.org/10.1145/3439802}}
+}
+
+@inproceedings{chen2018robustness,
+  author    = {Yuting Chen and Carlo A. Furia},
+  title     = {Robustness Testing of Intermediate Verifiers},
+  booktitle = {Automated Technology for Verification and Analysis (ATVA 2018)},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {11138},
+  publisher = {Springer},
+  pages     = {91-108},
+  year      = {2018},
+  note      = {\url{https://doi.org/10.1007/978-3-030-01090-4_6}}
+}
+
+@inproceedings{gorz2023fuzzers,
+  author    = {Philipp G{\"o}rz and Bj{\"o}rn Mathis and Keno Hassler and Emre G{\"u}ler and Thorsten Holz and Andreas Zeller and Rahul Gopinath},
+  title     = {Systematic Assessment of Fuzzers using Mutation Analysis},
+  booktitle = {32nd USENIX Security Symposium (USENIX Security '23)},
+  publisher = {USENIX Association},
+  pages     = {4535-4552},
+  year      = {2023},
+  note      = {\url{https://www.usenix.org/conference/usenixsecurity23/presentation/gorz}}
+}
+
+@inproceedings{orgard2023mutationci,
+  author    = {Jonathan {\"O}rg{\aa}rd and Gregory Gay and Francisco Gomes de Oliveira Neto and Kim Viggedal},
+  title     = {Mutation Testing in Continuous Integration: An Exploratory Industrial Case Study},
+  booktitle = {2023 IEEE International Conference on Software Testing, Verification and Validation Workshops (ICSTW 2023)},
+  publisher = {IEEE},
+  pages     = {324-333},
+  year      = {2023},
+  note      = {\url{https://doi.org/10.1109/ICSTW58534.2023.00063}}
+}
+
+@misc{pitest_faq,
+  author       = {{pitest project}},
+  title        = {Frequently Asked Questions: My tests normally run green but {PIT} says the suite isn't green},
+  howpublished = {\url{https://pitest.org/faq/}},
+  year         = {2026},
+  note         = {Accessed 2026-08-18}
+}
+
+% ---------------------------------------------------------------------------
+% Supply-chain attestation, provenance, and verifier soundness
+% ---------------------------------------------------------------------------
+
+@inproceedings{torresarias2019intoto,
+  author    = {Santiago Torres-Arias and Hammad Afzali and Trishank Karthik Kuppusamy and Reza Curtmola and Justin Cappos},
+  title     = {in-toto: Providing farm-to-table guarantees for bits and bytes},
+  booktitle = {Proceedings of the 28th USENIX Security Symposium (USENIX Security '19)},
+  publisher = {USENIX Association},
+  pages     = {1393-1410},
+  year      = {2019},
+  note      = {\url{https://www.usenix.org/conference/usenixsecurity19/presentation/torres-arias}}
+}
+
+@misc{intoto2023spec,
+  author       = {{in-toto project}},
+  title        = {in-toto Specification, Version 1.0.0},
+  howpublished = {\url{https://github.com/in-toto/docs/blob/master/in-toto-spec.md}},
+  year         = {2023},
+  note         = {Dated 2023-06-02. Accessed 2026-08-18}
+}
+
+@misc{intoto2024attestation,
+  author       = {{in-toto project}},
+  title        = {Statement layer specification, in-toto Attestation Framework v1},
+  howpublished = {\url{https://github.com/in-toto/attestation/blob/main/spec/v1/statement.md}},
+  year         = {2024},
+  note         = {Accessed 2026-08-18}
+}
+
+@misc{slsa2025spec,
+  author       = {{SLSA project, Open Source Security Foundation}},
+  title        = {{SLSA} specification v1.2, Build track: Verifying artifacts},
+  howpublished = {\url{https://slsa.dev/spec/v1.2/verifying-artifacts}},
+  year         = {2025},
+  note         = {Status: Approved. Accessed 2026-08-18}
+}
+
+@misc{cve2022sigstore,
+  author       = {{sigstore/cosign maintainers}},
+  title        = {\texttt{cosign verify-attestation -{}-type} can report a false positive if any attestation exists},
+  howpublished = {GitHub Security Advisory GHSA-vjxv-45g9-9296, CVE-2022-35929. \url{https://github.com/sigstore/cosign/security/advisories/GHSA-vjxv-45g9-9296}},
+  year         = {2022},
+  note         = {Affected: cosign $<$ 1.10.1. Severity ratings diverge across sources: the advisory itself says Moderate, the GitHub CNA records CVSS 3.1 base 7.1 (High), and NVD scores the same CVE 9.8 (Critical). Accessed 2026-08-18}
+}
+
+@inproceedings{newman2022sigstore,
+  author    = {Zachary Newman and John Speed Meyers and Santiago Torres-Arias},
+  title     = {Sigstore: Software Signing for Everybody},
+  booktitle = {Proceedings of the 2022 ACM SIGSAC Conference on Computer and Communications Security (CCS '22)},
+  publisher = {ACM},
+  pages     = {2353-2367},
+  year      = {2022},
+  note      = {\url{https://doi.org/10.1145/3548606.3560596}}
+}
+
+@inproceedings{samuel2010tuf,
+  author    = {Justin Samuel and Nick Mathewson and Justin Cappos and Roger Dingledine},
+  title     = {Survivable key compromise in software update systems},
+  booktitle = {Proceedings of the 17th ACM Conference on Computer and Communications Security (CCS '10)},
+  publisher = {ACM},
+  pages     = {61-72},
+  year      = {2010},
+  note      = {\url{https://doi.org/10.1145/1866307.1866315}}
+}
+
+@article{lamb2022reproducible,
+  author  = {Chris Lamb and Stefano Zacchiroli},
+  title   = {Reproducible Builds: Increasing the Integrity of Software Supply Chains},
+  journal = {IEEE Software},
+  volume  = {39},
+  number  = {2},
+  pages   = {62-70},
+  year    = {2022},
+  note    = {\url{https://doi.org/10.1109/MS.2021.3073045}}
+}
+
+@inproceedings{fourne2023flossing,
+  author    = {Marcel Fourn{\'e} and Dominik Wermke and William Enck and Sascha Fahl and Yasemin Acar},
+  title     = {It's like flossing your teeth: On the Importance and Challenges of Reproducible Builds for Software Supply Chain Security},
+  booktitle = {2023 IEEE Symposium on Security and Privacy (SP)},
+  publisher = {IEEE},
+  pages     = {1527-1544},
+  year      = {2023},
+  note      = {\url{https://doi.org/10.1109/SP46215.2023.10179320}}
+}
+
+@inproceedings{ladisa2023sok,
+  author    = {Piergiorgio Ladisa and Henrik Plate and Matias Martinez and Olivier Barais},
+  title     = {{SoK}: Taxonomy of Attacks on Open-Source Software Supply Chains},
+  booktitle = {2023 IEEE Symposium on Security and Privacy (SP)},
+  publisher = {IEEE},
+  pages     = {1509-1526},
+  year      = {2023},
+  note      = {\url{https://doi.org/10.1109/SP46215.2023.10179304}}
+}
+
+@inproceedings{xia2023sbom,
+  author    = {Boming Xia and Tingting Bi and Zhenchang Xing and Qinghua Lu and Liming Zhu},
+  title     = {An Empirical Study on Software Bill of Materials: Where We Stand and the Road Ahead},
+  booktitle = {Proceedings of the 45th IEEE/ACM International Conference on Software Engineering (ICSE 2023)},
+  publisher = {IEEE},
+  pages     = {2630-2642},
+  year      = {2023},
+  note      = {\url{https://doi.org/10.1109/ICSE48619.2023.00219}}
+}
+
+@techreport{birkholz2023rats,
+  author      = {Henk Birkholz and Dave Thaler and Michael Richardson and Ned Smith and Wei Pan},
+  title       = {Remote {ATtestation} procedureS ({RATS}) Architecture},
+  institution = {Internet Engineering Task Force},
+  type        = {RFC},
+  number      = {9334},
+  year        = {2023},
+  note        = {\url{https://www.rfc-editor.org/rfc/rfc9334.html}}
+}
+
+@article{thompson1984trusting,
+  author  = {Ken Thompson},
+  title   = {Reflections on Trusting Trust},
+  journal = {Communications of the ACM},
+  volume  = {27},
+  number  = {8},
+  pages   = {761-763},
+  year    = {1984},
+  note    = {\url{https://doi.org/10.1145/358198.358210}}
+}
+
+% ---------------------------------------------------------------------------
+% Empirical studies of checkers that report success without checking
+% ---------------------------------------------------------------------------
+
+@inproceedings{georgiev2012dangerous,
+  author    = {Martin Georgiev and Subodh Iyengar and Suman Jana and Rishita Anubhai and Dan Boneh and Vitaly Shmatikov},
+  title     = {The most dangerous code in the world: validating {SSL} certificates in non-browser software},
+  booktitle = {Proceedings of the 2012 ACM Conference on Computer and Communications Security (CCS '12)},
+  publisher = {ACM},
+  pages     = {38-49},
+  year      = {2012},
+  note      = {\url{https://doi.org/10.1145/2382196.2382204}}
+}
+
+@inproceedings{brubaker2014frankencerts,
+  author    = {Chad Brubaker and Suman Jana and Baishakhi Ray and Sarfraz Khurshid and Vitaly Shmatikov},
+  title     = {Using Frankencerts for Automated Adversarial Testing of Certificate Validation in {SSL/TLS} Implementations},
+  booktitle = {2014 IEEE Symposium on Security and Privacy (SP)},
+  publisher = {IEEE},
+  pages     = {114-129},
+  year      = {2014},
+  note      = {\url{https://doi.org/10.1109/SP.2014.15}}
+}
+
+@inproceedings{lipp2022static,
+  author    = {Stephan Lipp and Sebastian Banescu and Alexander Pretschner},
+  title     = {An empirical study on the effectiveness of static {C} code analyzers for vulnerability detection},
+  booktitle = {Proceedings of the 31st ACM SIGSOFT International Symposium on Software Testing and Analysis (ISSTA 2022)},
+  publisher = {ACM},
+  pages     = {544-555},
+  year      = {2022},
+  note      = {\url{https://doi.org/10.1145/3533767.3534380}}
+}
+
+% ---------------------------------------------------------------------------
+% Evaluation harnesses and leaderboards
+% ---------------------------------------------------------------------------
+
+@misc{biderman2024lessons,
+  author       = {Stella Biderman and Hailey Schoelkopf and Lintang Sutawika and Leo Gao and Jonathan Tow and others},
+  title        = {Lessons from the Trenches on Reproducible Evaluation of Language Models},
+  howpublished = {arXiv preprint arXiv:2405.14782},
+  year         = {2024},
+  note         = {\url{https://arxiv.org/abs/2405.14782}}
+}
+
+@article{zhao2025lbops,
+  author  = {Zhimin Zhao and Abdul Ali Bangash and Filipe Roseiro C{\^o}go and Bram Adams and Ahmed E. Hassan},
+  title   = {On the Workflows and Smells of Leaderboard Operations ({LBOps}): An Exploratory Study of Foundation Model Leaderboards},
+  journal = {IEEE Transactions on Software Engineering},
+  volume  = {51},
+  number  = {4},
+  pages   = {929-946},
+  year    = {2025},
+  note    = {\url{https://doi.org/10.1109/TSE.2025.3533972}}
+}
+
+% ---------------------------------------------------------------------------
+% Weakness taxonomy
+% ---------------------------------------------------------------------------
+
+@misc{cwe703,
+  author       = {{MITRE Corporation}},
+  title        = {{CWE-703}: Improper Check or Handling of Exceptional Conditions},
+  howpublished = {Common Weakness Enumeration, version 4.20. \url{https://cwe.mitre.org/data/definitions/703.html}},
+  year         = {2026},
+  note         = {Accessed 2026-08-18}
+}
+
+@misc{cwe754,
+  author       = {{MITRE Corporation}},
+  title        = {{CWE-754}: Improper Check for Unusual or Exceptional Conditions},
+  howpublished = {Common Weakness Enumeration, version 4.20. \url{https://cwe.mitre.org/data/definitions/754.html}},
+  year         = {2026},
+  note         = {Accessed 2026-08-18}
+}
+
+@misc{cwe636,
+  author       = {{MITRE Corporation}},
+  title        = {{CWE-636}: Not Failing Securely (`Failing Open')},
+  howpublished = {Common Weakness Enumeration, version 4.20. \url{https://cwe.mitre.org/data/definitions/636.html}},
+  year         = {2026},
+  note         = {Accessed 2026-08-18}
+}
+
+@misc{cwe390,
+  author       = {{MITRE Corporation}},
+  title        = {{CWE-390}: Detection of Error Condition Without Action},
+  howpublished = {Common Weakness Enumeration, version 4.20. \url{https://cwe.mitre.org/data/definitions/390.html}},
+  year         = {2026},
+  note         = {Accessed 2026-08-18}
+}
+
+@misc{cwe1288,
+  author       = {{MITRE Corporation}},
+  title        = {{CWE-1288}: Improper Validation of Consistency within Input},
+  howpublished = {Common Weakness Enumeration, version 4.20. \url{https://cwe.mitre.org/data/definitions/1288.html}},
+  year         = {2026},
+  note         = {Accessed 2026-08-18}
+}
