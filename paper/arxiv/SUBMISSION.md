@@ -24,7 +24,7 @@ of the paper. `main.pdf` is also not uploaded (arXiv builds its own), though it
 is kept here so the local PDF matches the source.
 
 Build verified with `tectonic -X compile main.tex`: no errors, no undefined
-references, no undefined citations, zero overfull hboxes, 32 pages, 4 tables.
+references, no undefined citations, zero overfull hboxes, 37 pages, 4 tables.
 Five underfull (loose) lines remain, which is the deliberate trade: `microtype`,
 `hyphenat` and a 3em `\emergencystretch` were added so that unbreakable `\texttt`
 tokens stretch a line rather than run into the right margin, where nine of them
@@ -104,7 +104,7 @@ appear as the subject matter, not as a machine-learning result.
 ## 7. Comments field
 
 ```
-32 pages, 4 tables. Case study with source artifacts: verifier, specification, mutation sweep, fixture corpus, registry and archived sweep outputs at https://github.com/egnaro9/vac-protocol (MIT). All figures pinned to commit hashes; no tagged release or archival DOI yet.
+37 pages, 4 tables. Case study with source artifacts: verifier, specification, mutation sweep, fixture corpus, registry and archived sweep outputs at https://github.com/egnaro9/vac-protocol (MIT). All figures pinned to commit hashes; no tagged release or archival DOI yet.
 ```
 
 ## 8. License
@@ -279,6 +279,81 @@ These are places where I made an editorial call that is yours to confirm. Items
     arity check, and moves the denominator from 143 to 140. `--floor 0.99` is a
     floor on the ratio and would not notice.
 
+16. **The novelty claim was narrowed, and this is the item to read before you sign
+    anything.** Three papers were found that occupy ground an earlier draft was
+    implicitly claiming. Section 4.5, "Three close neighbours", is new and names
+    them. **What the paper now claims as unclaimed is two things, not three: the
+    site selection and the subject.** The two-detector kill predicate was demoted
+    out of the residue.
+
+    What each neighbour takes:
+
+    - **MASC** (Ami et al., IEEE S&P 2022, and the FSE 2023 tool paper). 20,303
+      mutants against nine crypto-detectors. Grading a checker by mutation is
+      theirs at a scale mine does not approach, its first operator is the
+      lowercase-`"des"` evasion that my one-capital-letter forgery re-derives, and
+      its motivating premise is the published form of my structural ceiling. Its
+      Step 6 attributes 45 of 76 flaws to mutation against only 31 of 76 findable
+      from literal base instantiations, which is the same shape of result as my
+      10/112, from the other side of the pipeline. This paper was cited nowhere in
+      the earlier draft while muSE, by the same group, already was. That was an
+      oversight, and the paper now says so in its own voice.
+    - **Delcourt et al.** (MODELS 2026, arXiv 14 Aug 2026). Mutation testing of
+      LLM-as-judge, 547 mutants and 3,282 judgments. Reading per-operator survivors
+      as blind spots, and warning that easy mutants inflate the aggregate, are both
+      moves this paper makes. Four days ahead of this draft's date line.
+    - **Bilal and Mughal** (arXiv 21 June 2026, submitted to IEEE Software). A
+      1,553-test suite that stayed green and kept shipping defects, 110 of 252
+      fixes at four unobserved seams. Their browser-blind-guard incident is an
+      external instance of my RQ2 null result, on a system I did not write, two
+      months earlier.
+
+    **What survives, and why I still think it is worth posting.** None of the three
+    modifies a line of the checker's own source: two mutate the checker's input and
+    the third injects nothing. The refusal-site denominator and the checker's own
+    acceptance logic as subject remain unoccupied as far as I can establish. The
+    seven instrument failures have no counterpart in any of the three.
+
+    **Three claims I deliberately did not make, having checked them and found them
+    unsafe:**
+    1. That an *exact* kill predicate is novel. It is the default in conventional
+       mutation testing; it looks distinctive here only against two comparators
+       that could not have had it. Section 4.8 now says this outright.
+    2. That the 10/112 separately-scored corpus result is unshared. MASC's Step 6
+       is the counterpart, and the paper names it rather than waiting for a
+       reviewer to.
+    3. That "pointing a mutation tool at a checker" is a new place to point it in
+       any general sense. It is not, and the paper concedes the purpose and the
+       reading while keeping only the site.
+
+    **The framing sentence, added once, in Section 4.8:** "Read strictly, then,
+    this is a case study carrying a specialised instrument rather than a new
+    method." **This is the sentence to accept or reject.** It costs the paper its
+    method-contribution framing and buys the reviewer having nothing left to catch
+    the paper doing. Given the subject, I judged the trade worth it, but the call
+    is yours and reversing it means reversing Sections 4.5, 4.8, contribution 2
+    and scope item 2 together.
+
+    Contribution and scope lists both went from five items to six: the separately
+    scored 10/112 detector result is now its own item rather than a clause inside
+    the instrument item.
+
+    **The page count in this sheet was stale before I touched it, and is now
+    corrected twice over.** Section 7's Comments field and the build note both said
+    32 pages. I rebuilt the reconstructed pre-edit sources and measured **33**, so
+    the sheet was already one page behind. The new related-work material costs
+    **four** pages: 33 to 37. Both fields now read 37. Re-measure after any further
+    edit rather than carrying the number forward, which is the failure this paper
+    is about.
+
+17. **One citation was left without a DOI on purpose.** `delcourt2026judge` prints
+    `10.1145/3822455.3838768` in its own HTML front matter, while its arXiv record
+    gives `10.1145/3822455.3830329`. Neither resolves; Crossref returns 404 for
+    both, and no MODELS 2026 item is registered yet. Publishing either as fact, in
+    this paper, would be the paper's own subject in bibliography form. The entry
+    cites the arXiv abstract page and says the DOI is unregistered and disputed.
+    **Re-check before submission if MODELS 2026 registers by then.**
+
 ---
 
 ## Verification record for this pass
@@ -290,7 +365,7 @@ Measured, not asserted:
 | em-dash (U+2014) in `main.tex` / `refs.bib` | 0 / 0 |
 | en-dash (U+2013) in `main.tex` / `refs.bib` | 0 / 0 |
 | any non-ASCII byte | 0 in both files |
-| `\cite` keys resolving in `refs.bib` | 57 of 57 |
+| `\cite` keys resolving in `refs.bib` | 62 of 62 (was 58 of 58 before this pass; the earlier record's 57 was stale) |
 | orphaned `refs.bib` entries | 0 |
 | `\ref` targets with no `\label` | 0 |
 | undefined references or citations at compile | 0 |

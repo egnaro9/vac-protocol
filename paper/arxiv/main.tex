@@ -110,23 +110,40 @@ evidence-bundle verifier, each with a working forgery: the four in
 Section~\ref{sec:forgeries}, found against a verifier that had already been hardened once,
 plus the \texttt{null}-artifact forgery in Section~\ref{sec:audit} reported by the external
 audit.
-\item A refusal-site deletion mutation operator, with an explicit kill predicate, an
-explicit exclusion set, and a validity gate that makes the measurement trustworthy. The
-operator is a narrow instance of statement deletion; what is new here is the site selection
-and the subject, not the deletion (Section~\ref{sec:related-unclaimed}).
+\item A refusal-site liveness instrument: a deletion operator applied to an enumerated
+population of the verifier's own refusal statements, scored by a deterministic two-detector
+kill predicate, with an explicit exclusion set and a validity gate. Its operator, its purpose
+and its precondition each have a published parent. Deleting the statement that signals
+rejection is Kumar et al.'s; grading a checker by mutation is muSE's, MASC's, Chen and
+Furia's and, concurrently, Delcourt et al.'s; the green-baseline precondition is standard
+mutation-tool behaviour. What is offered is the pairing set out in
+Sections~\ref{sec:related-neighbours} and~\ref{sec:related-unclaimed}: the site selection and
+the subject, applied to the checker's own source rather than to the artifact it reads. The
+kill predicate is what makes the measurement decomposable, not what makes it new.
 \item An empirical before-and-after on one real verifier, comparing discovered-bug
 regression testing against systematic refusal-site liveness testing. The first moved
 coverage from $37/112$ to $39/119$ and left the caught set on the pre-existing sites at
 exactly 37. The second moved it to $112/119$. The two arms are not effort-matched, the
 second is measured on top of the first rather than as an alternative to it, and
 Section~\ref{sec:liveness-tests} states why the second arm's gain is partly entailed by
-how the intervention is defined.
+how the intervention is defined. The null result in the first arm was independently
+anticipated, on a system I did not write, by Bilal and Mughal
+(Section~\ref{sec:related-neighbours}).
+\item A separately scored detector result. The committed corpus of tampered bundles, written
+for the express purpose of proving the verifier can refuse, catches 10 of 112 refusal sites
+on its own, against a structural ceiling of $16/112$ that no amount of care in writing those
+sixteen fixtures could beat (Section~\ref{sec:rq1}). MASC reports the same shape of result
+from the other side of the pipeline, and Section~\ref{sec:related-unclaimed} sets out how
+the two partitions differ.
 \item A finding-shaped hypothesis, untested outside this codebase, that human-readable
 evidence artifacts remain unbound while machine-readable ones are verified
 (Section~\ref{sec:closure}).
 \item Seven documented cases in which the measuring instruments reported success while
 measuring nothing (Section~\ref{sec:instruments}), including one that returned a perfect
-score.
+score. None of the three closest neighbouring papers reports an instrument of its own
+returning a passing verdict along a path where it performed no comparison, although MASC
+reports exactly that of the detectors it was measuring
+(Section~\ref{sec:related-neighbours}).
 \end{enumerate}
 
 Section~\ref{sec:scope} states exactly what is and is not claimed, and
@@ -199,7 +216,7 @@ Two things cut the other way and are worth recording. First, four of his stronge
 were refuted by my own specification rather than by argument: the spec had already decided
 those cases and said so. His own words on that, in the pull request body, were that
 ``four findings refuted by documentation rather than by argument is not the usual
-experience reading someone's spec''.\footnote{An earlier draft of this paper rendered that
+experience reading someone's spec'' \citep{derme2026pr1}.\footnote{An earlier draft of this paper rendered that
 as ``documentation that refutes an auditor is rarer than the bugs'' and attributed the
 sentence to him. He did not write it; it is my compression of what he wrote, and the
 misattribution is corrected here rather than quietly dropped.} Second, my
@@ -396,22 +413,165 @@ involved.
 A smaller literature points mutation at the checking apparatus. Martin and Xie mutate
 XACML access-control \emph{policies} \citep{martin2007acpolicy}. Ami et al.'s muSE uses
 mutation to discover unsound choices in security-focused Android static analysis
-\citep{ami2021muse}. G\"orz et al.\ extend mutation analysis to grading fuzzers
+\citep{ami2021muse}, and their MASC carries the same idea into crypto-API misuse detection
+at a scale of 20,303 mutants against nine detectors \citep{ami2022masc,ami2023masc}.
+G\"orz et al.\ extend mutation analysis to grading fuzzers
 \citep{gorz2023fuzzers}. Chen and Furia perform robustness testing of intermediate
 verifiers, generating semantically equivalent Boogie programs and finding brittle behaviour
 in 16 of 135 \citep{chen2018robustness}. Lipp et al.\ supply the external calibration a
 reader should apply to my 0.330: state-of-the-art static C analyzers miss between 47\% and
 80\% of vulnerabilities in a benchmark of real programs \citep{lipp2022static}.
 
-The direction matters and I state it rather than leave a reviewer to find it. muSE, G\"orz
-et al.\ and Chen and Furia all mutate the checker's \emph{input}, seeding defects into the
-artifact under analysis and asking whether the checker detects them. Chen and Furia
+The direction matters and I state it rather than leave a reviewer to find it. muSE, MASC,
+G\"orz et al., Delcourt et al.\ and Chen and Furia all mutate the checker's \emph{input},
+seeding defects into the artifact under analysis and asking whether the checker detects
+them. Chen and Furia
 additionally target the opposite failure from mine, false alarms rather than false passes.
 This paper mutates the checker's own refusal statements. Similarly, the existing
 mutation-in-continuous-integration literature puts the mutation tool \emph{inside} the
 pipeline: \"Org\aa rd et al.'s industrial case study evaluates C++ mutation tools in GitHub
 Actions workflows and says nothing about mutating a gate \citep{orgard2023mutationci}. This
-paper points the mutation tool \emph{at} the gate.
+paper points the mutation tool \emph{at} the gate. That is a different move from grading a
+checker by mutating what it reads, which is muSE's, MASC's and, concurrently, Delcourt et
+al.'s; Section~\ref{sec:related-neighbours} sets out how much of the surrounding ground
+those three occupy.
+
+\subsection{Three close neighbours}
+\label{sec:related-neighbours}
+
+Three papers sit close enough to this one to change what I am entitled to claim. One is
+prior art I should have found earlier: MASC, published at IEEE S\&P in 2022. The other two
+were posted to arXiv while this study was running, on 21 June and 14 August 2026, so they
+are contemporaneous work rather than literature I failed to search. Neither of those two is
+in print; one is a preprint submitted to a magazine, the other is accepted at a conference
+that meets in October 2026. I describe each by what it already owns.
+
+\paragraph{MASC.} Ami et al.\ carry muSE's idea into crypto-API misuse detection
+\citep{ami2022masc,ami2023masc}. Twelve usage-based mutation operators, three mutation
+scopes, and an explicit three-adversary threat model instantiate compilable variants of
+crypto-API misuse cases, seeded into thirteen Android apps and four Apache Qpid Broker-J
+subsystems: 20,303 mutants, generated in about fifteen minutes. Nine crypto-detectors were
+evaluated and 19 unique undocumented flaws found, appearing across those detectors as 76
+flaw instances, of which 45 (59.21\%) are attributable solely to the mutation approach
+rather than to base instantiations of the same misuse cases; all flaws in six of the nine
+detectors were visible only through MASC. The journal extension enlarges this to nineteen
+operators, 107 misuse cases and five further detectors. MASC belongs in the list above, and
+its absence from an earlier draft of this paper was an oversight rather than a judgement,
+particularly since muSE is already cited here. Three of its results bear on mine directly,
+and a fourth, the base-instantiation comparison of its Step 6, is taken up in
+Section~\ref{sec:related-unclaimed}.
+
+First, its motivating premise is that hand-curated benchmarks are, in their words,
+``incomplete, incorrect, and impractical to maintain'', hedged with a \emph{may be} and
+evidenced by the OWASP benchmark treating AES in ECB mode as secure until 2020
+\citep{ami2022masc}. That is the published form of the structural ceiling I derive in
+Section~\ref{sec:rq1}, and the direction of the argument is theirs. The two claims do
+different work, though. Theirs is empirical and hedged; mine is a bound, since a committed
+corpus of $n$ fixtures cannot catch more than $n$ of 112 sites however well the $n$ are
+written. The arithmetic is not a discovery. It is what makes the $10/112$ in
+Section~\ref{sec:rq1} interpretable.
+
+Second, their first operator is atypical letter case. Passed to
+\texttt{Cipher.getInstance}, the algorithm name \texttt{"DES"} is flagged by CryptoGuard and
+\texttt{"des"} is not. The forgery in Section~\ref{sec:sec-forge-severity} costs one capital
+letter. I keep the
+instance and withdraw any suggestion that the shape is unreported, because it has been in
+print since 2022.
+
+Third, and running the other way, before analysing uncaught mutants they found that some
+detectors ``analyze only a limited portion of the target applications''. CryptoGuard and
+CogniCrypt do not handle multiple dex files, which left CryptoGuard analysing 871 of 2,515
+Android mutants until they patched it, and CryptoGuard skips any class whose package name
+contains \texttt{android.} or ends in \texttt{android}, which excludes applications such as
+LastPass and LinkedIn. They group these under a flaw class zero and exclude them from their
+counts for a reason they state plainly: ``these gaps were not detected using MASC's
+evaluation'' \citep{ami2022masc}. A detector returning a clean verdict over code it never
+read is the shape this paper measures, and mutating the detector's input did not find it.
+The mechanism is not identical: theirs is a scope limitation rather than a branch that
+returns acceptance, and a silent detector reads as clean rather than issuing an explicit
+verdict. With that caveat, it is the clearest published evidence I have that the two
+mutation sites answer different questions.
+
+\paragraph{Mutation testing of semantic judges.} Delcourt et al.\ point mutation at
+LLM-based judges of domain class diagrams \citep{delcourt2026judge}. Eleven operators, five
+rule-based and six LLM-assisted, inject semantic defects into PlantUML class diagrams while
+leaving the paired textual description unchanged, and each operator also emits a short
+natural-language description of the defect it injected. A mutant is killed when at least one
+issue the judge reports reaches cosine similarity $\tau = 0.55$ against that description,
+the threshold calibrated on 209 hand-labelled judgments to an F1 of 0.90. Across 547 mutants
+and six judge configurations, 3,282 mutant judgments in total, the kill ratio is 82.4\%, and
+their headline result is that this automated score largely reproduces the ordering a manual
+precision study produces over the same configurations: Pearson $r = 0.624$, and the same
+ordering on 11 of the 15 configuration pairs. They read per-operator kill ratios as fault
+classes the judge misses, and they warn that easy operators inflate the aggregate. This
+paper makes both of those moves, and neither of us invented them: reading survivors as fault
+classes the oracle does not detect is textbook mutation testing, and their own background
+section says so with a citation. What is worth stating plainly is that using a mutation tool
+to score a grader, and reporting a kill ratio over it, is neither a thin nor an unoccupied
+idea in 2026, and this paper does not present it as one.
+
+What their eleven operators do not touch is the judge. Every one of them mutates the
+artifact the judge is asked to judge. Judge variation in their design is configuration
+selection, three models crossed with two prompts, which they describe as reflecting standard
+practice in judge development; no operator is applied to a judge's source, to its prompt
+text, or to the kill detector, and the similarity threshold is calibrated rather than
+mutated. Two of their three models are closed-source, so for most of their configurations
+there is no checking code available to mutate in the first place. Two further differences
+matter for what each instrument can say. Their failure mode is judge sensitivity, whether a
+model notices a defect it did in fact look at; a silent judge simply leaves the mutant alive
+and pays for it in kill ratio. Mine is a path that returns acceptance without examining
+anything, which has no analogue in their setting. And their kill decision is a calibrated
+embedding threshold whose transferability across models they name as a threat to validity,
+where the predicate in Section~\ref{sec:method} is exact and machine-decidable, which is the
+ordinary situation for a mutation tool scored by a unit suite rather than an achievement of
+this paper. That is a difference in what the two instruments can claim, not a ranking of the
+two papers.
+
+\paragraph{A green suite that keeps shipping defects.} Bilal and Mughal report a production
+rental-search assistant whose suite reached 1,553 test cases in six weeks, passed
+continuously, and kept shipping user-facing defects \citep{bilal2026allgreen}. They classify
+all 252 bug-fix commits by the boundary, or seam, each defect escaped through, and find 110
+of them, 44\%, in four seams no component-level test observes: the live browser runtime, the
+non-default market, the end-to-end flow, and the whole-system level. Their mechanism is
+substitution. Wherever a component test needs determinism, it replaces the side of the
+boundary it cannot control with a fixed stand-in, and the seam then goes unobserved
+entirely, so the count of such tests can rise without limit while the set of conditions the
+suite ever meets stays where it was. That is the conclusion of Section~\ref{sec:whymissed}
+reached in another domain, and reached two months before I reached it.
+
+The mechanism differs, and the difference is worth keeping. Their blindness always sits at a
+boundary where a stand-in took the place of something uncontrolled, and all four of their
+seams are boundaries. The vacuous pass in Section~\ref{sec:vacuous1000} has no boundary in
+it: the comparison runs to completion, inside one function, over an artifact with nothing in
+it. What is shared is the conclusion, that adding tests inside the substituted world does
+not move what gets observed.
+
+One of their incidents is closer still. A quoting error in a client-side component broke a
+form step, was visible only in a running browser, and shipped twice: the guard left behind by
+the first fix lived in ``the same browser-blind harness that had missed the defect''
+\citep{bilal2026allgreen}, so it could not see the repeat. That is an external instance of
+the null result in Section~\ref{sec:rq2}, reported independently, on a system I did not
+write. They also record that 107 of 252 fixes touched a test file, and treat that as an
+upper bound on real regression guards, since a fix that edits a test file has not thereby
+acquired a test that would catch its own defect again. That is the proxy the kill predicate
+here exists to replace. Their evidence is broader than mine and shallower. It is
+observational: they inject no faults, and by their own statement they count the defects they
+found, so silent escapes are not measured. Nothing in their design can report what fraction
+of their checks are inert. Nothing in mine generalises past one verifier.
+
+\paragraph{What the three take, and what they leave.} Together they remove three things an
+earlier draft of this paper was implicitly claiming. Using mutation to grade a grader is
+occupied, at 20,303 mutants in one case and 3,282 judgments in another. Reading surviving
+mutants as blind spots in the checker, and warning that easy mutants inflate the aggregate,
+belongs to the mutation-testing literature, and to Delcourt et al.\ in this setting, before
+it belongs to me. And a large continuously green suite that keeps shipping defects because
+of what its checks observe rather than how many there are is Bilal and Mughal's reported
+observation, not this paper's discovery. What none of the three does is modify a line of the
+checker's own source: MASC and Delcourt et al.\ mutate the input, and Bilal and Mughal
+inject nothing at all. None of the three reports its own measuring apparatus returning a
+passing verdict along a path where it performed no comparison, which is the material in
+Section~\ref{sec:instruments}, although MASC reports exactly that of the detectors it was
+measuring. Section~\ref{sec:related-unclaimed} states what that leaves.
 
 \subsection{Supply-chain attestation and verifier soundness}
 
@@ -462,20 +622,40 @@ carelessness.
 After all of that, the honest residue is narrower than the earlier draft implied. Statement
 deletion is Untch's. Extreme mutation is Niedermayr's, and its statement-granularity form is
 Maton's. Deleting the statement that signals rejection is Kumar's. Mutating a checker to
-grade it is muSE's and Chen and Furia's. The green-baseline precondition in
+grade it is muSE's, MASC's and Chen and Furia's, and as of August 2026 it is also Delcourt
+et al.'s in the semantic-judge setting \citep{delcourt2026judge}. Reporting that a large
+continuously green suite keeps shipping defects because of what its checks observe is Bilal
+and Mughal's \citep{bilal2026allgreen}. The green-baseline precondition in
 Section~\ref{sec:gate} is long-standing default behaviour in PIT, the most widely used Java
 mutation engine, which validates baseline suite state before running
 \citep{pitest_faq}; my version of that rule is a rediscovery of standard tooling practice,
 and saying so costs nothing.
 
-What remains unclaimed by prior work, as far as I can establish, is the combination of three
-things: the \emph{site selection} (refusal statements that are the sole point of rejection
-for one class of bad input), the \emph{subject} (an evidence verifier's own acceptance
-logic, whose verdict is published), and the \emph{detector} (a unit suite plus a committed
-corpus of tampered bundles, so a mutant can be caught by a test or by a fixture ceasing to
-be refused, and the two can be scored separately). The third of these is what produced the
-paper's least comfortable number: scored on its own, the corpus written to prove the
-verifier can refuse catches 10 of 112 (Section~\ref{sec:rq1}).
+What remains unclaimed by prior work, as far as I can establish, is the combination of two
+things. The \emph{site selection}: refusal statements enumerated as a population, each the
+sole point of rejection for one class of bad input, so that the denominator of the score is
+the checker's own refusals rather than an arbitrary set of program points. And the
+\emph{subject}: not the artifact the checker reads, which is what MASC and Delcourt et al.\
+mutate, but the checker's own acceptance logic, whose verdict is published. Each of the two
+is a specialisation of something already published, and the combination is narrow.
+
+The two-detector kill predicate is not a third novelty, and an earlier draft of this section
+implied that it was. Deciding a kill by exact, machine-checkable suite state is the ordinary
+arrangement in conventional mutation testing; it looks distinctive here only against two
+comparators that could not have had it, one grading language models by embedding similarity
+and the other triaging its unkilled mutants by hand. What the predicate buys is not novelty
+but decomposition. Because the corpus disjunct can be scored with the unit-suite disjunct
+removed, the corpus written to prove the verifier can refuse can be asked what it catches on
+its own, which is 10 of 112 (Section~\ref{sec:rq1}), the paper's least comfortable number.
+MASC reports the same shape of result from the other side of the pipeline, attributing 45 of
+76 crypto-detector flaws to mutation and only 31 of 76 to literal base instantiations of the
+same misuse cases \citep{ami2022masc}. The partition differs: theirs is between two stimulus
+sets against one detector, mine between two detectors over one mutant population, so my
+number scores a standing regression asset rather than a baseline for the mutants. The
+direction of the finding is the same in both, and it was theirs first.
+
+Read strictly, then, this is a case study carrying a specialised instrument rather than a new
+method, and the contributions in Section~\ref{sec:intro} are worded to say so.
 
 \section{Four forgeries against the hardened verifier}
 \label{sec:forgeries}
@@ -1263,19 +1443,25 @@ same hazard the third operational rule above names.
 \section{Scope of claims}
 \label{sec:scope}
 
-Five things, and nothing broader.
+Six things, and nothing broader.
 
 \begin{enumerate}
 \item A reproducible case study of five fail-open and vacuous-pass classes in an offline
 evidence-bundle verifier, each with a working forgery: four found against the hardened
 verifier (Section~\ref{sec:forgeries}) and one, the \texttt{null}-artifact forgery, reported
 by the external audit against the pre-hardening version (Section~\ref{sec:audit}).
-\item A refusal-site deletion mutation operator and a liveness workflow for applying it,
-including the validity gate that makes the measurement trustworthy. The operator family is
-prior art (Section~\ref{sec:related-unclaimed}); the site selection, the subject, and the
-two-detector kill predicate are what is offered.
+\item A refusal-site liveness instrument: the deletion operator, the enumerated refusal-site
+denominator, the deterministic two-detector kill predicate, the exclusion set, and the
+validity gate. The operator family, the practice of grading a checker by mutation, and the
+green-baseline precondition are all prior art (Sections~\ref{sec:related-neighbours}
+and~\ref{sec:related-unclaimed}); the site selection and the subject are what is offered,
+and the kill predicate is what makes the measurement decomposable rather than what makes it
+new.
 \item An empirical before-and-after on \emph{one} real verifier, comparing discovered-bug
 regression testing against systematic refusal-site liveness testing.
+\item A separately scored detector result: the committed tamper corpus catches 10 of 112
+refusal sites on its own, against a structural ceiling of $16/112$
+(Section~\ref{sec:rq1}).
 \item A finding-shaped \emph{hypothesis} that human-readable evidence artifacts remain
 unbound while machine-readable ones are verified (Section~\ref{sec:closure}), untested
 outside this codebase.
@@ -1284,7 +1470,10 @@ outside this codebase.
 \end{enumerate}
 
 It does not claim a general result about post-audit engineering practice, about verification
-systems broadly, or that this methodology transfers.
+systems broadly, or that this methodology transfers. It does not claim that pointing a
+mutation tool at a checker is new, that reading surviving mutants as blind spots in a checker
+is new, or that a continuously green suite shipping defects is a new observation.
+Section~\ref{sec:related-neighbours} names who reported each.
 
 \textbf{Every number here is self-measured on a system I wrote.} The verifier, the tests, the
 mutation operator, the exclusion set, and this paper are all mine. The registry it verifies is
@@ -1520,6 +1709,16 @@ on the evidence of Section~\ref{sec:instruments}, some I have not yet detected.
 The verifier, the specification, the mutation sweep, the fixture corpus, the registry, and the
 archived sweep outputs are public under the MIT licence at
 \url{https://github.com/egnaro9/vac-protocol}.
+
+The state of that repository at the time of writing is archived and citable:
+\textbf{DOI \href{https://doi.org/10.5281/zenodo.22000911}{10.5281/zenodo.22000911}}, which
+resolves to the most recent archived release. Release \texttt{v0.1.0}, deposited 2026-08-18 and
+built from commit \texttt{11291be}, carries its own version DOI
+\href{https://doi.org/10.5281/zenodo.22000912}{10.5281/zenodo.22000912}. Cite the version DOI
+to pin a number in this paper to the exact code that produced it; the concept DOI is for the
+project rather than for a result. Every quantitative claim here names a commit for the same
+reason: a result belongs to the code that produced it, not to whatever \texttt{main} holds
+later.
 
 \paragraph{Commits.} Check out \texttt{92e4548} for every present-day figure in this paper.
 The pre-fix baseline for Section~\ref{sec:forgeries} and the 0.330 measurement is
