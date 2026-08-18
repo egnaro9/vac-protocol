@@ -14,6 +14,19 @@ vacuous-pass class the verifier exists to refuse. So: prove the instrument can
 report BOTH outcomes before believing either.
 
   python tools/mutation_sweep.py [--floor 0.99] [--json out.json]
+
+`--detector` chooses which of the three may report. The default `all` is the
+scored path and the one the CI floor is set against: it is first-detector-wins
+in the order tests, liveness, fixtures, so a mutant the unit suite catches
+never reaches the fixture corpus. That makes `all` a measurement of what the
+corpus adds ON TOP of the suite, which for a suite that pins every fixture's
+exact verdict is zero by construction. To ask what a detector catches BY
+ITSELF, name it; a mutant then counts as caught only if that one fires:
+
+  python tools/mutation_sweep.py --detector fixtures
+
+For the same standalone-corpus measurement at commit f59fb62, where this file
+does not yet exist, see tools/fixture_corpus_score.py.
 """
 from __future__ import annotations
 
@@ -44,6 +57,17 @@ DESELECT: list[str] = []
 # why the refusal cannot be reached). The count is explicit so that a fragment
 # silently matching more or fewer lines than intended aborts the run instead of
 # quietly resizing the denominator in either direction.
+# The expected size of the refusal-site population, pinned for the same reason
+# EXCLUDE pins its arity. `--floor` constrains a RATIO, so a behaviour-preserving
+# refactor that merges refusal sites into a helper leaves the suite green, does
+# not trip the EXCLUDE arity check, and shrinks the denominator underneath the
+# floor. Moving four stamp-mismatch appends into one helper takes the raw count
+# from 146 to 143 and the scored population from 143 to 140, and nothing in the
+# run would say so. Update this deliberately, in the commit that changes the
+# population, or pass --expect-sites to override it for a one-off measurement.
+EXPECT_RAW_SITES = 146      # lines matching REFUSAL in vac/verify.py at 92e4548
+EXPECT_SCORED_SITES = 143   # the above minus EXCLUDE
+
 EXCLUDE: dict[str, tuple[int, str]] = {
     "{md_rel}: {e}": (1,
         "OSError wrapper on reading RESULTS.md. To reach the check at all the "
@@ -65,17 +89,27 @@ def _run(args: list[str], timeout: int = 300) -> int:
                           cwd=REPO, timeout=timeout).returncode
 
 
-def observe() -> tuple[bool, str]:
-    """(noticed, how) for the tree as it currently stands."""
-    deselect = [x for t in DESELECT for x in ("--deselect", t)]
-    if _run([sys.executable, "-m", "pytest", "tests/", "-q", "-x",
-             "--no-header", "-p", "no:cacheprovider"] + deselect):
-        return True, "tests"
-    if _run([sys.executable, "-m", "vac.verify", "fixtures/valid"]):
-        return True, "control-broke"
-    for d in sorted((REPO / "fixtures").glob("tamper-*")):
-        if _run([sys.executable, "-m", "vac.verify", str(d)]) != 1:
-            return True, f"sweep:{d.name}"
+def observe(detector: str = "all") -> tuple[bool, str]:
+    """(noticed, how) for the tree as it currently stands.
+
+    `detector` restricts which disjuncts may report. "all" preserves the
+    historical first-detector-wins order below and is the scored path. Naming
+    a single detector runs only that one, so a mutant counts as caught only
+    if that detector fires: the marginal-vs-standalone distinction the score
+    otherwise hides.
+    """
+    if detector in ("all", "tests"):
+        deselect = [x for t in DESELECT for x in ("--deselect", t)]
+        if _run([sys.executable, "-m", "pytest", "tests/", "-q", "-x",
+                 "--no-header", "-p", "no:cacheprovider"] + deselect):
+            return True, "tests"
+    if detector in ("all", "liveness"):
+        if _run([sys.executable, "-m", "vac.verify", "fixtures/valid"]):
+            return True, "control-broke"
+    if detector in ("all", "fixtures"):
+        for d in sorted((REPO / "fixtures").glob("tamper-*")):
+            if _run([sys.executable, "-m", "vac.verify", str(d)]) != 1:
+                return True, f"sweep:{d.name}"
     return False, "SURVIVED"
 
 
@@ -93,7 +127,17 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--floor", type=float, default=None,
                     help="fail if the score drops below this")
+    ap.add_argument("--expect-sites", type=int, metavar="RAW",
+                    help="expected count of REFUSAL-matching lines; overrides "
+                         "EXPECT_RAW_SITES for a measurement at another "
+                         "revision. The scored population is this minus the "
+                         "EXCLUDE hits.")
     ap.add_argument("--json", type=pathlib.Path)
+    ap.add_argument("--detector", default="all",
+                    choices=("all", "tests", "fixtures", "liveness"),
+                    help="which detector may report a catch. 'all' (default) "
+                         "is first-detector-wins and is the scored path; a "
+                         "single name scores that detector on its own")
     a = ap.parse_args()
 
     orig = SRC.read_text(encoding="utf-8")
@@ -112,9 +156,26 @@ def main() -> int:
                 "the denominator; one matching more shrinks it. Either is a "
                 "silently wrong score.", file=sys.stderr)
         return 2
+    raw_n = len(sites)
     sites = [i for i in sites if i not in excluded]
 
-    noticed, how = observe()
+    want_raw = a.expect_sites if a.expect_sites is not None else EXPECT_RAW_SITES
+    want_scored = want_raw - len(excluded)
+    if (raw_n, len(sites)) != (want_raw, want_scored):
+        print(f"ABORT: refusal-site population is {raw_n} raw / {len(sites)} "
+              f"scored; expected {want_raw} / {want_scored}. The floor "
+              "constrains a ratio, so a population that moves without anyone "
+              "deciding it should is a denominator change wearing a passing "
+              "score. Update EXPECT_RAW_SITES in the same commit that changes "
+              "the population, or pass --expect-sites for a one-off run at "
+              "another revision.", file=sys.stderr)
+        return 2
+
+    if a.detector != "all":
+        print(f"detector: {a.detector} alone. A mutant counts as caught only "
+              "if this detector fires; the others are not run. This is not "
+              "the scored path and the CI floor does not apply to it.")
+    noticed, how = observe(a.detector)
     if noticed:
         print(f"ABORT: baseline is not clean ({how}). A mutation score against "
               "a red baseline measures nothing.", file=sys.stderr)
@@ -131,7 +192,7 @@ def main() -> int:
                                    + [f"{indent}pass  # MUTANT\n"]
                                    + lines[b0 + 1:]), encoding="utf-8")
             try:
-                caught, why = observe()
+                caught, why = observe(a.detector)
             except subprocess.TimeoutExpired:
                 caught, why = True, "timeout"
             m = re.search(r'"([a-z-]+):', lines[a0])
@@ -153,9 +214,11 @@ def main() -> int:
         for r in surv:
             print(f"  vac/verify.py:{r['line']}  {r['reason']}")
     if a.json:
-        a.json.write_text(json.dumps(
-            {"score": round(score, 4), "caught": k, "total": len(results),
-             "results": results}, indent=1))
+        payload = {"score": round(score, 4), "caught": k,
+                   "total": len(results), "results": results}
+        if a.detector != "all":
+            payload["detector"] = a.detector
+        a.json.write_text(json.dumps(payload, indent=1))
     if a.floor is not None and score < a.floor:
         print(f"\nFAIL: {score:.3f} is below the floor {a.floor:.3f}",
               file=sys.stderr)
