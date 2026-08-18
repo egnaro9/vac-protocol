@@ -3,10 +3,8 @@
 One VALID miniature bundle — fully synthetic (fictional issuer
 `example/toy-issuer`, fictional subject `toy-agent`), self-contained, and
 carrying one check per evidence profile so the single valid fixture
-exercises every clean path in the verifier — plus sixteen tampered
-variants (fifteen of them the valid bundle with exactly one edit, one the
-scaffolder's own unfinished draft), each tripping exactly one named
-failure class:
+exercises every clean path in the verifier, plus twenty tampered
+variants and one completed attack, every one of them refused at 92e4548:
 
   tamper-missing-artifact       artifact listed in the manifest, file gone
   tamper-wrong-sha256           manifest hash disagrees with the file bytes
@@ -56,6 +54,19 @@ failure class:
   tamper-summary-score          headline mutation score sweetened in
                                 results.summary ONLY, to a number no check
                                 recomputes
+  attack-crashkit-severity      the completed severity forgery: the same
+                                re-casing tamper-crashkit-severity makes,
+                                carried through to every number it moves.
+                                metrics.vulnerability_score, the
+                                crashkit-battery-v1 check's expect block,
+                                and results.summary.crash_vulnerability
+                                all declare the 0.0 that re-cased weights
+                                divide to, and evidence/eval_run.json is
+                                re-pinned honestly. The partial tamper is
+                                caught by ordinary arithmetic at any
+                                revision; this one verifies CLEAN at
+                                f59fb62 and is refused at 92e4548 only
+                                because the labels themselves are read
   tamper-draft-incomplete       vac.draft's own output over the valid
                                 bundle's artifacts: mechanical fields
                                 (hashes, issuer, commit, clone/checkout)
@@ -877,6 +888,33 @@ def tampered_variants(valid: dict[str, str]) -> dict[str, dict[str, str]]:
         if e["path"] == art:
             e["sha256"] = _sha(files[art])
     out["tamper-crashkit-severity"] = {**files, "vac.json": _j(m)}
+
+    # the SAME re-casing, carried through to the numbers it produces: the
+    # partial tamper above leaves vulnerability_score declared at the honest
+    # 0.4545, which the ordinary raw-aggregate comparison catches without
+    # ever inspecting a severity label. Declaring the 0.0 that the re-cased
+    # weights actually divide to, in all three places the bundle carries it
+    # (the artifact metric, the check's expect block, and the headline), and
+    # re-pinning the artifact honestly, leaves a bundle that is internally
+    # coherent under any weight table that absorbs unknown labels. Nothing
+    # but reading the labels themselves refuses it.
+    files = dict(valid)
+    art = "evidence/eval_run.json"
+    run = json.loads(files[art])
+    for c in run["cases"]:
+        if c.get("passed") is False and isinstance(c.get("severity"), str):
+            c["severity"] = c["severity"].capitalize()
+    run["metrics"]["vulnerability_score"] = 0.0
+    files[art] = _j(run)
+    m = json.loads(files["vac.json"])
+    m["results"]["summary"]["crash_vulnerability"] = 0.0
+    for c in m["results"]["checks"]:
+        if c.get("profile") == "crashkit-battery-v1":
+            c["expect"]["vulnerability_score"] = 0.0
+    for e in m["evidence"]:                       # honest re-pin
+        if e["path"] == art:
+            e["sha256"] = _sha(files[art])
+    out["attack-crashkit-severity"] = {**files, "vac.json": _j(m)}
 
     # delete the stamps instead of faking them: every comparison is guarded on
     # the artifact-side key existing, so absence skipped all of them
