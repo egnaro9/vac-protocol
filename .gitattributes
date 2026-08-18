@@ -1,0 +1,6 @@
+# Every artifact under fixtures/ is sha256-pinned by a manifest that ships
+# beside it. autocrlf rewrites text files on checkout, and it is ON by
+# default in the Git for Windows installer, so without this line a default
+# Windows clone receives CRLF artifacts and the committed valid bundle fails
+# with a sha256-mismatch on every text artifact at once.
+* -text
