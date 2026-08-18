@@ -53,7 +53,8 @@ with no refusal site. Scored alone, the sixteen-fixture corpus built to prove
 the verifier can refuse catches 10. Testing
 the refusals themselves took it to 0.941, then to 1.000 at \texttt{92e4548} over a grown
 population of 146 sites; those denominators differ and the series between them is non-monotone, so
-Table~\ref{tab:ladder} carries all eleven, not the rising five. Fixing the four
+Section~\ref{sec:liveness-tests} carries all eleven, not just the five rows of
+Table~\ref{tab:ladder}. Fixing the four
 found defects instead moved 37/112 to 39/119, leaving the pre-existing sites at 37.
 
 Seven times during this study my own measuring tools reported success while measuring
@@ -135,9 +136,10 @@ on its own, against a structural ceiling of $16/112$ that no amount of care in w
 sixteen fixtures could beat (Section~\ref{sec:rq1}). MASC reports the same shape of result
 from the other side of the pipeline, and Section~\ref{sec:related-unclaimed} sets out how
 the two partitions differ.
-\item A finding-shaped hypothesis, untested outside this codebase, that human-readable
-evidence artifacts remain unbound while machine-readable ones are verified
-(Section~\ref{sec:closure}).
+\item A finding-shaped hypothesis, untested outside this codebase, that an evidence artifact
+emitted as a report is systematically underbound relative to one consumed as a check's input
+(Section~\ref{sec:closure}). The narrower form, keyed to whether the artifact is human-readable,
+is refuted there by this paper's own data at $n=4$.
 \item Seven documented cases in which the measuring instruments reported success while
 measuring nothing (Section~\ref{sec:instruments}), including one that returned a perfect
 score. None of the three closest neighbouring papers reports an instrument of its own
@@ -193,8 +195,11 @@ was actually applied.
 \subsection{The external audit and the hardening baseline}
 \label{sec:audit}
 
-Giulio D'Erme, author of \texttt{cca-audit}, ran a deep audit after I posted an open replay
-request, and filed two pull requests.
+Giulio D'Erme, author of \texttt{cca-audit}
+(\url{https://github.com/GiulioDER/cca-audit}), ran a deep audit after I posted an open
+replay request. Four pull requests came out of it. Two are analysed here, \#1 and \#2; the
+other two arrived after the measurements in this paper were taken and are recorded at the
+end of this section.
 
 His central finding: a bundle declaring \texttt{summary.verdicts: 9999} while the artifact
 held 3, with \texttt{evidence/bundle.json} replaced by the four bytes \texttt{null} and its
@@ -204,8 +209,8 @@ passed. This is the textbook vacuity example transposed into a verifier: every r
 eventually acknowledged, in an environment that never generates requests
 \citep{simmonds2010vacuity}.
 
-He filed five distinct forgery paths in total, plus path traversal on an untested Python
-window. His second pull request found something worse in kind: no \texttt{encoding=} on
+That first pull request filed five distinct forgery paths, plus path traversal on an
+untested Python window. His second pull request found something worse in kind: no \texttt{encoding=} on
 \texttt{read\_text} and \texttt{write\_text}, so the same bytes produced opposite verdicts
 on a cp1252 host and a UTF-8 host. That is fatal for a protocol whose entire premise is that
 a stranger gets my answer offline, and it is a bit-for-bit reproducibility failure of
@@ -220,14 +225,60 @@ experience reading someone's spec'' \citep{derme2026pr1}.\footnote{An earlier dr
 as ``documentation that refutes an auditor is rarer than the bugs'' and attributed the
 sentence to him. He did not write it; it is my compression of what he wrote, and the
 misattribution is corrected here rather than quietly dropped.} Second, my
-\texttt{RESULTS.md} byte-identity check caught mojibake in his own audit output mid-review.
-The instrument worked on the auditor. That second exchange is not in the pull request
-record, so unlike everything else in this section it cannot be checked against GitHub; it
-is a first-person report and is marked as one.
+\texttt{RESULTS.md} byte-identity check caught mojibake in an auditor's output mid-review.
+The instrument worked on the reviewer. That exchange happened in correspondence rather than
+in the pull request record, so unlike every other claim in this section it rests on no
+public artifact; it is a first-person report, it is marked as one, and it is left
+unattributed for that reason.
 
 Everything in Section~\ref{sec:forgeries} runs against \texttt{main} at \texttt{f59fb62},
 \emph{after} that soundness fix. That is what makes the four findings interesting rather
 than routine: they survived an external audit and its remediation.
+
+The audit did not stop with those two pull requests, and this record should not either. On
+18 August 2026, after the hardening described above and after every present-day figure in
+this paper was measured, the same auditor filed two more. Pull request \#9
+(\url{https://github.com/egnaro9/vac-protocol/pull/9}) reports that a default Git for
+Windows clone rewrites the repository's text artifacts to CRLF, so the sha256 pins in an
+honest bundle stop matching; it changes only \texttt{.gitattributes} and a test, and it is
+merged at \texttt{81f50cf}, after the commit the figures below are pinned to. Pull request
+\#8 (\url{https://github.com/egnaro9/vac-protocol/pull/8}) is the one that belongs to this
+paper's class, and it is open.
+
+Its second case, E2 in that pull request's own table of reproductions, is a fifth vacuous
+pass against the hardened verifier: the four of
+Section~\ref{sec:forgeries} plus this one, found after them. It is deliberately not folded
+into the five classes this paper claims (Section~\ref{sec:scope}, item 1), which are those
+four plus the auditor's \texttt{null}-artifact case against the pre-hardening version.
+Replace a covered artifact with a symlink whose target sits outside the bundle, and the
+verifier exits 0 and prints \texttt{structural verification: PASS}, banner clause
+\texttt{bundle closure} included. The bytes hash identically because they are the same
+bytes; they simply live somewhere else on the verifying host. I reproduced it at
+\texttt{92e4548}, the commit this paper's present-day figures are measured at, with controls
+in both directions: an unlisted file placed directly in the bundle is refused
+(\texttt{unlisted-file}), one byte appended to a covered artifact is refused
+(\texttt{sha256-mismatch}), the symlinked artifact passes, and removing the out-of-bundle
+target turns the same bundle into \texttt{missing-artifact}. That last control is why it is
+recorded as a vacuous pass and not as a fifth forgery: it is host-dependent, and a stranger
+replaying the bundle without the target file present gets a refusal, so the four of the
+title stand. The mechanism is one line, \texttt{vac/verify.py:224} at \texttt{92e4548}: the
+closure scan is \texttt{rglob} filtered by \texttt{is\_file()}, and \texttt{rglob} does not
+descend a symlinked directory while \texttt{is\_file()} follows a symlinked file. The pull
+request's first case is the other half of that same line: an unlisted file placed inside a
+symlinked subdirectory is never seen at all, and the run exits 0 naming nothing, where the
+same file placed directly in the bundle is refused.
+
+That pull request is open and is deliberately not landed before this paper. Its own commit
+adds two refusal statements to \texttt{vac/verify.py}, which moves the population every
+number in Section~\ref{sec:results} is scored against: 146 raw refusal sites at
+\texttt{92e4548}, 153 at the pull request's parent, which is \#2, and 155 at its own head.
+Landing
+it would invalidate the figures rather than update them, so it is recorded here as an open
+finding against the fixed verifier and left for the next measurement round. A check that
+prints \texttt{bundle closure} while reading evidence from outside the bundle is the same
+shape as everything in Section~\ref{sec:forgeries}, which is the point worth stating
+plainly: the class kept being findable after I started writing about it, and the person who
+found it again was the auditor, not the author.
 
 \section{The class: a check that cannot fail}
 \label{sec:class}
@@ -626,7 +677,7 @@ grade it is muSE's, MASC's and Chen and Furia's, and as of August 2026 it is als
 et al.'s in the semantic-judge setting \citep{delcourt2026judge}. Reporting that a large
 continuously green suite keeps shipping defects because of what its checks observe is Bilal
 and Mughal's \citep{bilal2026allgreen}. The green-baseline precondition in
-Section~\ref{sec:gate} is long-standing default behaviour in PIT, the most widely used Java
+Section~\ref{sec:gate} is long-standing default behaviour in PIT, a widely used Java
 mutation engine, which validates baseline suite state before running
 \citep{pitest_faq}; my version of that rule is a rediscovery of standard tooling practice,
 and saying so costs nothing.
@@ -782,9 +833,15 @@ KEYS DELETED (same fields, removed; sha256 re-pinned honestly)
              protocol.hashes still declares all 7 pins
 \end{Verbatim}
 
-The check is demonstrably alive and fires on corruption. It is blind to absence. Two other
-profiles (\texttt{verify.py:639} and \texttt{verify.py:1000} at \texttt{f59fb62}) fail closed
-on exactly this case, so the behaviour is an asymmetry rather than a design decision. It is
+The check is demonstrably alive and fires on corruption. It is blind to absence. Another
+profile fails closed on exactly this case one branch along: \texttt{verify.py:642} at
+\texttt{f59fb62} compares the pinned hash against the artifact's \texttt{git\_sha} directly, so
+a deleted key compares unequal and is refused by name rather than skipped. The behaviour is
+therefore an asymmetry rather than a design decision. Two nearby comparisons that look like
+counterexamples are not: \texttt{verify.py:639} guards the \emph{protocol} operand, firing when
+the key is absent from \texttt{protocol.hashes}, which is the reverse of this forgery, and the
+modeldrift stamp check at \texttt{verify.py:1000} compares against a recomputed fingerprint, so
+its artifact operand cannot be deleted at all. It is
 CWE-754 in its adversarial reading: the programmer assumed a condition would not occur, and
 the party who decides whether it occurs is the issuer \citep{cwe754}.
 
@@ -885,7 +942,11 @@ exclusion set, which is why the composition is restated here rather than referen
 The sweep aborts unless the unmutated baseline is green. This is a precondition of the
 measurement, not a convenience, and Section~\ref{sec:vacuous1000} is the incident that
 bought it. It is also standard: PIT validates baseline suite state before running mutation
-analysis and refuses otherwise \citep{pitest_faq}.
+analysis \citep{pitest_faq} and refuses outright when it is red. That refusal is not on the
+cited FAQ page, which lists only causes of a green-locally, red-under-PIT discrepancy; it is
+in the source, where \texttt{DefaultCoverageGenerator} throws
+\texttt{PitHelpError(Help.FAILING\_TESTS)}, whose message reads ``Mutation testing requires a
+green suite'', with \texttt{skipFailingTests} defaulting to \texttt{false}.
 
 The gate covers two things and not a third, and the gap is worth naming because it is the
 same shape as everything else here. It covers baseline greenness, and it covers exclusion
@@ -900,7 +961,10 @@ aborts, and moves the enumeration from 146 raw sites to 143, a denominator of 14
 143. Four distinct refusal obligations now share one site whose deletion breaks all four, so
 that site is trivially killed: real coverage falls while the score rises. CI's
 \texttt{-{}-floor 0.99} is a floor on the ratio and would not notice. Pinning an expected site
-count the way \texttt{EXCLUDE} pins its arity is the obvious fix and is not done
+count the way \texttt{EXCLUDE} pins its arity is the obvious fix. This paragraph describes
+\texttt{92e4548}, where it was not done; the pin landed afterwards at \texttt{e932868}, and run
+against that revision the same refactor aborts the sweep with exit 2, reporting 143 raw sites
+and 140 scored where 146 and 143 are declared, instead of scoring the smaller denominator
 (Section~\ref{sec:fixes-open}).
 
 \section{Results}
@@ -1031,7 +1095,9 @@ work. The mutation run is unsupervised and cheap: at \texttt{92e4548} the 143-mu
 completed in 5 minutes 46 seconds on an Apple M4 (measured once, 2026-08-18, on a clean copy of
 that commit). The duration of the original 112-mutant run was not archived, and an
 earlier draft's ``eleven minutes'' is not reproducible; it is dropped rather than restated.
-What the run added beyond the four categories was 71 further places to look.
+What the run added beyond the four categories was 72 further places to look: of the 75
+survivors, three are the refusals that three of the four hand-found forgeries make
+unreachable, and the fourth subtracts nothing, because no refusal site existed for it.
 
 \subsection{RQ2: what bug-specific hardening bought}
 \label{sec:rq2}
@@ -1056,8 +1122,8 @@ An earlier draft hedged that ``much of'' the decline was denominator growth. The
 sweeps decompose exactly, and the exact statement is stronger than the hedge. The unit
 suite caught 37 mutants before and 37 after; the two additional catches after are both by
 new fixtures (\texttt{tamper-summary-string} and \texttt{tamper-check-deleted}). Caught
-counts per refusal class are identical in every class except the two that gained a site,
-and in both of those the gain is a newly added site. So \textbf{the effect of the four
+counts per refusal class are identical in every class except the two that gained a catch,
+and in both of those the catch falls on a newly added site. So \textbf{the effect of the four
 fixes on the 112 pre-existing sites is exactly zero}: that population scores $37/112$ both
 before and after. The whole of the movement is the seven new sites, which were themselves
 covered at $2/7$, a rate no better than the code being fixed.
@@ -1146,10 +1212,12 @@ after covering the remainder      & \texttt{92e4548} & 146 (3) & 143 & 1.000 & 2
 \end{table}
 
 \paragraph{The full record, including the parts the table smooths.} Table~\ref{tab:ladder}
-shows five rows that rise monotonically. The repository holds twelve archived sweeps, and
-they do not. In commit order the measured scores are 0.330, 0.328, 0.941, 0.957, 0.960,
-0.954, 0.947, 0.992, 1.000, 0.972 and 1.000. The score fell three times: $0.960 \rightarrow
-0.954 \rightarrow 0.947$, and $1.000 \rightarrow 0.972$ when a new profile added twelve
+shows five rows: one fall and then three clean rises. The repository holds twelve archived
+sweeps, two of which record the same $39/119$, so eleven values, and they fall three more
+times. In commit order the measured scores are 0.330, 0.328, 0.941, 0.957, 0.960,
+0.953, 0.947, 0.992, 1.000, 0.972 and 1.000. The score fell four times: $0.330 \rightarrow
+0.328$ when the four bug fixes added seven sites, $0.960 \rightarrow
+0.953 \rightarrow 0.947$, and $1.000 \rightarrow 0.972$ when a new profile added twelve
 refusal sites. In every one of those falls the numerator rose or held (the sequence of
 caught counts, 37, 39, 112, 112, 120, 123, 126, 130, 131, 139, 143, never decreases); what
 moved was the denominator. Nothing ever stopped being caught. New gates arrived untested.
@@ -1157,7 +1225,7 @@ moved was the denominator. Nothing ever stopped being caught. New gates arrived 
 That is the RQ2 phenomenon recurring \emph{after} the RQ3 intervention, and it is the
 strongest argument in this paper for making the sweep a standing CI floor rather than a
 one-time measurement: a codebase that adds refusals adds them uncovered by default, and the
-score decays unless something asks. Reporting only the five rising rows would have made a
+score decays unless something asks. Reporting only the table's five rows would have made a
 sawtooth look like a ramp, which is a presentation choice this paper in particular cannot
 afford.
 
@@ -1375,8 +1443,12 @@ siblings to \texttt{\_issuers/<repo>/vac}, but the three consumers
 append \texttt{/vac} themselves, so the value resolves to
 \texttt{\_issuers/<repo>/vac/vac}. That directory does not exist in any of the three issuer
 repositories, whose bundle manifest sits at \texttt{<repo>/vac/vac.json}. Each
-\texttt{skipif} therefore fires and the fourteen issuer-gated tests skip inside the very job
-that checked the repositories out. Nothing in the log gives it away, which is the point: the
+\texttt{skipif} therefore fires and the six tests gated on those three variables skip inside
+the very job that checked the repositories out. The other eight issuer-gated tests skip for an
+unrelated reason: \texttt{VAC\_CERTLAB\_CHECKOUT} and \texttt{VAC\_FLEET\_CHECKOUT} are never
+set by the workflow at all, so agent-certlab's seven registry entries and reference-fleet's one
+were never in reach. Two independent causes, one silent zero, and the totals hide the seam.
+Nothing in the log gives it away, which is the point: the
 \texttt{refusal-coverage} job emits no pytest tally at all, because the sweep captures
 pytest's output and prints only its own lines. What does give it away is that the job's score
 at \texttt{92e4548} is $143/143$, identical to a sweep run with the variables unset. An
@@ -1462,9 +1534,9 @@ regression testing against systematic refusal-site liveness testing.
 \item A separately scored detector result: the committed tamper corpus catches 10 of 112
 refusal sites on its own, against a structural ceiling of $16/112$
 (Section~\ref{sec:rq1}).
-\item A finding-shaped \emph{hypothesis} that human-readable evidence artifacts remain
-unbound while machine-readable ones are verified (Section~\ref{sec:closure}), untested
-outside this codebase.
+\item A finding-shaped \emph{hypothesis} that an evidence artifact emitted as a report is
+systematically underbound relative to one consumed as a check's input
+(Section~\ref{sec:closure}), untested outside this codebase.
 \item A record of seven instrument failures during the study
 (Section~\ref{sec:instruments}).
 \end{enumerate}
@@ -1497,6 +1569,16 @@ operator over an enumerated set of refusal sites}, in the adequacy sense of
 \citet{zhu1997adequacy}, and 1.000 means that obligation is discharged, not that the verifier
 is correct. \citet{just2014mutants} bound the substitution from the other side: 17\% of real
 faults are coupled to no mutant generated by common operators at all.
+
+\paragraph{A live counterexample to what 1.000 means.} The strongest evidence that the score
+does not measure correctness arrived while this paper was being written, from outside it. Pull
+request 8 reports a covered artifact replaced by a symlink pointing outside the bundle: the run
+exits 0 and prints \texttt{structural verification: PASS}, because the bytes hash identically,
+they simply live somewhere else on the verifying host. A verifier scoring 1.000 on this paper's
+operator accepts that bundle. The two facts are compatible rather than contradictory, and their
+compatibility is the point: the operator asks whether each refusal that exists can fire, and a
+refusal nobody wrote has no site to delete. Section~\ref{sec:fixes-open} carries it as open.
+The honest reading of 1.000 is that the enumerated obligation is discharged, and nothing more.
 
 \paragraph{The denominator is a source-level proxy.} A refusal site is one \texttt{f.append(}
 statement. That misses rejections expressed as raises, early returns, assertions, or exit-code
@@ -1617,6 +1699,17 @@ documented exclusion set. This bullet appeared as a recommendation in the earlie
 \label{sec:fixes-open}
 
 \begin{itemize}
+\item \textbf{Close the symlink escape, reported after this study closed.} Pull request 8,
+open at the time of writing, reports that a covered artifact replaced by a symlink pointing
+outside the bundle exits 0 and prints \texttt{structural verification: PASS}. The bytes hash
+identically because they are the same bytes; they live somewhere else on the verifying host.
+That is a fifth vacuous pass against the hardened verifier, of the same class as
+Section~\ref{sec:forgeries} and outside the refusal-site population every number in this paper
+is measured over. It is deliberately not landed here: it changes \texttt{vac/verify.py}, and
+therefore the site count, the score, and every figure pinned to \texttt{92e4548}. Landing it
+belongs to the next measurement, not to this one, and saying so is cheaper than a paper whose
+numbers quietly stopped matching its own repository.
+
 \item \textbf{Fix the CI issuer-checkout paths} so the env values do not compose to a doubled
 \texttt{vac/vac} directory, and add a hard assertion that no test skips with the reason
 ``issuer checkout not present'', so a path that silently resolves to nothing fails loudly
@@ -1643,10 +1736,15 @@ own blind spot.
 to a revert. The reverted version built two fixtures with
 \texttt{json.loads('\{"a":' * 3000)}, which raises \texttt{RecursionError} inside the
 \emph{decoder} before the verifier is called, so the tests were green on one interpreter and
-red on another: the same host-dependence class the patch exists to remove. At head
-\texttt{bb4dda36} those tests build their structure in Python instead, and both issuer-data
-traversals are iterative with explicit stacks, so the stated blocker is met by the pull
-request itself. What remains is review and merge. An earlier draft of this paper still
+red on another: the same host-dependence class the patch exists to remove. At
+\texttt{ce462e10}, the head of the pull request on 2026-08-18 and resolvable only through
+\texttt{git fetch origin pull/2/head} because the branch sits on a fork, those tests build
+their structure in Python instead, and both issuer-data traversals are iterative with explicit
+stacks, so the stated blocker is met by the pull request itself. The head carries a date
+because it moved during drafting: the earlier \texttt{bb4dda36}, which this bullet named
+first, still asserted a wall-clock bound on elapsed time, an instance of the same
+host-dependence class; \texttt{ce462e10} drops that assertion and leaves \texttt{vac/}
+byte-identical. What remains is review and merge. An earlier draft of this paper still
 described the blocker as open, having been written against a stale reading of the branch;
 that is instrument failure 4 recurring inside the paper's own outstanding-work list, which is
 why it is corrected here in place rather than dropped.
@@ -1699,9 +1797,12 @@ hitting a refusal I did not anticipate.
 
 \section*{Acknowledgements}
 
-Giulio D'Erme ran the audit that started this. The four findings his review did not reach were
-only findable because his review taught me the shape to look for, and the encoding defect he
-found was one I had no route to discovering alone. Any errors that remain are mine, including,
+Giulio D'Erme ran the audit that started this, in four public pull requests against the
+artifact repository. The four findings his first review did not reach were only findable
+because that review taught me the shape to look for; the encoding defect he found was one I
+had no route to discovering alone; and the symlink case recorded in
+Section~\ref{sec:audit} is his as well, found after the hardening, in the class this paper
+is about. Any errors that remain are mine, including,
 on the evidence of Section~\ref{sec:instruments}, some I have not yet detected.
 
 \section*{Reproducibility and artifacts}
@@ -1724,13 +1825,13 @@ later.
 The pre-fix baseline for Section~\ref{sec:forgeries} and the 0.330 measurement is
 \texttt{f59fb62}. The intermediate ladder rows in Table~\ref{tab:ladder} name their own
 commits. Two line citations in the earlier draft's fix list resolve only at \texttt{27809ce},
-which is noted where they appear. At the time of writing the repository carries no tagged
-release and no archival DOI, so a commit hash is the only durable pin available; the project's
-own \texttt{CITATION.cff} asks readers to cite an archived release, and that release does not
-yet exist. That gap is recorded here rather than papered over.
+which is noted where they appear.
 
 \paragraph{Environment.} Python 3.11 and 3.12 (the versions the project's CI matrix uses).
-Install with \texttt{pip install -e ".[test]"}.
+Install with \texttt{pip install -e ".[test]"}. Clone with \texttt{core.autocrlf} disabled: at
+\texttt{92e4548} the repository carries no \texttt{.gitattributes}, and a checkout that rewrites
+line endings makes the commands below fail, or worse, refuse for the wrong reason. The last
+paragraph of this section records what that costs, because it is not a footnote.
 
 \paragraph{Commands.}
 \begin{Verbatim}[frame=single,fontsize=\small]
@@ -1760,8 +1861,10 @@ with $0.0$ declared in \texttt{metrics.vulnerability\_score}, in
 \texttt{expect} block, and \texttt{evidence/eval\_run.json} re-pinned honestly. It exits 0 at
 \texttt{f59fb62} and exits 1 at \texttt{92e4548} on \texttt{artifact-unparsable}, both
 re-measured on 2026-08-18 against a liveness control that passes at each revision. That fifth
-fixture is in the working tree and not yet committed, so the third row's pre-fix direction
-reaches a reader only once it lands (Section~\ref{sec:fixes-open}).}
+fixture landed at \texttt{b30ea2f}, two commits after \texttt{92e4548}, so it is absent from
+both revisions named here and has to be copied into a checkout of either; from
+\texttt{b30ea2f} onward, including the archived \texttt{v0.1.0}, it is present in a clean
+checkout, with \texttt{vac/} unchanged across that span (Section~\ref{sec:fixes-open}).}
 \label{tab:fixtures}
 \begin{tabular}{lll}
 \toprule
@@ -1784,14 +1887,53 @@ append \texttt{/vac} themselves. With none of them bound the suite runs 238 pass
 4 xfailed; with all five it runs 14 more. Binding only the first three runs 6 more, not 14, and
 nothing in the output says so, which is item 7 of Section~\ref{sec:instruments} in a second
 costume: a checkout variable that resolves to nothing measures a smaller suite quietly. At the
-time of writing two of the issuer bundles fail, and only one of the two is issuer drift.
+time of writing two of the issuer bundles fail, and both are issuer drift.
 \texttt{model-drift} fails identically at \texttt{f59fb62} and at \texttt{92e4548} on the same
 bundle bytes, so no change in the verifier accounts for it. \texttt{evalmut} passes at
 \texttt{f59fb62} and fails at \texttt{92e4548} on \texttt{evidence-unchecked}, a refusal that
-does not exist in the \texttt{f59fb62} source, so that one is the verifier tightening rather
-than the bundle rotting. Either way the baseline is red and the mutation sweep aborts by
+does not exist in the \texttt{f59fb62} source, which reads like verifier tightening until the
+baseline is chosen correctly. \texttt{f59fb62} predates that rule entirely. The commit that
+matters is \texttt{ba14203}, the 2026-08-16 state at which evalmut last landed clean: the rule
+is already present there, and \texttt{git log ba14203..92e4548 vac/verify.py} is empty, so
+the verifier has not moved since. Measured against that baseline evalmut is bundle drift too,
+which is what Section~\ref{sec:closure} reports. Either way the baseline is red and the mutation sweep aborts by
 design. The 143/143 figure is therefore reproducible on a checkout \emph{without} the sibling
 repositories, which is how CI measures it and how I re-measured it on 2026-08-18.
+
+\paragraph{A default Windows clone breaks this reproduction, and lies about how.} The commands
+above assume a checkout that preserves bytes. At \texttt{92e4548} the repository carries no
+\texttt{.gitattributes} (\texttt{git ls-tree 92e4548 .gitattributes} is empty),
+while \texttt{core.autocrlf} is enabled by default by the Git for Windows installer, so a clone
+made there rewrites every text artifact to CRLF at checkout and the manifests go on hashing raw
+bytes. Measured on a differential pair of clones at \texttt{92e4548} differing only in
+\texttt{core.autocrlf}: all fourteen files under \texttt{fixtures/valid} carry CR in the enabled arm
+and none do in the disabled arm, and the liveness control exits 1 with thirteen
+\texttt{sha256-mismatch} reasons rather than exiting 0. Thirteen is the ceiling for this bundle,
+since \texttt{fixtures/valid} lists thirteen evidence entries and \texttt{vac.json} is not its
+own evidence.
+
+The second half is this paper's own thesis, occurring inside its reproduction section. All
+twenty \texttt{tamper-*} fixtures still exit 1 on that clone, so the loop above still passes and
+reports nothing wrong. But fourteen of the twenty no longer produce the refusal they were
+written to demonstrate: the hash mismatch fires and the original reason is gone. Three of
+Table~\ref{tab:fixtures}'s four rows name a reason the verifier no longer gives, with every exit
+code that a reader would check still matching. Only \texttt{tamper-check-deleted} still emits
+\texttt{evidence-unchecked}, and it does so buried among fourteen reasons. A loop over exit codes
+is a check on the exit code and not on the refusal, and it stayed green through exactly the
+substitution this paper is about, in the section that tells a stranger how to confirm the paper.
+
+The checkout defect was filed as pull request 9 and merged at \texttt{81f50cf}, which adds a
+one-line \texttt{.gitattributes} (\texttt{* -text}); re-measuring the same differential pair at
+that commit gives exit 0 in both arms. That fix does not reach the artifacts this paper pins. It
+is absent at \texttt{92e4548}, the commit every figure here is measured at, and absent from the
+\texttt{v0.1.0} archive (\texttt{git ls-tree v0.1.0 .gitattributes} is empty). Until those are
+re-pinned, disabling \texttt{core.autocrlf} at clone time is the only thing between a reader and
+a verifier that refuses honest bundles and misnames dishonest ones. I did not find the checkout
+defect; it was found by someone cloning the repository the way a stranger would, which is the
+only way it was ever going to be found from a project whose nine CI jobs all run
+\texttt{ubuntu-latest}. The second half, that the tamper loop keeps passing while the reasons
+change underneath it, surfaced only on re-running that loop on such a clone and reading the
+reasons instead of the exit codes.
 
 \paragraph{Archived measurements.} The sweep outputs backing Table~\ref{tab:ladder} are
 committed under \texttt{paper/} as JSON: \texttt{mutation.json} ($37/112$),
@@ -1825,10 +1967,10 @@ ten is borrowed from it. The second script is necessary rather than untidy:
 ask this of the tree as it stands, but that file does not exist at \texttt{f59fb62}, and
 pointing HEAD's copy at a checkout of it aborts by design, since its \texttt{EXCLUDE} map is
 keyed to HEAD's source and the arity guard refuses to resize the denominator rather than
-quietly measure a different one. One gap remains, and it is stated here rather than left to be
-discovered: at the time of writing neither the script nor the \texttt{-{}-detector} flag is
-committed (Section~\ref{sec:fixes-open}), so this figure is re-runnable in one command on the
-author's tree and not yet from a clone. Both numbers above were re-measured on 2026-08-18.
+quietly measure a different one. Both the script and the \texttt{-{}-detector} flag landed at
+\texttt{e932868} (Section~\ref{sec:fixes-open}), so this figure is re-runnable in one command
+from a clone rather than only on the author's tree. Both numbers above were re-measured on
+2026-08-18 from a fresh clone of the public repository.
 
 \bibliographystyle{plainnat}
 \bibliography{refs}

@@ -24,7 +24,7 @@ of the paper. `main.pdf` is also not uploaded (arXiv builds its own), though it
 is kept here so the local PDF matches the source.
 
 Build verified with `tectonic -X compile main.tex`: no errors, no undefined
-references, no undefined citations, zero overfull hboxes, 37 pages, 4 tables.
+references, no undefined citations, zero overfull hboxes, 39 pages, 4 tables.
 Five underfull (loose) lines remain, which is the deliberate trade: `microtype`,
 `hyphenat` and a 3em `\emergencystretch` were added so that unbreakable `\texttt`
 tokens stretch a line rather than run into the right margin, where nine of them
@@ -56,7 +56,7 @@ is the conventional entry. See **DECIDE 11**.
 
 Both already appear in the paper's author block.
 
-## 4. Abstract (plain text, 1872 characters, limit 1920)
+## 4. Abstract (plain text, 1890 characters, limit 1920)
 
 No LaTeX macros. Section cross-references are spelled out as numbers, matching
 the compiled document.
@@ -66,7 +66,7 @@ I built a protocol whose premise is that a stranger can re-run my claims offline
 
 The unifying defect is not cryptographic or exotic: a check that reports success along a path where it never examined anything. Vacuous pass is a working label, not a discovery; Section 4 names the literatures already occupying it.
 
-So I stopped collecting anecdotes and measured. At f59fb62, under the extraction rule of Section 6, the verifier exposes 112 refusal sites; 75 could be deleted with the whole suite and every tamper fixture still green, a score of 0.330. Three of the four hand-found forgeries fall in surviving classes; the fourth is an obligation with no refusal site. Scored alone, the sixteen-fixture corpus built to prove the verifier can refuse catches 10. Testing the refusals themselves took it to 0.941, then to 1.000 at 92e4548 over a grown population of 146 sites; those denominators differ and the series between them is non-monotone, so Table 2 carries all eleven, not the rising five. Fixing the four found defects instead moved 37/112 to 39/119, leaving the pre-existing sites at 37.
+So I stopped collecting anecdotes and measured. At f59fb62, under the extraction rule of Section 6, the verifier exposes 112 refusal sites; 75 could be deleted with the whole suite and every tamper fixture still green, a score of 0.330. Three of the four hand-found forgeries fall in surviving classes; the fourth is an obligation with no refusal site. Scored alone, the sixteen-fixture corpus built to prove the verifier can refuse catches 10. Testing the refusals themselves took it to 0.941, then to 1.000 at 92e4548 over a grown population of 146 sites; those denominators differ and the series between them is non-monotone, so Section 7.5 carries all eleven, not just the five rows of Table 2. Fixing the four found defects instead moved 37/112 to 39/119, leaving the pre-existing sites at 37.
 
 Seven times during this study my own measuring tools reported success while measuring nothing; four were built to detect this class, and one returned a perfect 1.000.
 
@@ -104,7 +104,7 @@ appear as the subject matter, not as a machine-learning result.
 ## 7. Comments field
 
 ```
-37 pages, 4 tables. Case study with source artifacts: verifier, specification, mutation sweep, fixture corpus, registry and archived sweep outputs at https://github.com/egnaro9/vac-protocol (MIT). All figures pinned to commit hashes; no tagged release or archival DOI yet.
+39 pages, 4 tables. Case study with source artifacts: verifier, specification, mutation sweep, fixture corpus, registry and archived sweep outputs at https://github.com/egnaro9/vac-protocol (MIT). All figures pinned to commit hashes; release v0.1.0 archived at doi:10.5281/zenodo.22000912 (concept DOI 10.5281/zenodo.22000911).
 ```
 
 ## 8. License
@@ -135,6 +135,45 @@ These are places where I made an editorial call that is yours to confirm. Items
    He is also named in the Acknowledgements. This is the paper's single external
    data point, so a misattributed quote here is the one error a reviewer would
    treat as disqualifying.
+
+   **STATUS, measured 2026-08-18: consent is NOT on record, and the named
+   Acknowledgement is the part still waiting on it.** `NEXT_STEPS.md:89` records
+   the request ("Email sent 2026-08-18 16:11Z") and `NEXT_STEPS.md:77` records
+   "He has not replied yet." Every naming and every quotation in Section 2 is now
+   anchored to a public artifact: the `cca-audit` repository
+   (`curl -o /dev/null -w '%{http_code}' https://api.github.com/repos/GiulioDER/cca-audit`
+   returns 200, a nonexistent-repo control returns 404); pull requests #1, #2, #8
+   and #9 on `egnaro9/vac-protocol` (`gh pr list --repo egnaro9/vac-protocol
+   --state all --json number,author,state` shows all four filed by `GiulioDER`,
+   #1 and #9 merged, #2 and #8 open); and the quoted sentence, which is verbatim
+   from the public #1 body. The one sentence that rested on private
+   correspondence, the mojibake anecdote at Section 2, is now unattributed and
+   says so. **What still needs his yes is being named in the Acknowledgements and
+   in Section 2.** An arXiv posting is permanent and cannot be withdrawn, so this
+   is blocking, not "when convenient". If the reply does not arrive in time, the
+   paper still works with the name replaced by "an outside engineer" everywhere
+   except the pull-request URLs and the `derme2026pr1` citation, which are public
+   record either way.
+
+   **Second, and outside the two files this pass could edit: the retracted quote
+   is still live on the public branch.** `git grep "documentation that refutes an
+   auditor" origin/main` returns it, still presented as "his remark", in
+   `paper/paper.html:42`, `paper/paper.md:65` and `paper/arxiv/main.tex.bak:208`.
+   It is being served: `curl https://raw.githubusercontent.com/egnaro9/vac-protocol/main/paper/paper.html`
+   returns HTTP 200 carrying the sentence at line 42, and `.../paper/paper.md`
+   carries it at line 65 (a nonexistent path under the same prefix returns 404, so
+   the fetch is real). `main.tex`'s footnote says the misattribution "is corrected
+   here rather than quietly dropped", which is true of the paper and false of the
+   repository the paper sends readers to. **Fix those three files before posting**,
+   or the correction the paper makes is contradicted one click away.
+
+   One fact bearing on the consent question, measured in the same fetch: the same
+   two public files already publish the mojibake anecdote naming him, verbatim
+   ("my `RESULTS.md` byte-identity check caught mojibake in his own audit output
+   mid-review", `paper/paper.html:42` and `paper/paper.md:66`). That makes the
+   arXiv posting a request to make an existing disclosure permanent rather than a
+   first disclosure. It does not answer the question, and it is not a reason to
+   post before he replies.
 
 2. **The headline "the fixture corpus caught zero" is now stated as an
    entailment, and a new measurement replaces it.** At `f59fb62` every one of the
@@ -201,10 +240,11 @@ These are places where I made an editorial call that is yours to confirm. Items
    with one parenthetical noting that -0.002 is the difference of the rounded
    scores and -0.003 the rounded difference.
 
-8. **Table 2's five rising rows are now accompanied by the eleven-measurement
-   record they smooth.** The archived sweeps are non-monotone: 0.330, 0.328,
-   0.941, 0.957, 0.960, 0.954, 0.947, 0.992, 1.000, 0.972, 1.000. Every fall is
-   denominator growth with a non-decreasing numerator. I added this because
+8. **Table 2's five rows are now accompanied by the eleven-value record they
+   smooth.** Twelve archived sweeps, two of which record the same 39/119, so
+   eleven values, and they are non-monotone: 0.330, 0.328,
+   0.941, 0.957, 0.960, 0.953, 0.947, 0.992, 1.000, 0.972, 1.000. All four falls
+   are denominator growth with a non-decreasing numerator. I added this because
    omitting a datum that weakens the impression of a durable fix is the one
    presentation choice this paper cannot afford, and because it argues for the
    paper's own recommendation (a standing CI floor, not a one-time measurement).
@@ -235,10 +275,15 @@ These are places where I made an editorial call that is yours to confirm. Items
       check's input, and the crashkit row is named as the case that forced the
       wording.
     - The "land the robustness pull request" bullet was stale. PR #2 head
-      `bb4dda36` (force-pushed 2026-08-16T11:14:30Z) already builds the
+      `ce462e10`, verified against GitHub on 2026-08-18, already builds the
       deep-nesting fixtures in Python and makes both traversals iterative, so the
       stated blocker is met by the PR itself. Bullet rewritten; the staleness is
-      noted in place as instrument failure 4 recurring.
+      noted in place as instrument failure 4 recurring. The head then went stale a
+      second time: `bb4dda36`, the sha an earlier pass named, still asserted a
+      wall-clock bound on elapsed time, an instance of the very host-dependence
+      class the branch exists to remove. `ce462e10` drops that assertion and leaves
+      `vac/` byte-identical, so the bullet now names a dated head, and notes that
+      the branch is on a fork and resolves only via `git fetch origin pull/2/head`.
 
 11. **`\ref{sec:artifacts}` resolved to Section 14, the Conclusion.** A `\label`
     after a starred section silently inherits the previous counter. Replaced with
@@ -269,15 +314,20 @@ These are places where I made an editorial call that is yours to confirm. Items
     the metadata and reproducibility items above are ready. **Do not state or
     imply approval before arXiv has evaluated the category selection.**
 
-15. **New repository work this paper now promises.** Three items were added to
-    Outstanding and none of them exist yet: commit the standalone-detector mode
-    (item 3 above), pin the refusal-site population so a merging refactor aborts
-    the sweep instead of shrinking the denominator, and (my suggestion, not in the
-    paper) commit the completed severity attack as a fixture. The denominator
+15. **RESOLVED 2026-08-18. New repository work this paper promised.** Three items
+    were added to Outstanding and all three have since landed: commit the
+    standalone-detector mode (item 3 above, `e932868`), pin the refusal-site
+    population so a merging refactor aborts the sweep instead of shrinking the
+    denominator (`e932868`), and (my suggestion, not in the paper) commit the
+    completed severity attack as a fixture (`b30ea2f`). All three are on
+    `origin/main` and inside the archived `v0.1.0`. The denominator
     point is demonstrated in the paper: moving four `stamp-mismatch` refusals into
     a one-line helper leaves the suite byte-identical, does not trip the exclusion
     arity check, and moves the denominator from 143 to 140. `--floor 0.99` is a
-    floor on the ratio and would not notice.
+    floor on the ratio and would not notice; the population gate does, and this was
+    checked by performing that refactor rather than by reading the constant. It
+    aborts with exit 2, reporting 143 raw sites and 140 scored against the declared
+    146 and 143.
 
 16. **The novelty claim was narrowed, and this is the item to read before you sign
     anything.** Three papers were found that occupy ground an earlier draft was
@@ -342,9 +392,25 @@ These are places where I made an editorial call that is yours to confirm. Items
     corrected twice over.** Section 7's Comments field and the build note both said
     32 pages. I rebuilt the reconstructed pre-edit sources and measured **33**, so
     the sheet was already one page behind. The new related-work material costs
-    **four** pages: 33 to 37. Both fields now read 37. Re-measure after any further
+    **four** pages: 33 to 37. Re-measure after any further
     edit rather than carrying the number forward, which is the failure this paper
     is about.
+
+    **It then went stale a third time, and the warning above is why that is worth
+    recording.** The 2026-08-18 fix pass took `main.tex` from 1836
+    lines to 1957 (`git diff --stat HEAD`: 225 changed lines), the two largest
+    additions being a 45-line block in Section 2.2 and a 35-line block in the
+    unnumbered Reproducibility section, and nothing was rebuilt, so both fields
+    still read 37 against a manuscript that had grown to **39**. Both now read 39, measured two
+    ways on 2026-08-18 after `tectonic -X compile main.tex`: the engine's own
+    `Output written on main.xdv (39 pages, 241080 bytes)` in `main.log`, and an
+    independent count of the PDF page tree, that counter first controlled against a
+    one-page and a three-page document so it was known to discriminate. The same
+    build reports 0 overfull and 5 underfull boxes, which is what the build note
+    above already claims, so the page count was the only stale number in it. Note
+    that `tectonic` does not write `main.aux` unless `--keep-intermediates` is
+    passed: the copy in this directory is older than `main.tex`, so any section or
+    table number read off it must be re-derived from a fresh build, not trusted.
 
 17. **One citation was left without a DOI on purpose.** `delcourt2026judge` prints
     `10.1145/3822455.3838768` in its own HTML front matter, while its arXiv record
@@ -382,3 +448,39 @@ The three "agent" mentions in `main.tex` are the paper's own internal-validity
 disclosure that the 75 liveness tests were produced by six concurrent agents.
 That is a threats-to-validity statement in the author's voice, not a byline, and
 removing it would weaken the paper.
+
+---
+
+## Audit record in Section 2, re-measured 2026-08-18
+
+Section 2 previously said the auditor "filed two pull requests" and scoped five
+forgery paths as a total. Both are now corrected, and the two later pull requests
+are recorded at the end of that section. Measurements behind the new text:
+
+| Claim in Section 2 | Command | Result |
+| --- | --- | --- |
+| Four pull requests, not two | `gh pr list --repo egnaro9/vac-protocol --state all --json number,author,state,mergedAt` | #1 merged 2026-08-15T23:08:45Z, #2 open, #8 open, #9 merged 2026-08-18T22:15:00Z, all four by `GiulioDER`. (#3 is not his: `egnaro9`, merged 2026-08-15T23:16:12Z. The repository has five PRs; four are the audit.) |
+| #9 merged at `81f50cf`, after the pinned commit | `git show -s --format='%h %cI %s' 81f50cf`; `git ls-tree 92e4548 .gitattributes` | merge commit `81f50cf`, 2026-08-18T18:15:00-04:00; `.gitattributes` absent at `92e4548` |
+| E2 passes at `92e4548` | detached worktree at `92e4548`, `cp -R fixtures/valid` copy, covered artifact moved out and replaced by a symlink to it, then `python -m vac.verify <bundle>` | exit 0, `structural verification: PASS`, banner clause `bundle closure` |
+| Positive control, unlisted file | same bundle plus `evidence/stowaway.txt` | exit 1, `FAIL unlisted-file: evidence/stowaway.txt` |
+| Positive control, tampered artifact | one byte appended to `evidence/bundle.json` | exit 1, `FAIL sha256-mismatch: evidence/bundle.json` |
+| Host dependence, why it is a vacuous pass and not a fifth forgery | link target moved away, same bundle re-run | exit 1, `FAIL missing-artifact: evidence/bundle.json` |
+| E1, for completeness | unlisted file inside a symlinked subdirectory | exit 0, nothing named |
+| Mechanism line | `git show 92e4548:vac/verify.py`, line 224 | `for p in sorted(bundle_dir.rglob("*")):`, filtered by `p.is_file()` |
+| Why #8 is not landed | `git show 92e4548:vac/verify.py \| grep -cE '^[[:space:]]*(f\|failures)\.append\('` and the same at `ce462e10` and `68ceed05` | 146 raw sites at `92e4548`, 153 at #8's parent (`ce462e10`, which is #2), 155 at #8's head `68ceed05`; #8's own commit adds exactly two, both `unsafe-bundle: ...: symlink` |
+
+Landing #8 before submission would move the refusal-site denominator the Results
+section is scored against (`sec:results`, section 7 in the last build), so it is
+recorded as an open finding
+against the fixed verifier rather than as a fixed one. That is stated in the
+paper, not just here.
+
+**Not re-measured by this pass:** #8's E3 (the same shape inside a `.tar.gz`,
+which the PR reports as already refused) and its Windows and Linux test tallies.
+Those are taken from the public PR body and are not asserted in the paper.
+
+**Rebuild note.** This pass added three `\url{}` tokens to Section 2 (the
+`cca-audit` repository and pull requests #8 and #9). No TeX toolchain is
+installed on the machine that made these edits, so nothing here was compiled: the
+"overfull hboxes: 0" row in the verification record above predates them and must
+be re-measured on the next build, along with the rendered Section 2.

@@ -3,3 +3,10 @@ __pycache__/
 .pytest_cache/
 .venv/
 build/
+
+# LaTeX build intermediates. main.bbl is NOT here: it ships in the arXiv upload.
+paper/arxiv/main.log
+paper/arxiv/main.blg
+paper/arxiv/*.tex.bak
+paper/arxiv/main.aux
+paper/arxiv/main.out
