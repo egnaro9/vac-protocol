@@ -997,16 +997,74 @@ def test_no_text_read_in_the_verifier_relies_on_the_host_locale():
     assert bad == [], f"text I/O without encoding=: {bad}"
 
 
-def test_the_narrative_strip_is_not_quadratic(tmp_path):
-    """V-017 through the real modeldrift check.
+def test_the_narrative_strip_matches_the_regex_exactly():
+    """V-017, half one: the replacement is the SAME transform.
+
+    _strip_tags exists only because `<[^>]+>` is quadratic on an
+    issuer-controlled field. SPEC 3.5 pins the committed narrative against
+    that transform, so a divergence would flip verdicts on honest bundles
+    rather than merely change performance. The corpus is drawn from a
+    `<>`-dense alphabet under a fixed seed, so every host and every run sees
+    the same strings.
+
+    This half has no upstream red state: its subject does not exist on main.
+    The half below is the one that fails there.
+    """
+    import random
+
+    from vac.verify import _strip_tags
+
+    cases = ["", "<", ">", "<>", "<>>", "<<>", "<a>", "<a", "a>", "a<b>c",
+             "<a><b>", "<a<b>c>", "<<a>>", "< >", "x<y", "<>x<>", "<a><",
+             "><a>", "<a>" * 4, "<" * 8, ">" * 8, "<\n>"]
+    rng = random.Random(20260816)
+    for _ in range(20000):
+        cases.append("".join(rng.choice("<>ab \n")
+                             for _ in range(rng.randrange(12))))
+    for s in cases:
+        assert _strip_tags(s) == re.sub(r"<[^>]+>", "", s), repr(s)
+
+
+def test_the_narrative_strip_never_reaches_the_quadratic_regex(tmp_path,
+                                                              monkeypatch):
+    """V-017, half two, through the real modeldrift check.
 
     narrative.html is issuer-controlled and was fed to `<[^>]+>`, which
-    rescans to end-of-string from every start position when no '>' follows.
-    A bundle that verifies CLEAN could therefore burn unbounded CPU: this
-    input costs ~20s against the pre-fix code and is instant against
-    _strip_tags, which reproduces the same transform in linear time.
+    rescans to end-of-string from every start position when no ">" follows.
+    This input costs ~20s against the pre-fix code and is instant against
+    _strip_tags.
+
+    The first version of this test asserted wall clock under 4.0s. That let a
+    verdict about the patch depend on how loaded the host was, which is the
+    same class of defect the patch exists to remove, so the clock is gone.
+    What is asserted instead is the mechanism: the quadratic pattern never
+    reaches the engine at all, by either route it could take.
+
+    A step-count bound is deliberately not attempted. The quadratic work
+    happens inside the C engine, where no Python-level counter can observe
+    it, so counting Python operations would assert nothing about the path
+    that was slow.
     """
-    import time
+    seen = []
+    real_sub, real_compile = re.sub, re.compile
+
+    def _pat(pattern):
+        return pattern if isinstance(pattern, str) else pattern.pattern
+
+    def _recording_sub(pattern, repl, string, *a, **kw):
+        seen.append(_pat(pattern))
+        return real_sub(pattern, repl, string, *a, **kw)
+
+    def _recording_compile(pattern, *a, **kw):
+        seen.append(_pat(pattern))
+        return real_compile(pattern, *a, **kw)
+
+    # Both routes: re.sub(pattern, ...) and re.compile(pattern).sub(...).
+    # Recording only the first would let the quadratic form return through
+    # the compiled one without the test noticing.
+    monkeypatch.setattr(re, "sub", _recording_sub)
+    monkeypatch.setattr(re, "compile", _recording_compile)
+
     b = tmp_path / "b"
     shutil.copytree(FIX / "valid", b)
     rel = "evidence/narrative.json"
@@ -1015,9 +1073,12 @@ def test_the_narrative_strip_is_not_quadratic(tmp_path):
     d["html"] = "<" * 120000
     art.write_text(json.dumps(d, indent=1) + "\n", encoding="utf-8")
     _rehash(b, rel)
-    start = time.monotonic()
-    verify_bundle(b)
-    assert time.monotonic() - start < 4.0
+
+    assert isinstance(verify_bundle(b), list)
+    # A recorder that saw nothing passes the assertion below vacuously,
+    # which is the defect class this whole branch is about.
+    assert seen, "no pattern was recorded: the recorder proves nothing"
+    assert [p for p in seen if "[^>]" in p] == []
 
 
 def _set_fleet_ids(b, value):
