@@ -1,4 +1,4 @@
-\begin{thebibliography}{57}
+\begin{thebibliography}{62}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -14,6 +14,32 @@ Amit~Seal Ami, Kaushal Kafle, Kevin Moran, Adwait Nadkarni, and Denys
 \newblock \emph{ACM Transactions on Privacy and Security}, 24\penalty0
   (3):\penalty0 1--37, 2021.
 \newblock Article 15. \url{https://doi.org/10.1145/3439802}.
+
+\bibitem[Ami et~al.(2022)Ami, Cooper, Kafle, Moran, Poshyvanyk, and
+  Nadkarni]{ami2022masc}
+Amit~Seal Ami, Nathan Cooper, Kaushal Kafle, Kevin Moran, Denys Poshyvanyk, and
+  Adwait Nadkarni.
+\newblock Why crypto-detectors fail: A systematic evaluation of cryptographic
+  misuse detection techniques.
+\newblock In \emph{2022 IEEE Symposium on Security and Privacy (SP)}, pages
+  614--631. IEEE, 2022.
+\newblock \url{https://doi.org/10.1109/SP46214.2022.9833582}. The preprint
+  arXiv:2107.07065 now serves the extended ACM TOPS 2026 version, under a
+  different title and a different author list, with 19 operators, 107 misuse
+  cases and five additional detectors; the figures cited here are the 2022
+  conference version's.
+
+\bibitem[Ami et~al.(2023)Ami, Ahmed, Redoy, Cooper, Kafle, Moran, Poshyvanyk,
+  and Nadkarni]{ami2023masc}
+Amit~Seal Ami, Syed~Yusuf Ahmed, Radowan~Mahmud Redoy, Nathan Cooper, Kaushal
+  Kafle, Kevin Moran, Denys Poshyvanyk, and Adwait Nadkarni.
+\newblock {MASC}: A tool for mutation-based evaluation of static crypto-{API}
+  misuse detectors.
+\newblock In \emph{Proceedings of the 31st ACM Joint European Software
+  Engineering Conference and Symposium on the Foundations of Software
+  Engineering (ESEC/FSE 2023)}, pages 2162--2166. ACM, 2023.
+\newblock Tool demonstration. \url{https://doi.org/10.1145/3611643.3613099}.
+  Preprint arXiv:2308.02310.
 
 \bibitem[Barr et~al.(2015)Barr, Harman, McMinn, Shahbaz, and
   Yoo]{barr2015oracle}
@@ -38,6 +64,14 @@ Stella Biderman, Hailey Schoelkopf, Lintang Sutawika, Leo Gao, Jonathan Tow,
   models.
 \newblock arXiv preprint arXiv:2405.14782, 2024.
 \newblock \url{https://arxiv.org/abs/2405.14782}.
+
+\bibitem[Bilal and Mughal(2026)]{bilal2026allgreen}
+Muhammad Bilal and Ali~Hassaan Mughal.
+\newblock All green, still broken: Real-flow verification lessons from an
+  {LLM}-integrated, multi-market web application.
+\newblock arXiv preprint arXiv:2606.22475, 2026.
+\newblock Preprint submitted to IEEE Software, 21 June 2026.
+  \url{https://arxiv.org/abs/2606.22475}.
 
 \bibitem[Birkholz et~al.(2023)Birkholz, Thaler, Richardson, Smith, and
   Pan]{birkholz2023rats}
@@ -74,6 +108,19 @@ Yuting Chen and Carlo~A. Furia.
   91--108. Springer, 2018.
 \newblock \url{https://doi.org/10.1007/978-3-030-01090-4_6}.
 
+\bibitem[Delcourt et~al.(2026)Delcourt, Chaaben, Rouatbi, Marchezan, and
+  Sahraoui]{delcourt2026judge}
+Kevin Delcourt, Meriem~Ben Chaaben, Abdelhamid Rouatbi, Luciano Marchezan, and
+  Houari Sahraoui.
+\newblock Breaking models to test the judge: A mutation testing approach for
+  semantic evaluators of domain class diagrams.
+\newblock In \emph{Proceedings of the ACM/IEEE 29th International Conference on
+  Model Driven Engineering Languages and Systems (MODELS)}. ACM, 2026.
+\newblock \url{https://arxiv.org/abs/2608.14315}, submitted 14 August 2026. To
+  appear at MODELS 2026, Malaga, Spain. The ACM DOI is not yet registered in
+  Crossref, and the value printed in the paper differs from the value in its
+  own arXiv record, so no DOI is given here.
+
 \bibitem[DeMillo et~al.(1978)DeMillo, Lipton, and Sayward]{demillo1978hints}
 Richard~A. DeMillo, Richard~J. Lipton, and Frederick~G. Sayward.
 \newblock Hints on test data selection: Help for the practicing programmer.
@@ -86,6 +133,15 @@ Lin Deng, Jeff Offutt, and Nan Li.
 \newblock In \emph{2013 IEEE Sixth International Conference on Software
   Testing, Verification and Validation (ICST 2013)}, pages 84--93. IEEE, 2013.
 \newblock \url{https://doi.org/10.1109/ICST.2013.20}.
+
+\bibitem[D'Erme(2026)]{derme2026pr1}
+Giulio D'Erme.
+\newblock Refuse bundles that verify clean while their numbers are false.
+\newblock Pull request \#1, \texttt{egnaro9/vac-protocol}, merged, 2026.
+\newblock URL \url{https://github.com/egnaro9/vac-protocol/pull/1}.
+\newblock \url{https://github.com/egnaro9/vac-protocol/pull/1}. The sentence
+  quoted in Section 2 is from the pull request body, which is public on a
+  public repository.
 
 \bibitem[Fourn{\'e} et~al.(2023)Fourn{\'e}, Wermke, Enck, Fahl, and
   Acar]{fourne2023flossing}
