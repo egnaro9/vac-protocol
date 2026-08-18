@@ -23,3 +23,14 @@ keywords:
   - offline verification
   - provenance
 license: MIT
+doi: "10.5281/zenodo.22000911"
+version: v0.1.0
+date-released: "2026-08-18"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.22000911"
+    description: "Concept DOI, always resolves to the latest archived release."
+  - type: doi
+    value: "10.5281/zenodo.22000912"
+    description: "Version DOI for v0.1.0, the release this citation was written against."
+
