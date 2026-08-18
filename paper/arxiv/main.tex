@@ -209,8 +209,17 @@ passed. This is the textbook vacuity example transposed into a verifier: every r
 eventually acknowledged, in an environment that never generates requests
 \citep{simmonds2010vacuity}.
 
-That first pull request filed five distinct forgery paths, plus path traversal on an
-untested Python window. His second pull request found something worse in kind: no \texttt{encoding=} on
+That first pull request opened with \textbf{eight} bundles that exited 0 under
+\texttt{structural verification: PASS}. Five were false declared numbers, the class the table
+above describes. The other three were content crossing the bundle boundary and are distinct
+defects rather than variants: \texttt{\_safe\_relpath} accepting a drive-anchored path, which
+is an arbitrary read and a content-confirmation oracle; \texttt{\_bundle\_root} counting only
+directories, so a top-level sibling file rode along and the closure scan never saw it, which is
+a closure hole of the same class as the symlinks in \#8 rather than traversal; and
+\texttt{\_extract\_tar} accepting Windows-separator and root-anchored members, which is the one
+that depends on the untested Python window. An earlier draft of this paper said five paths plus
+path traversal, and attributed the untested-window dependency to the wrong one of the three. The
+auditor corrected both on 18 August 2026. His second pull request found something worse in kind: no \texttt{encoding=} on
 \texttt{read\_text} and \texttt{write\_text}, so the same bytes produced opposite verdicts
 on a cp1252 host and a UTF-8 host. That is fatal for a protocol whose entire premise is that
 a stranger gets my answer offline, and it is a bit-for-bit reproducibility failure of
@@ -219,17 +228,29 @@ exactly the kind the reproducible-builds literature exists to characterise
 
 Two things cut the other way and are worth recording. First, four of his strongest findings
 were refuted by my own specification rather than by argument: the spec had already decided
-those cases and said so. His own words on that, in the pull request body, were that
-``four findings refuted by documentation rather than by argument is not the usual
-experience reading someone's spec'' \citep{derme2026pr1}.\footnote{An earlier draft of this paper rendered that
-as ``documentation that refutes an auditor is rarer than the bugs'' and attributed the
-sentence to him. He did not write it; it is my compression of what he wrote, and the
-misattribution is corrected here rather than quietly dropped.} Second, my
-\texttt{RESULTS.md} byte-identity check caught mojibake in an auditor's output mid-review.
-The instrument worked on the reviewer. That exchange happened in correspondence rather than
-in the pull request record, so unlike every other claim in this section it rests on no
-public artifact; it is a first-person report, it is marked as one, and it is left
-unattributed for that reason.
+those cases and said so. His words on that, posted publicly, were
+``Documentation that refutes an auditor is rarer than the bugs, and I would rate it higher''
+\citep{derme2026devto}. He also names the four: unknown severity weighing 0, a score of 1.0
+when nothing applied, the floor inequality, and the registry HEAD question. A separate sentence
+in the pull request body makes the same point: ``four findings refuted by documentation rather
+than by argument is not the usual experience reading someone's spec'' \citep{derme2026pr1}.
+
+A draft of this paper carried a footnote asserting that the first of those two
+sentences was my own compression and that he had not written it. That footnote was wrong, and
+wrong in the direction that matters: it credited me with his sentence. It was introduced by a
+pre-publication audit that checked the pull request body, found the second sentence there, and
+inferred the first was fabricated. He wrote both, in different places, and corrected the record
+himself. The episode is left visible here because a paper about checks that pass without
+checking should not hide the one instance it committed against a named third party, and because
+the failure has a shape worth naming: a correction is a new claim, and it needs the same
+evidence the original did.
+
+Second, my \texttt{RESULTS.md} byte-identity check caught mojibake in his own output
+mid-review. The instrument worked on the auditor. That is checkable too: he reports it in the
+same public comment, saying he fetched the source with a locale decode, mojibaked every section
+sign and dash in the file, and that the byte-identity check caught it immediately
+\citep{derme2026devto}. An earlier draft called this a first-person report resting on no public
+artifact. It rests on the same artifact as the quote.
 
 Everything in Section~\ref{sec:forgeries} runs against \texttt{main} at \texttt{f59fb62},
 \emph{after} that soundness fix. That is what makes the four findings interesting rather
@@ -1699,6 +1720,17 @@ documented exclusion set. This bullet appeared as a recommendation in the earlie
 \label{sec:fixes-open}
 
 \begin{itemize}
+\item \textbf{Bind \texttt{acc} to its own evidence.} Reported by the auditor on 18 August
+2026 and reproduced here. The specification never ties a series point's \texttt{acc} to its
+\texttt{fails} vector, and \texttt{verify.py:1242} enforces the relation only for the
+\texttt{mock:*} control series. For every real series the declared accuracy is bound to no
+evidence at all. In \texttt{fixtures/valid} the series \texttt{beta:b1} declares 0.66 and 0.9
+where its own \texttt{fails} vectors imply materially lower values, while \texttt{alpha:a1} and
+\texttt{gamma:g1} happen to be consistent. This is the closure rule of
+Section~\ref{sec:closure} one level down: there an artifact was listed but unread, here a field
+is read but unbound. It sits inside the bundle this paper calls valid, and the verifier scoring
+1.000 on the operator of Section~\ref{sec:method} accepts it.
+
 \item \textbf{Close the symlink escape, reported after this study closed.} Pull request 8,
 open at the time of writing, reports that a covered artifact replaced by a symlink pointing
 outside the bundle exits 0 and prints \texttt{structural verification: PASS}. The bytes hash

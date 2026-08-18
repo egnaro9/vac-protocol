@@ -61,11 +61,10 @@ so **the same bytes produced opposite verdicts on a cp1252 host versus a UTF-8 h
 
 Two things are worth recording because they cut the other way. First, **four of his
 strongest findings were refuted by my own SPEC**, not by argument. The specification had
-already decided those cases, and said so. His own words on that, in the pull
-request body, were that *"four findings refuted by documentation rather than by argument is not the usual experience reading someone's spec"*. **Correction, 2026-08-18:** an earlier version of this
-draft rendered that as *"documentation that refutes an auditor is rarer than the bugs"* and
-attributed the sentence to him. He did not write it. It was my compression of what he wrote,
-and it is corrected here rather than quietly deleted. Second, my `RESULTS.md` byte-identity check caught mojibake in his own audit
+already decided those cases, and said so. His words on that, posted publicly, were *"Documentation that refutes an auditor is rarer than the bugs, and I would rate it higher."* ([dev.to comment
+3d3lp](https://dev.to/agentdev9/comment/3d3lp), 15 August 2026). **Correction, 2026-08-18:** a footnote briefly added here claimed this sentence was my compression rather than his. That was wrong, and it credited me with his sentence. He wrote it publicly on dev.to on 15 August 2026 ([comment 3d3lp](https://dev.to/agentdev9/comment/3d3lp)), and corrected the record himself. The original attribution was right.
+
+Second, my `RESULTS.md` byte-identity check caught mojibake in his own audit
 output mid-review. The instrument worked on the auditor.
 
 ## 3. The class: a check that cannot fail

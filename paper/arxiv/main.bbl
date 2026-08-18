@@ -1,4 +1,4 @@
-\begin{thebibliography}{62}
+\begin{thebibliography}{63}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -134,10 +134,22 @@ Lin Deng, Jeff Offutt, and Nan Li.
   Testing, Verification and Validation (ICST 2013)}, pages 84--93. IEEE, 2013.
 \newblock \url{https://doi.org/10.1109/ICST.2013.20}.
 
-\bibitem[D'Erme(2026)]{derme2026pr1}
+\bibitem[D'Erme(2026{\natexlab{a}})]{derme2026devto}
+Giulio D'Erme.
+\newblock Comment on {``I built an AI dev harness that isn't allowed to trust
+  itself''}.
+\newblock DEV Community, 8 2026{\natexlab{a}}.
+\newblock URL \url{https://dev.to/agentdev9/comment/3d3lp}.
+\newblock Posted 2026-08-15T09:05:28Z, comment \texttt{3d3lp}, under the
+  account \texttt{gde03}. Reports the \texttt{cca-audit} deep-tier run, names
+  the four findings the specification refuted, and records the mojibake
+  incident.
+
+\bibitem[D'Erme(2026{\natexlab{b}})]{derme2026pr1}
 Giulio D'Erme.
 \newblock Refuse bundles that verify clean while their numbers are false.
-\newblock Pull request \#1, \texttt{egnaro9/vac-protocol}, merged, 2026.
+\newblock Pull request \#1, \texttt{egnaro9/vac-protocol}, merged,
+  2026{\natexlab{b}}.
 \newblock URL \url{https://github.com/egnaro9/vac-protocol/pull/1}.
 \newblock \url{https://github.com/egnaro9/vac-protocol/pull/1}. The sentence
   quoted in Section 2 is from the pull request body, which is public on a
