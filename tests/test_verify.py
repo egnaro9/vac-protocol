@@ -1351,3 +1351,82 @@ def test_an_evalmut_row_with_an_unhashable_operator_id_is_refused(tmp_path):
     _rehash(b, rel)
     assert ("artifact-unparsable: evidence/evalmut_run.json: row 1 "
             "operator_id must be a scalar identifier") in verify_bundle(b)
+
+
+def _symlink_or_skip(link: pathlib.Path, target: pathlib.Path):
+    """Symlinks need privilege on Windows. CI is ubuntu, so these run there.
+
+    The skip is explicit rather than silent: a test that quietly vanishes on
+    the maintainer's host is the same shape of problem as a test that only
+    passes on mine.
+    """
+    try:
+        os.symlink(target, link)
+    except (OSError, NotImplementedError) as e:
+        pytest.skip(f"symlinks unavailable on this host: {e}")
+
+
+def test_a_symlinked_artifact_is_refused(tmp_path):
+    """PR #1 handed this over unresolved: directory-mode closure versus
+    symlinks. Settled on a POSIX host, and the answer was yes.
+
+    A COVERED artifact replaced by a symlink pointing out of the bundle
+    verified clean, exit 0, under the banner "bundle closure". The bytes were
+    hash-identical, so nothing else could notice: the evidence simply lived
+    somewhere else on the verifying host. A bundle whose closure is not a
+    closure cannot support the one sentence this tool prints.
+    """
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    rel = "evidence/bundle.json"
+    moved = outside / "bundle.json"
+    shutil.move(str(b / rel), str(moved))
+    _symlink_or_skip(b / rel, moved)
+
+    out = verify_bundle(b)
+    assert f"unsafe-bundle: {rel}: symlink" in out
+
+
+def test_a_symlinked_directory_cannot_smuggle_an_unlisted_file(tmp_path):
+    """The other half, and the reason is_file() alone could not catch it.
+
+    rglob does not descend a symlinked directory, and is_file() answers False
+    for the link itself, so an unlisted file inside one was never seen. The
+    control is test_unlisted_file_breaks_closure: the identical
+    file placed directly in the bundle was always refused.
+    """
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    (outside / "stowaway.txt").write_text("rider\n", encoding="utf-8")
+    _symlink_or_skip(b / "evidence/linked", outside)
+
+    out = verify_bundle(b)
+    assert "unsafe-bundle: evidence/linked: symlink" in out
+
+
+def test_a_symlinked_artifact_does_not_leak_the_outside_digest(tmp_path):
+    """The refusal must come BEFORE the read, not after it.
+
+    Naming the symlink but still hashing through it would leave the oracle
+    open: a wrong declared sha256 makes the mismatch reason print the true
+    digest of whatever the link points at, which is arbitrary-read by
+    confirmation. This pins the order, not just the outcome.
+    """
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    secret = outside / "secret.json"
+    secret.write_text('{"secret": true}\n', encoding="utf-8")
+    digest = _sha256(secret)
+    rel = "evidence/bundle.json"
+    (b / rel).unlink()
+    _symlink_or_skip(b / rel, secret)
+
+    out = verify_bundle(b)
+    assert f"unsafe-bundle: {rel}: symlink" in out
+    assert not [x for x in out if digest in x], out

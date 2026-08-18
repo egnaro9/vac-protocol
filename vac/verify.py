@@ -225,6 +225,14 @@ def _verify_artifacts(bundle_dir: pathlib.Path,
     trusted: set[str] = set()
     for e in entries:
         p = bundle_dir / e["path"]
+        if p.is_symlink():
+            # Named BEFORE anything is read through the link. is_file()
+            # FOLLOWS a symlink, so a linked artifact hashes the bytes it
+            # points at: with a wrong declared sha256 the mismatch reason
+            # would print the digest of a file outside the bundle, which is
+            # the content-confirmation oracle _safe_relpath exists to close.
+            f.append(f"unsafe-bundle: {e['path']}: symlink")
+            continue
         if not p.is_file():
             f.append(f"missing-artifact: {e['path']}")
             continue
@@ -238,8 +246,18 @@ def _verify_artifacts(bundle_dir: pathlib.Path,
             trusted.add(e["path"])
     # closure: a verified bundle cannot smuggle content
     for p in sorted(bundle_dir.rglob("*")):
+        rel = p.relative_to(bundle_dir).as_posix()
+        if p.is_symlink():
+            # rglob does not descend a symlinked DIRECTORY and is_file()
+            # answers False for one, so everything inside it rode along
+            # unlisted while the tool printed "bundle closure" as proved.
+            # A listed symlink is already named in the loop above. The
+            # archive path refuses this shape as unsafe-archive; directory
+            # mode accepted it, so the same bundle got two answers.
+            if rel not in listed:
+                f.append(f"unsafe-bundle: {rel}: symlink")
+            continue
         if p.is_file():
-            rel = p.relative_to(bundle_dir).as_posix()
             if rel != "vac.json" and rel not in listed:
                 f.append(f"unlisted-file: {rel}")
     return f, trusted
