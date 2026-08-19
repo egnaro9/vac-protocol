@@ -1,6 +1,7 @@
 # vac-protocol
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22000911.svg)](https://doi.org/10.5281/zenodo.22000911)
+[![Paper](https://img.shields.io/badge/preprint-10.5281%2Fzenodo.22018308-blue)](https://doi.org/10.5281/zenodo.22018308)
 
 **VAC: Verifiable Agent Claims.** A tiny protocol for capability claims
 about AI systems that a stranger can check without trusting the person

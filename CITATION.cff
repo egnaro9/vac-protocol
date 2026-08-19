@@ -34,3 +34,21 @@ identifiers:
     value: "10.5281/zenodo.22000912"
     description: "Version DOI for v0.1.0, the release this citation was written against."
 
+preferred-citation:
+  type: article
+  title: >-
+    Four Ways to Forge a Bundle My Own Verifier Calls Clean: Refusal-Site
+    Mutation Testing of an Evidence-Bundle Verifier
+  authors:
+    - given-names: Erik
+      family-names: Hill
+      orcid: "https://orcid.org/0009-0002-5912-967X"
+      email: erik@erikhill.dev
+  doi: "10.5281/zenodo.22018308"
+  year: 2026
+  month: 8
+  notes: >-
+    Preprint, not peer reviewed. The DOI above is the concept DOI and always
+    resolves to the newest version; 10.5281/zenodo.22018309 pins the first.
+    Cite this paper rather than the software when citing the result; the
+    software DOI above identifies the code that produced it.
