@@ -36,6 +36,7 @@ from __future__ import annotations
 
 import difflib
 import json
+import re
 import os
 import pathlib
 import subprocess
@@ -113,9 +114,17 @@ def _owner_name(repo_url: str) -> tuple[str, str]:
     return parts[-2], parts[-1]
 
 
-def _raw_url(repo_url: str, bundle_path: str, rel: str) -> str:
+def _raw_url(repo_url: str, commit: str, bundle_path: str, rel: str) -> str:
+    """A commit-addressed raw URL.
+
+    This used to hardcode `main`. A sha256 pin paired with a mutable ref can
+    only be right by accident: the moment the issuer pushes, the pin and the
+    bytes disagree and every bundle stops replaying. Measured 2026-08-21, all
+    47 artifacts were addressed this way and none of the 11 entries had an
+    issuer_commit that actually held its own pinned bytes. Address the commit
+    the bytes were read from, and a bundle stays replayable forever."""
     owner, name = _owner_name(repo_url)
-    return (f"https://raw.githubusercontent.com/{owner}/{name}/main/"
+    return (f"https://raw.githubusercontent.com/{owner}/{name}/{commit}/"
             f"{bundle_path}/{rel}")
 
 
@@ -139,8 +148,8 @@ def _bundle_dirs(pattern: str, head_files: list[str]) -> list[str]:
 
 
 def _entry(issuer: str, repo_url: str, bundle_path: str,
-           bundle_dir: pathlib.Path,
-           rels: list[str]) -> tuple[dict | None, list[str]]:
+           bundle_dir: pathlib.Path, rels: list[str],
+           pinned_commit: str) -> tuple[dict | None, list[str]]:
     """One registry entry from a MATERIALIZED bundle dir, or named reasons.
 
     The verifier's exit code is the floor (SPEC.md section 5 rule 7): a
@@ -164,14 +173,21 @@ def _entry(issuer: str, repo_url: str, bundle_path: str,
         "name": f"{issuer.split('/')[1]}/{bundle_path.rsplit('/', 1)[-1]}",
         "issuer": issuer,
         "issuer_repo": repo_url,
+        # The issuer's own declaration, kept as a claim.
         "issuer_commit": man["protocol"]["issuer_commit"],
+        # The commit these bytes were actually read from. This is the fact the
+        # URLs and hashes are anchored to, and the two can legitimately differ:
+        # the manifest records when the issuer emitted, this records where the
+        # registry found the artifacts it hashed.
+        "pinned_commit": pinned_commit,
         "bundle_path": bundle_path,
         "capability": man["claim"]["capability"],
         "subject": f"{man['subject']['kind']}: {man['subject']['id']}",
         "summary": man["results"]["summary"],
         "profiles": sorted({c["profile"] for c in man["results"]["checks"]}),
         "artifacts": [{"path": r, "sha256": _sha256(bundle_dir / r),
-                       "url": _raw_url(repo_url, bundle_path, r)}
+                       "url": _raw_url(repo_url, pinned_commit,
+                                       bundle_path, r)}
                       for r in sorted(rels)],
         "status": "accepted",
         "challenges": [],
@@ -193,6 +209,20 @@ def scan_issuer(cfg: dict) -> tuple[list[dict], list[dict]]:
         raise RegistryError(
             f"issuer checkout not found at {checkout} — clone "
             f"{cfg['repo']} there or set {cfg['checkout_env']}")
+    head_sha = _git(checkout, "rev-parse", "HEAD").decode().strip()
+    # A pinned URL to an unpushed commit is a 404 for everyone but this laptop.
+    # Refuse at generation rather than publish a bundle nobody else can fetch.
+    # Only meaningful when the checkout HAS a remote. A repo with none is a
+    # local fixture, not an unpushed publication, and refusing it would gate
+    # the tests rather than the failure this exists to catch.
+    if _git(checkout, "remote").strip():
+        remotes = _git(checkout, "branch", "-r", "--contains",
+                       head_sha).decode()
+        if not remotes.strip():
+            raise RegistryError(
+                f"{issuer}: HEAD {head_sha[:12]} is on no remote branch — "
+                f"push it before registering, or the pinned artifact URLs "
+                f"will 404 for everyone but this machine")
     head_files = _git(checkout, "ls-tree", "-r", "--name-only",
                       "HEAD").decode().splitlines()
     entries, pending = [], []
@@ -233,7 +263,8 @@ def scan_issuer(cfg: dict) -> tuple[list[dict], list[dict]]:
                 p.parent.mkdir(parents=True, exist_ok=True)
                 p.write_bytes(_git(checkout, "cat-file", "blob",
                                    f"HEAD:{bp}/{rel}"))
-            entry, rej = _entry(issuer, cfg["repo"], bp, bdir, rels)
+            entry, rej = _entry(issuer, cfg["repo"], bp, bdir, rels,
+                                head_sha)
         if rej:
             pending.append({
                 "name": entry_name,
@@ -276,6 +307,34 @@ def _fetch(url: str, timeout: float = 60.0) -> bytes:
         raise RegistryError(f"fetch-failed: {url}: {e.reason}")
 
 
+_SHA_RE = re.compile(r"^[0-9a-f]{40}$")
+
+
+def _mutable_ref_failures(doc: dict) -> list[str]:
+    """Refuse a sha256 pin that is paired with a mutable ref.
+
+    A pin says "these exact bytes". A ref like `main` says "whatever is there
+    now". Together they are a promise that expires silently on the issuer's
+    next push, which is exactly how this registry went stale for four days in
+    August 2026 while still advertising replayable bundles. The ref between the
+    repo name and the path must be a full 40-hex commit sha, or the entry is
+    refused at check time rather than at some stranger's replay."""
+    out: list[str] = []
+    for e in doc.get("entries") or []:
+        for a in e.get("artifacts") or []:
+            url = a.get("url", "")
+            m = re.match(r"^https://raw\.githubusercontent\.com/"
+                         r"[^/]+/[^/]+/([^/]+)/", url)
+            if not m:
+                out.append(f"mutable-ref: {e.get('name')}: unrecognised "
+                           f"artifact URL form: {url}")
+            elif not _SHA_RE.match(m.group(1)):
+                out.append(f"mutable-ref: {e.get('name')}: {a.get('path')} is "
+                           f"pinned by sha256 but addressed at the mutable ref "
+                           f"{m.group(1)!r} — address the commit instead")
+    return out
+
+
 def check_fetched(reg_path: pathlib.Path = REGISTRY,
                   fetch=_fetch) -> list[str]:
     """Rebuild every accepted entry from the artifacts fetched at their
@@ -289,6 +348,7 @@ def check_fetched(reg_path: pathlib.Path = REGISTRY,
     doc = json.loads(committed)
     failures: list[str] = []
     rebuilt: list[dict] = []
+    failures.extend(_mutable_ref_failures(doc))
     for e in doc.get("entries") or []:
         with tempfile.TemporaryDirectory() as td:
             bdir = pathlib.Path(td)
@@ -315,7 +375,8 @@ def check_fetched(reg_path: pathlib.Path = REGISTRY,
             if broken:
                 continue
             entry, rej = _entry(e["issuer"], e["issuer_repo"],
-                                e["bundle_path"], bdir, rels)
+                                e["bundle_path"], bdir, rels,
+                                e.get("pinned_commit", ""))
         if rej:
             failures.extend(f"{e['name']}: {r}" for r in rej)
         else:

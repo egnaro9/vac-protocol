@@ -9,16 +9,30 @@ from __future__ import annotations
 import json
 import pathlib
 import shutil
+import re
 import subprocess
 
-from vac.registry import (RegistryError, _j, build, check_fetched,
+from vac.registry import (RegistryError, _j, _mutable_ref_failures,
+                          build, check_fetched,
                           fetch_bundle, matrix)
 from vac.verify import _sha256
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 FIX = ROOT / "fixtures"
 BP = "certifications/toy-2026-08-14"
-RAW = "https://raw.githubusercontent.com/example/toy-issuer/main/" + BP
+RAW_HOST = "https://raw.githubusercontent.com/example/toy-issuer"
+
+
+def _raw(repo: pathlib.Path) -> str:
+    """Artifact URLs are addressed at the commit whose bytes were hashed.
+
+    These used to assert `/main/`, which locked in the defect they should have
+    caught: a sha256 pin on a mutable ref stops matching the moment the issuer
+    pushes. The test now derives the expected commit the same way the registry
+    does, so it fails if the generator ever goes back to a branch name."""
+    head = subprocess.run(["git", "-C", str(repo), "rev-parse", "HEAD"],
+                          capture_output=True, text=True).stdout.strip()
+    return f"{RAW_HOST}/{head}/{BP}"
 
 
 def _issuer(tmp_path, with_vac=True, mangle=None) -> pathlib.Path:
@@ -45,12 +59,16 @@ def _cfg(repo, url="https://github.com/example/toy-issuer") -> dict:
 
 
 def test_valid_committed_bundle_is_accepted(tmp_path):
-    doc = build([_cfg(_issuer(tmp_path))])
+    repo = _issuer(tmp_path)
+    doc = build([_cfg(repo)])
     assert [p["name"] for p in doc["pending"]] == []
     (e,) = doc["entries"]
     assert e["name"] == "toy-issuer/toy-2026-08-14"
     assert e["issuer"] == "example/toy-issuer"
     assert e["issuer_commit"] == "f1e2d3c"  # from vac.json, not from git
+    # ...and separately, the commit the registry actually hashed. The manifest
+    # states a claim; this records the fact the URLs and pins are anchored to.
+    assert re.match(r"^[0-9a-f]{40}$", e["pinned_commit"]), e["pinned_commit"]
     assert e["bundle_path"] == BP
     assert e["status"] == "accepted" and e["challenges"] == []
     assert [a["path"] for a in e["artifacts"]] == [
@@ -61,9 +79,12 @@ def test_valid_committed_bundle_is_accepted(tmp_path):
         "evidence/operators.json", "evidence/raw_results.jsonl",
         "evidence/results.json", "evidence/standings.json",
         "evidence/suite-fingerprint.json", "vac.json"]
+    raw = _raw(repo)
     for a in e["artifacts"]:
         assert a["sha256"] == _sha256(FIX / "valid" / a["path"])
-        assert a["url"] == f"{RAW}/{a['path']}"
+        assert a["url"] == f"{raw}/{a['path']}"
+        # the ref between repo and path must be an immutable commit sha
+        assert re.match(rf"^{RAW_HOST}/[0-9a-f]{{40}}/", a["url"]), a["url"]
     # SPEC.md section 5: the replay gate is not skipped silently — every
     # entry says where each gate runs
     assert "replay.yml" in e["gates"]["semantic"]
@@ -140,9 +161,11 @@ def test_registry_regenerates_byte_identically(tmp_path):
 
 
 def _served_by(repo: pathlib.Path):
+    raw = _raw(repo)
+
     def fetch(url: str) -> bytes:
-        assert url.startswith(RAW + "/"), url
-        rel = url[len(RAW) + 1:]
+        assert url.startswith(raw + "/"), url
+        rel = url[len(raw) + 1:]
         blob = subprocess.run(
             ["git", "-C", str(repo), "cat-file", "blob", f"HEAD:{BP}/{rel}"],
             capture_output=True)
@@ -240,3 +263,35 @@ def test_committed_registry_is_wellformed():
             assert a["url"].startswith("https://raw.githubusercontent.com/")
     for p in doc["pending"]:
         assert p["reason"]
+
+
+def test_a_sha256_pin_on_a_mutable_ref_is_refused():
+    """The defect this registry shipped with, now a failing condition.
+
+    Every artifact was addressed at `main` while carrying a sha256 pin. That
+    is a promise that expires on the issuer's next push, and on 2026-08-21 it
+    had: two entries served bytes that no longer matched their own pins, and
+    the daily verification had been failing for four days. A pin and a mutable
+    ref cannot both be authoritative.
+    """
+    doc = {"entries": [{
+        "name": "toy/entry",
+        "artifacts": [
+            {"path": "vac.json", "sha256": "0" * 64,
+             "url": f"{RAW_HOST}/main/{BP}/vac.json"},
+            {"path": "ok.json", "sha256": "0" * 64,
+             "url": f"{RAW_HOST}/{'a' * 40}/{BP}/ok.json"},
+        ]}]}
+    failures = _mutable_ref_failures(doc)
+    assert len(failures) == 1, failures
+    assert "mutable-ref" in failures[0]
+    assert "vac.json" in failures[0]
+    assert "'main'" in failures[0]
+
+
+def test_the_mutable_ref_guard_passes_a_fully_pinned_registry():
+    doc = {"entries": [{
+        "name": "toy/entry",
+        "artifacts": [{"path": "vac.json", "sha256": "0" * 64,
+                       "url": f"{RAW_HOST}/{'b' * 40}/{BP}/vac.json"}]}]}
+    assert _mutable_ref_failures(doc) == []

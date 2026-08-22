@@ -136,8 +136,18 @@ code. `python -m vac.registry` regenerates it mechanically by scanning the
 configured local issuer checkouts at their **committed HEAD trees** -
 hashing committed blobs, never the working tree. And running the
 structural verifier over every configured bundle. Each accepted entry pins
-name, issuer, `issuer_commit`, every artifact's sha256, and the raw URL on
-`main` those bytes must be servable from. A configured bundle that is not
+name, issuer, `issuer_commit`, `pinned_commit`, every artifact's sha256, and
+a **commit-addressed** raw URL those exact bytes are servable from. The two
+commits are different kinds of thing and are kept apart deliberately:
+`issuer_commit` is the issuer's own declaration, carried from the bundle
+manifest, while `pinned_commit` is the commit the registry actually read and
+hashed. Artifact URLs are addressed at `pinned_commit`, never at a branch. A
+sha256 pin on a mutable ref like `main` is a promise that expires silently on
+the issuer's next push, and in August 2026 it did: two entries served bytes
+that no longer matched their own pins while the registry still advertised them
+as replayable. `check-fetched` now refuses any pinned URL whose ref is not a
+full commit sha, and generation refuses a checkout HEAD that is on no remote
+branch. A configured bundle that is not
 yet admissible (emitter not landed, or verification naming failures) is
 recorded **pending with its exact reason**: never fabricated, never
 silently dropped. Acceptance stays two-gated per SPEC.md §5, and each gate

@@ -7,6 +7,7 @@
    "issuer": "egnaro9/agent-certlab",
    "issuer_repo": "https://github.com/egnaro9/agent-certlab",
    "issuer_commit": "7213f39",
+   "pinned_commit": "78ca5f31f329cf809ae48ff80751e31df369e620",
    "bundle_path": "certifications/aider-intervals-2026-08-14",
    "capability": "repair-seeded-defects:intervals \u2014 aider-headless fixed 6/6 seeded defects under policy",
    "subject": "agent: aider-headless",
@@ -22,17 +23,17 @@
     {
      "path": "CONTRACT.md",
      "sha256": "424d276e523ce82a42dd2581533a0a36fdd3d0c8717d25f98670ec1d61036956",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/aider-intervals-2026-08-14/CONTRACT.md"
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/aider-intervals-2026-08-14/CONTRACT.md"
     },
     {
      "path": "bundle.json",
      "sha256": "d6591c34042124fa96f0a6cc5665e9d66a1d5996061e1a80b83f4de98e769603",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/aider-intervals-2026-08-14/bundle.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/aider-intervals-2026-08-14/bundle.json"
     },
     {
      "path": "vac.json",
      "sha256": "d2a0a0250c2d1ab98df695bc3b6219516406a1ef736aa48cbb0ef84234ac0124",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/aider-intervals-2026-08-14/vac.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/aider-intervals-2026-08-14/vac.json"
     }
    ],
    "status": "accepted",
@@ -47,6 +48,7 @@
    "issuer": "egnaro9/agent-certlab",
    "issuer_repo": "https://github.com/egnaro9/agent-certlab",
    "issuer_commit": "7213f39",
+   "pinned_commit": "78ca5f31f329cf809ae48ff80751e31df369e620",
    "bundle_path": "certifications/aider-ledger-2026-08-14",
    "capability": "repair-seeded-defects:ledger \u2014 aider-headless fixed 6/6 seeded defects under policy",
    "subject": "agent: aider-headless",
@@ -62,17 +64,17 @@
     {
      "path": "CONTRACT.md",
      "sha256": "1dd22dd50afb209af96b8af4d1cc36786194ae46ded17ff82e03c9ac1773da6b",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/aider-ledger-2026-08-14/CONTRACT.md"
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/aider-ledger-2026-08-14/CONTRACT.md"
     },
     {
      "path": "bundle.json",
      "sha256": "bb5112d6687c4cf5b269cc377f7a0ce6ed9c1261ce0b473682a8371ef418fb5b",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/aider-ledger-2026-08-14/bundle.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/aider-ledger-2026-08-14/bundle.json"
     },
     {
      "path": "vac.json",
      "sha256": "fb51a797f8d7dc7dfd62c8414df47fd5d4f803def6065029d5fad1f6f4824d1f",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/aider-ledger-2026-08-14/vac.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/aider-ledger-2026-08-14/vac.json"
     }
    ],
    "status": "accepted",
@@ -87,6 +89,7 @@
    "issuer": "egnaro9/agent-certlab",
    "issuer_repo": "https://github.com/egnaro9/agent-certlab",
    "issuer_commit": "7954393",
+   "pinned_commit": "78ca5f31f329cf809ae48ff80751e31df369e620",
    "bundle_path": "certifications/aider-machine-2026-08-14",
    "capability": "repair-seeded-defects:machine \u2014 aider-headless fixed 6/6 seeded defects under policy",
    "subject": "agent: aider-headless",
@@ -102,17 +105,17 @@
     {
      "path": "CONTRACT.md",
      "sha256": "ab3c4d042ea97f4feb5e721d24ad265d2638e17a4e473899721e4c25bda1bcd6",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/aider-machine-2026-08-14/CONTRACT.md"
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/aider-machine-2026-08-14/CONTRACT.md"
     },
     {
      "path": "bundle.json",
      "sha256": "495c91b4593642d9eec281ea0c8d926ee1445e6ecd5cfb71fc31d52004c210ba",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/aider-machine-2026-08-14/bundle.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/aider-machine-2026-08-14/bundle.json"
     },
     {
      "path": "vac.json",
      "sha256": "b05a6e48ce1e783deb991631edc2ccefc709365d3be9a67cd485a302aa483fe7",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/aider-machine-2026-08-14/vac.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/aider-machine-2026-08-14/vac.json"
     }
    ],
    "status": "accepted",
@@ -127,6 +130,7 @@
    "issuer": "egnaro9/agent-certlab",
    "issuer_repo": "https://github.com/egnaro9/agent-certlab",
    "issuer_commit": "4330321",
+   "pinned_commit": "78ca5f31f329cf809ae48ff80751e31df369e620",
    "bundle_path": "certifications/claude-code-2026-08-14",
    "capability": "repair-seeded-defects:intervals \u2014 claude-code-headless fixed 6/6 seeded defects under policy",
    "subject": "agent: claude-code-headless",
@@ -142,17 +146,17 @@
     {
      "path": "CONTRACT.md",
      "sha256": "01b85efba64ae34e2fc9716ba4f791fb323674fbf9ff13df5b420c98d1636f90",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/claude-code-2026-08-14/CONTRACT.md"
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/claude-code-2026-08-14/CONTRACT.md"
     },
     {
      "path": "bundle.json",
      "sha256": "7efe5c8051dcdfa2836176c70e7682a625346bafa34aed8d4752cdb078187ca3",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/claude-code-2026-08-14/bundle.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/claude-code-2026-08-14/bundle.json"
     },
     {
      "path": "vac.json",
      "sha256": "885b607f0e56ae059e673bebb1d973ef0da7550ac98c24f5dc58f4d3a716606a",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/claude-code-2026-08-14/vac.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/claude-code-2026-08-14/vac.json"
     }
    ],
    "status": "accepted",
@@ -167,6 +171,7 @@
    "issuer": "egnaro9/agent-certlab",
    "issuer_repo": "https://github.com/egnaro9/agent-certlab",
    "issuer_commit": "7ec0f94",
+   "pinned_commit": "78ca5f31f329cf809ae48ff80751e31df369e620",
    "bundle_path": "certifications/claude-code-cloud-2026-08-14",
    "capability": "repair-seeded-defects:intervals \u2014 claude-code-headless fixed 6/6 seeded defects under policy",
    "subject": "agent: claude-code-headless",
@@ -182,17 +187,17 @@
     {
      "path": "CONTRACT.md",
      "sha256": "104fb4c1a7aa609c094165140555b4ae06630b2fb14edde2e394316285e71a7c",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/claude-code-cloud-2026-08-14/CONTRACT.md"
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/claude-code-cloud-2026-08-14/CONTRACT.md"
     },
     {
      "path": "bundle.json",
      "sha256": "05703dca2f110f30f4d2c581f986f9a5246769acf94ce38689de4851d7fdb6aa",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/claude-code-cloud-2026-08-14/bundle.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/claude-code-cloud-2026-08-14/bundle.json"
     },
     {
      "path": "vac.json",
      "sha256": "70c89e63e46e2c163b255585fcbce5bb4cf624e7297cb1c76e5d2c17e288fb1e",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/claude-code-cloud-2026-08-14/vac.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/claude-code-cloud-2026-08-14/vac.json"
     }
    ],
    "status": "accepted",
@@ -207,6 +212,7 @@
    "issuer": "egnaro9/agent-certlab",
    "issuer_repo": "https://github.com/egnaro9/agent-certlab",
    "issuer_commit": "8065d6e",
+   "pinned_commit": "78ca5f31f329cf809ae48ff80751e31df369e620",
    "bundle_path": "certifications/claude-code-ledger-2026-08-14",
    "capability": "repair-seeded-defects:ledger \u2014 claude-code-headless fixed 6/6 seeded defects under policy",
    "subject": "agent: claude-code-headless",
@@ -222,17 +228,17 @@
     {
      "path": "CONTRACT.md",
      "sha256": "ba9be44c6c9931f05b3435c2ac35c7138a15cb15850b26dcb159356b6bb3ce23",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/claude-code-ledger-2026-08-14/CONTRACT.md"
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/claude-code-ledger-2026-08-14/CONTRACT.md"
     },
     {
      "path": "bundle.json",
      "sha256": "a0c5dc73096c0572f2debb279601aaa2c5f4ac8a774c4f47ce403f1b166db04a",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/claude-code-ledger-2026-08-14/bundle.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/claude-code-ledger-2026-08-14/bundle.json"
     },
     {
      "path": "vac.json",
      "sha256": "2ff0c87383db920186417a1977eaa35acc1e049515d28b5e4431a84eb643c8bb",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/claude-code-ledger-2026-08-14/vac.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/claude-code-ledger-2026-08-14/vac.json"
     }
    ],
    "status": "accepted",
@@ -247,6 +253,7 @@
    "issuer": "egnaro9/agent-certlab",
    "issuer_repo": "https://github.com/egnaro9/agent-certlab",
    "issuer_commit": "7954393",
+   "pinned_commit": "78ca5f31f329cf809ae48ff80751e31df369e620",
    "bundle_path": "certifications/claude-code-machine-2026-08-14",
    "capability": "repair-seeded-defects:machine \u2014 claude-code-headless fixed 6/6 seeded defects under policy",
    "subject": "agent: claude-code-headless",
@@ -262,17 +269,17 @@
     {
      "path": "CONTRACT.md",
      "sha256": "647add46c149a58bdd9528248422686d815c9a1215f3a667b7fb7452c8f7c7e3",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/claude-code-machine-2026-08-14/CONTRACT.md"
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/claude-code-machine-2026-08-14/CONTRACT.md"
     },
     {
      "path": "bundle.json",
      "sha256": "bd21e628a5c057babf4e55112ce778cec343b8cee529052af4f303b27482780e",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/claude-code-machine-2026-08-14/bundle.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/claude-code-machine-2026-08-14/bundle.json"
     },
     {
      "path": "vac.json",
      "sha256": "053d4d31d54e02a536f5e2eb9d45d96acfb613ad0d7eead8722c644d9248e91f",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/main/certifications/claude-code-machine-2026-08-14/vac.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/claude-code-machine-2026-08-14/vac.json"
     }
    ],
    "status": "accepted",
@@ -287,6 +294,7 @@
    "issuer": "egnaro9/crashkit",
    "issuer_repo": "https://github.com/egnaro9/crashkit",
    "issuer_commit": "a71da57",
+   "pinned_commit": "18f74ff552858095f496f50c57334a1f3e4c4d7b",
    "bundle_path": "vac",
    "capability": "crashkit's no-LLM-judge battery grading is deterministic end-to-end and its graders demonstrably bite: the adversarial and agentic twin-control mock runs score exactly 0.0 (safe) and 1.0 (vulnerable) severity-weighted vulnerability, the reused 35-task model-drift suite grades 1.0 accuracy on its stable mock, the never-touches grading-replay path re-earns 0.0/1.0 from the committed answer sets alone, and a 10-run flaky-mock variance report aggregates reproducibly \u2014 every declared number recomputable offline from committed per-case rows",
    "subject": "suite-archetype: crashkit mock/replay grading path: adversarial + agentic + reused model-drift SUITE batteries under gradecore",
@@ -318,208 +326,47 @@
     {
      "path": "adversarial_safe.eval_run.json",
      "sha256": "632f37dae0d2739211eec7c96eabaec2b55e17c12809a9b8ff219a222f0d179d",
-     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/main/vac/adversarial_safe.eval_run.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/18f74ff552858095f496f50c57334a1f3e4c4d7b/vac/adversarial_safe.eval_run.json"
     },
     {
      "path": "adversarial_vulnerable.eval_run.json",
      "sha256": "f63c6db88169e9a5ec54738f08709a2e91592a5f654beffb0d1facaddf2b6b7c",
-     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/main/vac/adversarial_vulnerable.eval_run.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/18f74ff552858095f496f50c57334a1f3e4c4d7b/vac/adversarial_vulnerable.eval_run.json"
     },
     {
      "path": "agentic_safe.eval_run.json",
      "sha256": "d144ce6cfef1fdd1e99863611e4769669392fb451292203b2ffad497bee32179",
-     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/main/vac/agentic_safe.eval_run.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/18f74ff552858095f496f50c57334a1f3e4c4d7b/vac/agentic_safe.eval_run.json"
     },
     {
      "path": "agentic_vulnerable.eval_run.json",
      "sha256": "488aac3787d572f0f261b0bc738ded555385dd4411e765acec47d330efc3997f",
-     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/main/vac/agentic_vulnerable.eval_run.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/18f74ff552858095f496f50c57334a1f3e4c4d7b/vac/agentic_vulnerable.eval_run.json"
     },
     {
      "path": "grade_replay_safe.eval_run.json",
      "sha256": "4cafacb21e7a2887eeddd33c1dac9eab77946efe2303e9d93d11dfeb307c2760",
-     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/main/vac/grade_replay_safe.eval_run.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/18f74ff552858095f496f50c57334a1f3e4c4d7b/vac/grade_replay_safe.eval_run.json"
     },
     {
      "path": "grade_replay_vulnerable.eval_run.json",
      "sha256": "11d375ab7112cccb6685be1780af2f134cfc9711d1f2b31a07df1f077c72e97c",
-     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/main/vac/grade_replay_vulnerable.eval_run.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/18f74ff552858095f496f50c57334a1f3e4c4d7b/vac/grade_replay_vulnerable.eval_run.json"
     },
     {
      "path": "suite_stable.eval_run.json",
      "sha256": "8373704a0961a34c8a95f2887bd03660316385c5bf58e527ce0ae4b936ffc13e",
-     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/main/vac/suite_stable.eval_run.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/18f74ff552858095f496f50c57334a1f3e4c4d7b/vac/suite_stable.eval_run.json"
     },
     {
      "path": "vac.json",
      "sha256": "7e3ebeaee89a185e543cedf80a09536f617e39d03e17728b9db38783dc56b6e3",
-     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/main/vac/vac.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/18f74ff552858095f496f50c57334a1f3e4c4d7b/vac/vac.json"
     },
     {
      "path": "variance_flaky_n10.report.json",
      "sha256": "aa574b4dfd397cca040c76fd0c20c972a68db674d79e461da48e74b6246ad672",
-     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/main/vac/variance_flaky_n10.report.json"
-    }
-   ],
-   "status": "accepted",
-   "challenges": [],
-   "gates": {
-    "structural": "python -m vac.verify \u2014 clean at registry generation; re-proven against the fetched artifacts before every pages deploy",
-    "semantic": "NOT run at generation \u2014 delegated to .github/workflows/replay.yml (workflow_dispatch + weekly), which clones the issuer at issuer_commit and re-earns every verdict with the issuer's own regrader"
-   }
-  },
-  {
-   "name": "evalmut/vac",
-   "issuer": "egnaro9/evalmut",
-   "issuer_repo": "https://github.com/egnaro9/evalmut",
-   "issuer_commit": "bf512ec",
-   "bundle_path": "vac",
-   "capability": "eval-suite mutation testing over a mined operator battery: gradecore's own grader-family suite scores 32/35 with 3 holes, and the committed ports of promptfoo's documented deterministic assertions score 5/11 with 6 holes \u2014 every number recomputable from committed per-mutation rows",
-   "subject": "suite-archetype: demos/dogfood_gradecore.py + external/promptfoo_suite.py under the evalmut mined-operator battery",
-   "summary": {
-    "dogfood_gradecore": {
-     "score_3": 0.914,
-     "caught": 32,
-     "applied": 35,
-     "na": 150,
-     "holes": {
-      "blind": 1,
-      "coverage_gap": 2
-     }
-    },
-    "promptfoo_ports": {
-     "score_3": 0.455,
-     "caught": 5,
-     "applied": 11,
-     "na": 79,
-     "holes": {
-      "vacuous": 2,
-      "blind": 2,
-      "coverage_gap": 2
-     }
-    },
-    "operators": 18
-   },
-   "profiles": [
-    "evalmut-run-v1"
-   ],
-   "artifacts": [
-    {
-     "path": "dogfood_gradecore.json",
-     "sha256": "3c93ddb9b85509be4f3c58da169f5734fd2ee383b81476e0a9046d557076ff8b",
-     "url": "https://raw.githubusercontent.com/egnaro9/evalmut/main/vac/dogfood_gradecore.json"
-    },
-    {
-     "path": "dogfood_gradecore.txt",
-     "sha256": "b6863732bce748554455d3f8bd138c848f4ac47a3fd144f3c1bb694739feeaff",
-     "url": "https://raw.githubusercontent.com/egnaro9/evalmut/main/vac/dogfood_gradecore.txt"
-    },
-    {
-     "path": "operators.json",
-     "sha256": "0384713699df804e1867a2406fb7e5d631ef891152d018b4d778f63b8fb957ab",
-     "url": "https://raw.githubusercontent.com/egnaro9/evalmut/main/vac/operators.json"
-    },
-    {
-     "path": "promptfoo_findings.json",
-     "sha256": "03f51bf5530c6224d17ca24a2f17420534c7052a18b9585cc1a5648ef9c17e8e",
-     "url": "https://raw.githubusercontent.com/egnaro9/evalmut/main/vac/promptfoo_findings.json"
-    },
-    {
-     "path": "promptfoo_findings.txt",
-     "sha256": "389de693c5747ac9c987cefac88da9e4885ae6b1f022305af2eb71c01523e83f",
-     "url": "https://raw.githubusercontent.com/egnaro9/evalmut/main/vac/promptfoo_findings.txt"
-    },
-    {
-     "path": "vac.json",
-     "sha256": "d1cae80412e79d9e08cafea8b89f466a99e235084d2bd293e00a3783e0196e8d",
-     "url": "https://raw.githubusercontent.com/egnaro9/evalmut/main/vac/vac.json"
-    }
-   ],
-   "status": "accepted",
-   "challenges": [],
-   "gates": {
-    "structural": "python -m vac.verify \u2014 clean at registry generation; re-proven against the fetched artifacts before every pages deploy",
-    "semantic": "NOT run at generation \u2014 delegated to .github/workflows/replay.yml (workflow_dispatch + weekly), which clones the issuer at issuer_commit and re-earns every verdict with the issuer's own regrader"
-   }
-  },
-  {
-   "name": "model-drift/vac",
-   "issuer": "egnaro9/model-drift",
-   "issuer_repo": "https://github.com/egnaro9/model-drift",
-   "issuer_commit": "643d834",
-   "bundle_path": "vac",
-   "capability": "the public drift board's derivation layer recomputes deterministically and byte-identically offline from the repo-committed per-run rows: the standings table (17 rows \u2014 accuracy, delta vs previous run, verdict, and the min-detectable-regression floor 100/graded-calls), the generated narrative paragraph (3 claims fired), and the per-task flip / probe-alarm analysis (78 repeat offenders, 129 probe alarms), under frozen suite 2026-07-v3 (35 tasks, mechanical graders only, no LLM judge)",
-   "subject": "suite-archetype: model-drift public board \u2014 the derivation layer over dashboard/metrics.json",
-   "summary": {
-    "standings": {
-     "rows": 17,
-     "regressed": 6,
-     "improved": 0,
-     "unchanged": 11,
-     "baseline": 0,
-     "no_data": 0
-    },
-    "stored_rows": {
-     "series": 17,
-     "points": 511
-    },
-    "suite": {
-     "tasks": 35,
-     "min_detectable_pts_full_grade": 2.857
-    },
-    "flips": {
-     "probe_alarms": 129,
-     "repeat_offenders": 78,
-     "one_offs": 55,
-     "models_with_enough_history": 17
-    },
-    "narrative": {
-     "claims_fired": 3
-    }
-   },
-   "profiles": [
-    "modeldrift-board-v1"
-   ],
-   "artifacts": [
-    {
-     "path": "RESULTS.md",
-     "sha256": "85478db50e66e5d366056097f0882cb62a44b544a80979fa05e33e70d85bf5e6",
-     "url": "https://raw.githubusercontent.com/egnaro9/model-drift/main/vac/RESULTS.md"
-    },
-    {
-     "path": "flips.json",
-     "sha256": "f2f29ab52d2bb0cef55ab56031cf812237d7ced86770068a82ff717dc6282cf1",
-     "url": "https://raw.githubusercontent.com/egnaro9/model-drift/main/vac/flips.json"
-    },
-    {
-     "path": "metrics.json",
-     "sha256": "dd1c7f7df7d542c211ead790688d2ccb3997d388d0390a520fcc8a9a58b89ad5",
-     "url": "https://raw.githubusercontent.com/egnaro9/model-drift/main/vac/metrics.json"
-    },
-    {
-     "path": "models.json",
-     "sha256": "00792e5b1c54543b40e657729c6b94ea251c59b4d19ff94eaf5733d17d6a1116",
-     "url": "https://raw.githubusercontent.com/egnaro9/model-drift/main/vac/models.json"
-    },
-    {
-     "path": "narrative.json",
-     "sha256": "51b4a5b2b179bece3114e28d3e17429e55e287bedc1875b2909763c9be88af50",
-     "url": "https://raw.githubusercontent.com/egnaro9/model-drift/main/vac/narrative.json"
-    },
-    {
-     "path": "standings.json",
-     "sha256": "4add0ef4169992090a52c3d9d66e03741b2f1bcd6d3de486f11aedf6b09eae1d",
-     "url": "https://raw.githubusercontent.com/egnaro9/model-drift/main/vac/standings.json"
-    },
-    {
-     "path": "suite-fingerprint.json",
-     "sha256": "88369aede328e1292f76c65dfe61cbab655efb633e35afc94c0b7e437e79106b",
-     "url": "https://raw.githubusercontent.com/egnaro9/model-drift/main/vac/suite-fingerprint.json"
-    },
-    {
-     "path": "vac.json",
-     "sha256": "639fed8732d90604eeef3eccec7c4ac72278733df1332c7a14bb2a8f2e6432df",
-     "url": "https://raw.githubusercontent.com/egnaro9/model-drift/main/vac/vac.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/18f74ff552858095f496f50c57334a1f3e4c4d7b/vac/variance_flaky_n10.report.json"
     }
    ],
    "status": "accepted",
@@ -534,6 +381,7 @@
    "issuer": "egnaro9/reference-fleet",
    "issuer_repo": "https://github.com/egnaro9/reference-fleet",
    "issuer_commit": "b93ab29",
+   "pinned_commit": "7cd69e73676a44be190f9072a8a5d3ca02b35e32",
    "bundle_path": "board/vac",
    "capability": "suite-archetype detection rates over certified defect models",
    "subject": "suite-archetype: suite-archetype set: naive-contains, gradecore (diligent), promptfoo (docs-style asserts)",
@@ -573,17 +421,17 @@
     {
      "path": "raw_results.jsonl",
      "sha256": "8a41dcffaae8e5a5da94a759e535684dfd80052e510d3c860af33b5b269f877c",
-     "url": "https://raw.githubusercontent.com/egnaro9/reference-fleet/main/board/vac/raw_results.jsonl"
+     "url": "https://raw.githubusercontent.com/egnaro9/reference-fleet/7cd69e73676a44be190f9072a8a5d3ca02b35e32/board/vac/raw_results.jsonl"
     },
     {
      "path": "results.json",
      "sha256": "6a6c5be75738155543057a4a7a1ed717564cb9b74d681ec52e18a039c779f3cd",
-     "url": "https://raw.githubusercontent.com/egnaro9/reference-fleet/main/board/vac/results.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/reference-fleet/7cd69e73676a44be190f9072a8a5d3ca02b35e32/board/vac/results.json"
     },
     {
      "path": "vac.json",
      "sha256": "64a1be87cb1c461e3bc5c83cf51d971d3dc2e141d80b4d85f85700ce9f79a091",
-     "url": "https://raw.githubusercontent.com/egnaro9/reference-fleet/main/board/vac/vac.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/reference-fleet/7cd69e73676a44be190f9072a8a5d3ca02b35e32/board/vac/vac.json"
     }
    ],
    "status": "accepted",
@@ -594,5 +442,20 @@
    }
   }
  ],
- "pending": []
+ "pending": [
+  {
+   "name": "evalmut/vac",
+   "issuer": "egnaro9/evalmut",
+   "issuer_repo": "https://github.com/egnaro9/evalmut",
+   "bundle_path": "vac",
+   "reason": "refused at generation: structural: evidence-unchecked: dogfood_fixtures.json, promptfoo_fixtures.json: listed in evidence but read by no check \u2014 fix the committed bundle and re-run python -m vac.registry"
+  },
+  {
+   "name": "model-drift/vac",
+   "issuer": "egnaro9/model-drift",
+   "issuer_repo": "https://github.com/egnaro9/model-drift",
+   "bundle_path": "vac",
+   "reason": "refused at generation: structural: raw-aggregate-mismatch: standings.json: google:gemini-3.1-pro: when declared '2026-08-08', recomputed '2026-08-09'; structural: raw-aggregate-mismatch: standings.json: google:gemini-3.1-pro: acc declared 0.7714, recomputed 0.4; structural: raw-aggregate-mismatch: standings.json: google:gemini-3.1-pro: delta declared -0.1715, recomputed -0.3714; structural: raw-aggregate-mismatch: standings.json: google:gemini-3.5-flash: when declared '2026-08-09', recomputed '2026-08-14'; structural: raw-aggregate-mismatch: standings.json: google:gemini-3.5-flash: acc declared 0.9714, recomputed 0.0286; structural: raw-aggregate-mismatch: standings.json: google:gemini-3.5-flash: delta declared 0.0, recomputed -0.9428; structural: raw-aggregate-mismatch: standings.json: google:gemini-3.5-flash: verdict declared 'unchanged', recomputed 'regressed'; structural: raw-aggregate-mismatch: standings.json: google:gemini-3.1-flash-lite: when declared '2026-08-09', recomputed '2026-08-16'; structural: raw-aggregate-mismatch: standings.json: google:gemini-3.1-flash-lite: acc declared 0.8571, recomputed 0.0286; structural: raw-aggregate-mismatch: standings.json: google:gemini-3.1-flash-lite: delta declared -0.0858, recomputed 0.0; structural: raw-aggregate-mismatch: standings.json: google:gemini-3.1-flash-lite: verdict declared 'regressed', recomputed 'unchanged'; structural: raw-aggregate-mismatch: standings.json: google:gemini-3.1-flash-lite: graded declared None, recomputed 35; structural: raw-aggregate-mismatch: standings.json: google:gemini-3.1-flash-lite: min_detectable_pts declared None, recomputed 2.857; structural: raw-aggregate-mismatch: RESULTS.md: does not re-render byte-identically from the recomputed standings rows \u2014 fix the committed bundle and re-run python -m vac.registry"
+  }
+ ]
 }
