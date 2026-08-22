@@ -378,17 +378,20 @@ look at beyond the four hand-found defects." The paper has just spent a page
 correcting four-of-four down to three-of-four; an adjacent number that only
 works at four-of-four undoes the correction.
 
-### S11. The quote the paper's footnote retracts is still live on the public branch
-main.tex:220 correctly footnotes that an earlier draft attributed
+### S11. WITHDRAWN 2026-08-18. The retraction was the error, not the quote
+**Original finding, as filed and now known wrong:** main.tex:220 footnotes that an earlier draft attributed
 "documentation that refutes an auditor is rarer than the bugs" to Giulio, that
 he did not write it, and that the misattribution is corrected rather than
 dropped. `git grep 'documentation that refutes an auditor' origin/main`
 returns it still presented as **"his remark"** in
 `paper/paper.html:42` and `paper/paper.md:65`, on the branch the arXiv paper
 links to.
-**Fix:** fix those two files before posting. Making the correction permanent
-in the paper sharpens rather than softens the fact that the fabricated
-attribution is live two files away.
+**WITHDRAWN, dev.to comment `3d3lp`, 15 August 2026; corrected in `81dfc7a`, 2026-08-18.** This finding assumed the footnote's retraction was
+correct. It was not. Giulio did write the sentence, publicly, and corrected the
+record himself. The original attribution was right, so nothing was fabricated
+and `paper.html:42` / `paper.md:65` were never serving a false quote. Both files
+now carry an explicit correction note. The footnote, not the quote, was the
+defect, and it is gone.
 
 ### S12. PIT: an uncited superlative, and a citation that does not support its sentence
 main.tex:629 "PIT, **the most widely used** Java mutation engine": the only
@@ -498,8 +501,8 @@ operators); Martin and Xie; Ami et al.'s muSE; Gorz et al.; **Orgard et al.**
 (a NEGATIVE claim, "says nothing about mutating a gate"); RFC 9334's role
 vocabulary; Biderman. Every DOI in `refs.bib` resolves in Crossref with
 matching metadata, so the **citations** are sound; the **figures and quoted
-strings inside them** are not verified. Given that a prior pass caught a
-fabricated quote, these are the highest-value remaining target, and Kumar is
+strings inside them** are not verified. Given that a prior pass raised a
+quote concern that was later withdrawn, these are the highest-value remaining target, and Kumar is
 the one I would pull first: a novelty withdrawal that cites a paper nobody has
 read at operator granularity is where this paper's own thesis can rebound on it.
 
@@ -839,8 +842,9 @@ de-identifying one sentence is not consent for the other three namings, and
 `SUBMISSION.md` item 1 now correctly labels this blocking rather than "not
 blocking". arXiv cannot be withdrawn.
 
-Bearing directly on B9, S11 is also still live and I re-measured it: the
-fabricated quote is served right now at
+S11 is WITHDRAWN (dev.to comment `3d3lp`, 15 August 2026; corrected in `81dfc7a`, 2026-08-18): there was no fabricated
+quote. What follows was measured under the mistaken premise and is retained only
+as a record of the reachability check, not of any defect. The files are at
 `raw.githubusercontent.com/.../paper/paper.html` (HTTP 200) and `paper/paper.md`
 (HTTP 200), with a 404 control proving those are real fetches. Those same two
 public files also publish the mojibake anecdote naming him verbatim. So
@@ -898,10 +902,10 @@ correct, so the page count was the only stale number in it.
 1. **B9, consent. CLOSED 2026-08-18, no longer blocking.** The written yes is on
    record, granted 2026-08-18 19:34Z, written consent on file. No fallback to "an outside
    engineer" is needed: he asked to be named.
-2. **S11, the fabricated quote still served publicly** at `paper/paper.html:42`
-   and `paper/paper.md:65`, plus `paper/arxiv/main.tex.bak:208` tracked. Outside
-   the two-file edit scope. Until those are edited the paper's retraction is
-   contradicted by the repository it cites.
+2. **S11. WITHDRAWN 2026-08-18, not open.** There was no fabricated quote:
+   Giulio wrote the sentence publicly and corrected the record (dev.to comment `3d3lp`, 15 August 2026; corrected in `81dfc7a`, 2026-08-18).
+   `paper.html:42` and `paper.md:65` now carry the correction, and
+   `main.tex.bak` is no longer tracked.
 3. **B7's 8-digit hashes**, three of them against 89 seven-digit. Reported as
    fixed; not fixed.
 4. **`main.aux` in this directory is stale.** Rebuild with
