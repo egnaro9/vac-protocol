@@ -221,7 +221,7 @@ Table 5 names. Do not write "twenty reasons": PR #9 says twenty, and 13 is the
 arithmetic ceiling for that bundle (13 evidence entries), measured at both
 HEAD and `92e4548`.
 
-### B9. Consent for naming a living third party is not on record
+### B9. Consent for naming a living third party is ON RECORD (closed 2026-08-18)
 **Claim:** main.tex:196-197, 224-227 and the Acknowledgements name Giulio
 D'Erme, characterise his findings, and quote his PR body.
 
@@ -230,9 +230,9 @@ publicly supported (`GiulioDER/cca-audit` exists, not a fork, created
 2026-05-19; the quote at main.tex:218-220 is a verbatim substring of PR #1's
 body). But main.tex:224-227, the mojibake anecdote, is the one claim in the
 paper about a named private individual with **no public source**, and the
-paper says so itself. `paper/arxiv/NEXT_STEPS.md:89` records "Giulio's consent
-for the named acknowledgment. Email sent 2026-08-18 16:11Z" filed under
-"Not blocking", and line 77 records "He has not replied yet."
+paper says so itself. The consent request went out 2026-08-18 16:11Z and was
+granted 2026-08-18 19:34Z, written consent on file: he asked to be named and cited as
+Giulio D'Erme, in the wording already in the paper, and declined co-authorship.
 
 **Fix:** get his written yes before submitting, or de-identify that one
 sentence ("the same byte-identity check caught mojibake in an auditor's output
@@ -827,10 +827,9 @@ emits `evidence-unchecked` buried among **14** reasons. At `81f50cf` both arms
 give 0 CR files and exit 0. All **9** `runs-on` lines across the four workflow
 files at `92e4548` are `ubuntu-latest`, none other.
 
-**B9. STILL OPEN. This is the one blocker the fix pass did not close, and it
-cannot be closed from inside these two files.** `NEXT_STEPS.md:77` still records
-"He has not replied yet." and `:89` records the consent request sent
-2026-08-18 16:11Z. He remains named at `main.tex:198`, at `main.tex:1779` in the
+**B9. CLOSED 2026-08-18, by the written yes this pass was waiting on.** The
+consent request sent 2026-08-18 16:11Z was granted 2026-08-18 19:34Z, written consent on file.
+He remains named at `main.tex:198`, at `main.tex:1779` in the
 Acknowledgements, and as the author of `derme2026pr1` in `refs.bib`. What the fix
 pass did change is real and worth keeping: the mojibake anecdote, the single
 claim in the paper that rested on private correspondence, is now unattributed,
@@ -896,9 +895,9 @@ correct, so the page count was the only stale number in it.
 
 ### What is still open after this pass
 
-1. **B9, consent, blocking.** Not closable from `main.tex`/`SUBMISSION.md`. Wait
-   for his written yes, or fall back to "an outside engineer" throughout
-   including the Acknowledgements and the `derme2026pr1` citation.
+1. **B9, consent. CLOSED 2026-08-18, no longer blocking.** The written yes is on
+   record, granted 2026-08-18 19:34Z, written consent on file. No fallback to "an outside
+   engineer" is needed: he asked to be named.
 2. **S11, the fabricated quote still served publicly** at `paper/paper.html:42`
    and `paper/paper.md:65`, plus `paper/arxiv/main.tex.bak:208` tracked. Outside
    the two-file edit scope. Until those are edited the paper's retraction is

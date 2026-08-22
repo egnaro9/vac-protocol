@@ -74,7 +74,9 @@ Live options: an author of 2608.14315, or prof. Grzegorz Nalepa (Bartek's
 doctoral supervisor, 25 arXiv papers, 20 in window) via a warm introduction from
 Bartek. **Bartek himself cannot endorse: zero arXiv papers, measured.**
 
-Giulio's answer to your question 3 is also this track. He has not replied yet.
+Giulio's answer to your question 3 is also this track. He replied 2026-08-18 19:34Z
+and granted consent (see the closed item below); check that reply for whether
+it also answers question 3.
 
 ## Step 7 [E] Then submit.
 
@@ -86,8 +88,11 @@ Accept the agreement, CC BY, cs.SE primary, cs.CR cross-list, upload
 
 ## Not blocking, do when convenient
 
-- **[E]** Giulio's consent for the named acknowledgment. Email sent 2026-08-18
-  16:11Z. The quote itself is already safe: it cites the public merged PR.
+- **[DONE 2026-08-18]** Giulio's consent for the named acknowledgment. Requested
+  16:11Z, granted 2026-08-18 19:34Z, written consent on file: he asked to be named and
+  cited as Giulio D'Erme, in the wording already in the paper, and declined
+  co-authorship. Four corrections from the same reply are in at `81dfc7a`. The
+  quote was already safe regardless: it cites the public merged PR.
 - **[E]** Push the three commits (`e932868`, `b30ea2f`, `b61ee7d`). Needed before
   a Zenodo release can include them.
 - **[C]** A separate one-line commit for the pre-existing em-dashes in

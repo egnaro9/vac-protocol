@@ -136,10 +136,11 @@ These are places where I made an editorial call that is yours to confirm. Items
    data point, so a misattributed quote here is the one error a reviewer would
    treat as disqualifying.
 
-   **STATUS, measured 2026-08-18: consent is NOT on record, and the named
-   Acknowledgement is the part still waiting on it.** `NEXT_STEPS.md:89` records
-   the request ("Email sent 2026-08-18 16:11Z") and `NEXT_STEPS.md:77` records
-   "He has not replied yet." Every naming and every quotation in Section 2 is now
+   **STATUS, updated 2026-08-21: consent IS on record and this item is closed.**
+   Requested 2026-08-18 16:11Z, granted 2026-08-18 19:34Z, written consent on file: he asked
+   to be named and cited as Giulio D'Erme, in the wording already in the paper,
+   and declined co-authorship. Four corrections from the same
+   reply are in at `81dfc7a`. Every naming and every quotation in Section 2 is also
    anchored to a public artifact: the `cca-audit` repository
    (`curl -o /dev/null -w '%{http_code}' https://api.github.com/repos/GiulioDER/cca-audit`
    returns 200, a nonexistent-repo control returns 404); pull requests #1, #2, #8
