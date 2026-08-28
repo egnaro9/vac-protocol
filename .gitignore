@@ -10,3 +10,4 @@ paper/arxiv/main.blg
 paper/arxiv/*.tex.bak
 paper/arxiv/main.aux
 paper/arxiv/main.out
+.mutation_sweep.lock

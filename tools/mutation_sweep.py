@@ -31,9 +31,12 @@ does not yet exist, see tools/fixture_corpus_score.py.
 from __future__ import annotations
 
 import argparse
+import contextlib
 import json
+import os
 import pathlib
 import re
+import signal
 import subprocess
 import sys
 
@@ -123,6 +126,61 @@ def span(lines: list[str], i: int) -> tuple[int, int]:
     return i, j
 
 
+# --------------------------------------------------------------------------
+# This tool EDITS tracked source to measure it, so it is a transaction, not an
+# observer. A plain try/finally is not enough: SIGTERM (what a timeout sends,
+# exit 143) terminates CPython without running finally, which on 2026-08-28
+# left `pass  # MUTANT` in vac/verify.py where a refusal belongs. The lifecycle
+# is: acquire isolation, snapshot, apply, measure, restore in finally, verify
+# the restore BYTE-FOR-BYTE, release. See issue #11.
+LOCK = REPO / ".mutation_sweep.lock"
+
+
+@contextlib.contextmanager
+def _sweep_transaction(src: pathlib.Path):
+    """Hold the lock, snapshot `src`, and guarantee byte-identical restore on
+    normal exit, exception, SIGINT and SIGTERM."""
+    try:
+        fd = os.open(LOCK, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+    except FileExistsError:
+        print(f"ABORT: {LOCK.name} exists. Another sweep is mutating this tree, "
+              "or one died without releasing. A concurrent test run would read "
+              "a mutated file and report a phantom failure. Remove the lock "
+              "only after confirming no sweep is running.", file=sys.stderr)
+        raise SystemExit(2)
+    os.write(fd, f"pid={os.getpid()}\n".encode())
+    os.close(fd)
+
+    snapshot = src.read_bytes()
+    restored = False
+
+    def _restore() -> None:
+        nonlocal restored
+        if not restored:
+            src.write_bytes(snapshot)
+            restored = True
+        # Restoring is not the same as having restored.
+        assert src.read_bytes() == snapshot, (
+            f"{src} was NOT restored byte-for-byte. Snapshot is "
+            f"{len(snapshot)} bytes, file is {len(src.read_bytes())}.")
+        LOCK.unlink(missing_ok=True)
+
+    def _on_signal(signum, _frame):
+        _restore()
+        print(f"\ninterrupted by signal {signum}; {src} restored, lock released",
+              file=sys.stderr, flush=True)
+        raise SystemExit(128 + signum)
+
+    prev = {sig: signal.signal(sig, _on_signal)
+            for sig in (signal.SIGINT, signal.SIGTERM)}
+    try:
+        yield
+    finally:
+        _restore()
+        for sig, handler in prev.items():
+            signal.signal(sig, handler)
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--floor", type=float, default=None,
@@ -184,7 +242,7 @@ def main() -> int:
           + (f" ({len(excluded)} excluded, see EXCLUDE)" if excluded else ""))
 
     results = []
-    try:
+    with _sweep_transaction(SRC):
         for n, i in enumerate(sites, 1):
             a0, b0 = span(lines, i)
             indent = re.match(r"^(\s*)", lines[a0]).group(1)
@@ -202,8 +260,6 @@ def main() -> int:
             print(f"  [{n}/{len(sites)}] L{a0 + 1} "
                   f"{'caught: ' + why if caught else '*** SURVIVED ***'}",
                   flush=True)
-    finally:
-        SRC.write_text(orig, encoding="utf-8")
 
     k = sum(1 for r in results if r["caught"])
     score = k / len(results) if results else 0.0
