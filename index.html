@@ -66,7 +66,7 @@
   <div class="proto" id="proto">loading registry.json…</div>
   <div class="tablewrap"><table id="tbl">
     <thead><tr><th>bundle</th><th>capability claimed</th><th>subject</th>
-    <th>declared results (recomputed offline)</th><th>issuer commit</th>
+    <th>declared results (recomputed offline)</th><th>commits</th>
     <th>evidence</th></tr></thead>
     <tbody></tbody>
   </table></div>
@@ -80,6 +80,14 @@
     <span class="s-superseded">superseded</span> — replaced by newer
     evidence; <span class="s-invalidated">invalidated</span> — failed on
     re-run, kept visible as a dead entry (registries do not delete);
+    <b>the two commits</b> — they are different facts and can legitimately
+    differ. The <b>issuer-declared source commit</b> is what the issuer says
+    produced the evidence, recorded from its own manifest. The
+    <b>registry-fetched artifacts commit</b> is where these exact bytes were
+    read from, and it is what the sha256 pins and every artifact link above
+    are anchored to. An issuer whose emitter stamps its code before writing
+    the bundle it produces will show two commits here, and only the fetched
+    one is claimed to hold a verifying bundle.<br>
     <b>VAC version</b> — which binding rule the entry was accepted under, and
     NOT the registry schema version above. Under <code>0.1</code> a summary
     number is matched against recomputation pools merged by bare field name,
@@ -133,9 +141,12 @@ fetch('registry.json').then(r => r.json()).then(d => {
       '<td class="cap">' + esc(e.capability) + '</td>' +
       '<td class="dim">' + esc(e.subject) + '</td>' +
       '<td class="dim">' + sum + '<span class="dim">' + ch + '</span></td>' +
-      '<td><a href="' + esc(e.issuer_repo) + '/commit/' +
-      esc(e.issuer_commit) + '"><code>' + esc(e.issuer_commit) +
-      '</code></a></td>' +
+      '<td class="dim">issuer-declared source<br>' +
+      '<a href="' + esc(e.issuer_repo) + '/commit/' + esc(e.issuer_commit) +
+      '"><code>' + esc(e.issuer_commit) + '</code></a><br>' +
+      'registry-fetched artifacts<br>' +
+      '<a href="' + esc(e.issuer_repo) + '/commit/' + esc(e.pinned_commit) +
+      '"><code>' + esc(e.pinned_commit.slice(0, 7)) + '</code></a></td>' +
       '<td>' + e.artifacts.map(a =>
         '<a href="' + esc(a.url) + '" title="sha256 ' + esc(a.sha256) +
         '">' + esc(a.path) + '</a>').join('<br>') +
