@@ -7,14 +7,15 @@
    "issuer": "egnaro9/agent-certlab",
    "issuer_repo": "https://github.com/egnaro9/agent-certlab",
    "issuer_commit": "7213f39",
-   "pinned_commit": "78ca5f31f329cf809ae48ff80751e31df369e620",
+   "pinned_commit": "9bc001957b06c8e996b789fa0b84f9edf2ca7c7d",
    "bundle_path": "certifications/aider-intervals-2026-08-14",
    "capability": "repair-seeded-defects:intervals \u2014 aider-headless fixed 6/6 seeded defects under policy",
    "subject": "agent: aider-headless",
    "summary": {
-    "tasks": 6,
-    "fixed": 6,
-    "failure_modes": {}
+    "bundle": {
+     "verdicts": 6,
+     "fixed": 6
+    }
    },
    "profiles": [
     "certlab-bundle-v1"
@@ -23,17 +24,17 @@
     {
      "path": "CONTRACT.md",
      "sha256": "424d276e523ce82a42dd2581533a0a36fdd3d0c8717d25f98670ec1d61036956",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/aider-intervals-2026-08-14/CONTRACT.md"
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/9bc001957b06c8e996b789fa0b84f9edf2ca7c7d/certifications/aider-intervals-2026-08-14/CONTRACT.md"
     },
     {
      "path": "bundle.json",
      "sha256": "d6591c34042124fa96f0a6cc5665e9d66a1d5996061e1a80b83f4de98e769603",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/aider-intervals-2026-08-14/bundle.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/9bc001957b06c8e996b789fa0b84f9edf2ca7c7d/certifications/aider-intervals-2026-08-14/bundle.json"
     },
     {
      "path": "vac.json",
-     "sha256": "d2a0a0250c2d1ab98df695bc3b6219516406a1ef736aa48cbb0ef84234ac0124",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/aider-intervals-2026-08-14/vac.json"
+     "sha256": "aeb10c3d00439c2ffce771d9c7b70fa84e70f61b827dfaf4bcccd1f4edc72e6f",
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/9bc001957b06c8e996b789fa0b84f9edf2ca7c7d/certifications/aider-intervals-2026-08-14/vac.json"
     }
    ],
    "status": "accepted",
@@ -49,14 +50,15 @@
    "issuer": "egnaro9/agent-certlab",
    "issuer_repo": "https://github.com/egnaro9/agent-certlab",
    "issuer_commit": "7213f39",
-   "pinned_commit": "78ca5f31f329cf809ae48ff80751e31df369e620",
+   "pinned_commit": "9bc001957b06c8e996b789fa0b84f9edf2ca7c7d",
    "bundle_path": "certifications/aider-ledger-2026-08-14",
    "capability": "repair-seeded-defects:ledger \u2014 aider-headless fixed 6/6 seeded defects under policy",
    "subject": "agent: aider-headless",
    "summary": {
-    "tasks": 6,
-    "fixed": 6,
-    "failure_modes": {}
+    "bundle": {
+     "verdicts": 6,
+     "fixed": 6
+    }
    },
    "profiles": [
     "certlab-bundle-v1"
@@ -65,17 +67,17 @@
     {
      "path": "CONTRACT.md",
      "sha256": "1dd22dd50afb209af96b8af4d1cc36786194ae46ded17ff82e03c9ac1773da6b",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/aider-ledger-2026-08-14/CONTRACT.md"
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/9bc001957b06c8e996b789fa0b84f9edf2ca7c7d/certifications/aider-ledger-2026-08-14/CONTRACT.md"
     },
     {
      "path": "bundle.json",
      "sha256": "bb5112d6687c4cf5b269cc377f7a0ce6ed9c1261ce0b473682a8371ef418fb5b",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/aider-ledger-2026-08-14/bundle.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/9bc001957b06c8e996b789fa0b84f9edf2ca7c7d/certifications/aider-ledger-2026-08-14/bundle.json"
     },
     {
      "path": "vac.json",
-     "sha256": "fb51a797f8d7dc7dfd62c8414df47fd5d4f803def6065029d5fad1f6f4824d1f",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/aider-ledger-2026-08-14/vac.json"
+     "sha256": "614f48602a25e889f49eca46e1f596b0009e29932abf9beeb96f55d0a144e407",
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/9bc001957b06c8e996b789fa0b84f9edf2ca7c7d/certifications/aider-ledger-2026-08-14/vac.json"
     }
    ],
    "status": "accepted",
@@ -91,14 +93,15 @@
    "issuer": "egnaro9/agent-certlab",
    "issuer_repo": "https://github.com/egnaro9/agent-certlab",
    "issuer_commit": "7954393",
-   "pinned_commit": "78ca5f31f329cf809ae48ff80751e31df369e620",
+   "pinned_commit": "9bc001957b06c8e996b789fa0b84f9edf2ca7c7d",
    "bundle_path": "certifications/aider-machine-2026-08-14",
    "capability": "repair-seeded-defects:machine \u2014 aider-headless fixed 6/6 seeded defects under policy",
    "subject": "agent: aider-headless",
    "summary": {
-    "tasks": 6,
-    "fixed": 6,
-    "failure_modes": {}
+    "bundle": {
+     "verdicts": 6,
+     "fixed": 6
+    }
    },
    "profiles": [
     "certlab-bundle-v1"
@@ -107,17 +110,17 @@
     {
      "path": "CONTRACT.md",
      "sha256": "ab3c4d042ea97f4feb5e721d24ad265d2638e17a4e473899721e4c25bda1bcd6",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/aider-machine-2026-08-14/CONTRACT.md"
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/9bc001957b06c8e996b789fa0b84f9edf2ca7c7d/certifications/aider-machine-2026-08-14/CONTRACT.md"
     },
     {
      "path": "bundle.json",
      "sha256": "495c91b4593642d9eec281ea0c8d926ee1445e6ecd5cfb71fc31d52004c210ba",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/aider-machine-2026-08-14/bundle.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/9bc001957b06c8e996b789fa0b84f9edf2ca7c7d/certifications/aider-machine-2026-08-14/bundle.json"
     },
     {
      "path": "vac.json",
-     "sha256": "b05a6e48ce1e783deb991631edc2ccefc709365d3be9a67cd485a302aa483fe7",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/aider-machine-2026-08-14/vac.json"
+     "sha256": "906b55f5154465a6534334858d52339f0be2b0d1649738e06d936665c436e0dd",
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/9bc001957b06c8e996b789fa0b84f9edf2ca7c7d/certifications/aider-machine-2026-08-14/vac.json"
     }
    ],
    "status": "accepted",
@@ -133,14 +136,15 @@
    "issuer": "egnaro9/agent-certlab",
    "issuer_repo": "https://github.com/egnaro9/agent-certlab",
    "issuer_commit": "4330321",
-   "pinned_commit": "78ca5f31f329cf809ae48ff80751e31df369e620",
+   "pinned_commit": "9bc001957b06c8e996b789fa0b84f9edf2ca7c7d",
    "bundle_path": "certifications/claude-code-2026-08-14",
    "capability": "repair-seeded-defects:intervals \u2014 claude-code-headless fixed 6/6 seeded defects under policy",
    "subject": "agent: claude-code-headless",
    "summary": {
-    "tasks": 6,
-    "fixed": 6,
-    "failure_modes": {}
+    "bundle": {
+     "verdicts": 6,
+     "fixed": 6
+    }
    },
    "profiles": [
     "certlab-bundle-v1"
@@ -149,17 +153,17 @@
     {
      "path": "CONTRACT.md",
      "sha256": "01b85efba64ae34e2fc9716ba4f791fb323674fbf9ff13df5b420c98d1636f90",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/claude-code-2026-08-14/CONTRACT.md"
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/9bc001957b06c8e996b789fa0b84f9edf2ca7c7d/certifications/claude-code-2026-08-14/CONTRACT.md"
     },
     {
      "path": "bundle.json",
      "sha256": "7efe5c8051dcdfa2836176c70e7682a625346bafa34aed8d4752cdb078187ca3",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/claude-code-2026-08-14/bundle.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/9bc001957b06c8e996b789fa0b84f9edf2ca7c7d/certifications/claude-code-2026-08-14/bundle.json"
     },
     {
      "path": "vac.json",
-     "sha256": "885b607f0e56ae059e673bebb1d973ef0da7550ac98c24f5dc58f4d3a716606a",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/claude-code-2026-08-14/vac.json"
+     "sha256": "465e8456d18738238127c6a84071cedd73bebac34881783c7db854b275570b02",
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/9bc001957b06c8e996b789fa0b84f9edf2ca7c7d/certifications/claude-code-2026-08-14/vac.json"
     }
    ],
    "status": "accepted",
@@ -175,14 +179,15 @@
    "issuer": "egnaro9/agent-certlab",
    "issuer_repo": "https://github.com/egnaro9/agent-certlab",
    "issuer_commit": "7ec0f94",
-   "pinned_commit": "78ca5f31f329cf809ae48ff80751e31df369e620",
+   "pinned_commit": "9bc001957b06c8e996b789fa0b84f9edf2ca7c7d",
    "bundle_path": "certifications/claude-code-cloud-2026-08-14",
    "capability": "repair-seeded-defects:intervals \u2014 claude-code-headless fixed 6/6 seeded defects under policy",
    "subject": "agent: claude-code-headless",
    "summary": {
-    "tasks": 6,
-    "fixed": 6,
-    "failure_modes": {}
+    "bundle": {
+     "verdicts": 6,
+     "fixed": 6
+    }
    },
    "profiles": [
     "certlab-bundle-v1"
@@ -191,17 +196,17 @@
     {
      "path": "CONTRACT.md",
      "sha256": "104fb4c1a7aa609c094165140555b4ae06630b2fb14edde2e394316285e71a7c",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/claude-code-cloud-2026-08-14/CONTRACT.md"
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/9bc001957b06c8e996b789fa0b84f9edf2ca7c7d/certifications/claude-code-cloud-2026-08-14/CONTRACT.md"
     },
     {
      "path": "bundle.json",
      "sha256": "05703dca2f110f30f4d2c581f986f9a5246769acf94ce38689de4851d7fdb6aa",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/claude-code-cloud-2026-08-14/bundle.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/9bc001957b06c8e996b789fa0b84f9edf2ca7c7d/certifications/claude-code-cloud-2026-08-14/bundle.json"
     },
     {
      "path": "vac.json",
-     "sha256": "70c89e63e46e2c163b255585fcbce5bb4cf624e7297cb1c76e5d2c17e288fb1e",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/claude-code-cloud-2026-08-14/vac.json"
+     "sha256": "ab9994fe6d2ab2e1495cad2b890625b1d3fb73fbe9c018651c4622f879e18d07",
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/9bc001957b06c8e996b789fa0b84f9edf2ca7c7d/certifications/claude-code-cloud-2026-08-14/vac.json"
     }
    ],
    "status": "accepted",
@@ -217,14 +222,15 @@
    "issuer": "egnaro9/agent-certlab",
    "issuer_repo": "https://github.com/egnaro9/agent-certlab",
    "issuer_commit": "8065d6e",
-   "pinned_commit": "78ca5f31f329cf809ae48ff80751e31df369e620",
+   "pinned_commit": "9bc001957b06c8e996b789fa0b84f9edf2ca7c7d",
    "bundle_path": "certifications/claude-code-ledger-2026-08-14",
    "capability": "repair-seeded-defects:ledger \u2014 claude-code-headless fixed 6/6 seeded defects under policy",
    "subject": "agent: claude-code-headless",
    "summary": {
-    "tasks": 6,
-    "fixed": 6,
-    "failure_modes": {}
+    "bundle": {
+     "verdicts": 6,
+     "fixed": 6
+    }
    },
    "profiles": [
     "certlab-bundle-v1"
@@ -233,17 +239,17 @@
     {
      "path": "CONTRACT.md",
      "sha256": "ba9be44c6c9931f05b3435c2ac35c7138a15cb15850b26dcb159356b6bb3ce23",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/claude-code-ledger-2026-08-14/CONTRACT.md"
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/9bc001957b06c8e996b789fa0b84f9edf2ca7c7d/certifications/claude-code-ledger-2026-08-14/CONTRACT.md"
     },
     {
      "path": "bundle.json",
      "sha256": "a0c5dc73096c0572f2debb279601aaa2c5f4ac8a774c4f47ce403f1b166db04a",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/claude-code-ledger-2026-08-14/bundle.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/9bc001957b06c8e996b789fa0b84f9edf2ca7c7d/certifications/claude-code-ledger-2026-08-14/bundle.json"
     },
     {
      "path": "vac.json",
-     "sha256": "2ff0c87383db920186417a1977eaa35acc1e049515d28b5e4431a84eb643c8bb",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/claude-code-ledger-2026-08-14/vac.json"
+     "sha256": "c8536617ccc11025c964ae1f360767a413c7132c24b241354348267e532945b4",
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/9bc001957b06c8e996b789fa0b84f9edf2ca7c7d/certifications/claude-code-ledger-2026-08-14/vac.json"
     }
    ],
    "status": "accepted",
@@ -259,14 +265,15 @@
    "issuer": "egnaro9/agent-certlab",
    "issuer_repo": "https://github.com/egnaro9/agent-certlab",
    "issuer_commit": "7954393",
-   "pinned_commit": "78ca5f31f329cf809ae48ff80751e31df369e620",
+   "pinned_commit": "9bc001957b06c8e996b789fa0b84f9edf2ca7c7d",
    "bundle_path": "certifications/claude-code-machine-2026-08-14",
    "capability": "repair-seeded-defects:machine \u2014 claude-code-headless fixed 6/6 seeded defects under policy",
    "subject": "agent: claude-code-headless",
    "summary": {
-    "tasks": 6,
-    "fixed": 6,
-    "failure_modes": {}
+    "bundle": {
+     "verdicts": 6,
+     "fixed": 6
+    }
    },
    "profiles": [
     "certlab-bundle-v1"
@@ -275,17 +282,17 @@
     {
      "path": "CONTRACT.md",
      "sha256": "647add46c149a58bdd9528248422686d815c9a1215f3a667b7fb7452c8f7c7e3",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/claude-code-machine-2026-08-14/CONTRACT.md"
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/9bc001957b06c8e996b789fa0b84f9edf2ca7c7d/certifications/claude-code-machine-2026-08-14/CONTRACT.md"
     },
     {
      "path": "bundle.json",
      "sha256": "bd21e628a5c057babf4e55112ce778cec343b8cee529052af4f303b27482780e",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/claude-code-machine-2026-08-14/bundle.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/9bc001957b06c8e996b789fa0b84f9edf2ca7c7d/certifications/claude-code-machine-2026-08-14/bundle.json"
     },
     {
      "path": "vac.json",
-     "sha256": "053d4d31d54e02a536f5e2eb9d45d96acfb613ad0d7eead8722c644d9248e91f",
-     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/78ca5f31f329cf809ae48ff80751e31df369e620/certifications/claude-code-machine-2026-08-14/vac.json"
+     "sha256": "159d6760d3f0a92b251db7c87bc43ca9b0045401d9057140546db6952ba136c5",
+     "url": "https://raw.githubusercontent.com/egnaro9/agent-certlab/9bc001957b06c8e996b789fa0b84f9edf2ca7c7d/certifications/claude-code-machine-2026-08-14/vac.json"
     }
    ],
    "status": "accepted",
