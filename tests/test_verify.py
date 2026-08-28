@@ -407,17 +407,29 @@ def test_real_evalmut_bundle_summary_is_enforced(tmp_path):
         return  # pending: refused for the documented reason, nothing to tamper
     man_path = b / "vac.json"
     man = json.loads(man_path.read_text())
-    man["results"]["summary"]["dogfood_gradecore"]["caught"] = 33
+    # Pick the scope off the bundle rather than naming it: at 0.2 a summary
+    # key IS an artifact stem, so a literal here would rot the next time an
+    # issuer renames a file, exactly as this test's crashkit sibling did.
+    scope = sorted(man["results"]["summary"])[0]
+    man["results"]["summary"][scope]["caught"] = 33
     man_path.write_text(json.dumps(man, indent=1) + "\n")
-    # the recomputed pool is derived, not hard-coded: these counts move when
-    # the issuer re-emits, and a stale literal here would fail for a reason
-    # that has nothing to do with the hole this test guards
-    caught = sorted({json.loads((b / c["artifact"]).read_text())["tally"]["caught"]
-                     for c in man["results"]["checks"]
-                     if c.get("profile") == "evalmut-run-v1"})
+    # The pool is derived, not hard-coded: these counts move on every
+    # re-emit, and a stale literal would fail for a reason that has nothing
+    # to do with the hole this test guards.
+    #
+    # At 0.1 it was the UNION of every evalmut check's caught, because pools
+    # merged by bare field name, and the message read "one of [9, 42]". At
+    # 0.2 the pool is keyed scope.field, so this leaf is held to the ONE
+    # check whose artifact stem is that scope. The narrowing is the point:
+    # under 0.1 the other run's 9 would also have satisfied this key.
+    caught = next(
+        json.loads((b / c["artifact"]).read_text())["tally"]["caught"]
+        for c in man["results"]["checks"]
+        if c.get("profile") == "evalmut-run-v1"
+        and c["artifact"].split(".")[0] == scope)
     assert verify_bundle(b) == [
-        "summary-outruns-checks: summary.dogfood_gradecore.caught: "
-        f"declares 33, recomputation gives one of {caught}"]
+        f"summary-outruns-checks: summary.{scope}.caught: "
+        f"declares 33, recomputation gives {caught}"]
 
 
 CRASHKIT_BUNDLE = (ROOT / (os.environ.get("VAC_CRASHKIT_CHECKOUT")

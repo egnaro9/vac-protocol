@@ -407,9 +407,9 @@
    "name": "evalmut/vac",
    "issuer": "egnaro9/evalmut",
    "issuer_repo": "https://github.com/egnaro9/evalmut",
-   "issuer_commit": "4212cb4",
-   "pinned_commit": "32201a4f69c07c1764f10350dfcd5bc474dee1e5",
-   "vac_version": "0.1",
+   "issuer_commit": "a1935f1",
+   "pinned_commit": "cda1ea0b6f792e0236ee2387ff36fda853ea6f0a",
+   "vac_version": "0.2",
    "bundle_path": "vac",
    "capability": "eval-suite mutation testing over a mined operator battery: gradecore's own grader-family suite scores 42/46 with 4 holes, and the committed ports of promptfoo's documented deterministic assertions score 9/17 with 8 holes \u2014 every number recomputable from committed per-mutation rows",
    "subject": "suite-archetype: demos/dogfood_gradecore.py + external/promptfoo_suite.py under the evalmut mined-operator battery",
@@ -419,23 +419,20 @@
      "caught": 42,
      "applied": 46,
      "na": 223,
-     "holes": {
-      "blind": 2,
-      "coverage_gap": 2
-     }
+     "operators": 25,
+     "blind": 2,
+     "coverage_gap": 2
     },
     "promptfoo_ports": {
      "score_3": 0.529,
      "caught": 9,
      "applied": 17,
      "na": 115,
-     "holes": {
-      "vacuous": 2,
-      "blind": 4,
-      "coverage_gap": 2
-     }
-    },
-    "operators": 25
+     "operators": 25,
+     "vacuous": 2,
+     "blind": 4,
+     "coverage_gap": 2
+    }
    },
    "profiles": [
     "evalmut-run-v1"
@@ -444,42 +441,42 @@
     {
      "path": "dogfood_fixtures.json",
      "sha256": "e127c7389a2a3e2ce84b2c9be30cfc950edd7502f74e25d1d1705261a7401931",
-     "url": "https://raw.githubusercontent.com/egnaro9/evalmut/32201a4f69c07c1764f10350dfcd5bc474dee1e5/vac/dogfood_fixtures.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/evalmut/cda1ea0b6f792e0236ee2387ff36fda853ea6f0a/vac/dogfood_fixtures.json"
     },
     {
      "path": "dogfood_gradecore.json",
      "sha256": "cc3b76f7bfe54eed1b2c95e5c1c68df1a718c63a141229aab5004c86b9ddbbc8",
-     "url": "https://raw.githubusercontent.com/egnaro9/evalmut/32201a4f69c07c1764f10350dfcd5bc474dee1e5/vac/dogfood_gradecore.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/evalmut/cda1ea0b6f792e0236ee2387ff36fda853ea6f0a/vac/dogfood_gradecore.json"
     },
     {
      "path": "dogfood_gradecore.txt",
      "sha256": "c9292a3bf0a2ee372a3a2ff1cb17c840d0d79420d065d47301303fedb16b56c7",
-     "url": "https://raw.githubusercontent.com/egnaro9/evalmut/32201a4f69c07c1764f10350dfcd5bc474dee1e5/vac/dogfood_gradecore.txt"
+     "url": "https://raw.githubusercontent.com/egnaro9/evalmut/cda1ea0b6f792e0236ee2387ff36fda853ea6f0a/vac/dogfood_gradecore.txt"
     },
     {
      "path": "operators.json",
      "sha256": "640d7be500c49c7a0ae14e6f6b55d1c7be03c6917924261d0fa1988381d4fa32",
-     "url": "https://raw.githubusercontent.com/egnaro9/evalmut/32201a4f69c07c1764f10350dfcd5bc474dee1e5/vac/operators.json"
-    },
-    {
-     "path": "promptfoo_findings.json",
-     "sha256": "4ea78e027e88edfa66b164af212139f126cbf266e437bee2015415a8f7bbe371",
-     "url": "https://raw.githubusercontent.com/egnaro9/evalmut/32201a4f69c07c1764f10350dfcd5bc474dee1e5/vac/promptfoo_findings.json"
-    },
-    {
-     "path": "promptfoo_findings.txt",
-     "sha256": "003a3b1ac8098fbb4e40e08ec9e5f83e9869f41c5305511456a5268cb01bd48b",
-     "url": "https://raw.githubusercontent.com/egnaro9/evalmut/32201a4f69c07c1764f10350dfcd5bc474dee1e5/vac/promptfoo_findings.txt"
+     "url": "https://raw.githubusercontent.com/egnaro9/evalmut/cda1ea0b6f792e0236ee2387ff36fda853ea6f0a/vac/operators.json"
     },
     {
      "path": "promptfoo_fixtures.json",
      "sha256": "0879dada0e0eab5881f62aa47402b7e3c8511a35e9e29f09a5ee1feed5b202e1",
-     "url": "https://raw.githubusercontent.com/egnaro9/evalmut/32201a4f69c07c1764f10350dfcd5bc474dee1e5/vac/promptfoo_fixtures.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/evalmut/cda1ea0b6f792e0236ee2387ff36fda853ea6f0a/vac/promptfoo_fixtures.json"
+    },
+    {
+     "path": "promptfoo_ports.json",
+     "sha256": "4ea78e027e88edfa66b164af212139f126cbf266e437bee2015415a8f7bbe371",
+     "url": "https://raw.githubusercontent.com/egnaro9/evalmut/cda1ea0b6f792e0236ee2387ff36fda853ea6f0a/vac/promptfoo_ports.json"
+    },
+    {
+     "path": "promptfoo_ports.txt",
+     "sha256": "003a3b1ac8098fbb4e40e08ec9e5f83e9869f41c5305511456a5268cb01bd48b",
+     "url": "https://raw.githubusercontent.com/egnaro9/evalmut/cda1ea0b6f792e0236ee2387ff36fda853ea6f0a/vac/promptfoo_ports.txt"
     },
     {
      "path": "vac.json",
-     "sha256": "21594aeb86daacf0043b06b7ec856f0e6a87d76b0fc9625502a76ca01625ee85",
-     "url": "https://raw.githubusercontent.com/egnaro9/evalmut/32201a4f69c07c1764f10350dfcd5bc474dee1e5/vac/vac.json"
+     "sha256": "12496c9806cbb02ab03ac5207cb813e656b7dddd4bd2f6ecbfcac6118e221064",
+     "url": "https://raw.githubusercontent.com/egnaro9/evalmut/cda1ea0b6f792e0236ee2387ff36fda853ea6f0a/vac/vac.json"
     }
    ],
    "status": "accepted",
