@@ -628,6 +628,16 @@ its form, a registry MUST reject a claim when any of the following holds:
    judge, human scoring, or any wall-clock- or sampling-dependent
    procedure without a pinned seed. If replay cannot reproduce it
    byte-for-byte, it is not evidence in v0.1.
+
+   Rule 3 is not machine-enforced, and this document says so rather than
+   implying otherwise. No check in this repository reads
+   `protocol.grading` beyond requiring it to be non-empty. Free prose is
+   not machine-decidable, and a keyword screen for "LLM" or "human"
+   would look like enforcement while deciding nothing. Rule 3 rests on
+   two gates that are real but not structural: human review of the
+   `grading` text at PR time, and replay, which fails a grader that
+   cannot reproduce byte-for-byte at the pinned commit. A registry that
+   admits an entry on rule 3 admits it on human review, and says so.
 4. **No declared scope**: missing/empty `claim.scope`.
 5. **No declared limitations**: `claim.limitations` absent or empty.
    Non-claims are mandatory.

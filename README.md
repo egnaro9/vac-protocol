@@ -18,7 +18,10 @@ verifier, and the replay instructions. Do not trust us, run it.** A
 bundle that asks for faith at any step is invalid by construction: no
 pinned versions, no hashed artifacts, no deterministic grading, no
 declared scope, or no declared *limitations*: each alone is grounds for
-rejection. Non-claims are mandatory; a capability statement that will not
+rejection. Four of those five are machine-checked. Deterministic
+grading is not: it is prose, enforced by human review at PR time plus
+replay failing a grader that cannot reproduce. SPEC §5 says which is
+which. Non-claims are mandatory; a capability statement that will not
 say what it does not cover is an advertisement, and VAC does not carry
 advertisements.
 

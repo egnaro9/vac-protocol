@@ -98,6 +98,10 @@ GATES = {
                 ".github/workflows/replay.yml (workflow_dispatch + weekly), "
                 "which clones the issuer at issuer_commit and re-earns "
                 "every verdict with the issuer's own regrader",
+    "grading": "NOT machine-checked. SPEC 5 rule 3 is enforced by human "
+               "review of protocol.grading at PR time, plus replay, which "
+               "fails a grader that cannot reproduce byte-for-byte. No "
+               "check reads this field beyond requiring it non-empty",
 }
 
 
