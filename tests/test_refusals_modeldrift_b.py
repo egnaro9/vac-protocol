@@ -31,14 +31,15 @@ STAMPS = {"metrics_sha256": MET, "registry_sha256": "evidence/models.json"}
 
 def _repin(bundle: pathlib.Path, rel: str) -> None:
     man_path = bundle / "vac.json"
-    man = json.loads(man_path.read_text())
+    man = json.loads(man_path.read_text(encoding="utf-8"))
     for e in man["evidence"]:
         if e["path"] == rel:
             e["sha256"] = _sha256(bundle / rel)
     for key, covered in STAMPS.items():
         if covered == rel:
             man["protocol"]["hashes"][key] = _sha256(bundle / covered)
-    man_path.write_text(json.dumps(man, indent=1) + "\n")
+    man_path.write_text(json.dumps(man, indent=1) + "\n",
+                        encoding="utf-8", newline="")
 
 
 def _cook_all(tmp_path: pathlib.Path, edits: dict) -> pathlib.Path:
@@ -51,11 +52,13 @@ def _cook_all(tmp_path: pathlib.Path, edits: dict) -> pathlib.Path:
     for rel, edit in edits.items():
         art = b / rel
         if rel.endswith(".json"):
-            doc = json.loads(art.read_text())
+            doc = json.loads(art.read_text(encoding="utf-8"))
             edit(doc)
-            art.write_text(json.dumps(doc, indent=1) + "\n")
+            art.write_text(json.dumps(doc, indent=1) + "\n",
+                           encoding="utf-8", newline="")
         else:
-            art.write_text(edit(art.read_text()))
+            art.write_text(edit(art.read_text(encoding="utf-8")),
+                           encoding="utf-8", newline="")
         _repin(b, rel)
     return b
 
