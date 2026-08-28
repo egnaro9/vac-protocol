@@ -32,7 +32,9 @@ import sys
 import tarfile
 import tempfile
 
-VAC_VERSION = "0.1"
+VAC_VERSION = "0.1"          # what a fresh draft is stamped with
+SUPPORTED_VERSIONS = ("0.1", "0.2")
+_SCOPE_RE = re.compile(r"[A-Za-z0-9_-]+")
 PROFILES = ("certlab-bundle-v1", "fleet-board-v1", "evalmut-run-v1",
             "crashkit-battery-v1", "crashkit-variance-v1",
             "modeldrift-board-v1", "rows-aggregate-v1")
@@ -125,9 +127,21 @@ def _validate_manifest(m: dict) -> list[str]:
             return None
         return v
 
-    if m.get("vac_version") != VAC_VERSION:
-        f.append(f"schema-violation: vac_version: must be {VAC_VERSION!r}, "
-                 f"got {m.get('vac_version')!r}")
+    ver = m.get("vac_version")
+    if ver not in SUPPORTED_VERSIONS:
+        f.append("schema-violation: vac_version: must be one of "
+                 f"{list(SUPPORTED_VERSIONS)}, got {ver!r}")
+    if ver == "0.2":
+        # SPEC 2.5.1: scope is DERIVED. An issuer who could name the binding
+        # key and write the summary would control both sides of the binding,
+        # so a declared scope is refused rather than ignored: ignoring it
+        # would let a bundle carry a key that reads like it binds and does
+        # not.
+        for i, c in enumerate(m.get("results", {}).get("checks") or []):
+            if isinstance(c, dict) and "scope" in c:
+                f.append(f"schema-violation: results.checks[{i}].scope: "
+                         "scope is derived from the check's primary "
+                         "evidence reference, never declared")
 
     claim = need(m, "claim", lambda v: isinstance(v, dict),
                  "object required") or {}
@@ -566,7 +580,17 @@ def _check_evalmut(bundle_dir: pathlib.Path, check: dict, proto: dict,
             f.append(f"raw-aggregate-mismatch: {art}: tally.{k} declared "
                      f"{tally.get(k)}, recomputed {v}")
     applied = counts["caught"] + counts["missed"] + counts["flagged"]
-    score = 1.0 if applied == 0 else counts["caught"] / applied
+    if applied == 0:
+        # SPEC 3.3. This used to read `1.0 if applied == 0`, so a run that
+        # applied nothing advertised a perfect score. An empty results[]
+        # reached it through a guard that `all()` passes vacuously; rows
+        # that all errored reached it carrying evidence. Everywhere else
+        # this profile fails toward the unflattering value.
+        f.append(f"artifact-unparsable: {art}: applied == 0, so this run "
+                 "has no score. A payload that applied no mutation has "
+                 "measured nothing; it does not score 1.0 by default")
+        return None  # no score means no recomputation to contribute
+    score = counts["caught"] / applied
     if data.get("score") != score:
         f.append(f"raw-aggregate-mismatch: {art}: score declared "
                  f"{data.get('score')}, recomputed {score}")
@@ -961,6 +985,23 @@ def _modeldrift_results_md(rows: list[dict], suite_version: str) -> str:
         "| --- | --- | --- | --- | --- |\n"
         + "\n".join(out) + "\n"
     )
+
+
+def _first_row_diff(got, want) -> str:
+    """Name the first differing row, not just the lengths.
+
+    Equal-length lists that differed structurally used to report
+    "declared 1, recomputed 1", which is a named reason that tells the
+    reader nothing. The standings comparator already names what differs;
+    this gives the flip lists the same courtesy."""
+    if not isinstance(got, list):
+        return f"declared {got!r}, recomputed a list of {len(want)}"
+    if len(got) != len(want):
+        return f"declared {len(got)} rows, recomputed {len(want)}"
+    for i, (g, w) in enumerate(zip(got, want)):
+        if g != w:
+            return f"row {i} declared {g!r}, recomputed {w!r}"
+    return "lists compare unequal but no row differs"  # unreachable; named anyway
 
 
 def _modeldrift_flips(series: dict) -> dict:
@@ -1447,10 +1488,9 @@ def _check_modeldrift(bundle_dir: pathlib.Path, check: dict, proto: dict,
     for k in ("repeat_offenders", "one_offs", "probe_alarms"):
         got = flips.get(k)
         if got != want_flips[k]:
-            n_got = len(got) if isinstance(got, list) else got
             f.append(f"raw-aggregate-mismatch: {flips_rel}: {k} does not "
-                     f"recompute from the fails vectors (declared {n_got}, "
-                     f"recomputed {len(want_flips[k])})")
+                     f"recompute from the fails vectors: "
+                     f"{_first_row_diff(got, want_flips[k])}")
     extra = sorted(set(flips) - set(want_flips))
     if extra:
         f.append(f"raw-aggregate-mismatch: {flips_rel}: unexpected keys "
@@ -1539,7 +1579,27 @@ _CHECK_FNS = {"certlab-bundle-v1": _check_certlab,
 _NUMERIC_STR = re.compile(r"[+-]?(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?%?")
 
 
-def _summary_outruns(summary: dict, pools: list[dict]) -> list[str]:
+def _scope_of(check: dict) -> str | None:
+    """A check's scope, DERIVED from its primary evidence reference.
+
+    SPEC 2.5.1. The primary reference is the first entry in the profile's
+    _CHECK_REFS tuple, and the scope is its filename up to the first dot.
+    Derived rather than declared because an issuer who names the binding
+    key AND writes the summary controls both sides: labelling one check
+    `safe` and another `vulnerable`, then writing a matching summary,
+    exchanges two arms with every binding satisfied. The stem comes from a
+    path in the manifest's sha256 list, so renaming a scope means renaming
+    a hashed artifact."""
+    ref = _CHECK_REFS[check["profile"]][0]
+    val = check.get(ref)
+    if not _nonempty_str(val):
+        return None
+    stem = pathlib.PurePosixPath(val).name.split(".")[0]
+    return stem if _SCOPE_RE.fullmatch(stem) else None
+
+
+def _summary_outruns(summary: dict, pools: list[dict],
+                     version: str = "0.1") -> list[str]:
     """SPEC.md §2.5: every number in results.summary must be re-earned by a
     check's recomputation. A summary key that names a recomputed field is
     held to that field's recomputed value(s); any other numeric value must
@@ -1550,6 +1610,7 @@ def _summary_outruns(summary: dict, pools: list[dict]) -> list[str]:
         for k, vs in pool.items():
             by_field.setdefault(k, set()).update(vs)
     all_vals: set = set().union(*by_field.values()) if by_field else set()
+    v2 = version == "0.2"   # pool keys are already `scope.field`
     f: list[str] = []
 
     # Iterative, for the same reason as _todo_failures: results.summary is
@@ -1576,15 +1637,24 @@ def _summary_outruns(summary: dict, pools: list[dict]) -> list[str]:
                      "can be recomputed")
         elif not isinstance(node, (int, float)):
             continue
-        elif key in by_field:
-            if node not in by_field[key]:
-                got = sorted(by_field[key])
-                shown = got[0] if len(got) == 1 else f"one of {got}"
+        else:
+            # v0.1 binds on the LEAF KEY against pools merged by bare field
+            # name, then falls back to "equals some recomputed quantity
+            # anywhere". Both tiers are unsound once a profile runs more
+            # than once: eight crashkit checks contribute eight values under
+            # one key, and the dimensionless fallback lets a count of 1
+            # re-earn a rate of 1.0. v0.2 binds on the FULL summary path
+            # against unmerged `scope.field` keys, and has no second tier.
+            k = path[len("summary."):] if v2 else key
+            if k in by_field:
+                if node not in by_field[k]:
+                    got = sorted(by_field[k])
+                    shown = got[0] if len(got) == 1 else f"one of {got}"
+                    f.append(f"summary-outruns-checks: {path}: declares "
+                             f"{node}, recomputation gives {shown}")
+            elif v2 or node not in all_vals:
                 f.append(f"summary-outruns-checks: {path}: declares {node}, "
-                         f"recomputation gives {shown}")
-        elif node not in all_vals:
-            f.append(f"summary-outruns-checks: {path}: declares {node}, "
-                     "no check recomputes it")
+                         "no check recomputes it")
     return f
 
 
@@ -1597,6 +1667,9 @@ def _coherence(bundle_dir: pathlib.Path, m: dict,
     listed = {e["path"] for e in (_ev if isinstance(_ev, list) else [])
               if isinstance(e, dict) and _safe_relpath(e.get("path"))}
     pools: list[dict] = []
+    scopes: set[str] = set()
+    version = m.get("vac_version") if isinstance(m.get("vac_version"), str) \
+        else "0.1"
     # Reference-scan EVERY check first, malformed ones included. A check that
     # exists but is refused for another reason has already been named; letting
     # it also orphan its artifact would report one root cause twice. Only
@@ -1633,8 +1706,25 @@ def _coherence(bundle_dir: pathlib.Path, m: dict,
             if len(f) == before:  # fail closed: never skip a check silently
                 f.append(f"artifact-unparsable: {c['profile']}: check "
                          "contributed no recomputation")
-        else:
+        elif version != "0.2":
             pools.append(pool)
+        else:
+            scope = _scope_of(c)
+            if scope is None:
+                ref = _CHECK_REFS[c["profile"]][0]
+                f.append(f"unscopable-check: {c['profile']}: {ref} "
+                         f"{c.get(ref)!r} yields no scope; a primary "
+                         "reference must have a filename matching "
+                         "[A-Za-z0-9_-]+ before its first '.'")
+                complete = False
+            elif scope in scopes:
+                f.append(f"unscopable-check: scope {scope!r} is claimed by "
+                         "more than one check; a summary path could not say "
+                         "which one it means")
+                complete = False
+            else:
+                scopes.add(scope)
+                pools.append({f"{scope}.{k}": v for k, v in pool.items()})
     # An artifact no check reads is pinned but unexamined. Hardening made
     # BREAKING a check a named refusal; DELETING one stayed free, and a deleted
     # check moves its number out of the strictly-bound branch into the loose
@@ -1651,7 +1741,7 @@ def _coherence(bundle_dir: pathlib.Path, m: dict,
     # and "derivable" is undecidable against a half-built pool
     summary = results.get("summary")
     if complete and pools and isinstance(summary, dict):
-        f += _summary_outruns(summary, pools)
+        f += _summary_outruns(summary, pools, version)
     return f
 
 

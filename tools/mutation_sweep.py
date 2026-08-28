@@ -74,8 +74,8 @@ DESELECT: list[str] = [
 # from 146 to 143 and the scored population from 143 to 140, and nothing in the
 # run would say so. Update this deliberately, in the commit that changes the
 # population, or pass --expect-sites to override it for a one-off measurement.
-EXPECT_RAW_SITES = 160      # lines matching REFUSAL in vac/verify.py
-EXPECT_SCORED_SITES = 157   # the above minus EXCLUDE
+EXPECT_RAW_SITES = 164      # lines matching REFUSAL in vac/verify.py
+EXPECT_SCORED_SITES = 161   # the above minus EXCLUDE
 
 EXCLUDE: dict[str, tuple[int, str]] = {
     "{md_rel}: {e}": (1,

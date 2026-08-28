@@ -48,6 +48,26 @@ TAMPERS = {
                              "summary-outruns-checks: summary.fixed: "
                              "declares 3, recomputation gives 2"],
     "tamper-empty-limitations": ["empty-limitations"],
+    # SPEC 2.5.1, issue #4. Both numbers are REAL; each is attributed to
+    # the other control arm. v0.1 accepts this exact bundle: see
+    # test_the_swapped_arms_bundle_is_accepted_at_v01.
+    "tamper-v02-swapped-arms": [
+        "summary-outruns-checks: summary.eval_run.vulnerability_score: "
+        "declares 0.0, recomputation gives 0.4545",
+        "summary-outruns-checks: summary.eval_run_safe.vulnerability_score: "
+        "declares 0.4545, recomputation gives 0.0"],
+    # SPEC 3.3, issue #5. Both are cooked consistently end to end, so
+    # before this refusal they verified CLEAN and advertised score 1.000
+    # from zero applied mutations. The all-error one is the case a fix
+    # aimed at an empty `results` would not have caught: rows are present.
+    "tamper-evalmut-empty-rows": [
+        "artifact-unparsable: evidence/evalmut_run.json: applied == 0, "
+        "so this run has no score. A payload that applied no mutation "
+        "has measured nothing; it does not score 1.0 by default"],
+    "tamper-evalmut-all-error": [
+        "artifact-unparsable: evidence/evalmut_run.json: applied == 0, "
+        "so this run has no score. A payload that applied no mutation "
+        "has measured nothing; it does not score 1.0 by default"],
     "tamper-missing-issuer-commit": ["missing-issuer-commit"],
     "tamper-raw-aggregate": [
         "raw-aggregate-mismatch: toy-suite/toy-defect-b: "
@@ -568,16 +588,57 @@ def test_stamp_mismatch_binds_protocol_to_artifacts(tmp_path):
         "artifact 0000000"]
 
 
-def test_wrong_vac_version_is_refused(tmp_path):
+def _at_version(tmp_path, ver: str) -> pathlib.Path:
     b = tmp_path / "b"
     shutil.copytree(FIX / "valid", b)
     man_path = b / "vac.json"
     man = json.loads(man_path.read_text())
-    man["vac_version"] = "0.2"
+    man["vac_version"] = ver
     man_path.write_text(json.dumps(man, indent=1) + "\n")
-    failures = verify_bundle(b)
-    assert failures == ["schema-violation: vac_version: must be '0.1', "
-                        "got '0.2'"]
+    return b
+
+
+def test_wrong_vac_version_is_refused(tmp_path):
+    """A version this verifier does not implement is refused, not guessed at.
+    0.2 is no longer the example here because 0.2 is now implemented; using a
+    supported version as the negative case would have made this test pass for
+    the wrong reason the moment the gate landed."""
+    assert verify_bundle(_at_version(tmp_path, "0.3")) == [
+        "schema-violation: vac_version: must be one of ['0.1', '0.2'], "
+        "got '0.3'"]
+
+
+def test_v01_summary_shape_is_refused_at_v02(tmp_path):
+    """SPEC 8: the version gate is a real branch, not a label.
+
+    The valid bundle's summary binds by bare leaf key, which is exactly what
+    v0.2 stops accepting. Relabelling it 0.2 without restructuring the
+    summary MUST refuse. Without this, a gate that accepted everything would
+    look identical to one that worked."""
+    out = verify_bundle(_at_version(tmp_path, "0.2"))
+    assert out, "v0.2 accepted a v0.1 summary shape"
+    assert all(r.startswith("summary-outruns-checks:") for r in out), out
+    assert any("no check recomputes it" in r for r in out), out
+
+
+def test_v01_bundles_keep_their_merged_pool_semantics():
+    """The other half of the pair. The accepted fixture is untouched v0.1 and
+    MUST still verify clean under a verifier that implements v0.2, or the
+    gate is a breaking change wearing a version number."""
+    assert verify_bundle(FIX / "valid") == []
+
+
+def test_a_declared_scope_is_refused_at_v02(tmp_path):
+    """SPEC 2.5.1. Ignoring a declared scope would let a bundle carry a key
+    that reads like it binds and does not, so it is refused by name."""
+    b = _at_version(tmp_path, "0.2")
+    man_path = b / "vac.json"
+    man = json.loads(man_path.read_text())
+    man["results"]["checks"][0]["scope"] = "twin_controls.adversarial.safe"
+    man_path.write_text(json.dumps(man, indent=1) + "\n")
+    assert "schema-violation: results.checks[0].scope: scope is derived " \
+        "from the check's primary evidence reference, never declared" \
+        in verify_bundle(b)
 
 
 def test_tarball_roundtrip(tmp_path, capsys):
@@ -1536,3 +1597,68 @@ def test_a_run_citing_a_case_outside_its_corpus_is_refused(tmp_path):
     b = _fx_bundle(tmp_path, drop_one)
     assert ("raw-aggregate-mismatch: evidence/evalmut_run.json: rows cite "
             f"case(s) absent from {FX}: {dropped['name']}") in verify_bundle(b)
+
+
+def test_v02_twin_arms_verifies_clean():
+    """The control. Two checks of one profile recomputing the same field
+    names to opposite values is LEGAL; what v0.2 adds is that each number is
+    bound to the check that earned it."""
+    assert verify_bundle(FIX / "v02-twin-arms") == []
+
+
+def test_the_swapped_arms_bundle_is_accepted_at_v01(tmp_path):
+    """The kill-check, kept in the suite rather than done once by hand.
+
+    These are the SAME BYTES that v0.2 refuses. Relabelled 0.1 they verify
+    clean, because v0.1 merges pools by bare field name: vulnerability_score
+    holds {0.0, 0.4545} across the two arms and either value satisfies
+    either. If this test ever goes red, the swap fixture has started failing
+    for some reason OTHER than scope binding, and the v0.2 test above stops
+    being evidence for the thing it names."""
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "tamper-v02-swapped-arms", b)
+    man_path = b / "vac.json"
+    man = json.loads(man_path.read_text())
+    man["vac_version"] = "0.1"
+    man_path.write_text(json.dumps(man, indent=1) + "\n")
+    assert verify_bundle(b) == []
+
+
+def _twin_repointed(tmp_path, rel: str, new_rel: str) -> pathlib.Path:
+    """Move one artifact of the twin bundle and repoint everything at it."""
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "v02-twin-arms", b)
+    (b / new_rel).parent.mkdir(parents=True, exist_ok=True)
+    (b / rel).rename(b / new_rel)
+    man_path = b / "vac.json"
+    man = json.loads(man_path.read_text())
+    for e in man["evidence"]:
+        if e["path"] == rel:
+            e["path"] = new_rel
+    for c in man["results"]["checks"]:
+        if c.get("artifact") == rel:
+            c["artifact"] = new_rel
+    man_path.write_text(json.dumps(man, indent=1) + "\n")
+    return b
+
+
+def test_an_underivable_scope_is_refused(tmp_path):
+    """SPEC 2.5.1: the stem must match [A-Za-z0-9_-]+ before the first dot.
+    A leading-dot filename yields an empty stem, which would silently bind
+    every summary path beginning with a dot."""
+    b = _twin_repointed(tmp_path, "evidence/eval_run_safe.json",
+                        "evidence/.eval_run_safe.json")
+    out = verify_bundle(b)
+    assert any(r.startswith("unscopable-check:") and "yields no scope" in r
+               for r in out), out
+
+
+def test_colliding_scopes_are_refused(tmp_path):
+    """Two checks whose primary references have the same filename stem. A
+    v0.2 summary path could not say which check it meant, so the bundle is
+    refused rather than resolved by position."""
+    b = _twin_repointed(tmp_path, "evidence/eval_run_safe.json",
+                        "safe/eval_run.json")
+    out = verify_bundle(b)
+    assert any(r.startswith("unscopable-check: scope 'eval_run' is claimed")
+               for r in out), out

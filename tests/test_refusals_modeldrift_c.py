@@ -77,7 +77,25 @@ def test_flips_one_offs_must_recompute_from_the_fails_vectors(tmp_path):
     b = _cook(tmp_path, "evidence/flips.json", hide)
     assert verify_bundle(b) == [
         "raw-aggregate-mismatch: evidence/flips.json: one_offs does not "
-        "recompute from the fails vectors (declared 0, recomputed 1)"]
+        "recompute from the fails vectors: declared 0 rows, recomputed 1"]
+
+
+def test_flips_equal_length_lists_name_the_differing_row(tmp_path):
+    """The reason a length-only comparison could not give.
+
+    Rewriting a flip row rather than deleting it leaves the list the same
+    length, and the refusal used to read "declared 1, recomputed 1": a named
+    reason that tells the reader nothing about what is wrong. SPEC §3.5."""
+    def rewrite(fl):
+        fl["one_offs"][0]["task"] = "t-not-the-real-task"
+
+    b = _cook(tmp_path, "evidence/flips.json", rewrite)
+    out = verify_bundle(b)
+    assert len(out) == 1, out
+    assert out[0].startswith(
+        "raw-aggregate-mismatch: evidence/flips.json: one_offs does not "
+        "recompute from the fails vectors: row 0 declared "), out[0]
+    assert "t-not-the-real-task" in out[0]
 
 
 def test_flips_refuses_an_unexpected_key(tmp_path):

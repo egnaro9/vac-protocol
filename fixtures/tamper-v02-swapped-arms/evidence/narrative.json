@@ -1,0 +1,11 @@
+{
+ "sentences": [
+  "<strong>Alpha One regressed 25.0 points</strong> \u2014 from 75.0% to 50.0% between its last two stored runs.",
+  "<strong>Beta One moved +24.0 points</strong>, under its own 33.3-point floor \u2014 the denominator, not the model."
+ ],
+ "html": "A toy board over <strong>5 tracked models</strong>; 4 have stored runs. <strong>Alpha One regressed 25.0 points</strong> \u2014 from 75.0% to 50.0% between its last two stored runs. <strong>Beta One moved +24.0 points</strong>, under its own 33.3-point floor \u2014 the denominator, not the model. <em>Rebuilt from the stored toy rows, never hand-written.</em>",
+ "text": "A toy board over 5 tracked models; 4 have stored runs. Alpha One regressed 25.0 points \u2014 from 75.0% to 50.0% between its last two stored runs. Beta One moved +24.0 points, under its own 33.3-point floor \u2014 the denominator, not the model. Rebuilt from the stored toy rows, never hand-written.",
+ "models": 5,
+ "clean": 4,
+ "claims_fired": 2
+}

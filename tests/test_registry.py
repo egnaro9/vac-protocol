@@ -12,7 +12,7 @@ import shutil
 import re
 import subprocess
 
-from vac.registry import (RegistryError, _j, _mutable_ref_failures,
+from vac.registry import (GATES, RegistryError, _j, _mutable_ref_failures,
                           build, check_fetched,
                           fetch_bundle, matrix)
 from vac.verify import _sha256
@@ -295,3 +295,29 @@ def test_the_mutable_ref_guard_passes_a_fully_pinned_registry():
         "artifacts": [{"path": "vac.json", "sha256": "0" * 64,
                        "url": f"{RAW_HOST}/{'b' * 40}/{BP}/vac.json"}]}]}
     assert _mutable_ref_failures(doc) == []
+
+
+def test_gates_declares_that_rule_3_is_not_machine_checked():
+    """SPEC 5 rule 3, issue #6.
+
+    Six of the seven registry rules have a mechanical path; rule 3 has
+    none, and README claimed five grounds for rejection without saying
+    which were checked by a machine. registry.py already declares its
+    delegated SEMANTIC gate in so many words, and the accurate statement
+    about grading deserved the same voice rather than silence."""
+    assert "grading" in GATES, \
+        "a gate that rests on human review must SAY so; silence reads as enforcement"
+    g = GATES["grading"].lower()
+    assert "not machine-checked" in g
+    assert "human" in g and "replay" in g
+
+
+def test_no_check_reads_protocol_grading_beyond_non_emptiness():
+    """The claim GATES makes about this repository, asserted against the
+    repository. If a future check starts reading protocol.grading, this
+    fails and the GATES wording has to be revisited rather than quietly
+    becoming false."""
+    src = (ROOT / "vac" / "verify.py").read_text()
+    uses = [l.strip() for l in src.splitlines() if '"grading"' in l]
+    assert uses == ['for k in ("issuer", "issuer_commit", "task", "grading", '
+                    '"control_policy"):'], uses
