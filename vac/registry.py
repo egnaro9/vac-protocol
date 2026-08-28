@@ -184,6 +184,17 @@ def _entry(issuer: str, repo_url: str, bundle_path: str,
         # the manifest records when the issuer emitted, this records where the
         # registry found the artifacts it hashed.
         "pinned_commit": pinned_commit,
+        # WHICH RULE THIS ENTRY WAS ACCEPTED UNDER. 0.1 and 0.2 differ in what
+        # they guarantee about the summary: 0.1 merges recomputation pools by
+        # bare field name and admits a loose second tier, 0.2 keys them
+        # scope.field and has no second tier (SPEC 2.5.1). A registry holding
+        # both cannot leave a reader to guess which applies to a given entry.
+        #
+        # Indexed, never .get() with a default: verify_bundle has already
+        # refused an absent or unsupported version above, so a missing key
+        # here is a broken invariant and should raise rather than quietly
+        # publish an entry as 0.1.
+        "vac_version": man["vac_version"],
         "bundle_path": bundle_path,
         "capability": man["claim"]["capability"],
         "subject": f"{man['subject']['kind']}: {man['subject']['id']}",

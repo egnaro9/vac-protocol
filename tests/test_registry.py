@@ -11,8 +11,10 @@ import pathlib
 import shutil
 import re
 import subprocess
+import pytest
 
-from vac.registry import (GATES, RegistryError, _j, _mutable_ref_failures,
+from vac.registry import (GATES, RegistryError, _entry, _j,
+                          _mutable_ref_failures,
                           build, check_fetched,
                           fetch_bundle, matrix)
 from vac.verify import _sha256
@@ -321,3 +323,60 @@ def test_no_check_reads_protocol_grading_beyond_non_emptiness():
     uses = [l.strip() for l in src.splitlines() if '"grading"' in l]
     assert uses == ['for k in ("issuer", "issuer_commit", "task", "grading", '
                     '"control_policy"):'], uses
+
+
+def _valid_copy(tmp_path, version=None):
+    b = tmp_path / "b"
+    shutil.copytree(ROOT / "fixtures" / "valid", b)
+    if version is not None:
+        man_path = b / "vac.json"
+        man = json.loads(man_path.read_text())
+        if version == "__absent__":
+            del man["vac_version"]
+        else:
+            man["vac_version"] = version
+        man_path.write_text(json.dumps(man, indent=1) + "\n")
+    return b
+
+
+def test_the_registry_is_mixed_version_and_says_so_per_entry():
+    """0.1 and 0.2 differ in what they GUARANTEE about a summary, so a
+    registry holding both cannot leave a reader to infer which applies.
+    This asserts the mix is real, not just that the key exists: a registry
+    that had quietly become all-one-version would pass a presence check."""
+    doc = json.loads((ROOT / "registry.json").read_text())
+    versions = {e["name"]: e["vac_version"] for e in doc["entries"]}
+    assert all(versions.values()), "an entry published no vac_version"
+    assert set(versions.values()) == {"0.1", "0.2"}, versions
+    # and it is the bundle's own value, not a registry-side guess
+    certlab = [v for k, v in versions.items() if k.startswith("agent-certlab/")]
+    assert certlab and set(certlab) == {"0.2"}, certlab
+
+
+@pytest.mark.parametrize("bad", ["0.3", "", "__absent__"])
+def test_a_bundle_whose_version_is_absent_or_unsupported_yields_no_entry(
+        tmp_path, bad):
+    """Rejected, never defaulted. The verifier refuses the bundle before an
+    entry is built, so there is no path on which the registry invents 0.1."""
+    entry, reasons = _entry("egnaro9/toy", "https://github.com/egnaro9/toy",
+                            "vac", _valid_copy(tmp_path, bad), ["vac.json"],
+                            "c" * 40)
+    assert entry is None
+    assert any("vac_version" in r for r in reasons), reasons
+
+
+def test_the_version_is_read_from_the_bundle_and_cannot_fall_back(
+        tmp_path, monkeypatch):
+    """The guard above is the verifier's, so this pins the entry builder's own
+    behaviour if that guard ever moves: with verification stubbed out, an
+    absent version must RAISE, not publish an entry claiming 0.1."""
+    import vac.registry as R
+    monkeypatch.setattr(R, "verify_bundle", lambda _d: [])
+    b = _valid_copy(tmp_path, "__absent__")
+    # the issuer must MATCH, or _entry returns on the issuer check and never
+    # reaches the line this test is about
+    issuer = "/".join(json.loads((b / "vac.json").read_text())
+                      ["protocol"]["issuer"].rstrip("/").split("/")[-2:])
+    with pytest.raises(KeyError):
+        R._entry(issuer, f"https://github.com/{issuer}", "vac", b,
+                 ["vac.json"], "c" * 40)

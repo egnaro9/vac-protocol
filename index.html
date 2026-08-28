@@ -36,6 +36,8 @@
   .s-superseded { color:var(--dim); }
   .s-invalidated { color:var(--red); }
   .s-pending { color:var(--amber); }
+  .vacv { color:var(--dim); border:1px solid currentColor; border-radius:3px;
+          padding:0 4px; margin-left:5px; white-space:nowrap; }
   tr.pendrow td { color:var(--dim); }
   .reason { color:var(--amber); }
   .foot { margin-top:30px; color:var(--dim); font-size:13px; line-height:1.7; }
@@ -78,6 +80,15 @@
     <span class="s-superseded">superseded</span> — replaced by newer
     evidence; <span class="s-invalidated">invalidated</span> — failed on
     re-run, kept visible as a dead entry (registries do not delete);
+    <b>VAC version</b> — which binding rule the entry was accepted under, and
+    NOT the registry schema version above. Under <code>0.1</code> a summary
+    number is matched against recomputation pools merged by bare field name,
+    with a loose second tier admitting any value some check happens to
+    recompute. Under <code>0.2</code> pools are keyed <code>scope.field</code>
+    and never merged, the scope is derived from the check's own evidence
+    filename, and there is no second tier: a 0.2 entry's headline numbers are
+    each bound to the one check that earned them. Both are accepted; 0.2 is
+    the stronger guarantee.<br>
     <span class="s-pending">pending</span> — named as not yet admissible,
     with its exact reason, rather than fabricated.<br><br>
     A structural PASS means a bundle is <b>internally honest</b> — schema,
@@ -106,8 +117,8 @@ const flat = (o, pre) => Object.entries(o || {}).flatMap(([k, v]) =>
 fetch('registry.json').then(r => r.json()).then(d => {
   const n = d.entries.length, m = d.pending.length;
   document.getElementById('proto').innerHTML =
-    'registry_version <code>' + esc(d.registry_version) + '</code> · ' +
-    n + ' accepted · ' + m + ' pending<br>' + esc(d.protocol);
+    'registry schema version <code>' + esc(d.registry_version) +
+    '</code> · ' + n + ' accepted · ' + m + ' pending<br>' + esc(d.protocol);
   const tb = document.querySelector('#tbl tbody');
   for (const e of d.entries) {
     const sum = flat(e.summary).join(' · ') || '—';
@@ -116,7 +127,9 @@ fetch('registry.json').then(r => r.json()).then(d => {
     tb.insertAdjacentHTML('beforeend',
       '<tr><td class="name">' + esc(e.name) + '<br>' +
       '<span class="badge s-' + esc(e.status) + '">' + esc(e.status) +
-      '</span></td>' +
+      '</span><span class="badge vacv" title="the VAC version this entry was ' +
+      'accepted under; 0.2 binds each summary number to the check that ' +
+      'earned it">VAC ' + esc(e.vac_version) + '</span></td>' +
       '<td class="cap">' + esc(e.capability) + '</td>' +
       '<td class="dim">' + esc(e.subject) + '</td>' +
       '<td class="dim">' + sum + '<span class="dim">' + ch + '</span></td>' +
