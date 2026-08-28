@@ -48,6 +48,18 @@ TAMPERS = {
                              "summary-outruns-checks: summary.fixed: "
                              "declares 3, recomputation gives 2"],
     "tamper-empty-limitations": ["empty-limitations"],
+    # SPEC 3.3, issue #5. Both are cooked consistently end to end, so
+    # before this refusal they verified CLEAN and advertised score 1.000
+    # from zero applied mutations. The all-error one is the case a fix
+    # aimed at an empty `results` would not have caught: rows are present.
+    "tamper-evalmut-empty-rows": [
+        "artifact-unparsable: evidence/evalmut_run.json: applied == 0, "
+        "so this run has no score. A payload that applied no mutation "
+        "has measured nothing; it does not score 1.0 by default"],
+    "tamper-evalmut-all-error": [
+        "artifact-unparsable: evidence/evalmut_run.json: applied == 0, "
+        "so this run has no score. A payload that applied no mutation "
+        "has measured nothing; it does not score 1.0 by default"],
     "tamper-missing-issuer-commit": ["missing-issuer-commit"],
     "tamper-raw-aggregate": [
         "raw-aggregate-mismatch: toy-suite/toy-defect-b: "

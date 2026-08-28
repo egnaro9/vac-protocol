@@ -566,7 +566,17 @@ def _check_evalmut(bundle_dir: pathlib.Path, check: dict, proto: dict,
             f.append(f"raw-aggregate-mismatch: {art}: tally.{k} declared "
                      f"{tally.get(k)}, recomputed {v}")
     applied = counts["caught"] + counts["missed"] + counts["flagged"]
-    score = 1.0 if applied == 0 else counts["caught"] / applied
+    if applied == 0:
+        # SPEC 3.3. This used to read `1.0 if applied == 0`, so a run that
+        # applied nothing advertised a perfect score. An empty results[]
+        # reached it through a guard that `all()` passes vacuously; rows
+        # that all errored reached it carrying evidence. Everywhere else
+        # this profile fails toward the unflattering value.
+        f.append(f"artifact-unparsable: {art}: applied == 0, so this run "
+                 "has no score. A payload that applied no mutation has "
+                 "measured nothing; it does not score 1.0 by default")
+        return None  # no score means no recomputation to contribute
+    score = counts["caught"] / applied
     if data.get("score") != score:
         f.append(f"raw-aggregate-mismatch: {art}: score declared "
                  f"{data.get('score')}, recomputed {score}")

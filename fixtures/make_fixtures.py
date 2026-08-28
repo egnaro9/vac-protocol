@@ -805,6 +805,52 @@ def tampered_variants(valid: dict[str, str]) -> dict[str, dict[str, str]]:
     r["outcome"] = "caught"
     out["tamper-evalmut-rows"] = _rehash_mut(mp)
 
+    # SPEC 3.3, issue #5: a run that APPLIED nothing scored a perfect 1.0.
+    # Both shapes below are cooked consistently end to end, so before the
+    # applied == 0 refusal they verified CLEAN and advertised score 1.000
+    # with zero blind spots, earned from zero applied mutations.
+    def _no_applied(mp: dict, rows: list) -> dict[str, str]:
+        """Re-cook every aggregate the profile recomputes, so the ONLY
+        thing left to object to is the vacuous score itself."""
+        mp["results"] = rows
+        counts = {k: sum(1 for r in rows if r.get("outcome") == k)
+                  for k in ("caught", "missed", "flagged", "error", "na")}
+        mp["tally"] = counts
+        mp["score"] = 1.0
+        mp["holes"] = {"vacuous": [], "blind": [], "brittle": [],
+                       "coverage_gap": [],
+                       "error": [r for r in rows if r["outcome"] == "error"]}
+        man = json.loads(valid["vac.json"])
+        exercised = len({r["operator_id"] for r in rows})
+        for c in man["results"]["checks"]:
+            if c.get("profile") == "evalmut-run-v1":
+                c["expect"] = {**counts, "applied": 0, "results": len(rows),
+                               "score_3": 1.0, "vacuous": 0, "blind": 0,
+                               "brittle": 0, "coverage_gap": 0,
+                               "operators": 5,
+                               "operators_exercised": exercised}
+        man["results"]["summary"]["mutation_score_3"] = 1.0
+        man["results"]["summary"]["mutation_blind_spots"] = 0
+        text = _j(mp)
+        for e in man["evidence"]:
+            if e["path"] == "evidence/evalmut_run.json":
+                e["sha256"] = _sha(text)
+        return {**valid, "evidence/evalmut_run.json": text,
+                "vac.json": _j(man)}
+
+    # an empty results[] clears a guard that null does not: all() over []
+    # is vacuously true
+    mp = json.loads(valid["evidence/evalmut_run.json"])
+    out["tamper-evalmut-empty-rows"] = _no_applied(mp, [])
+
+    # rows PRESENT and every one errored. applied = caught + missed +
+    # flagged, so this is still 0. A fix aimed at `results` being empty
+    # would pass this one, which is why it exists.
+    mp = json.loads(valid["evidence/evalmut_run.json"])
+    rows = [{**r, "outcome": "error", "grader_error": "boom"}
+            for r in mp["results"]]
+    out["tamper-evalmut-all-error"] = _no_applied(mp, rows)
+
     def _rehash_crash(cp: dict) -> dict[str, str]:
         text = _j(cp)
         man = json.loads(valid["vac.json"])

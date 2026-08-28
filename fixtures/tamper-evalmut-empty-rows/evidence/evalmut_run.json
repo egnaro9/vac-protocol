@@ -1,0 +1,19 @@
+{
+ "score": 1.0,
+ "tally": {
+  "caught": 0,
+  "missed": 0,
+  "flagged": 0,
+  "error": 0,
+  "na": 0
+ },
+ "holes": {
+  "vacuous": [],
+  "blind": [],
+  "brittle": [],
+  "coverage_gap": [],
+  "error": []
+ },
+ "baseline_failures": [],
+ "results": []
+}

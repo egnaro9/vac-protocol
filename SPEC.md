@@ -340,8 +340,13 @@ Recomputation, over the rows:
  : outcome semantics are internal to each row, not taken on faith;
 - the artifact's `tally` must equal the outcome counts over the rows,
   and its `score` must equal `caught / applied` exactly, where
-  `applied` = `caught + missed + flagged` (1.0 when nothing applied; the
-  payload carries the full-precision float);
+  `applied` = `caught + missed + flagged`; the payload carries the
+  full-precision float. A payload with `applied == 0` has no score and
+  is refused (`artifact-unparsable`), whether that zero arises from an
+  empty `results`, from `results` of null, or from rows that all
+  errored. There is no perfect-by-default: a run that applied no
+  mutation has measured nothing, and this profile fails toward the
+  unflattering value here as it does everywhere else;
 - each `holes` class must equal, as a multiset, the rows it is defined
   over: `vacuous` = missed sanity rows, `blind` = missed kill rows,
   `error` = error rows, `brittle` = flagged rows, `coverage_gap` =
