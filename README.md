@@ -69,7 +69,8 @@ python -m vac.verify fixtures/tamper-raw-aggregate # named reasons, exit 1
 
 The verifier is structural: zero network, zero issuer code, stdlib only.
 It proves the bundle is *internally honest*: schema, hashes, closure
-(no unlisted files), stated limitations, stamp agreement, and every
+(no unlisted files, and no symlinks: a bundle may not source evidence
+from outside itself), stated limitations, stamp agreement, and every
 declared number recomputed from the committed artifacts (certlab verdict
 counts from `bundle.json`; fleet aggregates from `raw_results.jsonl`;
 evalmut tallies, score, and hole classes from the per-mutation rows;

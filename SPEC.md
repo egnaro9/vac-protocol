@@ -55,6 +55,12 @@ verified bundle cannot smuggle content. Bundles MAY be shipped as a
 `.tar.gz` of the directory; verifiers extract (rejecting absolute paths,
 `..`, links) and verify the directory.
 
+Evidence bundles MUST NOT contain symbolic links. The verifier rejects
+both file and directory symlinks, including links whose targets are
+inside the bundle (`unsafe-bundle`). A link is refused before anything
+is read through it, so a linked artifact is never hashed. The directory
+path and the `.tar.gz` path give the same answer to the same bundle.
+
 ## 2. `vac.json`. The manifest
 
 Top level: an object with exactly these six required members plus
@@ -551,7 +557,7 @@ Two distinct acts, never to be conflated:
   `check-artifact-not-listed`, `artifact-unparsable`, `summary-mismatch`,
   `summary-outruns-checks`,
   `raw-aggregate-mismatch`, `stamp-mismatch`, `missing-issuer-commit`,
-  `issuer-commit-mismatch`, `unsafe-archive`).
+  `issuer-commit-mismatch`, `unsafe-archive`, `unsafe-bundle`).
 - **Semantic replay**: clone the issuer at `issuer_commit`, run its
   deterministic regrader/audit per `replay.commands`, compare against
   `replay.expected`. This re-earns the verdicts. The structural verifier
