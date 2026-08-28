@@ -184,6 +184,71 @@ pinned but read by nothing is unexamined, and the phrase would otherwise mean
 an issuer what breaking it costs; constraining how a check fails does not
 constrain whether it runs.
 
+#### 2.5.1 `scope`, and how a summary number binds
+
+A check's **scope** is derived, never declared. There is no `scope` field
+in a manifest, and a v0.2 bundle carrying one is refused
+(`schema-violation`). An issuer who could name the binding key and write
+the summary would control both sides of the binding: labelling one check
+`safe` and another `vulnerable`, then writing a summary to match,
+exchanges two arms with every binding satisfied. A declared scope moves a
+false claim one level up rather than refusing it. It is also the shape
+§3.1 names non-authoritative, and this format does not admit in §2 what
+it refuses in §3.
+
+A check's scope is the filename of its PRIMARY evidence reference, up to
+that filename's first `.`. The primary reference per profile is:
+
+| profile | primary reference |
+|---|---|
+| `certlab-bundle-v1` | `artifact` |
+| `fleet-board-v1` | `aggregate` |
+| `evalmut-run-v1` | `artifact` |
+| `crashkit-battery-v1` | `artifact` |
+| `crashkit-variance-v1` | `artifact` |
+| `rows-aggregate-v1` | `artifact` |
+| `modeldrift-board-v1` | `metrics` |
+
+So `adversarial_safe.eval_run.json` yields the scope `adversarial_safe`.
+A derived scope MUST match `[A-Za-z0-9_-]+`; anything else is
+`unscopable-check`, naming the reference. Scopes MUST be unique within a
+bundle; a collision is `unscopable-check`, naming the contested scope. A
+scope is not forgeable by relabelling, because the name it derives from
+is a path in the manifest's sha256 list: renaming a scope means renaming
+a hashed artifact and re-pinning it.
+
+**What scope does not prove.** Binding a summary number to a scope proves
+that number came from one specific hashed artifact. It does not prove
+that artifact is the thing its filename suggests. `adversarial_safe`
+being the safe control arm is a semantic claim, and §3.4 delegates it to
+the issuer's own emitter refusing on control drift at the pinned commit.
+Structural binding is provenance, not interpretation.
+
+**Binding, by version.**
+
+- **v0.1**: recomputation pools are merged by bare field name across every
+  check. A summary key naming a recomputed field is held to that field's
+  merged values; any other numeric value is admitted if it equals SOME
+  recomputed quantity anywhere in the bundle.
+- **v0.2**: pools are keyed `scope.field` and are never merged. A numeric
+  summary value binds if and only if its full path beneath `summary.`
+  equals a pool key and equals that key's recomputed value. There is no
+  second tier: a number matching no pool key is refused
+  (`summary-outruns-checks`), whatever else in the bundle happens to
+  equal it.
+
+v0.2 exists because neither v0.1 tier is sound once a profile runs more
+than once in a bundle. A profile run eight times contributes eight values
+under one key, and every one of them satisfies every summary leaf wearing
+that name. The dimensionless second tier is worse: it mixes counts with
+rates, so a count of 1 re-earns a rate of 1.0 and a count of 0 re-earns
+0.0, which are the two values a flattering headline most wants.
+
+The §2.5 outrun rule is evaluated only when every check recomputed
+successfully and produced a pool. When a check has already failed, its
+own reasons are reported instead, so the reason list is truncated rather
+than silent.
+
 ### 2.6 `replay`
 
 | field | type | rule |
@@ -420,6 +485,12 @@ frozen table; it is an issuer-controlled one.
 Every key in `expect` MUST name a recomputed field and equal its value
 (`summary-mismatch`): `accuracy`, `vulnerability_score`, `flagged_cases`,
 `n_cases`, `truncations`, `reliability`, `cases`, `graded`, `errors`.
+
+At v0.1 those nine names are also the §2.5 summary pool, merged across
+every crashkit check in the bundle. At v0.2 the pool is those nine names
+prefixed by each check's derived scope (§2.5.1), unmerged, so a bundle
+running this profile over eight batteries publishes 72 pool keys rather
+than 9, and each binds to one value.
 
 Stamp binding per §2.3: `battery_hash_key` is REQUIRED and names the
 `protocol.hashes` entry that MUST equal the artifact's `git_sha`. The
@@ -717,11 +788,20 @@ oversight:
 
 ## 8. Versioning
 
-`vac_version` is the format contract. v0.1 verifiers MUST refuse any
-other value rather than guess. Additive, non-breaking fields may appear
+`vac_version` is the format contract. A verifier MUST refuse a version
+it does not implement rather than guess, and MUST apply that version's
+semantics rather than the newest it knows. Additive, non-breaking fields may appear
 under unknown keys today; anything that changes verification semantics is
 a new version. Adding an evidence profile is additive in exactly this
-sense. It widens what a bundle may declare without changing how any
+sense.
+
+v0.2 changes exactly one verification semantic: summary binding is
+scope-qualified and the loose tier is gone (§2.5.1). Everything else is
+unchanged, and a v0.1 bundle continues to verify under v0.1 rules
+indefinitely. There is no cutoff date and no transition window in which a
+verifier knowingly accepts what it has called unsound. An issuer moves to
+v0.2 by re-emitting, when ready.
+ It widens what a bundle may declare without changing how any
 existing bundle verifies. So `evalmut-run-v1` (§3.3),
 `crashkit-battery-v1` (§3.4), and `modeldrift-board-v1` (§3.5) landed
 as v0.1 profile additions, no
