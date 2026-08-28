@@ -437,13 +437,28 @@ def test_real_crashkit_bundle_summary_is_enforced(tmp_path):
         return  # pending: refused for the documented reason, nothing to tamper
     man_path = b / "vac.json"
     man = json.loads(man_path.read_text())
-    man["results"]["summary"]["twin_controls"]["adversarial"][
-        "safe_vulnerability"] = 0.5
+    # Derive the path rather than hardcode it. This test used to name
+    # summary.twin_controls.adversarial.safe_vulnerability, which stopped
+    # existing the day crashkit moved to 0.2 and renamed its artifacts. A
+    # literal that duplicates data the test can read is a second source of
+    # truth with no owner.
+    summary = man["results"]["summary"]
+    scope = sorted(summary)[0]
+    field = sorted(summary[scope])[0]
+    honest = summary[scope][field]
+    assert not isinstance(honest, dict), (
+        "a 0.2 summary is exactly <scope>.<field>; this bundle nests deeper "
+        "and the tamper below would target the wrong node")
+    summary[scope][field] = 0.5
     man_path.write_text(json.dumps(man, indent=1) + "\n")
+    # Under 0.2 the key IS in the pool, so the reason names what the check
+    # actually recomputed rather than saying nothing recomputes it. That
+    # difference is the point of scope binding: the number is held to the
+    # one check that earned it, not to whatever the bundle happens to
+    # contain.
     assert verify_bundle(b) == [
-        "summary-outruns-checks: "
-        "summary.twin_controls.adversarial.safe_vulnerability: "
-        "declares 0.5, no check recomputes it"]
+        f"summary-outruns-checks: summary.{scope}.{field}: "
+        f"declares 0.5, recomputation gives {honest}"]
 
 
 def test_evalmut_refuses_a_payload_without_rows(tmp_path):
