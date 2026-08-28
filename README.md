@@ -130,6 +130,21 @@ capability contract structurally, then re-earn its verdicts with the
 issuer's own regrader. No API keys, no accounts. Confirmations,
 discrepancies, and blocked replays all get filed and published.
 
+### Findings remediated after publication
+
+**2026-08-28. The symlink escape is closed.** The preprint
+([arXiv:2608.26183](https://arxiv.org/abs/2608.26183)) documents, and scopes as
+open at the time of writing, a closure hole in directory mode: an unlisted file
+inside a symlinked subdirectory rode along, and a covered artifact replaced by a
+symlink to a target outside the bundle verified clean. Both are now refused as
+`unsafe-bundle: <path>: symlink`, before anything is read through the link, so a
+linked artifact is never hashed. Reported and fixed by
+[Giulio D'Erme](https://github.com/GiulioDER) in
+[#8](https://github.com/egnaro9/vac-protocol/pull/8), which carried
+[#2](https://github.com/egnaro9/vac-protocol/pull/2) with it. Bundles may not
+contain symlinks at all, including links whose targets are inside the bundle:
+see SPEC 1. The paper's wording stands as written; it was accurate when written.
+
 ## Registry and replay
 
 [registry.json](registry.json) is the registry: a file, reviewed like
