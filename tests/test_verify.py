@@ -389,9 +389,15 @@ def test_real_evalmut_bundle_summary_is_enforced(tmp_path):
     man = json.loads(man_path.read_text())
     man["results"]["summary"]["dogfood_gradecore"]["caught"] = 33
     man_path.write_text(json.dumps(man, indent=1) + "\n")
+    # the recomputed pool is derived, not hard-coded: these counts move when
+    # the issuer re-emits, and a stale literal here would fail for a reason
+    # that has nothing to do with the hole this test guards
+    caught = sorted({json.loads((b / c["artifact"]).read_text())["tally"]["caught"]
+                     for c in man["results"]["checks"]
+                     if c.get("profile") == "evalmut-run-v1"})
     assert verify_bundle(b) == [
         "summary-outruns-checks: summary.dogfood_gradecore.caught: "
-        "declares 33, recomputation gives one of [5, 32]"]
+        f"declares 33, recomputation gives one of {caught}"]
 
 
 CRASHKIT_BUNDLE = (ROOT / (os.environ.get("VAC_CRASHKIT_CHECKOUT")
