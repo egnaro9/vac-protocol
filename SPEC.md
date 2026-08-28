@@ -244,6 +244,20 @@ equal its recomputed value (`summary-mismatch`). Stamp binding per §2.3:
 the artifact's `taskset_hash`/`prompt_hash` vs `protocol.hashes`, and its
 `harness_commit` vs `protocol.issuer_commit`.
 
+The §2.5 summary pool for this profile is those four fields
+(`verdicts`, `fixed`, `policy_ok`, `tests_ok`). They are
+implementation-derived and authoritative.
+
+The pool also carries one count per distinct `failure_mode` present in
+the verdicts, keyed by the issuer's own mode name. Those keys are NOT
+authoritative. They are issuer free text, they vary bundle to bundle,
+and nothing in this document defines them. A mode whose name collides
+with a recomputed field is withheld from the pool, so issuer text
+cannot redefine what `fixed` or `verdicts` are held to. A registry MUST
+NOT treat a summary number admitted only by a free-text pool key as
+having been recomputed in the sense §2.5 means. It has been matched
+against a name the issuer chose.
+
 What this proves offline: the declared counts are exactly what the
 committed verdicts say. What it does not prove: that the verdicts are
 correct. That is `python -m certlab.regrade`, which rematerializes
@@ -277,6 +291,12 @@ Recomputation, per aggregate row, over the raw lines with the same
 `expect.rows`, when present, MUST equal the number of aggregate rows.
 Stamp binding per §2.3: the aggregate's `fleet_commit` vs
 `protocol.issuer_commit` and `protocol.hashes.fleet_commit`.
+
+The §2.5 summary pool for this profile is `rows`, `n`, `detected`,
+`false_alarms`, `detection_rate`, `false_alarm_rate`, `suites` and
+`members`, at board and per-suite scope. These eight are the whole
+pool, all implementation-derived. This profile has no free-text
+component.
 
 What this does not prove: that the board's numbers came from real suite
 runs. That is `python audit/run_audit.py` at the stamped commit
@@ -473,6 +493,14 @@ Every key in `expect` MUST name a recomputed field and equal its value
 `min_detectable_pts_full_grade`, `probe_alarms`, `repeat_offenders`,
 `one_offs`, `models_with_enough_history`, `claims_fired`; these fifteen
 are also the §2.5 summary pool.
+
+Each flips row MUST carry `latest`, compared by whole-object equality,
+so its wording is normative. It is exactly one of:
+
+    broke on YYYY-MM-DD
+    recovered on YYYY-MM-DD
+
+Any other phrasing, and omitting the key, is `raw-aggregate-mismatch`.
 
 Stamp binding per §2.3: `protocol.hashes.suite_hash` MUST equal the
 fingerprint's `suite_hash`, and `protocol.hashes.metrics_sha256` /

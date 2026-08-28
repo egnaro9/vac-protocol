@@ -963,6 +963,23 @@ def _modeldrift_results_md(rows: list[dict], suite_version: str) -> str:
     )
 
 
+def _first_row_diff(got, want) -> str:
+    """Name the first differing row, not just the lengths.
+
+    Equal-length lists that differed structurally used to report
+    "declared 1, recomputed 1", which is a named reason that tells the
+    reader nothing. The standings comparator already names what differs;
+    this gives the flip lists the same courtesy."""
+    if not isinstance(got, list):
+        return f"declared {got!r}, recomputed a list of {len(want)}"
+    if len(got) != len(want):
+        return f"declared {len(got)} rows, recomputed {len(want)}"
+    for i, (g, w) in enumerate(zip(got, want)):
+        if g != w:
+            return f"row {i} declared {g!r}, recomputed {w!r}"
+    return "lists compare unequal but no row differs"  # unreachable; named anyway
+
+
 def _modeldrift_flips(series: dict) -> dict:
     """The flip / probe-alarm analysis recomputed from the stored `fails`
     vectors (SPEC.md §3.5): a flip is a task entering or leaving the fails
@@ -1447,10 +1464,9 @@ def _check_modeldrift(bundle_dir: pathlib.Path, check: dict, proto: dict,
     for k in ("repeat_offenders", "one_offs", "probe_alarms"):
         got = flips.get(k)
         if got != want_flips[k]:
-            n_got = len(got) if isinstance(got, list) else got
             f.append(f"raw-aggregate-mismatch: {flips_rel}: {k} does not "
-                     f"recompute from the fails vectors (declared {n_got}, "
-                     f"recomputed {len(want_flips[k])})")
+                     f"recompute from the fails vectors: "
+                     f"{_first_row_diff(got, want_flips[k])}")
     extra = sorted(set(flips) - set(want_flips))
     if extra:
         f.append(f"raw-aggregate-mismatch: {flips_rel}: unexpected keys "
