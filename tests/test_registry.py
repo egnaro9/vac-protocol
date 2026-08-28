@@ -13,6 +13,7 @@ import re
 import subprocess
 import pytest
 
+from vac.verify import SUPPORTED_VERSIONS
 from vac.registry import (GATES, RegistryError, _entry, _j,
                           _mutable_ref_failures,
                           build, check_fetched,
@@ -339,18 +340,45 @@ def _valid_copy(tmp_path, version=None):
     return b
 
 
-def test_the_registry_is_mixed_version_and_says_so_per_entry():
+def test_every_entry_publishes_the_version_its_own_manifest_declares():
     """0.1 and 0.2 differ in what they GUARANTEE about a summary, so a
-    registry holding both cannot leave a reader to infer which applies.
-    This asserts the mix is real, not just that the key exists: a registry
-    that had quietly become all-one-version would pass a presence check."""
+    registry may not leave a reader to infer which applies to an entry.
+
+    This asserted a MIX of {0.1, 0.2} until 2026-08-28, to catch a registry
+    that had quietly become single-version while the field stopped carrying
+    information. Every issuer has since migrated deliberately, so the mix is
+    gone and that assertion would now fail for the right reason at the wrong
+    moment. The durable property is not the mix: it is that the published
+    version is the ISSUER'S OWN, never a registry-side default.
+
+    So it is checked against each bundle's manifest where the issuer is
+    checked out locally, which is what a registry-side default would break.
+
+    LAYERING, so the mutation result is not misread: this test reads the
+    COMMITTED registry.json, so injecting a default into _entry does not kill
+    it until the registry is regenerated. That code path is covered by
+    test_the_version_is_read_from_the_bundle_and_cannot_fall_back, which does
+    die on that mutant. One guards the artifact, the other the generator, and
+    a stale artifact and a broken generator are different failures."""
+    from vac.registry import ISSUERS
     doc = json.loads((ROOT / "registry.json").read_text())
     versions = {e["name"]: e["vac_version"] for e in doc["entries"]}
-    assert all(versions.values()), "an entry published no vac_version"
-    assert set(versions.values()) == {"0.1", "0.2"}, versions
-    # and it is the bundle's own value, not a registry-side guess
-    certlab = [v for k, v in versions.items() if k.startswith("agent-certlab/")]
-    assert certlab and set(certlab) == {"0.2"}, certlab
+    assert versions, "no accepted entries at all"
+    assert all(v in SUPPORTED_VERSIONS for v in versions.values()), versions
+
+    checked = 0
+    for src in ISSUERS:
+        co = (ROOT / src["default_checkout"]).resolve()
+        for e in doc["entries"]:
+            if e["issuer_repo"] != src["repo"]:
+                continue
+            man = co / e["bundle_path"] / "vac.json"
+            if not man.is_file():
+                continue          # issuer not checked out here
+            declared = json.loads(man.read_text())["vac_version"]
+            assert e["vac_version"] == declared, (e["name"], declared)
+            checked += 1
+    assert checked, "no issuer checked out; the claim went unverified"
 
 
 @pytest.mark.parametrize("bad", ["0.3", "", "__absent__"])
