@@ -134,7 +134,7 @@ def test_a_checker_that_returns_none_silently_is_still_named(monkeypatch):
 
     profile = "certlab-bundle-v1"
     monkeypatch.setitem(V._CHECK_FNS, profile,
-                        lambda bundle_dir, check, proto, f: None)
+                        lambda bundle_dir, check, proto, f, **_: None)
     out = V.verify_bundle(FIX / "valid")
     assert f"artifact-unparsable: {profile}: check contributed no " \
            "recomputation" in out, out

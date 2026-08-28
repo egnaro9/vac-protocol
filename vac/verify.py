@@ -301,7 +301,8 @@ def _load_json(bundle_dir: pathlib.Path, rel: str, f: list[str],
 
 
 def _check_certlab(bundle_dir: pathlib.Path, check: dict, proto: dict,
-                   f: list[str]) -> dict[str, list] | None:
+                   f: list[str], *,
+                 version: str = "0.1") -> dict[str, list] | None:
     art = check["artifact"]
     data = _load_json(bundle_dir, art, f)
     if data is None:
@@ -388,7 +389,8 @@ def _fleet_rates(lines: list) -> dict:
 
 
 def _check_fleet(bundle_dir: pathlib.Path, check: dict, proto: dict,
-                 f: list[str]) -> dict[str, list] | None:
+                 f: list[str], *,
+                 version: str = "0.1") -> dict[str, list] | None:
     agg = _load_json(bundle_dir, check["aggregate"], f)
     raw_rel = check["raw"]
     try:
@@ -479,24 +481,46 @@ def _check_fleet(bundle_dir: pathlib.Path, check: dict, proto: dict,
             f.append(f"stamp-mismatch: hashes.fleet_commit: protocol "
                      f"{hashes['fleet_commit']}, artifact "
                      f"{agg['fleet_commit']}")
-    # the summary pool (SPEC.md §2.5), earned from RAW lines only — the
-    # aggregate is the claim: per-(suite,member), per-suite, and whole-board
-    # stats, so a headline may cite any honest grouping level
-    pool: dict[str, list] = {"rows": [len(groups)],
-                             "suites": [len({s for s, _ in groups})]}
+    # The summary pool (SPEC.md §2.5), earned from RAW lines only. This
+    # profile recomputes at THREE granularities: per-(suite, member),
+    # per-suite, and whole-board.
+    #
+    # At v0.1 all three shared one key per field, and the comment here used
+    # to say a headline "may cite any honest grouping level". They are all
+    # honest, and that is the problem: a suite's 0.167 and one member's 1.0
+    # both landed in `detection_rate`, so declaring the suite rate as 1.0 was
+    # accepted. A real number from the wrong grouping level is exactly the
+    # class 2.5.1 exists to refuse, and scope-per-check cannot reach it,
+    # because the collision is INSIDE one check.
+    #
+    # At v0.2 each granularity gets its own key, so a suite-level summary
+    # path can draw only from suite-level recomputation. The prefix goes on
+    # the FIELD rather than the path, so a summary stays exactly
+    # <scope>.<field> and 2.5.1 needs no third segment.
+    #
+    # v0.1 keeps the merged keys unchanged: every bundle accepted under those
+    # semantics goes on verifying under them.
+    v2 = version == "0.2"
+
+    def put(prefix: str, k: str, v, into: dict) -> None:
+        into.setdefault(f"{prefix}_{k}" if v2 else k, []).append(v)
+
+    pool: dict[str, list] = {}
+    put("board", "rows", len(groups), pool)
+    put("board", "suites", len({s for s, _ in groups}), pool)
     by_suite: dict = {}
     for (suite, _member), lines in groups.items():
         by_suite.setdefault(suite, []).extend(lines)
         for k, v in _fleet_rates(lines).items():
-            pool.setdefault(k, []).append(v)
+            put("member", k, v, pool)
     for lines in by_suite.values():
         stats = _fleet_rates(lines)
         stats["members"] = len({ln.get("member") for ln in lines})
         for k, v in stats.items():
-            pool.setdefault(k, []).append(v)
+            put("suite", k, v, pool)
     if raw:
         for k, v in _fleet_rates(raw).items():
-            pool.setdefault(k, []).append(v)
+            put("board", k, v, pool)
     return pool
 
 
@@ -537,7 +561,8 @@ def _check_certlab_render(art: str, text: str, want: dict,
 
 
 def _check_evalmut(bundle_dir: pathlib.Path, check: dict, proto: dict,
-                   f: list[str]) -> dict[str, list] | None:
+                   f: list[str], *,
+                 version: str = "0.1") -> dict[str, list] | None:
     art = check["artifact"]
     data = _load_json(bundle_dir, art, f)
     if data is None:
@@ -779,7 +804,8 @@ def _check_evalmut_render(art: str, text: str, want: dict,
 
 
 def _check_crashkit(bundle_dir: pathlib.Path, check: dict, proto: dict,
-                    f: list[str]) -> dict[str, list] | None:
+                    f: list[str], *,
+                 version: str = "0.1") -> dict[str, list] | None:
     art = check["artifact"]
     data = _load_json(bundle_dir, art, f)
     if data is None:
@@ -1092,7 +1118,8 @@ def _bad_unit(v) -> bool:
 
 def _check_crashkit_variance(bundle_dir: pathlib.Path, check: dict,
                              proto: dict,
-                             f: list[str]) -> dict[str, list] | None:
+                             f: list[str], *,
+                 version: str = "0.1") -> dict[str, list] | None:
     """SPEC.md §3.6 — an N-run variance report, recomputed from its rows.
 
     Added because the evidence-closure rule found this artifact pinned by a
@@ -1206,7 +1233,8 @@ def _round(v: float, places: int | None) -> float:
 
 
 def _check_rows_aggregate(bundle_dir: pathlib.Path, check: dict, proto: dict,
-                          f: list[str]) -> dict[str, list] | None:
+                          f: list[str], *,
+                 version: str = "0.1") -> dict[str, list] | None:
     """SPEC.md §3.7 — the profile an issuer can use without being us.
 
     Every other profile in §3 hard-codes one of our own artifact shapes, which
@@ -1297,7 +1325,8 @@ def _check_rows_aggregate(bundle_dir: pathlib.Path, check: dict, proto: dict,
 
 
 def _check_modeldrift(bundle_dir: pathlib.Path, check: dict, proto: dict,
-                      f: list[str]) -> dict[str, list] | None:
+                      f: list[str], *,
+                 version: str = "0.1") -> dict[str, list] | None:
     met_rel, reg_rel = check["metrics"], check["registry"]
     stand_rel, flips_rel = check["standings"], check["flips"]
     narr_rel, md_rel = check["narrative"], check["results_md"]
@@ -1700,7 +1729,8 @@ def _coherence(bundle_dir: pathlib.Path, m: dict,
             complete = False
             continue
         before = len(f)
-        pool = _CHECK_FNS[c["profile"]](bundle_dir, c, proto, f)
+        pool = _CHECK_FNS[c["profile"]](bundle_dir, c, proto, f,
+                                        version=version)
         if pool is None:
             complete = False
             if len(f) == before:  # fail closed: never skip a check silently
