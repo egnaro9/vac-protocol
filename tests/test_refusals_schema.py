@@ -138,7 +138,7 @@ def test_empty_results_checks_is_refused(tmp_path):
         "schema-violation: results.checks: at least one profile check "
         "required",
         "evidence-unchecked: evidence/RESULTS.md, evidence/bundle.json, "
-        "evidence/eval_run.json, evidence/evalmut_run.json (+9 more): "
+        "evidence/eval_run.json, evidence/evalmut_fixtures.json (+10 more): "
         "listed in evidence but read by no check"]
 
 

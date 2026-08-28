@@ -597,6 +597,45 @@ def _check_evalmut(bundle_dir: pathlib.Path, check: dict, proto: dict,
         "coverage_gap": hole_counts["coverage_gap"],
         "operators_exercised": len({r.get("operator_id") for r in rows}),
     }
+    # optional corpus binding: the fixture manifest pins WHAT the run was
+    # applied to. A run may not cite a case the declared corpus does not
+    # contain, which is what makes the manifest evidence rather than an
+    # unexamined attachment. corpus_sha256 is deliberately NOT recomputed:
+    # its inputs are the fixture files in the issuer's tree, not in the
+    # bundle, so a check claiming to verify it would examine nothing.
+    fx_rel = check.get("fixtures")
+    if _nonempty_str(fx_rel):
+        fx = _load_json(bundle_dir, fx_rel, f)
+        if fx is not None:
+            if fx.get("manifest_version") != _FIXTURES_MANIFEST_V:
+                # an unrecognised shape is not a corpus this check can read,
+                # and reading it anyway would be a check examining nothing
+                f.append(f"unknown-profile: {fx_rel}: manifest_version "
+                         f"{fx.get('manifest_version')!r}, this check reads "
+                         f"{_FIXTURES_MANIFEST_V}")
+            cases = fx.get("cases")
+            if not (isinstance(cases, list)
+                    and all(isinstance(c, dict) for c in cases)):
+                f.append(f"artifact-unparsable: {fx_rel}: no cases[] array")
+            else:
+                names = {c["name"] for c in cases
+                         if _nonempty_str(c.get("name"))}
+                if len(names) != len(cases):
+                    f.append(f"artifact-unparsable: {fx_rel}: every case must "
+                             "carry a unique non-empty name")
+                if fx.get("case_count") != len(cases):
+                    f.append(f"raw-aggregate-mismatch: {fx_rel}: case_count "
+                             f"declares {fx.get('case_count')}, recomputed "
+                             f"{len(cases)}")
+                stray = sorted(n for n in {r.get("case_name") for r in rows}
+                               if _nonempty_str(n) and n not in names)
+                if stray:
+                    shown = ", ".join(stray[:4])
+                    more = (f" (+{len(stray) - 4} more)"
+                            if len(stray) > 4 else "")
+                    f.append(f"raw-aggregate-mismatch: {art}: rows cite "
+                             f"case(s) absent from {fx_rel}: {shown}{more}")
+
     # optional catalog binding: the operator battery is pinned as evidence,
     # each entry carrying its mined provenance, and every row must agree
     # with the catalog it claims to be drawn from
@@ -1484,8 +1523,10 @@ _CHECK_REFS = {"certlab-bundle-v1": ("artifact",),
                "modeldrift-board-v1": ("metrics", "registry", "standings",
                                        "flips", "narrative", "results_md",
                                        "fingerprint")}
+_FIXTURES_MANIFEST_V = 1   # evalmut-run-v1 `fixtures` corpus manifest shape
+
 _CHECK_OPT_REFS = {"certlab-bundle-v1": ("render",),
-                   "evalmut-run-v1": ("catalog", "render")}
+                   "evalmut-run-v1": ("catalog", "fixtures", "render")}
 _CHECK_FNS = {"certlab-bundle-v1": _check_certlab,
               "fleet-board-v1": _check_fleet,
               "evalmut-run-v1": _check_evalmut,

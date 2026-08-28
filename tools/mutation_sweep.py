@@ -47,7 +47,13 @@ REFUSAL = re.compile(r"^\s*(f|failures)\.append\(")
 # Deselect tests that are red for a KNOWN, accepted reason, so the gate below
 # measures the instrument rather than an open work item. Anything listed here
 # must be justified; an empty list is the healthy state.
-DESELECT: list[str] = []
+# These tests spawn a sweep and assert on its lock. Run inside this sweep's own
+# detector they would see the lock this run holds and fail, and a red baseline
+# makes the score meaningless. They guard the sweep, so the sweep cannot be
+# their runner. CI runs them in the `test` job, which is where they belong.
+DESELECT: list[str] = [
+    "tests/test_mutation_sweep_restores.py",
+]
 
 # Refusals deliberately excluded from the denominator, each with the reason it
 # cannot be reached by any bundle-shaped input. This list is a liability, not a
@@ -68,8 +74,8 @@ DESELECT: list[str] = []
 # from 146 to 143 and the scored population from 143 to 140, and nothing in the
 # run would say so. Update this deliberately, in the commit that changes the
 # population, or pass --expect-sites to override it for a one-off measurement.
-EXPECT_RAW_SITES = 155      # lines matching REFUSAL in vac/verify.py at 93fa8d1
-EXPECT_SCORED_SITES = 152   # the above minus EXCLUDE
+EXPECT_RAW_SITES = 160      # lines matching REFUSAL in vac/verify.py
+EXPECT_SCORED_SITES = 157   # the above minus EXCLUDE
 
 EXCLUDE: dict[str, tuple[int, str]] = {
     "{md_rel}: {e}": (1,

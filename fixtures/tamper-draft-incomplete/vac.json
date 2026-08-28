@@ -38,6 +38,10 @@
    "sha256": "533aa1045a9b014cdf83201bca9308650df8ca19c4bbbd6ddaa29298863e69b0"
   },
   {
+   "path": "evidence/evalmut_fixtures.json",
+   "sha256": "89ba2d792fb5b1b9165257f08f4996a1494a0d5434029cb0d93b0921e48fba31"
+  },
+  {
    "path": "evidence/evalmut_run.json",
    "sha256": "fc46d3a737d7b9ee6502f2f8374db56ab6d337841f4fd0a9ba45f312548e18ed"
   },

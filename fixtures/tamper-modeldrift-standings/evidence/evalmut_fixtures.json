@@ -1,0 +1,17 @@
+{
+ "manifest_version": 1,
+ "case_count": 2,
+ "corpus_sha256": "9cde84d81d327ba3f19f71e7c59bd012f1da7dcbd7dd8021cb40776cc5cd832d",
+ "cases": [
+  {
+   "name": "toy-contains",
+   "sha256": "e03c797b5584ca83c040fb2abdaea9e0783d453662962c78f633fda2b54e1e68",
+   "fixture": "toy-contains.json"
+  },
+  {
+   "name": "toy-exact",
+   "sha256": "deccc8a5843c343caead4542403c01835aa7f2935638bac8afb9053d0eee66e6",
+   "fixture": "toy-exact.json"
+  }
+ ]
+}

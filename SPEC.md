@@ -285,7 +285,7 @@ reproducing `results.json` byte-identically; the replay block runs it.
 ### 3.3 `evalmut-run-v1`
 
 Check shape: `{"profile": "evalmut-run-v1", "artifact": <path>,
-"catalog": <path>?, "expect": {…}}` where `artifact` is a listed
+"catalog": <path>?, "fixtures": <path>?, "expect": {…}}` where `artifact` is a listed
 evidence path holding the payload of `evalmut run <suite> --json --all`:
 an object with `score`, `tally` (the five outcome counts
 `caught`/`missed`/`flagged`/`error`/`na`), `holes` (result rows keyed by
@@ -298,6 +298,20 @@ present, is a listed path holding `evalmut operators --json`. The
 operator battery, each entry with a unique non-empty `id` and a
 non-empty `real_origin` (the mined-provenance claim is checkable, not
 asserted).
+
+`fixtures`, when present, is a listed path holding the corpus manifest the
+run was applied to: `manifest_version` (1), `case_count`, `corpus_sha256`,
+and `cases`, each with a unique non-empty `name`. The binding is that a run
+MUST NOT cite a `case_name` the declared corpus does not contain
+(`raw-aggregate-mismatch`); `case_count` MUST equal the number of cases; and
+an unrecognised `manifest_version` is refused (`unknown-profile`), because a
+shape this check cannot read is a check that examines nothing.
+
+`corpus_sha256` is deliberately NOT recomputed. Its inputs are the fixture
+files in the issuer's tree, which are not in the bundle, so a verifier
+claiming to have checked it would be asserting exactly the vacuous pass this
+protocol exists to refuse. It is carried as an issuer declaration and named
+as such.
 
 Recomputation, over the rows:
 

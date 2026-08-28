@@ -535,6 +535,16 @@ def valid_bundle() -> dict[str, str]:
     """{relative path: file text} for the valid fixture."""
     agg, raw_text = _fleet_board()
     mut_payload, mut_ops = _evalmut_run()
+    # the corpus the run was applied to, pinned so a run cannot cite a case
+    # the declared corpus does not contain
+    _mut_cases = sorted({r["case_name"] for r in mut_payload["results"]})
+    mut_fixtures = {
+        "manifest_version": 1,
+        "case_count": len(_mut_cases),
+        "corpus_sha256": _sha("".join(f"{n}\n" for n in _mut_cases)),
+        "cases": [{"name": n, "sha256": _sha(n), "fixture": f"{n}.json"}
+                  for n in _mut_cases],
+    }
     mut_tally = mut_payload["tally"]
     mut_applied = (mut_tally["caught"] + mut_tally["missed"]
                    + mut_tally["flagged"])
@@ -569,6 +579,7 @@ def valid_bundle() -> dict[str, str]:
         "evidence/results.json": _j(agg),
         "evidence/raw_results.jsonl": raw_text,
         "evidence/evalmut_run.json": _j(mut_payload),
+        "evidence/evalmut_fixtures.json": _j(mut_fixtures),
         "evidence/operators.json": _j(mut_ops),
         "evidence/eval_run.json": _j(crash_payload),
         "evidence/metrics.json": _j(dr_metrics),
@@ -674,6 +685,7 @@ def valid_bundle() -> dict[str, str]:
                 {"profile": "evalmut-run-v1",
                  "artifact": "evidence/evalmut_run.json",
                  "catalog": "evidence/operators.json",
+                 "fixtures": "evidence/evalmut_fixtures.json",
                  "expect": {
                      **mut_tally,
                      "applied": mut_applied,

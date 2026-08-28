@@ -73,7 +73,7 @@ def test_valid_committed_bundle_is_accepted(tmp_path):
     assert e["status"] == "accepted" and e["challenges"] == []
     assert [a["path"] for a in e["artifacts"]] == [
         "evidence/RESULTS.md", "evidence/bundle.json",
-        "evidence/eval_run.json", "evidence/evalmut_run.json",
+        "evidence/eval_run.json", "evidence/evalmut_fixtures.json", "evidence/evalmut_run.json",
         "evidence/flips.json", "evidence/metrics.json",
         "evidence/models.json", "evidence/narrative.json",
         "evidence/operators.json", "evidence/raw_results.jsonl",

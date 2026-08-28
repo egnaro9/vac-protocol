@@ -1478,3 +1478,55 @@ def test_a_symlinked_artifact_does_not_leak_the_outside_digest(tmp_path):
     out = verify_bundle(b)
     assert f"unsafe-bundle: {rel}: symlink" in out
     assert not [x for x in out if digest in x], out
+
+
+# --------------------------------------------------------------------------
+# evalmut-run-v1 `fixtures`: the corpus manifest is evidence, not an
+# attachment. Naming a file in a check dict is enough to satisfy closure, so
+# the binding has to actually READ it or the coverage is theatre.
+FX = "evidence/evalmut_fixtures.json"
+
+
+def _fx_bundle(tmp_path, mutate):
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+    p = b / FX
+    d = json.loads(p.read_text())
+    mutate(d)
+    p.write_text(json.dumps(d, indent=1) + "\n")
+    _rehash(b, FX)
+    return b
+
+
+def test_fixtures_manifest_without_cases_is_refused(tmp_path):
+    b = _fx_bundle(tmp_path, lambda d: d.__setitem__("cases", "nope"))
+    assert f"artifact-unparsable: {FX}: no cases[] array" in verify_bundle(b)
+
+
+def test_fixtures_manifest_with_duplicate_case_names_is_refused(tmp_path):
+    def dup(d):
+        d["cases"][1]["name"] = d["cases"][0]["name"]
+    b = _fx_bundle(tmp_path, dup)
+    assert (f"artifact-unparsable: {FX}: every case must carry a unique "
+            "non-empty name") in verify_bundle(b)
+
+
+def test_fixtures_case_count_that_outruns_the_cases_is_refused(tmp_path):
+    b = _fx_bundle(tmp_path, lambda d: d.__setitem__("case_count", 99))
+    n = len(json.loads((FIX / "valid" / FX).read_text())["cases"])
+    assert (f"raw-aggregate-mismatch: {FX}: case_count declares 99, "
+            f"recomputed {n}") in verify_bundle(b)
+
+
+def test_a_run_citing_a_case_outside_its_corpus_is_refused(tmp_path):
+    """The binding that makes the manifest evidence: drop a case the run
+    cites, and the run is naming results on a case the corpus does not
+    contain."""
+    dropped = {}
+
+    def drop_one(d):
+        dropped["name"] = d["cases"].pop(0)["name"]
+        d["case_count"] = len(d["cases"])
+    b = _fx_bundle(tmp_path, drop_one)
+    assert ("raw-aggregate-mismatch: evidence/evalmut_run.json: rows cite "
+            f"case(s) absent from {FX}: {dropped['name']}") in verify_bundle(b)
