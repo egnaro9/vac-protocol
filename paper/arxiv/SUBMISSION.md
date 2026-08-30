@@ -68,6 +68,8 @@ The unifying defect is not cryptographic or exotic: a check that reports success
 
 So I stopped collecting anecdotes and measured. At f59fb62, under the extraction rule of Section 6, the verifier exposes 112 refusal sites; 75 could be deleted with the whole suite and every tamper fixture still green, a score of 0.330. Three of the four hand-found forgeries fall in surviving classes; the fourth is an obligation with no refusal site. Scored alone, the sixteen-fixture corpus built to prove the verifier can refuse catches 10. Testing the refusals themselves took it to 0.941, then to 1.000 at 92e4548 over a grown population of 146 sites; those denominators differ and the series between them is non-monotone, so Section 7.5 carries all eleven, not just the five rows of Table 2. Fixing the four found defects instead moved 37/112 to 39/119, leaving the pre-existing sites at 37.
 
+> **Superseded 2026-08-30.** The final clause is a per-site claim the archive cannot support: only 39 of the 112/119 line keys are shared between those two sweeps, and among the shared ones caught goes 17 to 14. The totals are unaffected. Corrected in `main.tex` for the next arXiv version; this paragraph is left as the record of what v1 said. See `paper/reconcile_sweeps.py`.
+
 Seven times during this study my own measuring tools reported success while measuring nothing; four were built to detect this class, and one returned a perfect 1.000.
 
 Every number here is self-measured on a system I wrote, over a registry that is a closed loop of my own repositories; the one external data point is the audit of Section 2.2. That is stated here rather than buried: it is the paper's credibility, not a caveat.
