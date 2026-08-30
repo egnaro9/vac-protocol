@@ -29,7 +29,7 @@
    "fleet_commit": "f1e2d3c",
    "suite_hash": "ffeeddcc99887766",
    "crash_battery_hash": "ab12cd34ef56",
-   "metrics_sha256": "90724f4ad3a540762e8144378e9425563ae73b9ffe91354aa31b3b3058519997",
+   "metrics_sha256": "fab24e9cea8b7a87ea2766324c26957c0873def02c639eca63ae61214f96c882",
    "registry_sha256": "faafaa8b9bb2a628ae23a5837f4ce765a3e623314a4633e03ff50b31640dbc43"
   },
   "grading": "deterministic: policy (suite byte-identical) then tests; board rows recomputed from paired raw lines; mutation tallies and holes recomputed from per-row outcomes; crash-test metrics recomputed from per-case rows under fixed severity weights; drift standings, flips, and the rendered table recomputed from the stored per-run rows",
@@ -38,7 +38,7 @@
  "evidence": [
   {
    "path": "evidence/RESULTS.md",
-   "sha256": "d2beb88d2ef58ee678c80bd29464acf33a4b89330436ec5e108750fb8a3c6bde"
+   "sha256": "377b76de97005624c8dda78e4a3848278920fd28ccf949421aeba1970a24c6b0"
   },
   {
    "path": "evidence/bundle.json",
@@ -62,7 +62,7 @@
   },
   {
    "path": "evidence/metrics.json",
-   "sha256": "90724f4ad3a540762e8144378e9425563ae73b9ffe91354aa31b3b3058519997"
+   "sha256": "fab24e9cea8b7a87ea2766324c26957c0873def02c639eca63ae61214f96c882"
   },
   {
    "path": "evidence/models.json",
@@ -86,7 +86,7 @@
   },
   {
    "path": "evidence/standings.json",
-   "sha256": "30086ad732c1f52fc66f743c6303cb2339a82365b7e6130aeeceb39686ab810b"
+   "sha256": "d78900fb4463c53b8dee0e0714a803cf0ff30a244d613bf23fda7f0b838755e9"
   },
   {
    "path": "evidence/suite-fingerprint.json",
@@ -189,7 +189,8 @@
      "one_offs": 1,
      "models_with_enough_history": 3,
      "claims_fired": 2
-    }
+    },
+    "rel_floor": 0.5
    },
    {
     "profile": "crashkit-battery-v1",

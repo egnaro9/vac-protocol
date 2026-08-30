@@ -12,7 +12,14 @@
    "verdict": "unchanged",
    "graded": null,
    "min_detectable_pts": null,
-   "below_floor": false
+   "below_floor": false,
+   "latest_observed": {
+    "when": "2026-01-03",
+    "acc": 1.0,
+    "reliability": 1.0,
+    "acc_spread": null,
+    "qualified": true
+   }
   },
   {
    "id": "alpha:a1",
@@ -23,7 +30,14 @@
    "verdict": "regressed",
    "graded": 4,
    "min_detectable_pts": 25.0,
-   "below_floor": false
+   "below_floor": false,
+   "latest_observed": {
+    "when": "2026-01-03",
+    "acc": 0.5,
+    "reliability": 1.0,
+    "acc_spread": 0.25,
+    "qualified": true
+   }
   },
   {
    "id": "beta:b1",
@@ -34,7 +48,14 @@
    "verdict": "improved",
    "graded": 3,
    "min_detectable_pts": 33.333,
-   "below_floor": true
+   "below_floor": true,
+   "latest_observed": {
+    "when": "2026-01-03",
+    "acc": 0.9,
+    "reliability": 1.0,
+    "acc_spread": null,
+    "qualified": true
+   }
   },
   {
    "id": "gamma:g1",
@@ -45,7 +66,14 @@
    "verdict": "baseline",
    "graded": null,
    "min_detectable_pts": null,
-   "below_floor": false
+   "below_floor": false,
+   "latest_observed": {
+    "when": "2026-01-03",
+    "acc": 0.25,
+    "reliability": 1.0,
+    "acc_spread": null,
+    "qualified": true
+   }
   },
   {
    "id": "delta:d1",
@@ -56,7 +84,8 @@
    "verdict": "no-data",
    "graded": null,
    "min_detectable_pts": null,
-   "below_floor": false
+   "below_floor": false,
+   "latest_observed": null
   }
  ]
 }

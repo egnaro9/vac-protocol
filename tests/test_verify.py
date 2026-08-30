@@ -159,6 +159,40 @@ def _rehash(bundle: pathlib.Path, rel: str) -> None:
     man_path.write_text(json.dumps(man, indent=1) + "\n")
 
 
+def _downgrade_to_v01(b: pathlib.Path) -> None:
+    """Strip what 0.2 added, so a 0.2 bundle can be judged under 0.1 rules.
+
+    The twin-arms fixtures carry a modeldrift check, and at 0.2 that check
+    declares `rel_floor` and its standings rows carry `latest_observed`.
+    Neither exists at 0.1, so relabelling alone leaves a bundle that is not a
+    valid 0.1 bundle and refuses for reasons that have nothing to do with the
+    property under test."""
+    man_path = b / "vac.json"
+    man = json.loads(man_path.read_text())
+    man["vac_version"] = "0.1"
+    for c in man["results"]["checks"]:
+        c.pop("rel_floor", None)
+    met_rel = "evidence/metrics.json"
+    met = json.loads((b / met_rel).read_text())
+    met.pop("rel_floor", None)
+    (b / met_rel).write_text(json.dumps(met, indent=1) + "\n")
+    st_rel = "evidence/standings.json"
+    st = json.loads((b / st_rel).read_text())
+    for row in st["rows"]:
+        row.pop("latest_observed", None)
+    (b / st_rel).write_text(json.dumps(st, indent=1) + "\n")
+    md_rel = "evidence/RESULTS.md"
+    md = (b / md_rel).read_text()
+    md = re.sub(r"\*\*Reliability floor\*\*.*?\n\n", "", md, count=1, flags=re.S)
+    (b / md_rel).write_text(md)
+    h = man.get("protocol", {}).get("hashes", {})
+    if "metrics_sha256" in h:
+        h["metrics_sha256"] = _sha256(b / met_rel)
+    man_path.write_text(json.dumps(man, indent=1) + "\n")
+    for rel in (met_rel, st_rel, md_rel):
+        _rehash(b, rel)
+
+
 def test_valid_bundle_passes():
     assert verify_bundle(FIX / "valid") == []
 
@@ -644,8 +678,18 @@ def test_v01_summary_shape_is_refused_at_v02(tmp_path):
     look identical to one that worked."""
     out = verify_bundle(_at_version(tmp_path, "0.2"))
     assert out, "v0.2 accepted a v0.1 summary shape"
-    assert all(r.startswith("summary-outruns-checks:") for r in out), out
-    assert any("no check recomputes it" in r for r in out), out
+    # This bundle fails TWO independent 0.2 obligations, but only one is
+    # reported, and that is by design rather than by accident. Its modeldrift
+    # check declares no reliability floor, so that check contributes no
+    # recomputation, so `complete` is False, so 2.5's outrun rule is skipped
+    # for the WHOLE bundle. A failed check truncates the reason list rather
+    # than letting a partial pool judge a summary.
+    #
+    # The summary-shape half is covered where it cannot be masked:
+    # test_the_swapped_arms_bundle_is_accepted_at_v01 and its 0.2 sibling.
+    assert out == [
+        "schema-violation: rel_floor: a 0.2 modeldrift-board-v1 check MUST "
+        "declare the reliability floor its standings were derived under"], out
 
 
 def test_v01_bundles_keep_their_merged_pool_semantics():
@@ -1644,10 +1688,7 @@ def test_the_swapped_arms_bundle_is_accepted_at_v01(tmp_path):
     being evidence for the thing it names."""
     b = tmp_path / "b"
     shutil.copytree(FIX / "tamper-v02-swapped-arms", b)
-    man_path = b / "vac.json"
-    man = json.loads(man_path.read_text())
-    man["vac_version"] = "0.1"
-    man_path.write_text(json.dumps(man, indent=1) + "\n")
+    _downgrade_to_v01(b)
     assert verify_bundle(b) == []
 
 

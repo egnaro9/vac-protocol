@@ -74,8 +74,8 @@ DESELECT: list[str] = [
 # from 146 to 143 and the scored population from 143 to 140, and nothing in the
 # run would say so. Update this deliberately, in the commit that changes the
 # population, or pass --expect-sites to override it for a one-off measurement.
-EXPECT_RAW_SITES = 164      # lines matching REFUSAL in vac/verify.py
-EXPECT_SCORED_SITES = 161   # the above minus EXCLUDE
+EXPECT_RAW_SITES = 170      # lines matching REFUSAL in vac/verify.py
+EXPECT_SCORED_SITES = 166   # the above minus EXCLUDE
 
 EXCLUDE: dict[str, tuple[int, str]] = {
     "{md_rel}: {e}": (1,
@@ -84,6 +84,15 @@ EXCLUDE: dict[str, tuple[int, str]] = {
         "full _sha256() read of the same bytes. Only a filesystem race between "
         "the hash pass and this read could fire it -- a real guard, and "
         "unreachable from any input a test can construct."),
+    "unreadable while checking ": (1,
+        "OSError wrapper on the SECOND read of RESULTS.md, the one that "
+        "confirms the published table states the declared reliability floor. "
+        "Same unreachability as the entry above and for the same reason: "
+        "`results_md` is a declared ref, so the check only runs once the "
+        "artifact is in `trusted`, which required is_file() plus a full "
+        "_sha256() read of those bytes. It is a separate line from that one "
+        "only because sharing the wording would have made a single EXCLUDE "
+        "key match two sites and silently shrink the denominator."),
     "{render_rel}: {e}": (2,
         "OSError wrappers in BOTH render comparators. `render` is a declared "
         "ref: a render not listed in evidence is refused earlier as "

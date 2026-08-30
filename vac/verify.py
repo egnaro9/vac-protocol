@@ -944,14 +944,46 @@ _MODELDRIFT_ICON = {"regressed": "🔴", "improved": "🟢", "unchanged": "⚪",
                     "baseline": "🔵", "no-data": "⚫"}
 
 
-def _modeldrift_standings_rows(series: dict, registry: list) -> list[dict]:
+_REL_FLOOR_RANGE = (0.0, 0.9)   # SPEC 3.5: admissible declared floors
+
+
+def _qualifying(pts: list, rel_floor: float | None) -> list:
+    """The accuracy-bearing subset of a series at vac_version 0.2.
+
+    A rate limit, timeout or provider outage makes a call ABSENT, not wrong,
+    and scoring it publishes the provider's bad morning as the model getting
+    dumber. This profile learned that from the issuer rather than inventing
+    it: model-drift hit exactly this and documents it, having once published
+    a Google outage as three Gemini regressions of -37.1 and -94.3 points
+    while its own chart correctly showed nothing.
+
+    Keyed on AGGREGATE reliability, never on "a call failed": dropping
+    individual failures would inflate accuracy on precisely the hardest
+    tasks. A point with no reliability recorded qualifies, because absence of
+    the field is not evidence of a bad run."""
+    if rel_floor is None:
+        return list(pts)
+    return [p for p in pts
+            if p.get("reliability") is None
+            or p.get("reliability") >= rel_floor]
+
+
+def _modeldrift_standings_rows(series: dict, registry: list,
+                               rel_floor: float | None = None) -> list[dict]:
     """One standings row per registry entry, in registry order, from the last
     two stored points of its series (SPEC.md §3.5): verdicts at ±1e-9, delta
     rounded to 4 places, the per-run floor 100/graded, and the below-floor
-    flag under the exact inequality the published table prints with."""
+    flag under the exact inequality the published table prints with.
+
+    At 0.2 `rel_floor` is the bundle's declared reliability floor and the last
+    points are the last two QUALIFYING ones. At 0.1 floor is None and every
+    point counts, which is the rule those bundles were accepted under."""
     rows = []
     for m in registry:
-        pts = series.get(m["id"]) or []
+        # NB `rel_floor`, not `floor`: this loop already binds a local
+        # `floor` for the per-run detectability threshold, and reusing the
+        # name silently filtered every point from the second model on.
+        pts = _qualifying(series.get(m["id"]) or [], rel_floor)
         acc = delta = graded = when = None
         if not pts:
             verdict = "no-data"
@@ -976,10 +1008,79 @@ def _modeldrift_standings_rows(series: dict, registry: list) -> list[dict]:
             "below_floor": (floor is not None and delta is not None
                             and 1e-9 < abs(delta * 100) < floor),
         })
+        if rel_floor is not None:
+            # REQUIRED at 0.2, and required even when it disqualifies. The
+            # floor stops an outage becoming an accuracy regression; without
+            # this block it would also stop the outage being VISIBLE, which
+            # is the same defect facing the other way. A reader must be able
+            # to tell a stable model from an unreachable one.
+            raw = series.get(m["id"]) or []
+            last_raw = raw[-1] if raw else None
+            rows[-1]["latest_observed"] = None if last_raw is None else {
+                "when": (last_raw.get("t") or "")[:10] or None,
+                "acc": last_raw.get("acc"),
+                "reliability": last_raw.get("reliability"),
+                "acc_spread": last_raw.get("acc_spread"),
+                "qualified": (last_raw.get("reliability") is None
+                              or last_raw.get("reliability") >= rel_floor),
+            }
     return rows
 
 
-def _modeldrift_results_md(rows: list[dict], suite_version: str) -> str:
+def _modeldrift_rel_floor(check: dict, metrics: dict,
+                          bundle_dir: pathlib.Path, md_rel: str,
+                          f: list[str]) -> float | None:
+    """The declared reliability floor, or None with reasons named.
+
+    SPEC 3.5 at vac_version 0.2. The floor is the issuer's policy, so the
+    bundle declares it rather than this profile hardcoding one issuer's
+    constant into a general format. That is issuer-chosen input driving a
+    recomputation, which 3.1 calls non-authoritative, so it is bounded and
+    pinned rather than trusted: an admissible range, and the same value on
+    every surface that publishes standings derived with it.
+
+    Pinning matters because these surfaces have drifted before. model-drift
+    kept the floor only in its dashboard JS, and RESULTS.md published a
+    provider outage as three regressions of -37.1 and -94.3 points while the
+    chart above it correctly showed nothing."""
+    v = check.get("rel_floor")
+    if v is None:
+        f.append("schema-violation: rel_floor: a 0.2 modeldrift-board-v1 "
+                 "check MUST declare the reliability floor its standings "
+                 "were derived under")
+        return None
+    if isinstance(v, bool) or not isinstance(v, (int, float)):
+        f.append(f"schema-violation: rel_floor: must be a number, got {v!r}")
+        return None
+    lo, hi = _REL_FLOOR_RANGE
+    if not (lo <= v <= hi):
+        f.append(f"schema-violation: rel_floor: {v} is outside the "
+                 f"admissible range [{lo}, {hi}]. A floor an issuer can "
+                 "raise without bound is a dial for disqualifying an "
+                 "inconvenient run")
+        return None
+    seen = metrics.get("rel_floor")
+    if seen != v:
+        f.append(f"raw-aggregate-mismatch: metrics.json: rel_floor declared "
+                 f"{v} by the check, {seen!r} by the metrics the dashboard "
+                 "renders from")
+        return None
+    try:
+        results_md = (bundle_dir / md_rel).read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError) as e:
+        f.append(f"artifact-unparsable: {md_rel}: unreadable while checking "
+                 f"the declared reliability floor: {e}")
+        return None
+    if f"floor** is {v}" not in results_md:
+        f.append(f"raw-aggregate-mismatch: RESULTS.md: does not state the "
+                 f"declared reliability floor {v}; the published table and "
+                 "the check must not disagree about which runs were scored")
+        return None
+    return float(v)
+
+
+def _modeldrift_results_md(rows: list[dict], suite_version: str,
+                           rel_floor: float | None = None) -> str:
     """The pinned standings template, rendered from RECOMPUTED rows — the
     committed RESULTS.md must be byte-identical or the two disagree."""
     out = []
@@ -1007,7 +1108,12 @@ def _modeldrift_results_md(rows: list[dict], suite_version: str) -> str:
         "truncated call leaves the denominator rather than counting as wrong "
         "— so the floor is not a constant, and a delta beneath it is the "
         "denominator moving, not the model.\n\n"
-        "| Model | Accuracy | Δ vs previous | Min detectable | Status |\n"
+          + ("" if rel_floor is None else
+             f"**Reliability floor** is {rel_floor}: accuracy from runs "
+             "below it is not scored, because a rate limit or outage "
+             "makes a call absent rather than wrong. The disqualified "
+             "run stays visible as a reliability event.\n\n")
+          + "| Model | Accuracy | Δ vs previous | Min detectable | Status |\n"
         "| --- | --- | --- | --- | --- |\n"
         + "\n".join(out) + "\n"
     )
@@ -1467,7 +1573,13 @@ def _check_modeldrift(bundle_dir: pathlib.Path, check: dict, proto: dict,
     # standings: the whole published object re-earned from the rows and
     # compared exactly — top-level stamps, floor, and every row, every key
     floor_full = round(100.0 / tasks, 3)
-    want_rows = _modeldrift_standings_rows(series, registry)
+    rel_floor = None
+    if version == "0.2":
+        rel_floor = _modeldrift_rel_floor(check, metrics, bundle_dir,
+                                          md_rel, f)
+        if rel_floor is None:
+            return None      # every reason already named
+    want_rows = _modeldrift_standings_rows(series, registry, rel_floor)
     want_stand = {"suite_version": fp["suite_version"],
                   "suite_hash": fp["suite_hash"],
                   "min_detectable_pts_full_grade": floor_full,
@@ -1503,7 +1615,8 @@ def _check_modeldrift(bundle_dir: pathlib.Path, check: dict, proto: dict,
     except OSError as e:  # unreachable for a trusted artifact; named anyway
         f.append(f"artifact-unparsable: {md_rel}: {e}")
         return None
-    if _modeldrift_results_md(want_rows, fp["suite_version"]).encode() != md:
+    if _modeldrift_results_md(want_rows, fp["suite_version"],
+                              rel_floor).encode() != md:
         f.append(f"raw-aggregate-mismatch: {md_rel}: does not re-render "
                  "byte-identically from the recomputed standings rows")
     # flip analysis, re-earned from the stored fails vectors

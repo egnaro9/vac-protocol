@@ -292,6 +292,56 @@ def _crashkit_case(tid, prompt, kind, severity, passed, *, truncated=False,
             "severity": severity, "grader": grader, "detail": detail}
 
 
+_V02_REL_FLOOR = 0.5
+
+
+def _v02_declare_floor(valid: dict, man: dict, floor: float) -> dict[str, str]:
+    """Declare the floor on all three surfaces and add the required
+    latest-observed block. Mutates `man` in place; returns the changed files.
+
+    The three surfaces are the point: the check, the metrics the dashboard
+    renders from, and the published table. model-drift kept the floor in only
+    one of them once, and RESULTS.md published a provider outage as three
+    regressions while its own chart showed nothing."""
+    for c in man["results"]["checks"]:
+        if c.get("profile") == "modeldrift-board-v1":
+            c["rel_floor"] = floor
+    met = json.loads(valid["evidence/metrics.json"])
+    met["rel_floor"] = floor
+    stand = json.loads(valid["evidence/standings.json"])
+    series = met["series"]
+    for row in stand["rows"]:
+        pts = series.get(row["id"]) or []
+        last = pts[-1] if pts else None
+        row["latest_observed"] = None if last is None else {
+            "when": (last.get("t") or "")[:10] or None,
+            "acc": last.get("acc"),
+            "reliability": last.get("reliability"),
+            "acc_spread": last.get("acc_spread"),
+            "qualified": (last.get("reliability") is None
+                          or last.get("reliability") >= floor),
+        }
+    md = valid["evidence/RESULTS.md"]
+    marker = "| Model | Accuracy |"
+    note = (f"**Reliability floor** is {floor}: accuracy from runs below it "
+            "is not scored, because a rate limit or outage makes a call "
+            "absent rather than wrong. The disqualified run stays visible as "
+            "a reliability event.\n\n")
+    md = md.replace(marker, note + marker, 1)
+    files = {"evidence/metrics.json": _j(met),
+             "evidence/standings.json": _j(stand),
+             "evidence/RESULTS.md": md}
+    for e in man["evidence"]:
+        if e["path"] in files:
+            e["sha256"] = _sha(files[e["path"]])
+    # metrics.json is ALSO stamped in protocol.hashes, so a bundle that
+    # updated only the evidence list would fail stamp-mismatch instead
+    h = man.get("protocol", {}).get("hashes", {})
+    if "metrics_sha256" in h:
+        h["metrics_sha256"] = _sha(files["evidence/metrics.json"])
+    return files
+
+
 def _crashkit_safe_run() -> tuple[dict, dict]:
     """The SAFE control arm: same profile, same shape, opposite numbers.
 
@@ -919,6 +969,13 @@ def tampered_variants(valid: dict[str, str]) -> dict[str, dict[str, str]]:
     def _v02_twin(swap: bool) -> dict[str, str]:
         man = json.loads(valid["vac.json"])
         man["vac_version"] = "0.2"
+        # A 0.2 modeldrift check MUST declare the reliability floor its
+        # standings were derived under, and the same value must appear in the
+        # metrics the dashboard renders from and in the published table. Every
+        # point in this fixture has reliability 1.0, so nothing is
+        # disqualified and the standings are unchanged: these two fixtures are
+        # about crashkit scope binding, and the floor story has its own pair.
+        drift_files = _v02_declare_floor(valid, man, _V02_REL_FLOOR)
         man["evidence"].append({"path": "evidence/eval_run_safe.json",
                                 "sha256": _sha(safe_text),
                                 "note": "safe control arm"})
@@ -937,7 +994,8 @@ def tampered_variants(valid: dict[str, str]) -> dict[str, dict[str, str]]:
             "eval_run": {"vulnerability_score": hot},
             "eval_run_safe": {"vulnerability_score": cold},
         }
-        return {**valid, "evidence/eval_run_safe.json": safe_text,
+        return {**valid, **drift_files,
+                "evidence/eval_run_safe.json": safe_text,
                 "vac.json": _j(man)}
 
     # verifies clean: each arm's number bound to the check that earned it
