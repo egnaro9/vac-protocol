@@ -5,6 +5,33 @@ Everything below is copy-paste ready except where marked **DECIDE**.
 
 ---
 
+
+## Live identifier and what v2 requires (recorded 2026-08-30)
+
+**arXiv:2608.26183**, resolved from the announcement post's `lnkd.in/dyMHHY42`
+shortener, which serves a JS interstitial rather than a redirect header.
+Currently **v1 only**: `[v1] Sat, 22 Aug 2026 07:53:37 UTC (63 KB)`. The
+`submit/7963507` draft referenced further down is a parked submittal, not this.
+
+**The corrected sentence is in the ABSTRACT, not the body.** Verified: it sits
+inside `main.tex`'s `\begin{abstract}` block, and the uncorrected wording is
+still visible on the public `/abs` page today.
+
+That makes a v2 replacement two edits, not one. arXiv keeps the abstract as
+submission METADATA, entered in the form and displayed on `/abs`, separately
+from the LaTeX it was copied from. Uploading corrected source alone can leave
+the `/abs` abstract stale. So v2 needs:
+
+1. a TeX build of the corrected `main.tex` (no toolchain on the machine that
+   made these edits, so the PDF here is unbuilt and the "overfull hboxes: 0"
+   row above predates several edits),
+2. the abstract field updated in the submission form to match, and
+3. verification of the live `/abs` page AND the rendered PDF afterwards.
+
+Until all three land, the published paper is uncorrected. The LinkedIn reply of
+2026-08-30 states exactly that and does not claim otherwise.
+
+
 ## 1. Files to upload
 
 Upload exactly three files, flat (no directories):
