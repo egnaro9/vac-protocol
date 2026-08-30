@@ -488,6 +488,88 @@
    }
   },
   {
+   "name": "model-drift/vac",
+   "issuer": "egnaro9/model-drift",
+   "issuer_repo": "https://github.com/egnaro9/model-drift",
+   "issuer_commit": "9ee59e3",
+   "pinned_commit": "e63d90e78bd7ef8caaab9a98a1bd9df64259e7c4",
+   "vac_version": "0.2",
+   "bundle_path": "vac",
+   "capability": "the public drift board's derivation layer recomputes deterministically and byte-identically offline from the repo-committed per-run rows: the standings table (17 rows \u2014 accuracy, delta vs previous run, verdict, and the min-detectable-regression floor 100/graded-calls), the generated narrative paragraph (3 claims fired), and the per-task flip / probe-alarm analysis (90 repeat offenders, 197 probe alarms), under frozen suite 2026-07-v3 (35 tasks, mechanical graders only, no LLM judge)",
+   "subject": "suite-archetype: model-drift public board \u2014 the derivation layer over dashboard/drift_board.json",
+   "summary": {
+    "drift_board": {
+     "rows": 17,
+     "regressed": 3,
+     "improved": 3,
+     "unchanged": 11,
+     "baseline": 0,
+     "no_data": 0,
+     "series": 17,
+     "points": 702,
+     "tasks": 35,
+     "min_detectable_pts_full_grade": 2.857,
+     "probe_alarms": 197,
+     "repeat_offenders": 90,
+     "one_offs": 55,
+     "models_with_enough_history": 17,
+     "claims_fired": 3
+    }
+   },
+   "profiles": [
+    "modeldrift-board-v1"
+   ],
+   "artifacts": [
+    {
+     "path": "RESULTS.md",
+     "sha256": "d58e465cf7e95c296e674479cabe7c6098aa34a7bbee7df0820e6913a071632c",
+     "url": "https://raw.githubusercontent.com/egnaro9/model-drift/e63d90e78bd7ef8caaab9a98a1bd9df64259e7c4/vac/RESULTS.md"
+    },
+    {
+     "path": "drift_board.json",
+     "sha256": "f8a834f67079c1eab4b4677f704689f2478a9fab94d3149918ec7be3653dbcdc",
+     "url": "https://raw.githubusercontent.com/egnaro9/model-drift/e63d90e78bd7ef8caaab9a98a1bd9df64259e7c4/vac/drift_board.json"
+    },
+    {
+     "path": "flips.json",
+     "sha256": "daf673ec071dd9dfd7304ef68a01da3e7260ce9da8532db8e1a833d3b21617e0",
+     "url": "https://raw.githubusercontent.com/egnaro9/model-drift/e63d90e78bd7ef8caaab9a98a1bd9df64259e7c4/vac/flips.json"
+    },
+    {
+     "path": "models.json",
+     "sha256": "00792e5b1c54543b40e657729c6b94ea251c59b4d19ff94eaf5733d17d6a1116",
+     "url": "https://raw.githubusercontent.com/egnaro9/model-drift/e63d90e78bd7ef8caaab9a98a1bd9df64259e7c4/vac/models.json"
+    },
+    {
+     "path": "narrative.json",
+     "sha256": "9eaaba966e4c7e37aa20312db6bbf743a4e3062edc766797634d76b4086fd861",
+     "url": "https://raw.githubusercontent.com/egnaro9/model-drift/e63d90e78bd7ef8caaab9a98a1bd9df64259e7c4/vac/narrative.json"
+    },
+    {
+     "path": "standings.json",
+     "sha256": "b2bf6dcddb0de99774611f7a533362a1cb577ba3a2595a3e803aace80307f22d",
+     "url": "https://raw.githubusercontent.com/egnaro9/model-drift/e63d90e78bd7ef8caaab9a98a1bd9df64259e7c4/vac/standings.json"
+    },
+    {
+     "path": "suite-fingerprint.json",
+     "sha256": "88369aede328e1292f76c65dfe61cbab655efb633e35afc94c0b7e437e79106b",
+     "url": "https://raw.githubusercontent.com/egnaro9/model-drift/e63d90e78bd7ef8caaab9a98a1bd9df64259e7c4/vac/suite-fingerprint.json"
+    },
+    {
+     "path": "vac.json",
+     "sha256": "069f0bc50cfcee020dfafc81e82a8057d2c465c2aa4f2145576afe6e49ddc786",
+     "url": "https://raw.githubusercontent.com/egnaro9/model-drift/e63d90e78bd7ef8caaab9a98a1bd9df64259e7c4/vac/vac.json"
+    }
+   ],
+   "status": "accepted",
+   "challenges": [],
+   "gates": {
+    "structural": "python -m vac.verify \u2014 clean at registry generation; re-proven against the fetched artifacts before every pages deploy",
+    "semantic": "NOT run at generation \u2014 delegated to .github/workflows/replay.yml (workflow_dispatch + weekly), which clones the issuer at issuer_commit and re-earns every verdict with the issuer's own regrader",
+    "grading": "NOT machine-checked. SPEC 5 rule 3 is enforced by human review of protocol.grading at PR time, plus replay, which fails a grader that cannot reproduce byte-for-byte. No check reads this field beyond requiring it non-empty"
+   }
+  },
+  {
    "name": "reference-fleet/vac",
    "issuer": "egnaro9/reference-fleet",
    "issuer_repo": "https://github.com/egnaro9/reference-fleet",
@@ -572,13 +654,5 @@
    }
   }
  ],
- "pending": [
-  {
-   "name": "model-drift/vac",
-   "issuer": "egnaro9/model-drift",
-   "issuer_repo": "https://github.com/egnaro9/model-drift",
-   "bundle_path": "vac",
-   "reason": "refused at generation: structural: raw-aggregate-mismatch: standings.json: google:gemini-3.1-pro: when declared '2026-08-08', recomputed '2026-08-09'; structural: raw-aggregate-mismatch: standings.json: google:gemini-3.1-pro: acc declared 0.7714, recomputed 0.4; structural: raw-aggregate-mismatch: standings.json: google:gemini-3.1-pro: delta declared -0.1715, recomputed -0.3714; structural: raw-aggregate-mismatch: standings.json: google:gemini-3.5-flash: when declared '2026-08-09', recomputed '2026-08-14'; structural: raw-aggregate-mismatch: standings.json: google:gemini-3.5-flash: acc declared 0.9714, recomputed 0.0286; structural: raw-aggregate-mismatch: standings.json: google:gemini-3.5-flash: delta declared 0.0, recomputed -0.9428; structural: raw-aggregate-mismatch: standings.json: google:gemini-3.5-flash: verdict declared 'unchanged', recomputed 'regressed'; structural: raw-aggregate-mismatch: standings.json: google:gemini-3.1-flash-lite: when declared '2026-08-09', recomputed '2026-08-16'; structural: raw-aggregate-mismatch: standings.json: google:gemini-3.1-flash-lite: acc declared 0.8571, recomputed 0.0286; structural: raw-aggregate-mismatch: standings.json: google:gemini-3.1-flash-lite: delta declared -0.0858, recomputed 0.0; structural: raw-aggregate-mismatch: standings.json: google:gemini-3.1-flash-lite: verdict declared 'regressed', recomputed 'unchanged'; structural: raw-aggregate-mismatch: standings.json: google:gemini-3.1-flash-lite: graded declared None, recomputed 35; structural: raw-aggregate-mismatch: standings.json: google:gemini-3.1-flash-lite: min_detectable_pts declared None, recomputed 2.857; structural: raw-aggregate-mismatch: RESULTS.md: does not re-render byte-identically from the recomputed standings rows \u2014 fix the committed bundle and re-run python -m vac.registry"
-  }
- ]
+ "pending": []
 }
