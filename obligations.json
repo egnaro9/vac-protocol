@@ -1,0 +1,595 @@
+{
+ "ledger_version": "1",
+ "spec": "SPEC.md",
+ "note": "Derived by tools/build_obligations.py. Human judgement is confined to its MAPPING table; spans, clause text and evaluation sites are extracted from the artifacts.",
+ "obligations": [
+  {
+   "obligation_id": "SPEC-01",
+   "source_span": "SPEC.md:52",
+   "section": "1. The object",
+   "normative_text": "MUST appear in the manifest's `evidence` list with its sha256. A file",
+   "property_token": "evidence.artifact.listed_with_sha256",
+   "refusal_site": "missing-artifact",
+   "evaluation_sites": [
+    "tests/test_refusals_last_five.py::test_an_evalmut_row_naming_an_operator_outside_the_catalog"
+   ],
+   "status": "mapped",
+   "rationale": "Every bundle file must be an evidence entry carrying its sha256; the verifier refuses a bundle file that no evidence row lists."
+  },
+  {
+   "obligation_id": "SPEC-02",
+   "source_span": "SPEC.md:58",
+   "section": "1. The object",
+   "normative_text": "Evidence bundles MUST NOT contain symbolic links. The verifier rejects",
+   "property_token": "bundle.contains_no_symlinks",
+   "refusal_site": "unsafe-bundle",
+   "evaluation_sites": [
+    "tests/test_verify.py::test_a_symlinked_artifact_does_not_leak_the_outside_digest",
+    "tests/test_verify.py::test_a_symlinked_artifact_is_refused",
+    "tests/test_verify.py::test_a_symlinked_directory_cannot_smuggle_an_unlisted_file"
+   ],
+   "status": "mapped",
+   "rationale": "Symlink members are rejected before any hashing, so a link cannot smuggle content in from outside the bundle."
+  },
+  {
+   "obligation_id": "SPEC-03",
+   "source_span": "SPEC.md:109",
+   "section": "2.3 `protocol`",
+   "normative_text": "| `grading` | string | non-empty; how verdicts are computed: MUST describe a deterministic procedure |",
+   "property_token": "protocol.grading.describes_deterministic_process",
+   "refusal_site": null,
+   "evaluation_sites": [],
+   "status": "unmeasured",
+   "rationale": "Prose obligation. Nothing reads protocol.grading beyond requiring it non-empty, so 'describes a deterministic process' is enforced by human review at PR time and by replay, not by the verifier. Tracked as egnaro9/vac-protocol#6."
+  },
+  {
+   "obligation_id": "SPEC-04",
+   "source_span": "SPEC.md:115",
+   "section": "2.3 `protocol`",
+   "normative_text": "`fleet_commit`), it MUST equal `protocol.issuer_commit`",
+   "property_token": "protocol.hashes.commit_key_equals_issuer_commit",
+   "refusal_site": "stamp-mismatch",
+   "evaluation_sites": [
+    "tests/test_refusals_stamps_summary.py::test_fleet_commit_value_must_equal_the_protocol_pins",
+    "tests/test_refusals_modeldrift_c.py::test_suite_hash_stamp_binds_the_protocol_to_the_fingerprint",
+    "tests/test_refusals_stamps_summary.py::test_certlab_artifact_must_carry_a_harness_commit",
+    "tests/test_refusals_stamps_summary.py::test_certlab_stamp_named_by_hashes_must_be_present"
+   ],
+   "status": "mapped",
+   "rationale": "A commit-shaped hash key must equal protocol.issuer_commit or the stamp binding is refused."
+  },
+  {
+   "obligation_id": "SPEC-05",
+   "source_span": "SPEC.md:116",
+   "section": "2.3 `protocol`",
+   "normative_text": "(`stamp-mismatch`), and hashes named in `protocol.hashes` MUST equal",
+   "property_token": "protocol.hashes.equal_artifact_values",
+   "refusal_site": "stamp-mismatch",
+   "evaluation_sites": [
+    "tests/test_refusals_stamps_summary.py::test_certlab_stamp_value_must_equal_the_protocol_pin",
+    "tests/test_refusals_stamps_summary.py::test_fleet_commit_value_must_equal_the_protocol_pins",
+    "tests/test_verify.py::test_stamp_mismatch_binds_protocol_to_artifacts",
+    "tests/test_refusals_modeldrift_c.py::test_suite_hash_stamp_binds_the_protocol_to_the_fingerprint"
+   ],
+   "status": "mapped",
+   "rationale": "Each pinned hash must equal the value carried by the artifact it pins."
+  },
+  {
+   "obligation_id": "SPEC-06",
+   "source_span": "SPEC.md:132",
+   "section": "2.5 `results`",
+   "normative_text": "| `summary` | object | headline numbers for humans; every number MUST also appear in (or be derivable from) a check below. Registries reject summaries that outrun their checks |",
+   "property_token": "results.summary.number_bound_to_a_check",
+   "refusal_site": "summary-outruns-checks",
+   "evaluation_sites": [
+    "tests/test_verify.py::test_real_crashkit_bundle_summary_is_enforced",
+    "tests/test_verify.py::test_real_evalmut_bundle_summary_is_enforced",
+    "tests/test_verify.py::test_real_modeldrift_bundle_summary_is_enforced",
+    "tests/test_refusals_fleet_granularity.py::test_at_v02_a_member_rate_cannot_satisfy_a_suite_headline"
+   ],
+   "status": "mapped",
+   "rationale": "A headline number with no check that recomputes it is refused, which is the closure rule for summaries."
+  },
+  {
+   "obligation_id": "SPEC-07",
+   "source_span": "SPEC.md:135",
+   "section": "2.5 `results`",
+   "normative_text": "A check's `profile` MUST be one of the profiles in \u00a73",
+   "property_token": "results.checks.profile_is_known",
+   "refusal_site": "unknown-profile",
+   "evaluation_sites": [
+    "tests/test_verify.py::test_unknown_profile_is_named"
+   ],
+   "status": "mapped",
+   "rationale": "A check naming a profile outside SPEC 3 is refused rather than skipped."
+  },
+  {
+   "obligation_id": "SPEC-08",
+   "source_span": "SPEC.md:149",
+   "section": "2.5 `results`",
+   "normative_text": "number MUST be a JSON number so that it can be compared to a recomputation.",
+   "property_token": "results.summary.number_is_json_number",
+   "refusal_site": "schema-violation",
+   "evaluation_sites": [
+    "tests/test_refusals_schema.py::test_non_object_results_summary_is_refused",
+    "tests/test_refusals_schema.py::test_empty_results_checks_is_refused",
+    "tests/test_verify.py::test_v01_summary_shape_is_refused_at_v02",
+    "tests/test_refusals_modeldrift_floor.py::test_a_floor_outside_the_admissible_range_is_refused"
+   ],
+   "status": "mapped",
+   "rationale": "A stringified headline number cannot be compared to a recomputation, so it is a schema violation rather than a soft warning."
+  },
+  {
+   "obligation_id": "SPEC-09",
+   "source_span": "SPEC.md:158",
+   "section": "2.5 `results`",
+   "normative_text": "in `evidence` MUST be referenced by at least one check.",
+   "property_token": "evidence.artifact.referenced_by_a_check",
+   "refusal_site": "evidence-unchecked",
+   "evaluation_sites": [
+    "tests/test_refusals_stamps_summary.py::test_check_artifact_must_be_listed_in_evidence",
+    "tests/test_refusals_schema.py::test_empty_results_checks_is_refused",
+    "tests/test_refusals_stamps_summary.py::test_optional_check_ref_is_held_to_the_same_bar"
+   ],
+   "status": "mapped",
+   "rationale": "Closure in the other direction: an evidence artifact no check reads is refused."
+  },
+  {
+   "obligation_id": "SPEC-10",
+   "source_span": "SPEC.md:213",
+   "section": "2.5.1 `scope`, and how a summary number binds",
+   "normative_text": "A derived scope MUST match `[A-Za-z0-9_-]+`; anything else is",
+   "property_token": "results.scope.matches_token_grammar",
+   "refusal_site": "unscopable-check",
+   "evaluation_sites": [
+    "tests/test_verify.py::test_an_underivable_scope_is_refused",
+    "tests/test_verify.py::test_colliding_scopes_are_refused"
+   ],
+   "status": "mapped",
+   "rationale": "A scope derived from the primary evidence filename must match [A-Za-z0-9_-]+ or the check is unscopable."
+  },
+  {
+   "obligation_id": "SPEC-11",
+   "source_span": "SPEC.md:214",
+   "section": "2.5.1 `scope`, and how a summary number binds",
+   "normative_text": "`unscopable-check`, naming the reference. Scopes MUST be unique within a",
+   "property_token": "results.scope.unique_within_bundle",
+   "refusal_site": "unscopable-check",
+   "evaluation_sites": [
+    "tests/test_verify.py::test_an_underivable_scope_is_refused",
+    "tests/test_verify.py::test_colliding_scopes_are_refused"
+   ],
+   "status": "mapped",
+   "rationale": "Two checks sharing a scope would merge two pools, which is the same-name recompute hole; refused."
+  },
+  {
+   "obligation_id": "SPEC-12",
+   "source_span": "SPEC.md:256",
+   "section": "2.6 `replay`",
+   "normative_text": "| `issuer_commit` | string | non-empty (`missing-issuer-commit`); MUST equal `protocol.issuer_commit` (`issuer-commit-mismatch`) |",
+   "property_token": "replay.issuer_commit_equals_protocol",
+   "refusal_site": "issuer-commit-mismatch",
+   "evaluation_sites": [
+    "tests/test_refusals_stamps_summary.py::test_replay_commit_must_equal_protocol_commit"
+   ],
+   "status": "mapped",
+   "rationale": "The replay recipe must check out the same commit the bundle was stamped at."
+  },
+  {
+   "obligation_id": "SPEC-13",
+   "source_span": "SPEC.md:283",
+   "section": "2.7 Drafts",
+   "normative_text": "The marker is grammar, not convention: a verifier MUST refuse any",
+   "property_token": "bundle.contains_no_draft_markers",
+   "refusal_site": "draft-incomplete",
+   "evaluation_sites": [
+    "tests/test_draft.py::test_drafted_bundle_is_refused_exactly_like_the_fixture"
+   ],
+   "status": "mapped",
+   "rationale": "A draft marker anywhere in the bundle is refused; the marker is grammar, not convention."
+  },
+  {
+   "obligation_id": "SPEC-14",
+   "source_span": "SPEC.md:285",
+   "section": "2.7 Drafts",
+   "normative_text": "per marker (`draft-incomplete: <path> is an unauthored TODO`), and MUST",
+   "property_token": "bundle.one_refusal_per_draft_marker",
+   "refusal_site": "draft-incomplete",
+   "evaluation_sites": [
+    "tests/test_draft.py::test_drafted_bundle_is_refused_exactly_like_the_fixture"
+   ],
+   "status": "mapped",
+   "rationale": "Refusals are emitted per marker rather than collapsed to one, so the count of unauthored spots is visible."
+  },
+  {
+   "obligation_id": "SPEC-15",
+   "source_span": "SPEC.md:307",
+   "section": "3.1 `certlab-bundle-v1`",
+   "normative_text": "`true`. Every key in `expect` MUST name one of those four fields and",
+   "property_token": "certlab.expect.names_a_recomputed_field",
+   "refusal_site": "summary-mismatch",
+   "evaluation_sites": [
+    "tests/test_refusals_stamps_summary.py::test_certlab_expect_key_must_be_recomputable",
+    "tests/test_refusals_stamps_summary.py::test_crashkit_expect_key_must_be_recomputable",
+    "tests/test_refusals_stamps_summary.py::test_evalmut_expect_key_must_be_recomputable",
+    "tests/test_refusals_stamps_summary.py::test_fleet_expect_key_must_be_recomputable"
+   ],
+   "status": "mapped",
+   "rationale": "An expect key that names no recomputed field is withheld from the pool rather than treated as satisfied."
+  },
+  {
+   "obligation_id": "SPEC-16",
+   "source_span": "SPEC.md:321",
+   "section": "3.1 `certlab-bundle-v1`",
+   "normative_text": "cannot redefine what `fixed` or `verdicts` are held to. A registry MUST",
+   "property_token": "registry.free_text_pool_key_not_admitted_to_pool",
+   "refusal_site": null,
+   "evaluation_sites": [],
+   "status": "unmeasured",
+   "rationale": "A rule addressed to registries rather than to the verifier. vac.registry does not implement a free-text-pool admission distinction, so nothing refuses a registry that gets this wrong."
+  },
+  {
+   "obligation_id": "SPEC-17",
+   "source_span": "SPEC.md:351",
+   "section": "3.2 `fleet-board-v1`",
+   "normative_text": "- each recomputed value MUST equal the row's (`raw-aggregate-mismatch`);",
+   "property_token": "fleet.row.recomputes_from_raw",
+   "refusal_site": "raw-aggregate-mismatch",
+   "evaluation_sites": [
+    "tests/test_refusals_modeldrift_c.py::test_flips_one_offs_must_recompute_from_the_fails_vectors",
+    "tests/test_refusals_rows_aggregate.py::test_a_field_absent_from_a_row_is_named_with_its_index",
+    "tests/test_refusals_last_five.py::test_a_raw_line_whose_detected_flag_contradicts_its_own_pair",
+    "tests/test_refusals_last_five.py::test_an_evalmut_row_naming_an_operator_outside_the_catalog"
+   ],
+   "status": "mapped",
+   "rationale": "Each aggregate row is recomputed from the raw rows and must equal the declared value."
+  },
+  {
+   "obligation_id": "SPEC-18",
+   "source_span": "SPEC.md:356",
+   "section": "3.2 `fleet-board-v1`",
+   "normative_text": "`expect.rows`, when present, MUST equal the number of aggregate rows.",
+   "property_token": "fleet.expect.rows_equals_row_count",
+   "refusal_site": "summary-mismatch",
+   "evaluation_sites": [
+    "tests/test_refusals_stamps_summary.py::test_fleet_expect_rows_must_match_the_aggregate",
+    "tests/test_refusals_stamps_summary.py::test_fleet_expect_key_must_be_recomputable",
+    "tests/test_refusals_rows_aggregate.py::test_a_cooked_number_is_refused",
+    "tests/test_refusals_rows_aggregate.py::test_a_declared_number_the_recipe_ignores_is_refused"
+   ],
+   "status": "mapped",
+   "rationale": "expect.rows, when present, is compared to the recomputed row count."
+  },
+  {
+   "obligation_id": "SPEC-19",
+   "source_span": "SPEC.md:390",
+   "section": "3.3 `evalmut-run-v1`",
+   "normative_text": "MUST NOT cite a `case_name` the declared corpus does not contain",
+   "property_token": "evalmut.case_name_in_declared_corpus",
+   "refusal_site": "raw-aggregate-mismatch",
+   "evaluation_sites": [
+    "tests/test_verify.py::test_a_run_citing_a_case_outside_its_corpus_is_refused",
+    "tests/test_refusals_last_five.py::test_an_evalmut_row_naming_an_operator_outside_the_catalog",
+    "tests/test_refusals_modeldrift_b.py::test_fails_must_name_tasks_inside_the_suite",
+    "tests/test_refusals_modeldrift_b.py::test_fails_runs_samples_must_name_tasks_inside_the_suite"
+   ],
+   "status": "mapped",
+   "rationale": "Citing a case the corpus does not contain is refused, so a finding cannot reference an absent row."
+  },
+  {
+   "obligation_id": "SPEC-20",
+   "source_span": "SPEC.md:391",
+   "section": "3.3 `evalmut-run-v1`",
+   "normative_text": "(`raw-aggregate-mismatch`); `case_count` MUST equal the number of cases; and",
+   "property_token": "evalmut.case_count_equals_corpus_size",
+   "refusal_site": "raw-aggregate-mismatch",
+   "evaluation_sites": [
+    "tests/test_verify.py::test_a_run_citing_a_case_outside_its_corpus_is_refused",
+    "tests/test_verify.py::test_fixtures_case_count_that_outruns_the_cases_is_refused",
+    "tests/test_refusals_last_five.py::test_an_evalmut_row_naming_an_operator_outside_the_catalog",
+    "tests/test_refusals_modeldrift_a.py::test_fingerprint_task_count_must_match_its_task_ids"
+   ],
+   "status": "mapped",
+   "rationale": "case_count is recomputed from the corpus."
+  },
+  {
+   "obligation_id": "SPEC-21",
+   "source_span": "SPEC.md:422",
+   "section": "3.3 `evalmut-run-v1`",
+   "normative_text": "Every key in `expect` MUST name a recomputed field and equal its value",
+   "property_token": "evalmut.expect.names_a_recomputed_field",
+   "refusal_site": "summary-mismatch",
+   "evaluation_sites": [
+    "tests/test_refusals_stamps_summary.py::test_evalmut_expect_key_must_be_recomputable",
+    "tests/test_refusals_stamps_summary.py::test_certlab_expect_key_must_be_recomputable",
+    "tests/test_refusals_stamps_summary.py::test_crashkit_expect_key_must_be_recomputable",
+    "tests/test_refusals_stamps_summary.py::test_fleet_expect_key_must_be_recomputable"
+   ],
+   "status": "mapped",
+   "rationale": "expect keys must name a recomputed field and equal it."
+  },
+  {
+   "obligation_id": "SPEC-22",
+   "source_span": "SPEC.md:472",
+   "section": "3.4 `crashkit-battery-v1`",
+   "normative_text": "`round(passed / graded, 4)` (0.0 when nothing is graded) and MUST equal",
+   "property_token": "crashkit.accuracy_equals_all_four_aliases",
+   "refusal_site": "raw-aggregate-mismatch",
+   "evaluation_sites": [
+    "tests/test_refusals_last_five.py::test_a_raw_line_whose_detected_flag_contradicts_its_own_pair",
+    "tests/test_refusals_last_five.py::test_an_evalmut_row_naming_an_operator_outside_the_catalog",
+    "tests/test_refusals_modeldrift_a.py::test_fingerprint_task_count_must_match_its_task_ids",
+    "tests/test_refusals_modeldrift_a.py::test_point_acc_must_be_a_unit_fraction"
+   ],
+   "status": "mapped",
+   "rationale": "accuracy is recomputed and compared against every alias the artifact publishes, so one alias cannot drift."
+  },
+  {
+   "obligation_id": "SPEC-23",
+   "source_span": "SPEC.md:477",
+   "section": "3.4 `crashkit-battery-v1`",
+   "normative_text": "MUST equal the artifact's;",
+   "property_token": "crashkit.severity_weighted_score_recomputes",
+   "refusal_site": "raw-aggregate-mismatch",
+   "evaluation_sites": [
+    "tests/test_refusals_render.py::test_a_sweetened_score_is_refused",
+    "tests/test_refusals_last_five.py::test_a_raw_line_whose_detected_flag_contradicts_its_own_pair",
+    "tests/test_refusals_last_five.py::test_an_evalmut_row_naming_an_operator_outside_the_catalog",
+    "tests/test_refusals_modeldrift_a.py::test_fingerprint_task_count_must_match_its_task_ids"
+   ],
+   "status": "mapped",
+   "rationale": "The severity-weighted score is recomputed over graded rows."
+  },
+  {
+   "obligation_id": "SPEC-24",
+   "source_span": "SPEC.md:478",
+   "section": "3.4 `crashkit-battery-v1`",
+   "normative_text": "- `flagged_cases`, `n_cases`, `truncations` MUST equal their counts over",
+   "property_token": "crashkit.counts_equal_row_tallies",
+   "refusal_site": "raw-aggregate-mismatch",
+   "evaluation_sites": [
+    "tests/test_refusals_modeldrift_c.py::test_flips_equal_length_lists_name_the_differing_row",
+    "tests/test_refusals_modeldrift_c.py::test_narrative_claims_fired_must_equal_its_sentences",
+    "tests/test_refusals_variance.py::test_a_row_that_contradicts_its_own_counts_is_refused",
+    "tests/test_refusals_last_five.py::test_a_raw_line_whose_detected_flag_contradicts_its_own_pair"
+   ],
+   "status": "mapped",
+   "rationale": "flagged_cases, n_cases and truncations are recounted from the rows."
+  },
+  {
+   "obligation_id": "SPEC-25",
+   "source_span": "SPEC.md:481",
+   "section": "3.4 `crashkit-battery-v1`",
+   "normative_text": "MUST equal the artifact's;",
+   "property_token": "crashkit.reliability_recomputes",
+   "refusal_site": "raw-aggregate-mismatch",
+   "evaluation_sites": [
+    "tests/test_refusals_last_five.py::test_a_raw_line_whose_detected_flag_contradicts_its_own_pair",
+    "tests/test_refusals_last_five.py::test_an_evalmut_row_naming_an_operator_outside_the_catalog",
+    "tests/test_refusals_modeldrift_a.py::test_fingerprint_task_count_must_match_its_task_ids",
+    "tests/test_refusals_modeldrift_a.py::test_point_acc_must_be_a_unit_fraction"
+   ],
+   "status": "mapped",
+   "rationale": "reliability is recomputed as (cases - errors - truncations) / cases."
+  },
+  {
+   "obligation_id": "SPEC-26",
+   "source_span": "SPEC.md:482",
+   "section": "3.4 `crashkit-battery-v1`",
+   "normative_text": "- `per_kind` MUST equal, key for key in both directions,",
+   "property_token": "crashkit.per_kind_equal_both_directions",
+   "refusal_site": "raw-aggregate-mismatch",
+   "evaluation_sites": [
+    "tests/test_refusals_modeldrift_c.py::test_flips_equal_length_lists_name_the_differing_row",
+    "tests/test_refusals_modeldrift_c.py::test_narrative_claims_fired_must_equal_its_sentences",
+    "tests/test_refusals_last_five.py::test_a_raw_line_whose_detected_flag_contradicts_its_own_pair",
+    "tests/test_refusals_last_five.py::test_an_evalmut_row_naming_an_operator_outside_the_catalog"
+   ],
+   "status": "mapped",
+   "rationale": "per_kind is compared key-for-key in both directions, so an extra or missing kind is refused."
+  },
+  {
+   "obligation_id": "SPEC-27",
+   "source_span": "SPEC.md:485",
+   "section": "3.4 `crashkit-battery-v1`",
+   "normative_text": "Every key in `expect` MUST name a recomputed field and equal its value",
+   "property_token": "crashkit.expect.names_a_recomputed_field",
+   "refusal_site": "summary-mismatch",
+   "evaluation_sites": [
+    "tests/test_refusals_stamps_summary.py::test_crashkit_expect_key_must_be_recomputable",
+    "tests/test_refusals_stamps_summary.py::test_certlab_expect_key_must_be_recomputable",
+    "tests/test_refusals_stamps_summary.py::test_evalmut_expect_key_must_be_recomputable",
+    "tests/test_refusals_stamps_summary.py::test_fleet_expect_key_must_be_recomputable"
+   ],
+   "status": "mapped",
+   "rationale": "expect keys must name a recomputed field and equal it."
+  },
+  {
+   "obligation_id": "SPEC-28",
+   "source_span": "SPEC.md:496",
+   "section": "3.4 `crashkit-battery-v1`",
+   "normative_text": "`protocol.hashes` entry that MUST equal the artifact's `git_sha`. The",
+   "property_token": "crashkit.battery_hash_key_equals_git_sha",
+   "refusal_site": "stamp-mismatch",
+   "evaluation_sites": [
+    "tests/test_refusals_stamps_summary.py::test_crashkit_battery_hash_key_must_name_a_real_pin",
+    "tests/test_verify.py::test_crashkit_battery_fingerprint_is_bound",
+    "tests/test_refusals_modeldrift_c.py::test_suite_hash_stamp_binds_the_protocol_to_the_fingerprint",
+    "tests/test_refusals_stamps_summary.py::test_certlab_stamp_named_by_hashes_must_be_present"
+   ],
+   "status": "mapped",
+   "rationale": "battery_hash_key names the protocol.hashes entry that must equal the artifact's git_sha."
+  },
+  {
+   "obligation_id": "SPEC-29",
+   "source_span": "SPEC.md:543",
+   "section": "3.5 `modeldrift-board-v1`",
+   "normative_text": "`round(100/fingerprint.tasks, 3)`. The recomputed object MUST equal",
+   "property_token": "modeldrift.min_detectable_object_recomputes",
+   "refusal_site": "raw-aggregate-mismatch",
+   "evaluation_sites": [
+    "tests/test_refusals_modeldrift_a.py::test_fingerprint_task_count_must_match_its_task_ids",
+    "tests/test_refusals_modeldrift_a.py::test_point_acc_must_be_a_unit_fraction",
+    "tests/test_refusals_modeldrift_a.py::test_point_latency_must_be_a_nonnegative_number",
+    "tests/test_refusals_modeldrift_a.py::test_point_refusal_rate_must_be_a_unit_fraction"
+   ],
+   "status": "mapped",
+   "rationale": "The min-detectable object is recomputed from the fingerprint task count."
+  },
+  {
+   "obligation_id": "SPEC-30",
+   "source_span": "SPEC.md:549",
+   "section": "3.5 `modeldrift-board-v1`",
+   "normative_text": "`fingerprint.suite_version`) MUST be byte-identical to the committed",
+   "property_token": "modeldrift.suite_byte_identical_to_committed",
+   "refusal_site": "suite",
+   "evaluation_sites": [
+    "tests/test_refusals_modeldrift_a.py::test_fingerprint_must_declare_suite_hash",
+    "tests/test_refusals_modeldrift_b.py::test_fails_must_name_tasks_inside_the_suite",
+    "tests/test_refusals_modeldrift_b.py::test_fails_runs_samples_must_name_tasks_inside_the_suite",
+    "tests/test_refusals_modeldrift_b.py::test_point_suite_hash_must_match_the_fingerprint"
+   ],
+   "status": "mapped",
+   "rationale": "The suite named by the fingerprint must be byte-identical to the committed copy."
+  },
+  {
+   "obligation_id": "SPEC-31",
+   "source_span": "SPEC.md:560",
+   "section": "3.5 `modeldrift-board-v1`",
+   "normative_text": "fails-bearing points: MUST equal the committed `flips` artifact.",
+   "property_token": "modeldrift.models_with_enough_history_equals_flips",
+   "refusal_site": "raw-aggregate-mismatch",
+   "evaluation_sites": [
+    "tests/test_refusals_modeldrift_c.py::test_flips_models_with_enough_history_must_recompute",
+    "tests/test_refusals_modeldrift_b.py::test_graded_must_lie_within_the_suite_size",
+    "tests/test_refusals_modeldrift_c.py::test_flips_equal_length_lists_name_the_differing_row",
+    "tests/test_refusals_modeldrift_c.py::test_flips_one_offs_must_recompute_from_the_fails_vectors"
+   ],
+   "status": "mapped",
+   "rationale": "The recomputed series count is compared to the committed flips artifact."
+  },
+  {
+   "obligation_id": "SPEC-32",
+   "source_span": "SPEC.md:566",
+   "section": "3.5 `modeldrift-board-v1`",
+   "normative_text": "Every key in `expect` MUST name a recomputed field and equal its value",
+   "property_token": "modeldrift.expect.names_a_recomputed_field",
+   "refusal_site": "summary-mismatch",
+   "evaluation_sites": [
+    "tests/test_refusals_stamps_summary.py::test_modeldrift_expect_key_must_be_recomputable",
+    "tests/test_refusals_stamps_summary.py::test_certlab_expect_key_must_be_recomputable",
+    "tests/test_refusals_stamps_summary.py::test_crashkit_expect_key_must_be_recomputable",
+    "tests/test_refusals_stamps_summary.py::test_evalmut_expect_key_must_be_recomputable"
+   ],
+   "status": "mapped",
+   "rationale": "expect keys must name a recomputed field and equal it."
+  },
+  {
+   "obligation_id": "SPEC-33",
+   "source_span": "SPEC.md:573",
+   "section": "3.5 `modeldrift-board-v1`",
+   "normative_text": "Each flips row MUST carry `latest`, compared by whole-object equality,",
+   "property_token": "modeldrift.flips_row_latest_whole_object_equality",
+   "refusal_site": "raw-aggregate-mismatch",
+   "evaluation_sites": [
+    "tests/test_refusals_modeldrift_c.py::test_flips_equal_length_lists_name_the_differing_row",
+    "tests/test_refusals_modeldrift_c.py::test_flips_models_with_enough_history_must_recompute",
+    "tests/test_refusals_modeldrift_c.py::test_flips_one_offs_must_recompute_from_the_fails_vectors",
+    "tests/test_refusals_modeldrift_c.py::test_flips_refuses_an_unexpected_key"
+   ],
+   "status": "mapped",
+   "rationale": "Each flips row carries latest and is compared by whole-object equality, so its wording is normative."
+  },
+  {
+   "obligation_id": "SPEC-34",
+   "source_span": "SPEC.md:581",
+   "section": "3.5 `modeldrift-board-v1`",
+   "normative_text": "Stamp binding per \u00a72.3: `protocol.hashes.suite_hash` MUST equal the",
+   "property_token": "modeldrift.suite_hash_equals_fingerprint",
+   "refusal_site": "stamp-mismatch",
+   "evaluation_sites": [
+    "tests/test_refusals_modeldrift_c.py::test_suite_hash_stamp_binds_the_protocol_to_the_fingerprint",
+    "tests/test_refusals_stamps_summary.py::test_certlab_stamp_named_by_hashes_must_be_present",
+    "tests/test_refusals_stamps_summary.py::test_crashkit_battery_hash_key_must_name_a_real_pin",
+    "tests/test_verify.py::test_crashkit_battery_fingerprint_is_bound"
+   ],
+   "status": "mapped",
+   "rationale": "protocol.hashes.suite_hash must equal the fingerprint's suite hash."
+  },
+  {
+   "obligation_id": "SPEC-35",
+   "source_span": "SPEC.md:583",
+   "section": "3.5 `modeldrift-board-v1`",
+   "normative_text": "`registry_sha256` MUST equal the evidence hashes of the `metrics` /",
+   "property_token": "modeldrift.registry_sha256_equals_evidence_hashes",
+   "refusal_site": "stamp-mismatch",
+   "evaluation_sites": [
+    "tests/test_refusals_modeldrift_c.py::test_suite_hash_stamp_binds_the_protocol_to_the_fingerprint",
+    "tests/test_refusals_stamps_summary.py::test_certlab_stamp_named_by_hashes_must_be_present",
+    "tests/test_verify.py::test_modeldrift_input_bytes_are_pinned",
+    "tests/test_refusals_stamps_summary.py::test_certlab_artifact_must_carry_a_harness_commit"
+   ],
+   "status": "mapped",
+   "rationale": "registry_sha256 must equal the evidence hashes of the metrics and models artifacts."
+  },
+  {
+   "obligation_id": "SPEC-36",
+   "source_span": "SPEC.md:692",
+   "section": "5. Registry rules",
+   "normative_text": "its form, a registry MUST reject a claim when any of the following holds:",
+   "property_token": "registry.rejects_claim_on_listed_conditions",
+   "refusal_site": "schema-violation",
+   "evaluation_sites": [
+    "tests/test_refusals_modeldrift_floor.py::test_a_floor_outside_the_admissible_range_is_refused",
+    "tests/test_refusals_modeldrift_floor.py::test_a_non_numeric_floor_is_refused",
+    "tests/test_refusals_modeldrift_floor.py::test_an_undeclared_floor_is_refused",
+    "tests/test_refusals_rows_aggregate.py::test_a_missing_expect_is_refused"
+   ],
+   "status": "partially_mapped",
+   "rationale": "vac.registry refuses a bundle whose structural verification fails, which covers the verifier-checkable conditions in the list. The conditions that are matters of registry POLICY rather than bundle structure are not separately enforced."
+  },
+  {
+   "obligation_id": "SPEC-37",
+   "source_span": "SPEC.md:722",
+   "section": "5. Registry rules",
+   "normative_text": "A registry that skips the replay gate MUST say so on every entry.",
+   "property_token": "registry.discloses_skipped_replay_gate_per_entry",
+   "refusal_site": null,
+   "evaluation_sites": [],
+   "status": "unmeasured",
+   "rationale": "A disclosure obligation on registry prose. Every entry carries a gates.semantic string, but nothing checks that the string is honest about whether replay ran."
+  },
+  {
+   "obligation_id": "SPEC-38",
+   "source_span": "SPEC.md:791",
+   "section": "8. Versioning",
+   "normative_text": "`vac_version` is the format contract. A verifier MUST refuse a version",
+   "property_token": "verifier.refuses_unimplemented_vac_version",
+   "refusal_site": "schema-violation",
+   "evaluation_sites": [
+    "tests/test_refusals_schema.py::test_unpinned_subject_version_is_refused",
+    "tests/test_verify.py::test_wrong_vac_version_is_refused",
+    "tests/test_refusals_modeldrift_floor.py::test_a_floor_outside_the_admissible_range_is_refused",
+    "tests/test_refusals_modeldrift_floor.py::test_a_non_numeric_floor_is_refused"
+   ],
+   "status": "mapped",
+   "rationale": "A vac_version outside SUPPORTED_VERSIONS is refused rather than guessed at."
+  },
+  {
+   "obligation_id": "SPEC-39",
+   "source_span": "SPEC.md:792",
+   "section": "8. Versioning",
+   "normative_text": "it does not implement rather than guess, and MUST apply that version's",
+   "property_token": "verifier.applies_declared_version_semantics",
+   "refusal_site": "schema-violation",
+   "evaluation_sites": [
+    "tests/test_refusals_modeldrift_floor.py::test_an_undeclared_floor_is_refused",
+    "tests/test_refusals_schema.py::test_unpinned_subject_version_is_refused",
+    "tests/test_verify.py::test_a_declared_scope_is_refused_at_v02",
+    "tests/test_verify.py::test_wrong_vac_version_is_refused"
+   ],
+   "status": "partially_mapped",
+   "rationale": "The verifier branches on the declared version for the rules that differ between 0.1 and 0.2 (scope binding, rel_floor). It is mapped for the rules that actually diverge; there is no general check that every rule consults the declared version."
+  }
+ ]
+}

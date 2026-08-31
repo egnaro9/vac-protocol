@@ -401,11 +401,18 @@ def test_real_modeldrift_bundle_summary_is_enforced(tmp_path):
         return  # pending: refused for the documented reason, nothing to tamper
     man_path = b / "vac.json"
     man = json.loads(man_path.read_text())
-    v = man["results"]["summary"]["flips"]["probe_alarms"]
-    man["results"]["summary"]["flips"]["probe_alarms"] = v + 1
+    # v0.2 flattened this bundle's summary under one `drift_board` scope; it was
+    # summary.flips.probe_alarms at v0.1. Read the scope out of the manifest
+    # rather than naming it, so the next re-scoping fails loudly here instead of
+    # skipping in CI, which is how the rename got past this test in the first place.
+    scopes = list(man["results"]["summary"])
+    assert len(scopes) == 1, f"expected one summary scope, got {scopes}"
+    scope = scopes[0]
+    v = man["results"]["summary"][scope]["probe_alarms"]
+    man["results"]["summary"][scope]["probe_alarms"] = v + 1
     man_path.write_text(json.dumps(man, indent=1) + "\n")
     assert verify_bundle(b) == [
-        "summary-outruns-checks: summary.flips.probe_alarms: "
+        f"summary-outruns-checks: summary.{scope}.probe_alarms: "
         f"declares {v + 1}, recomputation gives {v}"]
 
 
