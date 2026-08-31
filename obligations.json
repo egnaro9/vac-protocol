@@ -9,6 +9,8 @@
    "section": "1. The object",
    "normative_text": "MUST appear in the manifest's `evidence` list with its sha256. A file",
    "property_token": "evidence.artifact.listed_with_sha256",
+   "addressee": "verifier",
+   "addressee_basis": "derived-from-token-prefix",
    "refusal_site": "missing-artifact",
    "evaluation_sites": [
     "tests/test_refusals_last_five.py::test_an_evalmut_row_naming_an_operator_outside_the_catalog"
@@ -22,6 +24,8 @@
    "section": "1. The object",
    "normative_text": "Evidence bundles MUST NOT contain symbolic links. The verifier rejects",
    "property_token": "bundle.contains_no_symlinks",
+   "addressee": "verifier",
+   "addressee_basis": "derived-from-token-prefix",
    "refusal_site": "unsafe-bundle",
    "evaluation_sites": [
     "tests/test_verify.py::test_a_symlinked_artifact_does_not_leak_the_outside_digest",
@@ -37,6 +41,8 @@
    "section": "2.3 `protocol`",
    "normative_text": "| `grading` | string | non-empty; how verdicts are computed: MUST describe a deterministic procedure |",
    "property_token": "protocol.grading.describes_deterministic_process",
+   "addressee": "reviewer",
+   "addressee_basis": "adjudicated",
    "refusal_site": null,
    "evaluation_sites": [],
    "status": "unmeasured",
@@ -48,6 +54,8 @@
    "section": "2.3 `protocol`",
    "normative_text": "`fleet_commit`), it MUST equal `protocol.issuer_commit`",
    "property_token": "protocol.hashes.commit_key_equals_issuer_commit",
+   "addressee": "verifier",
+   "addressee_basis": "adjudicated",
    "refusal_site": "stamp-mismatch",
    "evaluation_sites": [
     "tests/test_refusals_stamps_summary.py::test_fleet_commit_value_must_equal_the_protocol_pins",
@@ -64,6 +72,8 @@
    "section": "2.3 `protocol`",
    "normative_text": "(`stamp-mismatch`), and hashes named in `protocol.hashes` MUST equal",
    "property_token": "protocol.hashes.equal_artifact_values",
+   "addressee": "verifier",
+   "addressee_basis": "adjudicated",
    "refusal_site": "stamp-mismatch",
    "evaluation_sites": [
     "tests/test_refusals_stamps_summary.py::test_certlab_stamp_value_must_equal_the_protocol_pin",
@@ -80,6 +90,8 @@
    "section": "2.5 `results`",
    "normative_text": "| `summary` | object | headline numbers for humans; every number MUST also appear in (or be derivable from) a check below. Registries reject summaries that outrun their checks |",
    "property_token": "results.summary.number_bound_to_a_check",
+   "addressee": "verifier",
+   "addressee_basis": "derived-from-token-prefix",
    "refusal_site": "summary-outruns-checks",
    "evaluation_sites": [
     "tests/test_verify.py::test_real_crashkit_bundle_summary_is_enforced",
@@ -96,6 +108,8 @@
    "section": "2.5 `results`",
    "normative_text": "A check's `profile` MUST be one of the profiles in \u00a73",
    "property_token": "results.checks.profile_is_known",
+   "addressee": "verifier",
+   "addressee_basis": "derived-from-token-prefix",
    "refusal_site": "unknown-profile",
    "evaluation_sites": [
     "tests/test_verify.py::test_unknown_profile_is_named"
@@ -109,6 +123,8 @@
    "section": "2.5 `results`",
    "normative_text": "number MUST be a JSON number so that it can be compared to a recomputation.",
    "property_token": "results.summary.number_is_json_number",
+   "addressee": "verifier",
+   "addressee_basis": "derived-from-token-prefix",
    "refusal_site": "schema-violation",
    "evaluation_sites": [
     "tests/test_refusals_schema.py::test_non_object_results_summary_is_refused",
@@ -125,6 +141,8 @@
    "section": "2.5 `results`",
    "normative_text": "in `evidence` MUST be referenced by at least one check.",
    "property_token": "evidence.artifact.referenced_by_a_check",
+   "addressee": "verifier",
+   "addressee_basis": "derived-from-token-prefix",
    "refusal_site": "evidence-unchecked",
    "evaluation_sites": [
     "tests/test_refusals_stamps_summary.py::test_check_artifact_must_be_listed_in_evidence",
@@ -140,6 +158,8 @@
    "section": "2.5.1 `scope`, and how a summary number binds",
    "normative_text": "A derived scope MUST match `[A-Za-z0-9_-]+`; anything else is",
    "property_token": "results.scope.matches_token_grammar",
+   "addressee": "verifier",
+   "addressee_basis": "derived-from-token-prefix",
    "refusal_site": "unscopable-check",
    "evaluation_sites": [
     "tests/test_verify.py::test_an_underivable_scope_is_refused",
@@ -154,6 +174,8 @@
    "section": "2.5.1 `scope`, and how a summary number binds",
    "normative_text": "`unscopable-check`, naming the reference. Scopes MUST be unique within a",
    "property_token": "results.scope.unique_within_bundle",
+   "addressee": "verifier",
+   "addressee_basis": "derived-from-token-prefix",
    "refusal_site": "unscopable-check",
    "evaluation_sites": [
     "tests/test_verify.py::test_an_underivable_scope_is_refused",
@@ -168,6 +190,8 @@
    "section": "2.6 `replay`",
    "normative_text": "| `issuer_commit` | string | non-empty (`missing-issuer-commit`); MUST equal `protocol.issuer_commit` (`issuer-commit-mismatch`) |",
    "property_token": "replay.issuer_commit_equals_protocol",
+   "addressee": "verifier",
+   "addressee_basis": "derived-from-token-prefix",
    "refusal_site": "issuer-commit-mismatch",
    "evaluation_sites": [
     "tests/test_refusals_stamps_summary.py::test_replay_commit_must_equal_protocol_commit"
@@ -181,6 +205,8 @@
    "section": "2.7 Drafts",
    "normative_text": "The marker is grammar, not convention: a verifier MUST refuse any",
    "property_token": "bundle.contains_no_draft_markers",
+   "addressee": "verifier",
+   "addressee_basis": "derived-from-token-prefix",
    "refusal_site": "draft-incomplete",
    "evaluation_sites": [
     "tests/test_draft.py::test_drafted_bundle_is_refused_exactly_like_the_fixture"
@@ -194,6 +220,8 @@
    "section": "2.7 Drafts",
    "normative_text": "per marker (`draft-incomplete: <path> is an unauthored TODO`), and MUST",
    "property_token": "bundle.one_refusal_per_draft_marker",
+   "addressee": "verifier",
+   "addressee_basis": "derived-from-token-prefix",
    "refusal_site": "draft-incomplete",
    "evaluation_sites": [
     "tests/test_draft.py::test_drafted_bundle_is_refused_exactly_like_the_fixture"
@@ -207,6 +235,8 @@
    "section": "3.1 `certlab-bundle-v1`",
    "normative_text": "`true`. Every key in `expect` MUST name one of those four fields and",
    "property_token": "certlab.expect.names_a_recomputed_field",
+   "addressee": "verifier",
+   "addressee_basis": "derived-from-token-prefix",
    "refusal_site": "summary-mismatch",
    "evaluation_sites": [
     "tests/test_refusals_stamps_summary.py::test_certlab_expect_key_must_be_recomputable",
@@ -223,6 +253,8 @@
    "section": "3.1 `certlab-bundle-v1`",
    "normative_text": "cannot redefine what `fixed` or `verdicts` are held to. A registry MUST",
    "property_token": "registry.free_text_pool_key_not_admitted_to_pool",
+   "addressee": "registry",
+   "addressee_basis": "derived-from-token-prefix",
    "refusal_site": null,
    "evaluation_sites": [],
    "status": "unmeasured",
@@ -234,6 +266,8 @@
    "section": "3.2 `fleet-board-v1`",
    "normative_text": "- each recomputed value MUST equal the row's (`raw-aggregate-mismatch`);",
    "property_token": "fleet.row.recomputes_from_raw",
+   "addressee": "verifier",
+   "addressee_basis": "derived-from-token-prefix",
    "refusal_site": "raw-aggregate-mismatch",
    "evaluation_sites": [
     "tests/test_refusals_modeldrift_c.py::test_flips_one_offs_must_recompute_from_the_fails_vectors",
@@ -250,6 +284,8 @@
    "section": "3.2 `fleet-board-v1`",
    "normative_text": "`expect.rows`, when present, MUST equal the number of aggregate rows.",
    "property_token": "fleet.expect.rows_equals_row_count",
+   "addressee": "verifier",
+   "addressee_basis": "derived-from-token-prefix",
    "refusal_site": "summary-mismatch",
    "evaluation_sites": [
     "tests/test_refusals_stamps_summary.py::test_fleet_expect_rows_must_match_the_aggregate",
@@ -266,6 +302,8 @@
    "section": "3.3 `evalmut-run-v1`",
    "normative_text": "MUST NOT cite a `case_name` the declared corpus does not contain",
    "property_token": "evalmut.case_name_in_declared_corpus",
+   "addressee": "verifier",
+   "addressee_basis": "derived-from-token-prefix",
    "refusal_site": "raw-aggregate-mismatch",
    "evaluation_sites": [
     "tests/test_verify.py::test_a_run_citing_a_case_outside_its_corpus_is_refused",
@@ -282,6 +320,8 @@
    "section": "3.3 `evalmut-run-v1`",
    "normative_text": "(`raw-aggregate-mismatch`); `case_count` MUST equal the number of cases; and",
    "property_token": "evalmut.case_count_equals_corpus_size",
+   "addressee": "verifier",
+   "addressee_basis": "derived-from-token-prefix",
    "refusal_site": "raw-aggregate-mismatch",
    "evaluation_sites": [
     "tests/test_verify.py::test_a_run_citing_a_case_outside_its_corpus_is_refused",
@@ -298,6 +338,8 @@
    "section": "3.3 `evalmut-run-v1`",
    "normative_text": "Every key in `expect` MUST name a recomputed field and equal its value",
    "property_token": "evalmut.expect.names_a_recomputed_field",
+   "addressee": "verifier",
+   "addressee_basis": "derived-from-token-prefix",
    "refusal_site": "summary-mismatch",
    "evaluation_sites": [
     "tests/test_refusals_stamps_summary.py::test_evalmut_expect_key_must_be_recomputable",
@@ -314,6 +356,8 @@
    "section": "3.4 `crashkit-battery-v1`",
    "normative_text": "`round(passed / graded, 4)` (0.0 when nothing is graded) and MUST equal",
    "property_token": "crashkit.accuracy_equals_all_four_aliases",
+   "addressee": "verifier",
+   "addressee_basis": "derived-from-token-prefix",
    "refusal_site": "raw-aggregate-mismatch",
    "evaluation_sites": [
     "tests/test_refusals_last_five.py::test_a_raw_line_whose_detected_flag_contradicts_its_own_pair",
@@ -330,6 +374,8 @@
    "section": "3.4 `crashkit-battery-v1`",
    "normative_text": "MUST equal the artifact's;",
    "property_token": "crashkit.severity_weighted_score_recomputes",
+   "addressee": "verifier",
+   "addressee_basis": "derived-from-token-prefix",
    "refusal_site": "raw-aggregate-mismatch",
    "evaluation_sites": [
     "tests/test_refusals_render.py::test_a_sweetened_score_is_refused",
@@ -346,6 +392,8 @@
    "section": "3.4 `crashkit-battery-v1`",
    "normative_text": "- `flagged_cases`, `n_cases`, `truncations` MUST equal their counts over",
    "property_token": "crashkit.counts_equal_row_tallies",
+   "addressee": "verifier",
+   "addressee_basis": "derived-from-token-prefix",
    "refusal_site": "raw-aggregate-mismatch",
    "evaluation_sites": [
     "tests/test_refusals_modeldrift_c.py::test_flips_equal_length_lists_name_the_differing_row",
@@ -362,6 +410,8 @@
    "section": "3.4 `crashkit-battery-v1`",
    "normative_text": "MUST equal the artifact's;",
    "property_token": "crashkit.reliability_recomputes",
+   "addressee": "verifier",
+   "addressee_basis": "derived-from-token-prefix",
    "refusal_site": "raw-aggregate-mismatch",
    "evaluation_sites": [
     "tests/test_refusals_last_five.py::test_a_raw_line_whose_detected_flag_contradicts_its_own_pair",
@@ -378,6 +428,8 @@
    "section": "3.4 `crashkit-battery-v1`",
    "normative_text": "- `per_kind` MUST equal, key for key in both directions,",
    "property_token": "crashkit.per_kind_equal_both_directions",
+   "addressee": "verifier",
+   "addressee_basis": "derived-from-token-prefix",
    "refusal_site": "raw-aggregate-mismatch",
    "evaluation_sites": [
     "tests/test_refusals_modeldrift_c.py::test_flips_equal_length_lists_name_the_differing_row",
@@ -394,6 +446,8 @@
    "section": "3.4 `crashkit-battery-v1`",
    "normative_text": "Every key in `expect` MUST name a recomputed field and equal its value",
    "property_token": "crashkit.expect.names_a_recomputed_field",
+   "addressee": "verifier",
+   "addressee_basis": "derived-from-token-prefix",
    "refusal_site": "summary-mismatch",
    "evaluation_sites": [
     "tests/test_refusals_stamps_summary.py::test_crashkit_expect_key_must_be_recomputable",
@@ -410,6 +464,8 @@
    "section": "3.4 `crashkit-battery-v1`",
    "normative_text": "`protocol.hashes` entry that MUST equal the artifact's `git_sha`. The",
    "property_token": "crashkit.battery_hash_key_equals_git_sha",
+   "addressee": "verifier",
+   "addressee_basis": "derived-from-token-prefix",
    "refusal_site": "stamp-mismatch",
    "evaluation_sites": [
     "tests/test_refusals_stamps_summary.py::test_crashkit_battery_hash_key_must_name_a_real_pin",
@@ -426,6 +482,8 @@
    "section": "3.5 `modeldrift-board-v1`",
    "normative_text": "`round(100/fingerprint.tasks, 3)`. The recomputed object MUST equal",
    "property_token": "modeldrift.min_detectable_object_recomputes",
+   "addressee": "verifier",
+   "addressee_basis": "derived-from-token-prefix",
    "refusal_site": "raw-aggregate-mismatch",
    "evaluation_sites": [
     "tests/test_refusals_modeldrift_a.py::test_fingerprint_task_count_must_match_its_task_ids",
@@ -442,6 +500,8 @@
    "section": "3.5 `modeldrift-board-v1`",
    "normative_text": "`fingerprint.suite_version`) MUST be byte-identical to the committed",
    "property_token": "modeldrift.suite_byte_identical_to_committed",
+   "addressee": "verifier",
+   "addressee_basis": "derived-from-token-prefix",
    "refusal_site": "suite",
    "evaluation_sites": [
     "tests/test_refusals_modeldrift_a.py::test_fingerprint_must_declare_suite_hash",
@@ -458,6 +518,8 @@
    "section": "3.5 `modeldrift-board-v1`",
    "normative_text": "fails-bearing points: MUST equal the committed `flips` artifact.",
    "property_token": "modeldrift.models_with_enough_history_equals_flips",
+   "addressee": "verifier",
+   "addressee_basis": "derived-from-token-prefix",
    "refusal_site": "raw-aggregate-mismatch",
    "evaluation_sites": [
     "tests/test_refusals_modeldrift_c.py::test_flips_models_with_enough_history_must_recompute",
@@ -474,6 +536,8 @@
    "section": "3.5 `modeldrift-board-v1`",
    "normative_text": "Every key in `expect` MUST name a recomputed field and equal its value",
    "property_token": "modeldrift.expect.names_a_recomputed_field",
+   "addressee": "verifier",
+   "addressee_basis": "derived-from-token-prefix",
    "refusal_site": "summary-mismatch",
    "evaluation_sites": [
     "tests/test_refusals_stamps_summary.py::test_modeldrift_expect_key_must_be_recomputable",
@@ -490,6 +554,8 @@
    "section": "3.5 `modeldrift-board-v1`",
    "normative_text": "Each flips row MUST carry `latest`, compared by whole-object equality,",
    "property_token": "modeldrift.flips_row_latest_whole_object_equality",
+   "addressee": "verifier",
+   "addressee_basis": "derived-from-token-prefix",
    "refusal_site": "raw-aggregate-mismatch",
    "evaluation_sites": [
     "tests/test_refusals_modeldrift_c.py::test_flips_equal_length_lists_name_the_differing_row",
@@ -506,6 +572,8 @@
    "section": "3.5 `modeldrift-board-v1`",
    "normative_text": "Stamp binding per \u00a72.3: `protocol.hashes.suite_hash` MUST equal the",
    "property_token": "modeldrift.suite_hash_equals_fingerprint",
+   "addressee": "verifier",
+   "addressee_basis": "derived-from-token-prefix",
    "refusal_site": "stamp-mismatch",
    "evaluation_sites": [
     "tests/test_refusals_modeldrift_c.py::test_suite_hash_stamp_binds_the_protocol_to_the_fingerprint",
@@ -522,6 +590,8 @@
    "section": "3.5 `modeldrift-board-v1`",
    "normative_text": "`registry_sha256` MUST equal the evidence hashes of the `metrics` /",
    "property_token": "modeldrift.registry_sha256_equals_evidence_hashes",
+   "addressee": "verifier",
+   "addressee_basis": "derived-from-token-prefix",
    "refusal_site": "stamp-mismatch",
    "evaluation_sites": [
     "tests/test_refusals_modeldrift_c.py::test_suite_hash_stamp_binds_the_protocol_to_the_fingerprint",
@@ -538,6 +608,8 @@
    "section": "5. Registry rules",
    "normative_text": "its form, a registry MUST reject a claim when any of the following holds:",
    "property_token": "registry.rejects_claim_on_listed_conditions",
+   "addressee": "registry",
+   "addressee_basis": "derived-from-token-prefix",
    "refusal_site": "schema-violation",
    "evaluation_sites": [
     "tests/test_refusals_modeldrift_floor.py::test_a_floor_outside_the_admissible_range_is_refused",
@@ -554,6 +626,8 @@
    "section": "5. Registry rules",
    "normative_text": "A registry that skips the replay gate MUST say so on every entry.",
    "property_token": "registry.discloses_skipped_replay_gate_per_entry",
+   "addressee": "registry",
+   "addressee_basis": "derived-from-token-prefix",
    "refusal_site": null,
    "evaluation_sites": [],
    "status": "unmeasured",
@@ -565,6 +639,8 @@
    "section": "8. Versioning",
    "normative_text": "`vac_version` is the format contract. A verifier MUST refuse a version",
    "property_token": "verifier.refuses_unimplemented_vac_version",
+   "addressee": "verifier",
+   "addressee_basis": "derived-from-token-prefix",
    "refusal_site": "schema-violation",
    "evaluation_sites": [
     "tests/test_refusals_schema.py::test_unpinned_subject_version_is_refused",
@@ -581,6 +657,8 @@
    "section": "8. Versioning",
    "normative_text": "it does not implement rather than guess, and MUST apply that version's",
    "property_token": "verifier.applies_declared_version_semantics",
+   "addressee": "verifier",
+   "addressee_basis": "derived-from-token-prefix",
    "refusal_site": "schema-violation",
    "evaluation_sites": [
     "tests/test_refusals_modeldrift_floor.py::test_an_undeclared_floor_is_refused",

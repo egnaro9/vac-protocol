@@ -22,13 +22,31 @@ import json, pathlib, re, sys, collections
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 OBLIGATION_RE = re.compile(r'\bMUST NOT\b|\bMUST\b|\bSHALL NOT\b|\bSHALL\b')
 
-# line -> (refusal_site, property_token, status, rationale)
+# property-token namespace -> addressee, where the mapping is EXACT.
+# A prefix belongs here only if every clause using it has the same addressee.
+EXACT_PREFIX = {
+    "bundle": "verifier", "evidence": "verifier", "results": "verifier",
+    "replay": "verifier", "verifier": "verifier",
+    "certlab": "verifier", "fleet": "verifier", "evalmut": "verifier",
+    "crashkit": "verifier", "modeldrift": "verifier",
+    "registry": "registry",
+}
+# Prefixes that genuinely span addressees. `protocol` does: protocol.hashes.*
+# is recomputed by the verifier, protocol.grading.* is prose a human reads.
+# These REQUIRE an explicit adjudication in MAPPING; the builder refuses to
+# guess, and narrowing the prefix to two segments to dodge that would hide the
+# judgement rather than record it.
+AMBIGUOUS_PREFIX = {"protocol"}
+
+# line -> (refusal_site, property_token, status, rationale, addressee|None)
+# addressee is None wherever EXACT_PREFIX settles it; a string is an explicit
+# adjudication and is only permitted for an AMBIGUOUS_PREFIX token.
 MAPPING = {
  52:("missing-artifact","evidence.artifact.listed_with_sha256","mapped","Every bundle file must be an evidence entry carrying its sha256; the verifier refuses a bundle file that no evidence row lists."),
  58:("unsafe-bundle","bundle.contains_no_symlinks","mapped","Symlink members are rejected before any hashing, so a link cannot smuggle content in from outside the bundle."),
-109:(None,"protocol.grading.describes_deterministic_process","unmeasured","Prose obligation. Nothing reads protocol.grading beyond requiring it non-empty, so 'describes a deterministic process' is enforced by human review at PR time and by replay, not by the verifier. Tracked as egnaro9/vac-protocol#6."),
-115:("stamp-mismatch","protocol.hashes.commit_key_equals_issuer_commit","mapped","A commit-shaped hash key must equal protocol.issuer_commit or the stamp binding is refused."),
-116:("stamp-mismatch","protocol.hashes.equal_artifact_values","mapped","Each pinned hash must equal the value carried by the artifact it pins."),
+109:(None,"protocol.grading.describes_deterministic_process","unmeasured","Prose obligation. Nothing reads protocol.grading beyond requiring it non-empty, so 'describes a deterministic process' is enforced by human review at PR time and by replay, not by the verifier. Tracked as egnaro9/vac-protocol#6.","reviewer"),
+115:("stamp-mismatch","protocol.hashes.commit_key_equals_issuer_commit","mapped","A commit-shaped hash key must equal protocol.issuer_commit or the stamp binding is refused.","verifier"),
+116:("stamp-mismatch","protocol.hashes.equal_artifact_values","mapped","Each pinned hash must equal the value carried by the artifact it pins.","verifier"),
 132:("summary-outruns-checks","results.summary.number_bound_to_a_check","mapped","A headline number with no check that recomputes it is refused, which is the closure rule for summaries."),
 135:("unknown-profile","results.checks.profile_is_known","mapped","A check naming a profile outside SPEC 3 is refused rather than skipped."),
 149:("schema-violation","results.summary.number_is_json_number","mapped","A stringified headline number cannot be compared to a recomputation, so it is a schema violation rather than a soft warning."),
@@ -65,6 +83,7 @@ MAPPING = {
 792:("schema-violation","verifier.applies_declared_version_semantics","partially_mapped","The verifier branches on the declared version for the rules that differ between 0.1 and 0.2 (scope binding, rel_floor). It is mapped for the rules that actually diverge; there is no general check that every rule consults the declared version."),
 }
 
+ADDRESSEES = {"verifier", "registry", "reviewer"}
 VAGUE = {"correctness","works","valid","correct","good","ok","behaviour","behavior","quality","sane"}
 
 def clauses():
@@ -110,13 +129,31 @@ def main():
         sys.exit(f"build refuses: {len(unmapped)} clause(s) with no MAPPING row: {unmapped}")
     entries = []
     for n, c in enumerate(cl, 1):
-        site, token, status, why = MAPPING[c["line"]]
+        row = MAPPING[c["line"]]
+        site, token, status, why = row[:4]
+        explicit = row[4] if len(row) > 4 else None
+        pre = token.split(".")[0]
+        if pre in AMBIGUOUS_PREFIX:
+            if explicit not in ADDRESSEES:
+                sys.exit(f"build refuses: SPEC.md:{c['line']} uses ambiguous prefix "
+                         f"{pre!r} and carries no explicit addressee adjudication")
+            addressee, basis = explicit, "adjudicated"
+        elif pre in EXACT_PREFIX:
+            if explicit is not None and explicit != EXACT_PREFIX[pre]:
+                sys.exit(f"build refuses: SPEC.md:{c['line']} declares addressee "
+                         f"{explicit!r} against exact prefix {pre!r} -> {EXACT_PREFIX[pre]!r}")
+            addressee, basis = EXACT_PREFIX[pre], "derived-from-token-prefix"
+        else:
+            sys.exit(f"build refuses: SPEC.md:{c['line']} token prefix {pre!r} is in "
+                     f"neither EXACT_PREFIX nor AMBIGUOUS_PREFIX")
         entries.append({
             "obligation_id": f"SPEC-{n:02d}",
             "source_span": f"SPEC.md:{c['line']}",
             "section": c["section"],
             "normative_text": c["text"],
             "property_token": token,
+            "addressee": addressee,
+            "addressee_basis": basis,
             "refusal_site": site,
             "evaluation_sites": pick(bind.get(site, []), token) if site else [],
             "status": status,
@@ -130,7 +167,9 @@ def main():
     }
     (ROOT/"obligations.json").write_text(json.dumps(doc, indent=1) + "\n")
     tally = collections.Counter(e["status"] for e in entries)
+    who = collections.Counter(e["addressee"] for e in entries)
     print(f"  wrote obligations.json: {len(entries)} obligations {dict(tally)}")
+    print(f"  by addressee: {dict(who)}")
 
 if __name__ == "__main__":
     main()

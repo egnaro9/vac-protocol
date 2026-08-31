@@ -10,6 +10,7 @@ from __future__ import annotations
 import copy
 import json
 import pathlib
+import re
 import subprocess
 import sys
 
@@ -168,3 +169,105 @@ def test_unmeasured_obligations_are_reported_not_hidden(ledger):
     assert un, "an all-mapped ledger is the outcome to distrust"
     for o in un:
         assert o["rationale"].strip(), f"{o['obligation_id']} is unmeasured with no reason given"
+
+
+# ── addressee: the field that makes the structural claim artifact-derived ──
+#
+# The claim the paper wants to make is "the unmeasured obligations are the ones
+# addressed to a human or a registry, not to the verifier". Before this field
+# that sentence was an author's retrospective reading of the rationale prose.
+# These tests exist so it is a property of the ledger instead.
+
+def test_every_obligation_carries_an_allowed_addressee(ledger):
+    for o in ledger["obligations"]:
+        assert o["addressee"] in {"verifier", "registry", "reviewer"}, o["obligation_id"]
+        assert o["addressee_basis"] in {"derived-from-token-prefix", "adjudicated"}
+
+
+def test_no_verifier_addressed_obligation_is_unmeasured(ledger):
+    """The structural finding, asserted rather than narrated."""
+    stranded = [o["obligation_id"] for o in ledger["obligations"]
+                if o["addressee"] == "verifier" and o["status"] == "unmeasured"]
+    assert stranded == [], f"verifier-addressed but unmeasured: {stranded}"
+
+
+def test_the_partially_mapped_verifier_obligation_is_named(ledger):
+    """SPEC-39 is the one verifier obligation that is not fully mapped. If that
+    stops being true the paper's sentence changes, so it fails here first."""
+    partial = sorted(o["obligation_id"] for o in ledger["obligations"]
+                     if o["addressee"] == "verifier" and o["status"] == "partially_mapped")
+    assert partial == ["SPEC-39"], partial
+
+
+def test_a_missing_addressee_is_refused(tmp_path, ledger):
+    d = copy.deepcopy(ledger)
+    del d["obligations"][0]["addressee"]
+    rc, out = run(write(tmp_path, d))
+    assert rc == 1 and "C7" in out and "is not one of" in out
+
+
+def test_an_invented_addressee_is_refused(tmp_path, ledger):
+    d = copy.deepcopy(ledger)
+    d["obligations"][0]["addressee"] = "auditor"
+    rc, out = run(write(tmp_path, d))
+    assert rc == 1 and "C7" in out
+
+
+def test_an_addressee_contradicting_its_exact_prefix_is_refused(tmp_path, ledger):
+    """C8. A registry.* token cannot be relabelled as a verifier obligation to
+    move an unmeasured row out of the awkward column."""
+    d = copy.deepcopy(ledger)
+    m = next(o for o in d["obligations"] if o["property_token"].startswith("registry."))
+    m["addressee"] = "verifier"
+    rc, out = run(write(tmp_path, d))
+    assert rc == 1 and "contradicts exact prefix" in out
+
+
+def test_claiming_adjudication_for_an_exact_prefix_is_refused(tmp_path, ledger):
+    """C8. Adjudication is for genuinely ambiguous prefixes; claiming it where
+    the namespace already settles the answer hides a decision that was not made."""
+    d = copy.deepcopy(ledger)
+    m = next(o for o in d["obligations"]
+             if o["addressee_basis"] == "derived-from-token-prefix")
+    m["addressee_basis"] = "adjudicated"
+    rc, out = run(write(tmp_path, d))
+    assert rc == 1 and "must be derived-from-token-prefix" in out
+
+
+def test_deriving_an_ambiguous_prefix_is_refused(tmp_path, ledger):
+    """C8, the other direction: protocol.* spans addressees, so it may not be
+    silently derived."""
+    d = copy.deepcopy(ledger)
+    m = next(o for o in d["obligations"] if o["property_token"].startswith("protocol."))
+    m["addressee_basis"] = "derived-from-token-prefix"
+    rc, out = run(write(tmp_path, d))
+    assert rc == 1 and "must be adjudicated" in out
+
+
+def test_an_unaccountable_prefix_is_refused(tmp_path, ledger):
+    d = copy.deepcopy(ledger)
+    d["obligations"][0]["property_token"] = "novelnamespace.some_property"
+    rc, out = run(write(tmp_path, d))
+    assert rc == 1 and "unaccountable" in out
+
+
+def test_the_builder_refuses_an_ambiguous_prefix_with_no_adjudication():
+    """Builder-side guard: dropping the adjudication must not fall back to a guess."""
+    src = ROOT / "tools" / "build_obligations.py"
+    original = src.read_text()
+    mutated = original.replace('109:(None,"protocol.grading.describes_deterministic_process","unmeasured"',
+                               '109:(None,"protocol.grading.describes_deterministic_process","unmeasured"', 1)
+    # remove the trailing adjudication on the SPEC-03 row
+    mutated = re.sub(r'(109:\(None,"protocol\.grading[^\n]*?),"reviewer"\),', r'\1),', mutated)
+    assert mutated != original, "could not locate the SPEC-03 adjudication to remove"
+    ledger_before = LEDGER.read_bytes()
+    try:
+        src.write_text(mutated)
+        p = subprocess.run([sys.executable, str(src)], capture_output=True, text=True, cwd=ROOT)
+        assert p.returncode != 0, "builder accepted an ambiguous prefix with no adjudication"
+        assert "no explicit addressee adjudication" in (p.stdout + p.stderr)
+    finally:
+        src.write_text(original)
+        LEDGER.write_bytes(ledger_before)
+    assert src.read_text() == original
+    assert LEDGER.read_bytes() == ledger_before

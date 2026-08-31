@@ -23,6 +23,17 @@ OBLIGATION_RE = re.compile(r'\bMUST NOT\b|\bMUST\b|\bSHALL NOT\b|\bSHALL\b')
 VAGUE = {"correctness","works","valid","correct","good","ok","behaviour","behavior",
          "quality","sane","proper","right","fine","checked","tested","verified"}
 STATUSES = {"mapped","partially_mapped","unmeasured"}
+ADDRESSEES = {"verifier","registry","reviewer"}
+# Kept in step with tools/build_obligations.py. Duplicated deliberately: the
+# checker must be able to refuse a ledger without importing the generator that
+# produced it, or it only ever agrees with itself.
+EXACT_PREFIX = {
+    "bundle":"verifier","evidence":"verifier","results":"verifier","replay":"verifier",
+    "verifier":"verifier","certlab":"verifier","fleet":"verifier","evalmut":"verifier",
+    "crashkit":"verifier","modeldrift":"verifier","registry":"registry",
+}
+AMBIGUOUS_PREFIX = {"protocol"}
+BASES = {"derived-from-token-prefix","adjudicated"}
 # token prefix -> the section fragment the clause must sit under
 PREFIX_SECTION = {"certlab":"certlab","fleet":"fleet","evalmut":"evalmut",
                   "crashkit":"crashkit","modeldrift":"modeldrift"}
@@ -72,6 +83,29 @@ def main(argv=None) -> int:
         st, site, token = o["status"], o.get("refusal_site"), o.get("property_token","")
         line = int(o["source_span"].split(":")[1])
 
+        who, basis = o.get("addressee"), o.get("addressee_basis")
+        pre0 = token.split(".")[0]
+        # C7 present and allowed
+        if who not in ADDRESSEES:
+            bad.append(f"C7 {oid}: addressee {who!r} is not one of {sorted(ADDRESSEES)}")
+        if basis not in BASES:
+            bad.append(f"C7 {oid}: addressee_basis {basis!r} is not one of {sorted(BASES)}")
+        # C8 bound to the stable prefix mapping
+        if pre0 in EXACT_PREFIX:
+            if who != EXACT_PREFIX[pre0]:
+                bad.append(f"C8 {oid}: addressee {who!r} contradicts exact prefix "
+                           f"{pre0!r} -> {EXACT_PREFIX[pre0]!r}")
+            if basis != "derived-from-token-prefix":
+                bad.append(f"C8 {oid}: prefix {pre0!r} is exact, so basis must be "
+                           f"derived-from-token-prefix, not {basis!r}")
+        elif pre0 in AMBIGUOUS_PREFIX:
+            if basis != "adjudicated":
+                bad.append(f"C8 {oid}: prefix {pre0!r} is ambiguous, so the addressee "
+                           f"must be adjudicated, not {basis!r}")
+        else:
+            bad.append(f"C8 {oid}: token prefix {pre0!r} is in neither EXACT_PREFIX "
+                       f"nor AMBIGUOUS_PREFIX, so its addressee is unaccountable")
+
         if st not in STATUSES:
             bad.append(f"C5 {oid}: status {st!r} is not one of {sorted(STATUSES)}")
 
@@ -118,8 +152,11 @@ def main(argv=None) -> int:
             bad.append(f"C4 {oid}: status 'unmeasured' but a site is claimed")
 
     tally = collections.Counter(o["status"] for o in obs)
+    who_t = collections.Counter(o.get("addressee") for o in obs)
+    unmeasured_who = collections.Counter(o.get("addressee") for o in obs if o["status"]=="unmeasured")
     print(f"  {len(obs)} obligations from {len(clauses)} normative clauses "
           f"[mapped {tally['mapped']} | partial {tally['partially_mapped']} | unmeasured {tally['unmeasured']}]")
+    print(f"  by addressee: {dict(who_t)}   unmeasured by addressee: {dict(unmeasured_who)}")
     if bad:
         print(f"REFUSED: {len(bad)} finding(s)")
         for b in bad: print("   ", b)
