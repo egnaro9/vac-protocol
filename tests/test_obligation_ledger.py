@@ -251,23 +251,79 @@ def test_an_unaccountable_prefix_is_refused(tmp_path, ledger):
     assert rc == 1 and "unaccountable" in out
 
 
-def test_the_builder_refuses_an_ambiguous_prefix_with_no_adjudication():
-    """Builder-side guard: dropping the adjudication must not fall back to a guess."""
-    src = ROOT / "tools" / "build_obligations.py"
-    original = src.read_text()
-    mutated = original.replace('109:(None,"protocol.grading.describes_deterministic_process","unmeasured"',
-                               '109:(None,"protocol.grading.describes_deterministic_process","unmeasured"', 1)
-    # remove the trailing adjudication on the SPEC-03 row
-    mutated = re.sub(r'(109:\(None,"protocol\.grading[^\n]*?),"reviewer"\),', r'\1),', mutated)
-    assert mutated != original, "could not locate the SPEC-03 adjudication to remove"
-    ledger_before = LEDGER.read_bytes()
-    try:
-        src.write_text(mutated)
-        p = subprocess.run([sys.executable, str(src)], capture_output=True, text=True, cwd=ROOT)
-        assert p.returncode != 0, "builder accepted an ambiguous prefix with no adjudication"
-        assert "no explicit addressee adjudication" in (p.stdout + p.stderr)
-    finally:
-        src.write_text(original)
-        LEDGER.write_bytes(ledger_before)
-    assert src.read_text() == original
-    assert LEDGER.read_bytes() == ledger_before
+def _sandbox_repo(tmp_path, mutate):
+    """A throwaway repo whose tools/ holds a MUTATED builder and whose inputs are
+    symlinks to the real ones. The builder resolves ROOT from __file__, so this
+    gives it a correct ROOT without ever writing to the checked-in source."""
+    root = tmp_path / "repo"
+    (root / "tools").mkdir(parents=True)
+    for name in ("SPEC.md", "vac", "tests"):
+        (root / name).symlink_to(ROOT / name)
+    src = (ROOT / "tools" / "build_obligations.py").read_text()
+    (root / "tools" / "build_obligations.py").write_text(mutate(src))
+    return root
+
+
+def _run_builder(root):
+    p = subprocess.run([sys.executable, str(root / "tools" / "build_obligations.py")],
+                       capture_output=True, text=True, cwd=root)
+    return p.returncode, p.stdout + p.stderr
+
+
+def test_the_builder_refuses_an_ambiguous_prefix_with_no_adjudication(tmp_path):
+    """Dropping the adjudication must not fall back to a guess."""
+    rc, out = _run_builder(_sandbox_repo(
+        tmp_path,
+        lambda s: re.sub(r'(109:\(None,"protocol\.grading[^\n]*?),"reviewer"\),', r'\1),', s)))
+    assert rc != 0 and "no explicit addressee adjudication" in out
+    assert (ROOT / "tools" / "build_obligations.py").read_text().count('"reviewer"') >= 1
+
+
+def test_the_builder_refuses_an_adjudication_the_table_contradicts(tmp_path):
+    """The hole this amendment closes, at the builder. A legal value and a legal
+    basis are not enough; the ruling has to be the reviewed one."""
+    rc, out = _run_builder(_sandbox_repo(
+        tmp_path,
+        lambda s: s.replace('"unmeasured","Prose obligation.', '"unmeasured","Prose obligation.', 1)
+                   .replace(',"reviewer"),', ',"verifier"),', 1)))
+    assert rc != 0 and "the reviewed ruling for that subfamily is" in out
+
+
+def test_the_builder_refuses_a_token_no_adjudication_rule_covers(tmp_path):
+    """An ambiguous-prefix token outside every ADJUDICATED rule answers to nothing."""
+    rc, out = _run_builder(_sandbox_repo(
+        tmp_path,
+        lambda s: s.replace("protocol.grading.describes_deterministic_process",
+                            "protocol.unruled.some_property", 1)))
+    assert rc != 0 and "matches no ADJUDICATED rule" in out
+
+
+# ── C9: the adjudication must hold the reviewed answer, checked on a ledger copy ──
+
+def test_spec03_relabelled_as_verifier_is_refused(tmp_path, ledger):
+    """The exact mutation that passed before this amendment. It kept a permitted
+    addressee and an 'adjudicated' basis, and inverted the headline finding to
+    'one verifier-addressed obligation is unmeasured'."""
+    d = copy.deepcopy(ledger)
+    m = next(o for o in d["obligations"] if o["property_token"].startswith("protocol.grading."))
+    m["addressee"] = "verifier"
+    rc, out = run(write(tmp_path, d))
+    assert rc == 1 and "C9" in out and "the reviewed ruling for" in out
+
+
+def test_a_protocol_hashes_obligation_relabelled_as_reviewer_is_refused(tmp_path, ledger):
+    """The other direction: moving a verifier obligation into the reviewer column
+    would shrink the set the verifier is answerable for."""
+    d = copy.deepcopy(ledger)
+    m = next(o for o in d["obligations"] if o["property_token"].startswith("protocol.hashes."))
+    m["addressee"] = "reviewer"
+    rc, out = run(write(tmp_path, d))
+    assert rc == 1 and "C9" in out and "'verifier'" in out
+
+
+def test_an_unruled_ambiguous_token_is_refused(tmp_path, ledger):
+    d = copy.deepcopy(ledger)
+    m = next(o for o in d["obligations"] if o["property_token"].startswith("protocol."))
+    m["property_token"] = "protocol.unruled.some_property"
+    rc, out = run(write(tmp_path, d))
+    assert rc == 1 and "answers to nothing" in out

@@ -37,6 +37,20 @@ EXACT_PREFIX = {
 # guess, and narrowing the prefix to two segments to dodge that would hide the
 # judgement rather than record it.
 AMBIGUOUS_PREFIX = {"protocol"}
+# ...and for those, WHICH adjudication is correct. Requiring only that "someone
+# adjudicated" proves a field was filled in, not that it was filled in rightly:
+# flipping SPEC-03 from reviewer to verifier kept a legal value and a legal basis,
+# passed the checker, and inverted the headline finding to "1 verifier-addressed
+# obligation is unmeasured". The adjudication needs a reviewed answer, not just a
+# marker. Keyed on the token so a re-numbered clause cannot drift off its ruling.
+ADJUDICATED = {
+    "protocol.grading.": "reviewer",   # prose a human reads; nothing recomputes it
+    "protocol.hashes.":  "verifier",   # recomputed and compared by the verifier
+}
+
+def required_adjudication(token: str):
+    hits = [a for pre, a in ADJUDICATED.items() if token.startswith(pre)]
+    return hits[0] if len(hits) == 1 else None
 
 # line -> (refusal_site, property_token, status, rationale, addressee|None)
 # addressee is None wherever EXACT_PREFIX settles it; a string is an explicit
@@ -137,6 +151,14 @@ def main():
             if explicit not in ADDRESSEES:
                 sys.exit(f"build refuses: SPEC.md:{c['line']} uses ambiguous prefix "
                          f"{pre!r} and carries no explicit addressee adjudication")
+            want = required_adjudication(token)
+            if want is None:
+                sys.exit(f"build refuses: SPEC.md:{c['line']} token {token!r} sits under "
+                         f"ambiguous prefix {pre!r} but matches no ADJUDICATED rule, so its "
+                         f"adjudication answers to nothing")
+            if explicit != want:
+                sys.exit(f"build refuses: SPEC.md:{c['line']} adjudicates {token!r} as "
+                         f"{explicit!r}; the reviewed ruling for that subfamily is {want!r}")
             addressee, basis = explicit, "adjudicated"
         elif pre in EXACT_PREFIX:
             if explicit is not None and explicit != EXACT_PREFIX[pre]:

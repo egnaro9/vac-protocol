@@ -10,6 +10,9 @@ decides whether the ledger still corresponds to artifacts that exist:
   C4  status 'mapped' with no executable reference behind it
   C5  duplicate obligation ids, or a vague property token
   C6  normative_text that no longer matches the line it cites
+  C7  a missing or disallowed addressee / addressee_basis
+  C8  an addressee contradicting its namespace, or a basis contradicting its prefix
+  C9  an adjudicated addressee that is not the reviewed ruling for its subfamily
 
 C4 is the one that stops the ledger from flattering itself. Marking an
 obligation mapped is a claim that something fails when it is violated, and this
@@ -33,6 +36,13 @@ EXACT_PREFIX = {
     "crashkit":"verifier","modeldrift":"verifier","registry":"registry",
 }
 AMBIGUOUS_PREFIX = {"protocol"}
+# Independently restated, like EXACT_PREFIX above, and for the same reason. This
+# is the table that makes an adjudication accountable: without it the checker
+# proves a field was filled in, not that it holds the reviewed answer.
+ADJUDICATED = {
+    "protocol.grading.": "reviewer",
+    "protocol.hashes.":  "verifier",
+}
 BASES = {"derived-from-token-prefix","adjudicated"}
 # token prefix -> the section fragment the clause must sit under
 PREFIX_SECTION = {"certlab":"certlab","fleet":"fleet","evalmut":"evalmut",
@@ -102,6 +112,15 @@ def main(argv=None) -> int:
             if basis != "adjudicated":
                 bad.append(f"C8 {oid}: prefix {pre0!r} is ambiguous, so the addressee "
                            f"must be adjudicated, not {basis!r}")
+            # C9: the adjudication must carry the reviewed answer, not merely exist
+            hits = [a for pre, a in ADJUDICATED.items() if token.startswith(pre)]
+            if len(hits) != 1:
+                bad.append(f"C9 {oid}: token {token!r} is under ambiguous prefix {pre0!r} "
+                           f"but matches {len(hits)} ADJUDICATED rules, so its adjudication "
+                           f"answers to nothing")
+            elif who != hits[0]:
+                bad.append(f"C9 {oid}: adjudicated as {who!r}; the reviewed ruling for "
+                           f"{token!r} is {hits[0]!r}")
         else:
             bad.append(f"C8 {oid}: token prefix {pre0!r} is in neither EXACT_PREFIX "
                        f"nor AMBIGUOUS_PREFIX, so its addressee is unaccountable")
