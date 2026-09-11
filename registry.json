@@ -573,8 +573,8 @@
    "name": "reference-fleet/vac",
    "issuer": "egnaro9/reference-fleet",
    "issuer_repo": "https://github.com/egnaro9/reference-fleet",
-   "issuer_commit": "3894bc9",
-   "pinned_commit": "3d137e47706afa74fb9d4584c268a2236745037f",
+   "issuer_commit": "07c6697",
+   "pinned_commit": "53f931fafcc20bc19afcbebbe5e884283b055ce8",
    "vac_version": "0.2",
    "bundle_path": "board/vac",
    "capability": "suite-archetype detection rates over certified defect models",
@@ -611,38 +611,38 @@
    "artifacts": [
     {
      "path": "gradecore_diligent.json",
-     "sha256": "38052c39f6dab7f8118ca16c04210d71d4c9de9a18b313540e51ec9fe2374021",
-     "url": "https://raw.githubusercontent.com/egnaro9/reference-fleet/3d137e47706afa74fb9d4584c268a2236745037f/board/vac/gradecore_diligent.json"
+     "sha256": "ebe40c6e6cade25f4d224d01b6ca7fe016036eeefb9430214a7bfe6fad009e77",
+     "url": "https://raw.githubusercontent.com/egnaro9/reference-fleet/53f931fafcc20bc19afcbebbe5e884283b055ce8/board/vac/gradecore_diligent.json"
     },
     {
      "path": "gradecore_diligent.jsonl",
      "sha256": "72f43cc2e98510735070001845d89c479a5a94c416b0f49207fa622bb0d0252c",
-     "url": "https://raw.githubusercontent.com/egnaro9/reference-fleet/3d137e47706afa74fb9d4584c268a2236745037f/board/vac/gradecore_diligent.jsonl"
+     "url": "https://raw.githubusercontent.com/egnaro9/reference-fleet/53f931fafcc20bc19afcbebbe5e884283b055ce8/board/vac/gradecore_diligent.jsonl"
     },
     {
      "path": "naive_contains.json",
-     "sha256": "4ec99f328f21ffd9b58d9cd45c4d4148e91db3eb1668e2c0347cf87fb45ef2f5",
-     "url": "https://raw.githubusercontent.com/egnaro9/reference-fleet/3d137e47706afa74fb9d4584c268a2236745037f/board/vac/naive_contains.json"
+     "sha256": "e054d39577133422f9df566279a0648f70fe485c0da28d926b47e9a58846b55f",
+     "url": "https://raw.githubusercontent.com/egnaro9/reference-fleet/53f931fafcc20bc19afcbebbe5e884283b055ce8/board/vac/naive_contains.json"
     },
     {
      "path": "naive_contains.jsonl",
      "sha256": "301bcd8d2c82e294f45676bed0515943292d1405008de5184980f6f1169fb1bc",
-     "url": "https://raw.githubusercontent.com/egnaro9/reference-fleet/3d137e47706afa74fb9d4584c268a2236745037f/board/vac/naive_contains.jsonl"
+     "url": "https://raw.githubusercontent.com/egnaro9/reference-fleet/53f931fafcc20bc19afcbebbe5e884283b055ce8/board/vac/naive_contains.jsonl"
     },
     {
      "path": "promptfoo_docs_style_asserts.json",
-     "sha256": "a955baf2cb458067b3c74ea375b56dc1346fc00437b4565783e1171f67c9de3e",
-     "url": "https://raw.githubusercontent.com/egnaro9/reference-fleet/3d137e47706afa74fb9d4584c268a2236745037f/board/vac/promptfoo_docs_style_asserts.json"
+     "sha256": "65495552e54b54d674fc88283b613e1f30d8ad7ce8af1d19a02a2ee7f648ac6d",
+     "url": "https://raw.githubusercontent.com/egnaro9/reference-fleet/53f931fafcc20bc19afcbebbe5e884283b055ce8/board/vac/promptfoo_docs_style_asserts.json"
     },
     {
      "path": "promptfoo_docs_style_asserts.jsonl",
      "sha256": "fb3823b88767262988c75c236848f0481593877aeff3e34e75a10d7f494f7834",
-     "url": "https://raw.githubusercontent.com/egnaro9/reference-fleet/3d137e47706afa74fb9d4584c268a2236745037f/board/vac/promptfoo_docs_style_asserts.jsonl"
+     "url": "https://raw.githubusercontent.com/egnaro9/reference-fleet/53f931fafcc20bc19afcbebbe5e884283b055ce8/board/vac/promptfoo_docs_style_asserts.jsonl"
     },
     {
      "path": "vac.json",
-     "sha256": "0949ca642d4e9b3e61186f48663c2298a71632e1a592e5f961a68e4660e64cd5",
-     "url": "https://raw.githubusercontent.com/egnaro9/reference-fleet/3d137e47706afa74fb9d4584c268a2236745037f/board/vac/vac.json"
+     "sha256": "a518fa650b7cf55d6afd82ba52eac99543a8392b40c6da2dac1d325230c03c31",
+     "url": "https://raw.githubusercontent.com/egnaro9/reference-fleet/53f931fafcc20bc19afcbebbe5e884283b055ce8/board/vac/vac.json"
     }
    ],
    "status": "accepted",
