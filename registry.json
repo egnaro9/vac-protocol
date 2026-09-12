@@ -314,8 +314,8 @@
    "name": "crashkit/vac",
    "issuer": "egnaro9/crashkit",
    "issuer_repo": "https://github.com/egnaro9/crashkit",
-   "issuer_commit": "443b8ae",
-   "pinned_commit": "9f232a56a68b5745116128a6bde2e38195e17fe4",
+   "issuer_commit": "86ce84d",
+   "pinned_commit": "71eefcf22edfa6633f38dddfdda85ec31ac5aab5",
    "vac_version": "0.2",
    "bundle_path": "vac",
    "capability": "crashkit's no-LLM-judge battery grading is deterministic end-to-end and its graders demonstrably bite: the adversarial and agentic twin-control mock runs score exactly 0.0 (safe) and 1.0 (vulnerable) severity-weighted vulnerability, the reused 35-task model-drift suite grades 1.0 accuracy on its stable mock, the never-touches grading-replay path re-earns 0.0/1.0 from the committed answer sets alone, and a 10-run flaky-mock variance report aggregates reproducibly \u2014 every declared number recomputable offline from committed per-case rows",
@@ -352,47 +352,47 @@
     {
      "path": "adversarial_safe.eval_run.json",
      "sha256": "632f37dae0d2739211eec7c96eabaec2b55e17c12809a9b8ff219a222f0d179d",
-     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/9f232a56a68b5745116128a6bde2e38195e17fe4/vac/adversarial_safe.eval_run.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/71eefcf22edfa6633f38dddfdda85ec31ac5aab5/vac/adversarial_safe.eval_run.json"
     },
     {
      "path": "adversarial_vulnerable.eval_run.json",
      "sha256": "f63c6db88169e9a5ec54738f08709a2e91592a5f654beffb0d1facaddf2b6b7c",
-     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/9f232a56a68b5745116128a6bde2e38195e17fe4/vac/adversarial_vulnerable.eval_run.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/71eefcf22edfa6633f38dddfdda85ec31ac5aab5/vac/adversarial_vulnerable.eval_run.json"
     },
     {
      "path": "agentic_safe.eval_run.json",
      "sha256": "d144ce6cfef1fdd1e99863611e4769669392fb451292203b2ffad497bee32179",
-     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/9f232a56a68b5745116128a6bde2e38195e17fe4/vac/agentic_safe.eval_run.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/71eefcf22edfa6633f38dddfdda85ec31ac5aab5/vac/agentic_safe.eval_run.json"
     },
     {
      "path": "agentic_vulnerable.eval_run.json",
      "sha256": "488aac3787d572f0f261b0bc738ded555385dd4411e765acec47d330efc3997f",
-     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/9f232a56a68b5745116128a6bde2e38195e17fe4/vac/agentic_vulnerable.eval_run.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/71eefcf22edfa6633f38dddfdda85ec31ac5aab5/vac/agentic_vulnerable.eval_run.json"
     },
     {
      "path": "grading_replay_safe.eval_run.json",
      "sha256": "4cafacb21e7a2887eeddd33c1dac9eab77946efe2303e9d93d11dfeb307c2760",
-     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/9f232a56a68b5745116128a6bde2e38195e17fe4/vac/grading_replay_safe.eval_run.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/71eefcf22edfa6633f38dddfdda85ec31ac5aab5/vac/grading_replay_safe.eval_run.json"
     },
     {
      "path": "grading_replay_vulnerable.eval_run.json",
      "sha256": "11d375ab7112cccb6685be1780af2f134cfc9711d1f2b31a07df1f077c72e97c",
-     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/9f232a56a68b5745116128a6bde2e38195e17fe4/vac/grading_replay_vulnerable.eval_run.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/71eefcf22edfa6633f38dddfdda85ec31ac5aab5/vac/grading_replay_vulnerable.eval_run.json"
     },
     {
      "path": "modeldrift_suite.eval_run.json",
      "sha256": "8373704a0961a34c8a95f2887bd03660316385c5bf58e527ce0ae4b936ffc13e",
-     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/9f232a56a68b5745116128a6bde2e38195e17fe4/vac/modeldrift_suite.eval_run.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/71eefcf22edfa6633f38dddfdda85ec31ac5aab5/vac/modeldrift_suite.eval_run.json"
     },
     {
      "path": "vac.json",
-     "sha256": "c7e3c2ef5ccea35ae614f267488aa78363c5ea2c2a4b703a0aa6998c76d1c57d",
-     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/9f232a56a68b5745116128a6bde2e38195e17fe4/vac/vac.json"
+     "sha256": "d8260125207c19ebbf3d14aef282354a36cb414bbb1803072fbc564a32b13d07",
+     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/71eefcf22edfa6633f38dddfdda85ec31ac5aab5/vac/vac.json"
     },
     {
      "path": "variance_flaky_n10.report.json",
      "sha256": "aa574b4dfd397cca040c76fd0c20c972a68db674d79e461da48e74b6246ad672",
-     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/9f232a56a68b5745116128a6bde2e38195e17fe4/vac/variance_flaky_n10.report.json"
+     "url": "https://raw.githubusercontent.com/egnaro9/crashkit/71eefcf22edfa6633f38dddfdda85ec31ac5aab5/vac/variance_flaky_n10.report.json"
     }
    ],
    "status": "accepted",
