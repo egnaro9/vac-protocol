@@ -1157,7 +1157,12 @@ def test_the_cli_names_a_reason_for_a_nested_manifest(tmp_path, capsys):
 
 def test_a_nested_evidence_artifact_is_named_not_crashed(tmp_path):
     """V-021 via an evidence artifact rather than the manifest: `_load_json`
-    had the same gap."""
+    had the same gap.
+
+    This used to accept artifact-unparsable, which is what the RecursionError
+    was named on a host whose stack gave out; a host with a deeper stack parsed
+    the same bytes. The nesting limit now refuses them before parsing, as
+    invalid-json, everywhere (tests/test_refusals_json_depth.py)."""
     b = tmp_path / "b"
     shutil.copytree(FIX / "valid", b)
     rel = "evidence/bundle.json"
@@ -1169,7 +1174,7 @@ def test_a_nested_evidence_artifact_is_named_not_crashed(tmp_path):
     except Exception:  # noqa: BLE001
         crashed = True
     assert not crashed, "verify_bundle raised instead of naming a reason"
-    assert any("artifact-unparsable" in x for x in out)
+    assert out == [f"invalid-json: {rel}: nested deeper than 256 levels"]
 
 
 def test_no_text_read_in_the_verifier_relies_on_the_host_locale():

@@ -193,11 +193,13 @@ def test_no_verifier_addressed_obligation_is_unmeasured(ledger):
 
 
 def test_the_partially_mapped_verifier_obligation_is_named(ledger):
-    """SPEC-39 is the one verifier obligation that is not fully mapped. If that
-    stops being true the paper's sentence changes, so it fails here first."""
+    """SPEC-40 is the one verifier obligation that is not fully mapped. If that
+    stops being true the paper's sentence changes, so it fails here first. It
+    was SPEC-39 until the JSON nesting clause was inserted ahead of it in
+    SPEC 4, and ids are positional."""
     partial = sorted(o["obligation_id"] for o in ledger["obligations"]
                      if o["addressee"] == "verifier" and o["status"] == "partially_mapped")
-    assert partial == ["SPEC-39"], partial
+    assert partial == ["SPEC-40"], partial
 
 
 def test_a_missing_addressee_is_refused(tmp_path, ledger):
@@ -656,3 +658,15 @@ def test_spec30_is_keyed_to_the_refusal_that_enforces_it(ledger):
     assert o["evaluation_sites"][0] == (
         "tests/test_refusals_modeldrift_b.py::"
         "test_results_md_must_be_a_byte_identical_rerender_of_the_standings")
+
+
+def test_the_json_nesting_clause_is_keyed_to_its_boundary_tests(ledger):
+    """SPEC 4's nesting limit is refused as invalid-json, and the sites the
+    ledger derives for it are the tests that pin the boundary."""
+    [o] = [o for o in ledger["obligations"]
+           if "nest deeper than 256 levels" in o["normative_text"]]
+    assert o["refusal_site"] == "invalid-json"
+    assert o["status"] == "mapped" and o["addressee"] == "verifier"
+    assert ("tests/test_refusals_json_depth.py::"
+            "test_a_manifest_one_level_past_the_limit_is_refused"
+            in o["evaluation_sites"])

@@ -87,6 +87,89 @@ def _safe_relpath(p) -> bool:
 
 
 # --------------------------------------------------------------------------
+# JSON (SPEC.md §4): one loader, and a nesting limit decided before parsing.
+# json.loads recurses once per level, so it gives out where the host's stack
+# does: about 1,000 levels on CPython 3.9, 10,000 on 3.12, past 70,000 on
+# 3.14. Catching the RecursionError named a reason but left the verdict to the
+# host: one bundle failed on 3.12 and passed on 3.14. Counting the depth first,
+# iteratively, makes the refusal the same everywhere, and 256 is far below any
+# of those limits and far above any accepted bundle.
+MAX_JSON_DEPTH = 256
+_JSON_BRACKET_OR_QUOTE = re.compile(r'["\[\]{}]')
+_JSON_STRING_END = re.compile(r'["\\]')
+
+
+class _TooDeep(ValueError):
+    """Raised by _json_loads, before parsing, for text nested too deep."""
+
+
+def _nesting_exceeds(text: str, limit: int) -> bool:
+    """True if arrays and objects in `text` nest deeper than `limit`.
+
+    Counted on the text, never by parsing it: the outermost array or object is
+    level 1, brackets inside string literals do not count, and a closer with
+    nothing open is ignored. Text the parser would reject still gets a count,
+    and an unterminated string runs to the end, where the parser will name it
+    after reading no deeper than the count already allowed."""
+    depth = 0
+    i = 0
+    while True:
+        m = _JSON_BRACKET_OR_QUOTE.search(text, i)
+        if m is None:
+            return False
+        i = m.end()
+        c = m.group()
+        if c == '"':
+            while True:
+                m = _JSON_STRING_END.search(text, i)
+                if m is None:
+                    return False
+                i = m.end()
+                if m.group() == '"':
+                    break
+                i += 1  # the escaped character, whatever it is
+        elif c in "[{":
+            depth += 1
+            if depth > limit:
+                return True
+        elif depth:
+            depth -= 1
+
+
+def _json_loads(text: str, *, lines: bool = False):
+    """The one place verify.py parses JSON.
+
+    With lines=True, `text` is JSON Lines and the result is the list of its
+    rows. Every line's depth is decided before any row is parsed, so a syntax
+    error on one line cannot hide a line that is too deep. A line ends at a
+    line feed (read_text has already turned CR and CRLF into one), and a
+    refusal names it by its number in the file, blank lines included. The
+    rows are still parsed as str.splitlines() cuts them, as they were before
+    this limit, and that also cuts at U+2028 and a few other characters. A
+    cut inside a string leaves that string open in the piece before it, which
+    the parser refuses first, reading no deeper than the line allowed. A cut
+    outside a string leaves pieces no deeper than their line. Measuring the
+    pieces instead would count string content as nesting.
+
+    Text that starts with a byte-order mark is not measured, and neither is a
+    line that does: utf-8 decoding keeps the BOM and json.loads refuses it at
+    offset 0 before reading any nesting, which is how it was refused before
+    this limit, so it keeps that reason at any depth. Stripping the BOM to
+    measure it would be the first step to accepting a document the parser
+    refuses."""
+    if not text.startswith("\ufeff"):
+        for n, line in enumerate(text.split("\n") if lines else [text], 1):
+            if (not line.startswith("\ufeff")
+                    and _nesting_exceeds(line, MAX_JSON_DEPTH)):
+                where = f"line {n} " if lines else ""
+                raise _TooDeep(f"{where}nested deeper than {MAX_JSON_DEPTH} "
+                               "levels")
+    if not lines:
+        return json.loads(text)
+    return [json.loads(row) for row in text.splitlines() if row.strip()]
+
+
+# --------------------------------------------------------------------------
 # Drafts (SPEC.md §2.7): a string value beginning `TODO(` is vac.draft's
 # unauthored-judgment marker. A manifest still carrying one is a draft —
 # refused wholesale, before any other verification, one named reason per
@@ -285,7 +368,10 @@ def _load_json(bundle_dir: pathlib.Path, rel: str, f: list[str],
     scalar (notably the literal `null`) parsed fine and carried no evidence,
     and an array reached a caller that immediately calls .get() on it."""
     try:
-        data = json.loads((bundle_dir / rel).read_text(encoding="utf-8"))
+        data = _json_loads((bundle_dir / rel).read_text(encoding="utf-8"))
+    except _TooDeep as e:
+        f.append(f"invalid-json: {rel}: {e}")
+        return None
     except (OSError, UnicodeDecodeError, json.JSONDecodeError,
             RecursionError) as e:
         f.append(f"artifact-unparsable: {rel}: {e}")
@@ -394,9 +480,11 @@ def _check_fleet(bundle_dir: pathlib.Path, check: dict, proto: dict,
     agg = _load_json(bundle_dir, check["aggregate"], f)
     raw_rel = check["raw"]
     try:
-        raw = [json.loads(ln) for ln in
-               (bundle_dir / raw_rel).read_text(
-                   encoding="utf-8").splitlines() if ln.strip()]
+        raw = _json_loads((bundle_dir / raw_rel).read_text(encoding="utf-8"),
+                          lines=True)
+    except _TooDeep as e:
+        f.append(f"invalid-json: {raw_rel}: {e}")
+        return None
     except (OSError, UnicodeDecodeError, json.JSONDecodeError,
             RecursionError) as e:
         f.append(f"artifact-unparsable: {raw_rel}: {e}")
@@ -1895,8 +1983,9 @@ def verify_bundle(bundle_dir: pathlib.Path) -> list[str]:
     if not vac.is_file():
         return ["missing-manifest: no vac.json in bundle"]
     try:
-        m = json.loads(vac.read_text(encoding="utf-8"))
-    except (UnicodeDecodeError, json.JSONDecodeError, RecursionError) as e:
+        m = _json_loads(vac.read_text(encoding="utf-8"))
+    except (_TooDeep, UnicodeDecodeError, json.JSONDecodeError,
+            RecursionError) as e:
         return [f"invalid-json: vac.json: {e}"]
     except OSError as e:
         return [f"missing-manifest: vac.json: {e}"]
@@ -2018,7 +2107,7 @@ def _report(name: str, root: pathlib.Path, failures: list[str]) -> int:
     print("  verdicts, run the bundle's replay block at the pinned "
           "issuer_commit:")
     try:  # best-effort echo of the replay recipe; never affects the verdict
-        replay = json.loads(
+        replay = _json_loads(
             (root / "vac.json").read_text(encoding="utf-8")).get("replay", {})
         cmds = replay.get("commands")
         for cmd in (cmds if isinstance(cmds, list) else []):
@@ -2026,7 +2115,7 @@ def _report(name: str, root: pathlib.Path, failures: list[str]) -> int:
         if _nonempty_str(replay.get("expected")):
             print(f"    expected: {_printable(replay['expected'])}")
     except (OSError, UnicodeDecodeError, json.JSONDecodeError, AttributeError,
-            TypeError, RecursionError):
+            TypeError, RecursionError, _TooDeep):
         print(_printable("    (replay block unreadable — see "
                          "failures above)"))
     return 1 if failures else 0

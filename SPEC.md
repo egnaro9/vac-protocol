@@ -685,6 +685,26 @@ Two distinct acts, never to be conflated:
 A bundle that passes structure but fails replay is the interesting case:
 it is a precise, reproducible accusation against the issuer.
 
+Structural verification parses JSON: the manifest, every evidence
+artifact a profile reads as JSON, and each line of a JSON Lines artifact.
+A parser that recurses gives out at a depth its host sets, and before this
+rule the same bundle bytes failed on CPython 3.12 and passed on 3.14. So
+the depth is bounded here instead:
+A verifier MUST refuse, as `invalid-json`, any JSON document whose arrays and objects nest deeper than 256 levels, and MUST decide this before parsing, so the verdict does not depend on the host.
+Depth is counted on the text. The outermost array or object is level 1,
+so `[[]]` is two levels deep, and brackets inside string literals do not
+count. For a JSON Lines artifact every line is measured before any line
+is parsed, and for this count a line ends at a line feed, a carriage
+return, or the two together. A text that begins with a byte-order mark
+is not a JSON document to this verifier: it is refused at its first
+character, as it was before this rule, whatever follows. A line that
+begins with one is not measured either, so its own depth never replaces
+that reason. The limit applies to every `vac_version`, and it is
+additive in the §8 sense: no accepted bundle comes near it, and CI
+re-verifies every accepted registry entry whenever the verifier changes
+(`python -m vac.registry --check-fetched`), so no existing bundle
+changes how it verifies.
+
 ## 5. Registry rules
 
 A registry is a curated list of accepted bundles (in this repo:

@@ -606,7 +606,25 @@
   },
   {
    "obligation_id": "SPEC-36",
-   "source_span": "SPEC.md:692",
+   "source_span": "SPEC.md:693",
+   "section": "4. Structural verification vs semantic replay",
+   "normative_text": "A verifier MUST refuse, as `invalid-json`, any JSON document whose arrays and objects nest deeper than 256 levels, and MUST decide this before parsing, so the verdict does not depend on the host.",
+   "property_token": "verifier.json_nesting_past_the_limit_refused_on_every_host",
+   "addressee": "verifier",
+   "addressee_basis": "derived-from-token-prefix",
+   "refusal_site": "invalid-json",
+   "evaluation_sites": [
+    "tests/test_refusals_json_depth.py::test_a_json_lines_line_one_level_past_the_limit_is_refused",
+    "tests/test_refusals_json_depth.py::test_a_manifest_one_level_past_the_limit_is_refused",
+    "tests/test_refusals_json_depth.py::test_an_artifact_one_level_past_the_limit_is_refused",
+    "tests/test_refusals_json_depth.py::test_the_20000_deep_artifact_is_refused_on_every_host"
+   ],
+   "status": "mapped",
+   "rationale": "The verifier counts nesting on the text, iteratively, before json.loads runs, and refuses more than 256 levels as invalid-json for the manifest, every JSON evidence artifact and every JSON Lines line. The cited tests pin the refusal side, at 0.1 and 0.2 and for the 20000-deep bundle whose verdict the host used to decide. The rest is pinned in the same file but not cited: the at-the-limit tests cannot be, because a test that verifies clean names no code, and the test that a broken JSON Lines line cannot hide a deeper one, which is what 'decide this before parsing' means there, ranks below the four-site cap."
+  },
+  {
+   "obligation_id": "SPEC-37",
+   "source_span": "SPEC.md:712",
    "section": "5. Registry rules",
    "normative_text": "its form, a registry MUST reject a claim when any of the following holds:",
    "property_token": "registry.rejects_claim_on_listed_conditions",
@@ -623,8 +641,8 @@
    "rationale": "vac.registry refuses a bundle whose structural verification fails, which covers the verifier-checkable conditions in the list. The conditions that are matters of registry POLICY rather than bundle structure are not separately enforced."
   },
   {
-   "obligation_id": "SPEC-37",
-   "source_span": "SPEC.md:722",
+   "obligation_id": "SPEC-38",
+   "source_span": "SPEC.md:742",
    "section": "5. Registry rules",
    "normative_text": "A registry that skips the replay gate MUST say so on every entry.",
    "property_token": "registry.discloses_skipped_replay_gate_per_entry",
@@ -636,8 +654,8 @@
    "rationale": "A disclosure obligation on registry prose. Every entry carries a gates.semantic string, but nothing checks that the string is honest about whether replay ran."
   },
   {
-   "obligation_id": "SPEC-38",
-   "source_span": "SPEC.md:791",
+   "obligation_id": "SPEC-39",
+   "source_span": "SPEC.md:811",
    "section": "8. Versioning",
    "normative_text": "`vac_version` is the format contract. A verifier MUST refuse a version",
    "property_token": "verifier.refuses_unimplemented_vac_version",
@@ -654,8 +672,8 @@
    "rationale": "A vac_version outside SUPPORTED_VERSIONS is refused rather than guessed at."
   },
   {
-   "obligation_id": "SPEC-39",
-   "source_span": "SPEC.md:792",
+   "obligation_id": "SPEC-40",
+   "source_span": "SPEC.md:812",
    "section": "8. Versioning",
    "normative_text": "it does not implement rather than guess, and MUST apply that version's",
    "property_token": "verifier.applies_declared_version_semantics",

@@ -87,8 +87,11 @@ DESELECT: list[str] = [
 # revision has no pinned scored count to compare against; the scored count is
 # then derived, which is safe because the EXCLUDE arity check has already fixed
 # how many lines are excluded.
-EXPECT_RAW_SITES = 170      # lines matching REFUSAL in vac/verify.py
-EXPECT_SCORED_SITES = 166   # the above minus EXCLUDE
+# 170/166 became 172/168 with the JSON nesting limit: an over-deep evidence
+# artifact and an over-deep JSON Lines line are each refused by a new append,
+# and both are reachable from a bundle, so neither is excluded.
+EXPECT_RAW_SITES = 172      # lines matching REFUSAL in vac/verify.py
+EXPECT_SCORED_SITES = 168   # the above minus EXCLUDE
 
 EXCLUDE: dict[str, tuple[int, str]] = {
     "{md_rel}: {e}": (1,
