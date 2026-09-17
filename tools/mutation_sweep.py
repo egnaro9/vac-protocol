@@ -51,8 +51,15 @@ REFUSAL = re.compile(r"^\s*(f|failures)\.append\(")
 # detector they would see the lock this run holds and fail, and a red baseline
 # makes the score meaningless. They guard the sweep, so the sweep cannot be
 # their runner. CI runs them in the `test` job, which is where they belong.
+# The obligation-ledger tests read vac/verify.py's emission sites through
+# tools/ledger_sources.py. A mutant removes a site, the ledger stops seeing its
+# code, and those tests fail whether or not any bundle gets past the verifier,
+# so they would score a refusal as caught with no behavioural test behind it.
+# They check the ledger, not the refusals; the `test` job runs them too. A
+# sweep without them measured the same 168/168, so this costs no catch today.
 DESELECT: list[str] = [
     "tests/test_mutation_sweep_restores.py",
+    "tests/test_obligation_ledger.py",
 ]
 
 # Refusals deliberately excluded from the denominator, each with the reason it
@@ -74,6 +81,12 @@ DESELECT: list[str] = [
 # from 146 to 143 and the scored population from 143 to 140, and nothing in the
 # run would say so. Update this deliberately, in the commit that changes the
 # population, or pass --expect-sites to override it for a one-off measurement.
+# Both numbers are enforced. The scored one used to be derived as raw minus the
+# EXCLUDE hits and never read, so it could say anything and the run went ahead.
+# --expect-sites overrides only the raw count, because a one-off run at another
+# revision has no pinned scored count to compare against; the scored count is
+# then derived, which is safe because the EXCLUDE arity check has already fixed
+# how many lines are excluded.
 EXPECT_RAW_SITES = 170      # lines matching REFUSAL in vac/verify.py
 EXPECT_SCORED_SITES = 166   # the above minus EXCLUDE
 
@@ -232,16 +245,20 @@ def main() -> int:
     raw_n = len(sites)
     sites = [i for i in sites if i not in excluded]
 
-    want_raw = a.expect_sites if a.expect_sites is not None else EXPECT_RAW_SITES
-    want_scored = want_raw - len(excluded)
+    if a.expect_sites is None:
+        want_raw, want_scored = EXPECT_RAW_SITES, EXPECT_SCORED_SITES
+    else:
+        want_raw = a.expect_sites
+        want_scored = want_raw - len(excluded)
     if (raw_n, len(sites)) != (want_raw, want_scored):
         print(f"ABORT: refusal-site population is {raw_n} raw / {len(sites)} "
               f"scored; expected {want_raw} / {want_scored}. The floor "
               "constrains a ratio, so a population that moves without anyone "
               "deciding it should is a denominator change wearing a passing "
-              "score. Update EXPECT_RAW_SITES in the same commit that changes "
-              "the population, or pass --expect-sites for a one-off run at "
-              "another revision.", file=sys.stderr)
+              "score. Update EXPECT_RAW_SITES and EXPECT_SCORED_SITES in the "
+              "same commit that changes the population, or pass "
+              "--expect-sites for a one-off run at another revision.",
+              file=sys.stderr)
         return 2
 
     if a.detector != "all":

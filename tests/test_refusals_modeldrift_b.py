@@ -130,6 +130,21 @@ def test_graded_must_lie_within_the_suite_size(tmp_path):
         "outside 1..4"]
 
 
+def test_results_md_must_be_a_byte_identical_rerender_of_the_standings(
+        tmp_path):
+    """SPEC 3.5 results_md: the published table is the standings re-rendered
+    under the pinned template, byte for byte. Only the table is cooked here,
+    so the rows and standings still agree with each other and this comparison
+    is the one thing left that can refuse it."""
+    def table(text):
+        assert text.count("| ±25.0 |") == 1, text
+        return text.replace("| ±25.0 |", "| ±2.5 |")
+
+    assert verify_bundle(_cook(tmp_path, RESULTS_MD, table)) == [
+        f"raw-aggregate-mismatch: {RESULTS_MD}: does not re-render "
+        "byte-identically from the recomputed standings rows"]
+
+
 def test_point_suite_version_must_match_the_fingerprint(tmp_path):
     """A point stamped with a different suite version is a comparison across
     two different tests — the drift it shows is the suite moving."""

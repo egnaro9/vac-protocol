@@ -1,7 +1,7 @@
 {
  "ledger_version": "1",
  "spec": "SPEC.md",
- "note": "Derived by tools/build_obligations.py. Human judgement is confined to its MAPPING table; spans, clause text and evaluation sites are extracted from the artifacts.",
+ "note": "Derived by tools/build_obligations.py. Human judgement is confined to its MAPPING table; spans, clause text and evaluation sites are extracted from the artifacts. An evaluation site is a test whose own code names the clause's refusal code: evidence that the code is asserted somewhere, not proof that this clause's condition is what the test varies. For a code several clauses share, read the rationale for which sites bear on which clause.",
  "obligations": [
   {
    "obligation_id": "SPEC-01",
@@ -11,12 +11,14 @@
    "property_token": "evidence.artifact.listed_with_sha256",
    "addressee": "verifier",
    "addressee_basis": "derived-from-token-prefix",
-   "refusal_site": "missing-artifact",
+   "refusal_site": "unlisted-file",
    "evaluation_sites": [
-    "tests/test_refusals_last_five.py::test_an_evalmut_row_naming_an_operator_outside_the_catalog"
+    "tests/test_refusals_schema.py::test_empty_evidence_array_is_refused",
+    "tests/test_verify.py::test_unlisted_file_breaks_closure",
+    "tests/test_verify.py::test_a_recursion_error_does_not_erase_the_other_reasons"
    ],
    "status": "mapped",
-   "rationale": "Every bundle file must be an evidence entry carrying its sha256; the verifier refuses a bundle file that no evidence row lists."
+   "rationale": "Every bundle file must be an evidence entry carrying its sha256; the verifier refuses a bundle file that no evidence row lists as unlisted-file, the code the clause's own next line names. A listed file whose bytes differ is sha256-mismatch."
   },
   {
    "obligation_id": "SPEC-02",
@@ -499,18 +501,18 @@
    "source_span": "SPEC.md:549",
    "section": "3.5 `modeldrift-board-v1`",
    "normative_text": "`fingerprint.suite_version`) MUST be byte-identical to the committed",
-   "property_token": "modeldrift.suite_byte_identical_to_committed",
+   "property_token": "modeldrift.results_md_byte_identical_to_rerender",
    "addressee": "verifier",
    "addressee_basis": "derived-from-token-prefix",
-   "refusal_site": "suite",
+   "refusal_site": "raw-aggregate-mismatch",
    "evaluation_sites": [
-    "tests/test_refusals_modeldrift_a.py::test_fingerprint_must_declare_suite_hash",
-    "tests/test_refusals_modeldrift_b.py::test_fails_must_name_tasks_inside_the_suite",
-    "tests/test_refusals_modeldrift_b.py::test_fails_runs_samples_must_name_tasks_inside_the_suite",
-    "tests/test_refusals_modeldrift_b.py::test_point_suite_hash_must_match_the_fingerprint"
+    "tests/test_refusals_modeldrift_b.py::test_results_md_must_be_a_byte_identical_rerender_of_the_standings",
+    "tests/test_refusals_modeldrift_a.py::test_fingerprint_task_count_must_match_its_task_ids",
+    "tests/test_refusals_modeldrift_a.py::test_point_acc_must_be_a_unit_fraction",
+    "tests/test_refusals_modeldrift_a.py::test_point_latency_must_be_a_nonnegative_number"
    ],
    "status": "mapped",
-   "rationale": "The suite named by the fingerprint must be byte-identical to the committed copy."
+   "rationale": "RESULTS.md is re-rendered from the recomputed standings rows under the pinned template and compared byte for byte; a divergence is raw-aggregate-mismatch naming the file. It is the only refusal whose condition is this clause: the artifact-unparsable read beside it is an OSError wrapper the mutation sweep excludes as unreachable, and the 0.2 reliability-floor refusal reads the same file for a different rule."
   },
   {
    "obligation_id": "SPEC-31",

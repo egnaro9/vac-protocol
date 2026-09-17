@@ -4,9 +4,14 @@ Deterministic. It never decides whether a mapping is INTELLECTUALLY right; it
 decides whether the ledger still corresponds to artifacts that exist:
 
   C1  a normative clause in SPEC.md with no ledger entry
-  C2  a referenced site that no longer exists (refusal code, test file, test fn)
-  C3  a property token that does not bind: the named test does not reference the
-      refusal site, or the token's prefix contradicts the clause's section
+  C2  a referenced site that no longer exists (refusal code, test file, test
+      fn). A site is a module-level test function pytest runs as written, so a
+      class method or an async test is reported here too
+  C3  a property token that does not bind: the named test's own code (a string
+      literal it can act on, in its body or a parametrize decorator, never a
+      comment, its docstring or a skip reason; tools/ledger_sources.py has
+      the full rule) does not reference the refusal site, or the token's
+      prefix contradicts the clause's section
   C4  status 'mapped' with no executable reference behind it
   C5  duplicate obligation ids, or a vague property token
   C6  normative_text that no longer matches the line it cites
@@ -22,6 +27,13 @@ from __future__ import annotations
 import json, pathlib, re, sys, collections
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
+# Refusal codes and test references are facts read out of the artifacts, not
+# judgement, so the checker reads them with the builder's extractor: two readers
+# that disagreed would let the builder derive a binding this checker refuses.
+# The judgement tables below are still restated rather than imported.
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from ledger_sources import literals_by_test, references, refusal_codes  # noqa: E402
+
 OBLIGATION_RE = re.compile(r'\bMUST NOT\b|\bMUST\b|\bSHALL NOT\b|\bSHALL\b')
 VAGUE = {"correctness","works","valid","correct","good","ok","behaviour","behavior",
          "quality","sane","proper","right","fine","checked","tested","verified"}
@@ -56,16 +68,6 @@ def spec_clauses():
         if OBLIGATION_RE.search(l): out[i]=(sec, l.strip())
     return out
 
-def test_index():
-    idx={}
-    for p in sorted((ROOT/"tests").glob("test_*.py")):
-        if p.name == "test_obligation_ledger.py":
-            continue  # see build_obligations.py: the ledger may not cite itself
-        for part in re.split(r"^(?=def test_)", p.read_text(), flags=re.M):
-            m=re.match(r"def (test_\w+)", part)
-            if m: idx[f"tests/{p.name}::{m.group(1)}"]=part
-    return idx
-
 def main(argv=None) -> int:
     argv = list(sys.argv[1:] if argv is None else argv)
     led_path = pathlib.Path(argv[argv.index("--ledger")+1]) if "--ledger" in argv else ROOT/"obligations.json"
@@ -74,8 +76,8 @@ def main(argv=None) -> int:
     led = json.loads(led_path.read_text())
     obs = led["obligations"]
     clauses = spec_clauses()
-    tests = test_index()
-    codes = set(re.findall(r'"([a-z][a-z0-9-]{4,40}):', (ROOT/"vac"/"verify.py").read_text()))
+    tests = literals_by_test(ROOT/"tests")
+    codes = set(refusal_codes((ROOT/"vac"/"verify.py").read_text(encoding="utf-8")))
     bad = []
 
     # C1
@@ -149,13 +151,15 @@ def main(argv=None) -> int:
         # C2 evaluation sites exist
         for s in o["evaluation_sites"]:
             if s not in tests:
-                bad.append(f"C2 {oid}: evaluation_site {s} does not exist")
+                bad.append(f"C2 {oid}: evaluation_site {s} does not exist, or "
+                           "is not a module-level test function pytest runs")
 
-        # C3 the named test must actually reference the refusal site
+        # C3 the named test must actually reference the refusal site, in its
+        # own code: a comment after it or prose in its docstring does not count
         if site is not None:
             for s in o["evaluation_sites"]:
-                body = tests.get(s)
-                if body is not None and site not in body:
+                literals = tests.get(s)
+                if literals is not None and not references(literals, site):
                     bad.append(f"C3 {oid}: {s} does not reference refusal_site {site!r}")
 
         # C3 token prefix must not contradict the clause's section

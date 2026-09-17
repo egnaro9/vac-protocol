@@ -24,12 +24,26 @@ SWEEP = REPO / "tools" / "mutation_sweep.py"
 LOCK = REPO / ".mutation_sweep.lock"
 
 
-def _spawn_sweep() -> subprocess.Popen:
+def _spawn_sweep(err) -> subprocess.Popen:
+    """`err` is an open file, not a pipe: nothing reads the sweep's stderr
+    while it runs, so a pipe could fill and stall it."""
     env = {**os.environ, "PYTHONPATH": str(REPO)}
     return subprocess.Popen(
         [sys.executable, str(SWEEP), "--detector", "liveness"],
         cwd=REPO, env=env,
-        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        stdout=subprocess.DEVNULL, stderr=err)
+
+
+def _never_mutated(proc: subprocess.Popen, err_path: pathlib.Path) -> None:
+    """The sweep did not inject a mutant. If it is still running, the machine
+    was slow and the test says nothing either way. If it exited, it refused
+    to run: a population pin, the EXCLUDE table or a red baseline stopped it
+    before any mutation, and that is a failure to report, not a skip."""
+    if proc.poll() is not None:
+        pytest.fail(f"the sweep exited {proc.returncode} before mutating "
+                    "anything:\n" + err_path.read_text(errors="replace"))
+    proc.kill(), proc.wait(timeout=30)
+    pytest.skip("sweep never reached a mutation in time")  # noqa
 
 
 def _wait_until_mutated(snapshot: bytes, proc: subprocess.Popen,
@@ -48,16 +62,16 @@ def _wait_until_mutated(snapshot: bytes, proc: subprocess.Popen,
 
 
 @pytest.mark.skipif(not SWEEP.is_file(), reason="mutation_sweep.py not present")
-def test_sigterm_mid_sweep_leaves_the_tree_byte_identical():
+def test_sigterm_mid_sweep_leaves_the_tree_byte_identical(tmp_path):
     """The exact failure of 2026-08-28: SIGTERM between inject and restore."""
     assert not LOCK.exists(), "a sweep lock is already held"
     snapshot = SRC.read_bytes()
-    proc = _spawn_sweep()
+    err_path = tmp_path / "sweep.stderr"
+    with err_path.open("wb") as err:
+        proc = _spawn_sweep(err)
     try:
-        mutated = _wait_until_mutated(snapshot, proc)
-        if not mutated:
-            proc.kill(), proc.wait(timeout=30)
-            pytest.skip("sweep never reached a mutation in time")  # noqa
+        if not _wait_until_mutated(snapshot, proc):
+            _never_mutated(proc, err_path)
         proc.send_signal(signal.SIGTERM)
         proc.wait(timeout=60)
         # Capture BEFORE any cleanup. Restoring the file here and then
@@ -79,15 +93,16 @@ def test_sigterm_mid_sweep_leaves_the_tree_byte_identical():
 
 
 @pytest.mark.skipif(not SWEEP.is_file(), reason="mutation_sweep.py not present")
-def test_sigint_mid_sweep_leaves_the_tree_byte_identical():
+def test_sigint_mid_sweep_leaves_the_tree_byte_identical(tmp_path):
     """Ctrl-C is the same hazard by a different signal."""
     assert not LOCK.exists(), "a sweep lock is already held"
     snapshot = SRC.read_bytes()
-    proc = _spawn_sweep()
+    err_path = tmp_path / "sweep.stderr"
+    with err_path.open("wb") as err:
+        proc = _spawn_sweep(err)
     try:
         if not _wait_until_mutated(snapshot, proc):
-            proc.kill(), proc.wait(timeout=30)
-            pytest.skip("sweep never reached a mutation in time")  # noqa
+            _never_mutated(proc, err_path)
         proc.send_signal(signal.SIGINT)
         proc.wait(timeout=60)
         # Capture BEFORE any cleanup. Restoring the file here and then

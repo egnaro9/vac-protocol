@@ -8,6 +8,7 @@ is one line; the negatives are the point.
 from __future__ import annotations
 
 import copy
+import importlib.util
 import json
 import pathlib
 import re
@@ -251,12 +252,22 @@ def test_an_unaccountable_prefix_is_refused(tmp_path, ledger):
     assert rc == 1 and "unaccountable" in out
 
 
+def _copy_tools(root):
+    """COPIES, not symlinks: the tools resolve ROOT from __file__, and a
+    symlink would resolve straight back to this repo. Every tool is copied,
+    so a tool's sibling imports resolve inside the sandbox too."""
+    (root / "tools").mkdir(parents=True)
+    for p in sorted((ROOT / "tools").glob("*.py")):
+        (root / "tools" / p.name).write_text(p.read_text(encoding="utf-8"),
+                                             encoding="utf-8")
+
+
 def _sandbox_repo(tmp_path, mutate):
     """A throwaway repo whose tools/ holds a MUTATED builder and whose inputs are
     symlinks to the real ones. The builder resolves ROOT from __file__, so this
     gives it a correct ROOT without ever writing to the checked-in source."""
     root = tmp_path / "repo"
-    (root / "tools").mkdir(parents=True)
+    _copy_tools(root)
     for name in ("SPEC.md", "vac", "tests"):
         (root / name).symlink_to(ROOT / name)
     src = (ROOT / "tools" / "build_obligations.py").read_text()
@@ -327,3 +338,321 @@ def test_an_unruled_ambiguous_token_is_refused(tmp_path, ledger):
     m["property_token"] = "protocol.unruled.some_property"
     rc, out = run(write(tmp_path, d))
     assert rc == 1 and "answers to nothing" in out
+
+
+# ── refusal codes are read from emission sites, and tests bind by their code ──
+#
+# The ledger found refusal codes with the regex "([a-z][a-z0-9-]{4,40}): over
+# the whole of vac/verify.py. That matched `suite` from the tail of a
+# raw-aggregate-mismatch message and `usage` from a CLI constant, and missed
+# every code emitted bare (`empty-limitations`, `missing-issuer-commit`) or by
+# print (`unsafe-archive`). SPEC-30 was keyed to `suite` and C2 passed it.
+# Tests were bound by splitting each file at `def test_`, so a comment sitting
+# after one test bound that test to whatever code the comment named, which is
+# how SPEC-01 came to cite a test that asserts a different code.
+
+def _ledger_sources():
+    spec = importlib.util.spec_from_file_location(
+        "_ledger_sources", ROOT / "tools" / "ledger_sources.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+@pytest.mark.parametrize("word", ["suite", "usage"])
+def test_a_refusal_site_that_is_not_an_emitted_code_is_refused(tmp_path, ledger,
+                                                               word):
+    """C2. `suite` is the last word of a raw-aggregate-mismatch message and
+    `usage` opens the CLI usage string. Neither is a refusal code."""
+    d = copy.deepcopy(ledger)
+    m = next(o for o in d["obligations"] if o["refusal_site"])
+    m["refusal_site"] = word
+    rc, out = run(write(tmp_path, d))
+    assert rc == 1
+    assert f"refusal_site {word!r} is not a code vac/verify.py emits" in out
+
+
+@pytest.mark.parametrize("code", ["empty-limitations", "missing-issuer-commit",
+                                  "unsafe-archive"])
+def test_codes_emitted_bare_or_by_print_are_accepted(tmp_path, ledger, code):
+    """C2, the other direction. The entry is made partially_mapped with no
+    evaluation site so that C2 is the only check with anything to say."""
+    d = copy.deepcopy(ledger)
+    m = next(o for o in d["obligations"] if o["refusal_site"])
+    m["refusal_site"] = code
+    m["status"] = "partially_mapped"
+    m["evaluation_sites"] = []
+    rc, out = run(write(tmp_path, d))
+    assert rc == 0, out
+
+
+def test_the_extractor_reads_emission_sites_not_every_quoted_word():
+    src = (ROOT / "vac" / "verify.py").read_text(encoding="utf-8")
+    codes = _ledger_sources().refusal_codes(src)
+    assert {"empty-limitations", "missing-issuer-commit",
+            "unsafe-archive"} <= set(codes)
+    assert "suite" not in codes
+    assert "usage" not in codes
+
+
+def test_the_extractor_on_every_emission_shape():
+    """One of each shape vac/verify.py uses, and the three shapes that look
+    like refusals and are not: a quoted word ending a message, the generic
+    reporter that prints reasons already collected, and a print that does not
+    open with FAIL."""
+    src = (
+        'USAGE = "usage: python -m vac.verify <bundle>"\n'
+        "def check(f, failures, w, j, unknown, e, reason):\n"
+        '    f.append(f"raw-aggregate-mismatch: {w}: "\n'
+        '             f"fails_runs[{j}] names tasks outside the "\n'
+        '             f"suite: {unknown}")\n'
+        '    f.append("empty-limitations")\n'
+        '    failures.append("missing-issuer-commit")\n'
+        '    print(_printable(f"FAIL unsafe-archive: {e}"))\n'
+        '    print(f"FAIL {_printable(reason)}")\n'
+        '    print("dry-run: a print that is not a refusal")\n'
+        '    return ["missing-manifest: no vac.json in bundle"]\n')
+    codes = _ledger_sources().refusal_codes(src)
+    assert sorted(codes) == ["empty-limitations", "missing-issuer-commit",
+                             "missing-manifest", "raw-aggregate-mismatch",
+                             "unsafe-archive"]
+    assert codes["raw-aggregate-mismatch"] == [3]
+
+
+def test_the_extractor_reads_every_site_the_mutation_sweep_scores():
+    """The ledger's codes and the sweep's denominator come from the same
+    appends. A mutant removes one site from both, so this holds inside a
+    sweep as well."""
+    src = (ROOT / "vac" / "verify.py").read_text(encoding="utf-8")
+    swept = {i for i, ln in enumerate(src.splitlines(), 1)
+             if re.match(r"^\s*(f|failures)\.append\(", ln)}
+    read = {n for lines in _ledger_sources().refusal_codes(src).values()
+            for n in lines}
+    assert swept and swept <= read
+    assert all(re.match(r"^\s*(f|failures)\.append\(|^\s*return \[|"
+                        r"^\s*print\(", src.splitlines()[n - 1])
+               for n in read - swept)
+
+
+@pytest.mark.parametrize("line", [
+    "f.append(reason)",
+    'f.append(f"{kind}: computed")',
+    'f.append("declared without a code")',
+])
+def test_the_extractor_refuses_a_refusal_whose_code_it_cannot_read(line):
+    """Every f.append is a refusal site to the mutation sweep. One whose code
+    cannot be read statically must stop the build, not drop out of C2."""
+    src = f"def check(f, reason, kind):\n    {line}\n"
+    with pytest.raises(ValueError, match="line 2"):
+        _ledger_sources().refusal_codes(src)
+
+
+@pytest.mark.parametrize("code,literal,binds", [
+    ("unlisted-file", "unlisted-file", True),
+    ("unlisted-file", "unlisted-file: evidence/extra.txt", True),
+    ("unsafe-archive", "FAIL unsafe-archive: member escapes", True),
+    ("unlisted-file", "sha256-mismatch: a; unlisted-file: b", True),
+    ("unlisted-file", "unlisted-files", False),
+    ("unlisted-file", "unlisted-file-extra: x", False),
+    ("draft-incomplete", "tamper-draft-incomplete", False),
+    ("unlisted-file", "xunlisted-file: y", False),
+    ("unlisted-file", "the unlisted-file rule", False),
+])
+def test_a_reference_is_the_code_as_a_whole_token(code, literal, binds):
+    """The code opens the literal as a whole token, or appears as `code:`
+    anywhere, bounded on the left. A fixture directory named after a code, a
+    longer code, or prose that mentions it is not a reference."""
+    assert _ledger_sources().references([literal], code) is binds
+
+
+def test_the_builder_refuses_a_row_keyed_to_a_code_verify_never_emits(tmp_path):
+    """C2 refuses this in a written ledger. The builder refuses it before
+    writing one, with `suite`, the word SPEC-30 used to be keyed to."""
+    def rekey(src):
+        old = '549:("raw-aggregate-mismatch",'
+        assert src.count(old) == 1
+        return src.replace(old, '549:("suite",')
+    rc, out = _run_builder(_sandbox_repo(tmp_path, rekey))
+    assert rc != 0
+    assert "never emits: [(549, 'suite')]" in out
+
+
+BINDING_PROBE = '''\
+import pytest
+
+
+def test_probe_names_the_code_in_code():
+    reason = "{code}: named where the test uses it"
+    assert reason.startswith("{code}")
+
+
+def test_probe_names_the_code_only_after_itself():
+    assert 1 + 1 == 2
+
+
+# {code}: this comment sits between two tests and exercises nothing
+
+
+def test_probe_names_the_code_only_in_prose():
+    """Mentions {code}: in a docstring, which exercises nothing either."""
+    assert True
+
+
+@pytest.mark.parametrize("reason", ["{code}: from the decorator"])
+def test_probe_names_the_code_in_a_decorator(reason):
+    assert reason
+
+
+@pytest.mark.skip(reason="{code}: never runs")
+def test_probe_names_the_code_as_a_skip_reason():
+    assert False
+
+
+@pytest.mark.xfail(reason="{code}: expected to fail")
+def test_probe_names_the_code_as_an_xfail_reason():
+    assert False
+
+
+def test_probe_names_the_code_as_a_runtime_skip_reason():
+    pytest.skip("{code}: skipped at runtime")
+
+
+def test_probe_asserts_the_code_is_absent():
+    out = []
+    assert "{code}" not in out
+    assert out != ["{code}: never produced"]
+
+
+def test_probe_names_the_code_in_a_branch_that_never_runs():
+    if False:
+        assert "{code}: never evaluated"
+
+
+def test_probe_names_the_code_in_a_statement_that_does_nothing():
+    x = 1
+    "{code}: a string statement that is not the docstring"
+    assert x
+
+
+async def test_probe_names_the_code_in_a_coroutine():
+    assert "{code}: pytest does not run this without a plugin"
+'''
+PROBE = "test_zz_binding_probe.py"
+# A code the MAPPING keys a clause to (SPEC.md:58) both before and after the
+# re-keying, so the builder test isolates the binding rule.
+PROBE_CODE = "unsafe-bundle"
+
+
+def _checker_sandbox(tmp_path, code):
+    """The real SPEC, verifier and test files, plus one probe test file whose
+    functions reference `code` in different places."""
+    root = tmp_path / "repo"
+    _copy_tools(root)
+    for name in ("SPEC.md", "vac"):
+        (root / name).symlink_to(ROOT / name)
+    (root / "tests").mkdir()
+    for p in sorted((ROOT / "tests").glob("test_*.py")):
+        (root / "tests" / p.name).symlink_to(p)
+    (root / "tests" / PROBE).write_text(
+        BINDING_PROBE.replace("{code}", code), encoding="utf-8")
+    return root
+
+
+def _cite_probe(tmp_path, ledger, fn):
+    root = _checker_sandbox(tmp_path, PROBE_CODE)
+    d = copy.deepcopy(ledger)
+    m = next(o for o in d["obligations"] if o["status"] == "mapped")
+    m["refusal_site"] = PROBE_CODE
+    m["evaluation_sites"] = [f"tests/{PROBE}::{fn}"]
+    p = subprocess.run([sys.executable, str(root / "tools" / "check_obligations.py"),
+                        "--ledger", str(write(tmp_path, d))],
+                       capture_output=True, text=True, cwd=root)
+    return p.returncode, p.stdout + p.stderr
+
+
+@pytest.mark.parametrize("fn", ["test_probe_names_the_code_in_code",
+                                "test_probe_names_the_code_in_a_decorator"])
+def test_a_test_that_uses_the_code_binds(tmp_path, ledger, fn):
+    """Liveness for the two refusals below: the sandbox is sound, and a code
+    used in a test's body or decorators satisfies C3."""
+    rc, out = _cite_probe(tmp_path, ledger, fn)
+    assert rc == 0, out
+
+
+@pytest.mark.parametrize("fn", ["test_probe_names_the_code_only_after_itself",
+                                "test_probe_names_the_code_only_in_prose"])
+def test_a_binding_through_a_comment_or_docstring_is_refused(tmp_path, ledger,
+                                                             fn):
+    """C3. A comment after the function, or prose inside it, names the code
+    without the test doing anything with it."""
+    rc, out = _cite_probe(tmp_path, ledger, fn)
+    assert rc == 1
+    assert f"does not reference refusal_site {PROBE_CODE!r}" in out
+
+
+@pytest.mark.parametrize("fn", [
+    "test_probe_names_the_code_as_a_skip_reason",
+    "test_probe_names_the_code_as_an_xfail_reason",
+    "test_probe_names_the_code_as_a_runtime_skip_reason",
+    "test_probe_asserts_the_code_is_absent",
+    "test_probe_names_the_code_in_a_branch_that_never_runs",
+    "test_probe_names_the_code_in_a_statement_that_does_nothing",
+])
+def test_a_test_that_cannot_check_the_code_does_not_bind(tmp_path, ledger, fn):
+    """C3. Each names the code inside the function, where the test can never
+    act on it: why the test is skipped or expected to fail, a comparison that
+    can only hold when the refusal is absent, a branch with a constant false
+    condition, a string that is only a statement."""
+    rc, out = _cite_probe(tmp_path, ledger, fn)
+    assert rc == 1
+    assert f"does not reference refusal_site {PROBE_CODE!r}" in out
+
+
+def test_a_coroutine_is_not_a_site(tmp_path, ledger):
+    """C2. pytest does not run an async test without a plugin, so it is not
+    a site at all, whatever it asserts."""
+    rc, out = _cite_probe(tmp_path, ledger,
+                          "test_probe_names_the_code_in_a_coroutine")
+    assert rc == 1
+    assert "is not a module-level test function pytest runs" in out
+
+
+def test_the_builder_binds_only_tests_that_use_the_code(tmp_path):
+    """The builder applies the same rule as C3. The probe functions are the
+    only tests in the sandbox, so every site the ledger derives for a code is
+    one of them, and the ones that only mention it must not appear."""
+    root = _checker_sandbox(tmp_path, PROBE_CODE)
+    for p in (root / "tests").iterdir():
+        if p.name != PROBE:
+            p.unlink()
+    rc, out = _run_builder(root)
+    assert rc == 0, out
+    built = json.loads((root / "obligations.json").read_text())
+    sites = {s for o in built["obligations"]
+             if o["refusal_site"] == PROBE_CODE
+             for s in o["evaluation_sites"]}
+    assert sites == {f"tests/{PROBE}::test_probe_names_the_code_in_code",
+                     f"tests/{PROBE}::test_probe_names_the_code_in_a_decorator"}
+
+
+def test_spec01_is_keyed_to_the_code_its_sentence_names(ledger):
+    """SPEC.md:52-53: a file present but unlisted is `unlisted-file`. The entry
+    was keyed to missing-artifact and cited a test about evalmut operators."""
+    o = next(o for o in ledger["obligations"]
+             if o["source_span"] == "SPEC.md:52")
+    assert o["refusal_site"] == "unlisted-file"
+    assert ("tests/test_verify.py::test_unlisted_file_breaks_closure"
+            in o["evaluation_sites"])
+
+
+def test_spec30_is_keyed_to_the_refusal_that_enforces_it(ledger):
+    """SPEC.md:549 is the RESULTS.md byte-identity clause. vac/verify.py refuses
+    a divergence as raw-aggregate-mismatch; `suite` is not a code at all."""
+    o = next(o for o in ledger["obligations"]
+             if o["source_span"] == "SPEC.md:549")
+    assert o["refusal_site"] == "raw-aggregate-mismatch"
+    assert o["property_token"] == (
+        "modeldrift.results_md_byte_identical_to_rerender")
+    assert o["evaluation_sites"][0] == (
+        "tests/test_refusals_modeldrift_b.py::"
+        "test_results_md_must_be_a_byte_identical_rerender_of_the_standings")

@@ -7,7 +7,8 @@ a test that does not exist:
   obligation_id     positional, stable while a clause keeps its section+order
   source_span       SPEC.md line, resolved at build time
   normative_text    quoted from SPEC.md, never retyped
-  evaluation_sites  DERIVED: the tests that reference the refusal code
+  evaluation_sites  DERIVED: the tests whose own code references the refusal
+                    code (tools/ledger_sources.py says what counts)
   refusal_site      human: which mechanism fails when the obligation is violated
   property_token    human: the specific operational property, dotted
   status            human: mapped | partially_mapped | unmeasured
@@ -20,6 +21,12 @@ from __future__ import annotations
 import json, pathlib, re, sys, collections
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
+# The sibling that reads refusal codes and test references out of the
+# artifacts. Put on the path explicitly so the import does not depend on how
+# this script was launched.
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from ledger_sources import literals_by_test, references, refusal_codes  # noqa: E402
+
 OBLIGATION_RE = re.compile(r'\bMUST NOT\b|\bMUST\b|\bSHALL NOT\b|\bSHALL\b')
 
 # property-token namespace -> addressee, where the mapping is EXACT.
@@ -56,7 +63,7 @@ def required_adjudication(token: str):
 # addressee is None wherever EXACT_PREFIX settles it; a string is an explicit
 # adjudication and is only permitted for an AMBIGUOUS_PREFIX token.
 MAPPING = {
- 52:("missing-artifact","evidence.artifact.listed_with_sha256","mapped","Every bundle file must be an evidence entry carrying its sha256; the verifier refuses a bundle file that no evidence row lists."),
+ 52:("unlisted-file","evidence.artifact.listed_with_sha256","mapped","Every bundle file must be an evidence entry carrying its sha256; the verifier refuses a bundle file that no evidence row lists as unlisted-file, the code the clause's own next line names. A listed file whose bytes differ is sha256-mismatch."),
  58:("unsafe-bundle","bundle.contains_no_symlinks","mapped","Symlink members are rejected before any hashing, so a link cannot smuggle content in from outside the bundle."),
 109:(None,"protocol.grading.describes_deterministic_process","unmeasured","Prose obligation. Nothing reads protocol.grading beyond requiring it non-empty, so 'describes a deterministic process' is enforced by human review at PR time and by replay, not by the verifier. Tracked as egnaro9/vac-protocol#6.","reviewer"),
 115:("stamp-mismatch","protocol.hashes.commit_key_equals_issuer_commit","mapped","A commit-shaped hash key must equal protocol.issuer_commit or the stamp binding is refused.","verifier"),
@@ -85,7 +92,7 @@ MAPPING = {
 485:("summary-mismatch","crashkit.expect.names_a_recomputed_field","mapped","expect keys must name a recomputed field and equal it."),
 496:("stamp-mismatch","crashkit.battery_hash_key_equals_git_sha","mapped","battery_hash_key names the protocol.hashes entry that must equal the artifact's git_sha."),
 543:("raw-aggregate-mismatch","modeldrift.min_detectable_object_recomputes","mapped","The min-detectable object is recomputed from the fingerprint task count."),
-549:("suite","modeldrift.suite_byte_identical_to_committed","mapped","The suite named by the fingerprint must be byte-identical to the committed copy."),
+549:("raw-aggregate-mismatch","modeldrift.results_md_byte_identical_to_rerender","mapped","RESULTS.md is re-rendered from the recomputed standings rows under the pinned template and compared byte for byte; a divergence is raw-aggregate-mismatch naming the file. It is the only refusal whose condition is this clause: the artifact-unparsable read beside it is an OSError wrapper the mutation sweep excludes as unreachable, and the 0.2 reliability-floor refusal reads the same file for a different rule."),
 560:("raw-aggregate-mismatch","modeldrift.models_with_enough_history_equals_flips","mapped","The recomputed series count is compared to the committed flips artifact."),
 566:("summary-mismatch","modeldrift.expect.names_a_recomputed_field","mapped","expect keys must name a recomputed field and equal it."),
 573:("raw-aggregate-mismatch","modeldrift.flips_row_latest_whole_object_equality","mapped","Each flips row carries latest and is compared by whole-object equality, so its wording is normative."),
@@ -112,22 +119,16 @@ def clauses():
     return out
 
 def code_to_tests():
-    codes = sorted(set(re.findall(r'"([a-z][a-z0-9-]{4,40}):', (ROOT/"vac"/"verify.py").read_text())))
+    """(code -> tests whose own code references it, the codes verify.py emits).
+    A code named only in a comment or a docstring binds nothing; see
+    tools/ledger_sources.py, which also leaves out test_obligation_ledger.py."""
+    codes = refusal_codes((ROOT/"vac"/"verify.py").read_text(encoding="utf-8"))
     bind = collections.defaultdict(list)
-    for p in sorted((ROOT/"tests").glob("test_*.py")):
-        # A test ABOUT the ledger is not evidence that an obligation is enforced.
-        # test_obligation_ledger.py names refusal codes in its own fixtures, so
-        # without this the ledger cites itself as its own evaluation site.
-        if p.name == "test_obligation_ledger.py":
-            continue
-        for part in re.split(r"^(?=def test_)", p.read_text(), flags=re.M):
-            m = re.match(r"def (test_\w+)", part)
-            if not m:
-                continue
-            for c in codes:
-                if f'"{c}' in part or f"'{c}" in part or f"{c}:" in part:
-                    bind[c].append(f"tests/{p.name}::{m.group(1)}")
-    return bind
+    for site, literals in literals_by_test(ROOT/"tests").items():
+        for c in codes:
+            if references(literals, c):
+                bind[c].append(site)
+    return bind, codes
 
 def pick(sites, token, cap=4):
     """Rank by overlap between the test name and the property token. Derived,
@@ -137,10 +138,17 @@ def pick(sites, token, cap=4):
 
 def main():
     cl = clauses()
-    bind = code_to_tests()
+    bind, codes = code_to_tests()
     unmapped = [c["line"] for c in cl if c["line"] not in MAPPING]
     if unmapped:
         sys.exit(f"build refuses: {len(unmapped)} clause(s) with no MAPPING row: {unmapped}")
+    # The checker refuses this too (C2), independently. Refusing it here as
+    # well means a mis-keyed row never reaches a written ledger.
+    miskeyed = sorted((ln, row[0]) for ln, row in MAPPING.items()
+                      if row[0] is not None and row[0] not in codes)
+    if miskeyed:
+        sys.exit(f"build refuses: MAPPING refusal_site(s) that vac/verify.py never "
+                 f"emits: {miskeyed}")
     entries = []
     for n, c in enumerate(cl, 1):
         row = MAPPING[c["line"]]
@@ -184,7 +192,7 @@ def main():
     doc = {
         "ledger_version": "1",
         "spec": "SPEC.md",
-        "note": "Derived by tools/build_obligations.py. Human judgement is confined to its MAPPING table; spans, clause text and evaluation sites are extracted from the artifacts.",
+        "note": "Derived by tools/build_obligations.py. Human judgement is confined to its MAPPING table; spans, clause text and evaluation sites are extracted from the artifacts. An evaluation site is a test whose own code names the clause's refusal code: evidence that the code is asserted somewhere, not proof that this clause's condition is what the test varies. For a code several clauses share, read the rationale for which sites bear on which clause.",
         "obligations": entries,
     }
     (ROOT/"obligations.json").write_text(json.dumps(doc, indent=1) + "\n")
