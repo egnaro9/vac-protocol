@@ -1,0 +1,75 @@
+name: notes
+# Turns the weekly replay outcome into a finding, but only when it CHANGES.
+#
+# replay.yml is the gate and is not touched by this. It runs Mondays at 05:43
+# UTC; this runs an hour later so the verdict it reads is that morning's, and
+# it reads replay's OWN per-entry job conclusions rather than re-deriving them.
+# A pass that passed last week is not news, so most weeks this writes nothing.
+#
+# The output, notes/findings.json, is read by model-drift, which decides
+# whether a validated finding becomes a draft pull request. A human decides
+# whether that draft is ever posted. Nothing here publishes.
+on:
+  schedule:
+    - cron: "43 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read          # to read replay.yml's run and job conclusions
+
+concurrency:
+  group: notes
+  cancel-in-progress: false
+
+jobs:
+  outcome:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+
+      - name: did the weekly replay outcome change?
+        id: emit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        # No --acknowledge. Advancing the baseline in the same run that reports
+        # a change would record it and erase it together, so the following week
+        # would read as healthy and the finding would never be reported again.
+        # Erik advances the baseline by hand once he has looked.
+        run: python notes/emit_findings.py
+
+      - name: commit a changed outcome
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add notes/findings.json notes/baseline.json
+          git diff --cached --quiet && { echo "nothing changed"; exit 0; }
+          git commit -m "notes: replay outcome changed [skip ci]"
+          for attempt in 1 2 3; do
+            if git push; then echo "pushed on attempt $attempt"; exit 0; fi
+            git pull --rebase origin main || exit 1
+          done
+          echo "::error::could not push the emitted finding after 3 attempts"
+          exit 1
+
+      - name: report either way
+        run: |
+          if [ -f notes/findings.json ]; then
+            n=$(python -c "import json;print(len(json.load(open('notes/findings.json'))['findings']))")
+          else
+            n=0
+          fi
+          {
+            echo "### $n replay-change finding(s)"
+            echo
+            if [ "$n" = "0" ]; then
+              echo "The weekly replay outcome matches the committed baseline."
+              echo "That is the expected outcome most weeks."
+            else
+              python -c "import json;[print('- '+f['headline']) for f in json.load(open('notes/findings.json'))['findings']]"
+              echo
+              echo "Cause is not asserted from a job conclusion. Read the replay run log."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -85,8 +85,11 @@ replay**, the bundle's `replay` block says exactly how to run it, and the
 tool prints that distinction on every invocation so a green check is
 never mistaken for a replay.
 
-`fixtures/` is the verifier's own evidence: one valid synthetic bundle
-(one check per profile) and sixteen tampered variants. Missing
+`fixtures/` is the verifier's own evidence: 27 bundles, namely one
+valid synthetic bundle (one check per profile), a clean v0.2 twin-arms
+control, 23 tampered variants (`tamper-*`) and two forgeries an earlier
+verifier accepted (`attack-*`, kept outside the `tamper-*` glob). The
+first sixteen tampered variants are these. Missing
 artifact, wrong sha256, inflated verdict count, empty limitations,
 missing issuer commit, then a cooked-rows and a cooked-aggregate tamper
 per recomputing profile (a board row, a mutation tally and a relabeled

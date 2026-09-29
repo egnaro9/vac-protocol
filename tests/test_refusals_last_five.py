@@ -109,14 +109,21 @@ def test_an_evalmut_row_naming_an_operator_outside_the_catalog(tmp_path):
                for x in out), out
 
 
-# NOT TESTED, and deliberately: the OSError branches in both render
-# comparators (vac/verify.py, "artifact-unparsable: {render_rel}: {e}") are
-# unreachable. `render` is a declared ref, so a render not listed in evidence is
-# refused earlier as check-artifact-not-listed, and one that IS listed has
-# already been opened and sha256'd by _verify_artifacts before the check runs.
-# Probed both ways rather than assumed: listing a directory yields
-# "missing-artifact: evidence". They are in the sweep's EXCLUDE with that
-# reason, not covered by a test that would only pretend to reach them.
+# TESTED, after this comment said from f6e32fd on that they could not be:
+# the read wrappers in both render comparators (vac/verify.py,
+# "artifact-unparsable: {render_rel}: {e}"). The claim was that `render` is a
+# declared ref, so a render not listed in evidence is refused earlier as
+# check-artifact-not-listed, and one that IS listed has already been opened
+# and sha256'd by _verify_artifacts before the check runs. Every word of that
+# is true and it settles OSError only. The handler is
+# `except (OSError, UnicodeDecodeError)` and the hash pass reads BYTES, so a
+# render that is listed, correctly hashed and not valid UTF-8 reaches the
+# decode and the line fires. The probe behind the old claim asked the wrong
+# question: listing a directory does yield "missing-artifact: evidence", which
+# says nothing about decoding. Both sites were reachable, untested survivors
+# for as long as the claim stood, and the sweep excluded them, so its score
+# was over a population two smaller than the reachable one. They are covered
+# end to end in tests/test_refusals_render.py and out of EXCLUDE.
 
 
 def test_a_checker_that_returns_none_silently_is_still_named(monkeypatch):

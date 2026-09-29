@@ -36,6 +36,7 @@ from __future__ import annotations
 import ast
 import pathlib
 import re
+from typing import NamedTuple
 
 # The shape of every code in SPEC 4's vocabulary: lowercase words joined by
 # hyphens, at least two of them.
@@ -43,6 +44,10 @@ CODE_RE = re.compile(r"[a-z][a-z0-9]*(?:-[a-z0-9]+)+")
 # The lists vac/verify.py collects refusals in. Kept in step with the mutation
 # sweep's REFUSAL pattern, which counts the same appends as refusal sites.
 REFUSAL_LISTS = ("f", "failures")
+# The three emission shapes. Only APPEND sites are the population the mutation
+# sweep scores; the early returns and the CLI print are emissions it does not
+# mutate, so a count that merges them answers a different question.
+APPEND, RETURN, PRINT = "append", "return", "print"
 # A test ABOUT the ledger is not evidence that an obligation is enforced.
 # test_obligation_ledger.py names refusal codes in its own fixtures, so without
 # this the ledger cites itself as its own evaluation site.
@@ -83,8 +88,15 @@ def _printed(node: ast.Call):
     return arg
 
 
-def refusal_codes(source: str) -> dict[str, list[int]]:
-    """Every refusal code `source` emits, mapped to the lines emitting it.
+class Site(NamedTuple):
+    """One statement that emits a refusal code."""
+    line: int
+    code: str
+    kind: str          # one of APPEND, RETURN, PRINT
+
+
+def refusal_sites(source: str) -> list[Site]:
+    """Every statement in `source` that emits a refusal code, by line.
 
     Emission sites, which are all the shapes vac/verify.py uses:
       f.append(...) / failures.append(...)   the collected reasons
@@ -94,11 +106,15 @@ def refusal_codes(source: str) -> dict[str, list[int]]:
     already collected, and is not a site. An append whose code cannot be read
     raises: the mutation sweep counts it as a refusal site, so dropping it here
     would leave the ledger blind to a refusal the sweep scores.
-    """
-    found: dict[str, list[int]] = {}
 
-    def add(code: str, line: int) -> None:
-        found.setdefault(code, []).append(line)
+    The kind is carried because the three populations differ and are quoted
+    separately: the sweep scores the appends alone, while a count of what the
+    verifier can refuse has to include the early returns and the print.
+    """
+    found: list[Site] = []
+
+    def add(code: str, line: int, kind: str = APPEND) -> None:
+        found.append(Site(line, code, kind))
 
     for node in ast.walk(ast.parse(source)):
         if (isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
@@ -117,14 +133,26 @@ def refusal_codes(source: str) -> dict[str, list[int]]:
                 lead = _leading_literal(elt)
                 code = _code_of(*lead) if lead else None
                 if code is not None:
-                    add(code, elt.lineno)
+                    add(code, elt.lineno, RETURN)
         elif (isinstance(node, ast.Call) and isinstance(node.func, ast.Name)
                 and node.func.id == "print"):
             lead = _leading_literal(_printed(node))
             if lead and lead[0].startswith("FAIL "):
                 code = _code_of(lead[0][len("FAIL "):], lead[1])
                 if code is not None:
-                    add(code, node.lineno)
+                    add(code, node.lineno, PRINT)
+    return sorted(found)
+
+
+def refusal_codes(source: str) -> dict[str, list[int]]:
+    """Every refusal code `source` emits, mapped to the lines emitting it.
+
+    Derived from refusal_sites(), so the ledger tools and anything that reads
+    the population by kind cannot disagree about what an emission is.
+    """
+    found: dict[str, list[int]] = {}
+    for site in refusal_sites(source):
+        found.setdefault(site.code, []).append(site.line)
     return {k: sorted(v) for k, v in sorted(found.items())}
 
 

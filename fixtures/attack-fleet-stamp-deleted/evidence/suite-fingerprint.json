@@ -1,0 +1,11 @@
+{
+ "suite_version": "toy-suite-v1",
+ "suite_hash": "ffeeddcc99887766",
+ "tasks": 4,
+ "task_ids": [
+  "t-add",
+  "t-sub",
+  "t-mul",
+  "t-div"
+ ]
+}

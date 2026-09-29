@@ -1,0 +1,31 @@
+{
+ "models_with_enough_history": 3,
+ "one_offs": [
+  {
+   "flips": 1,
+   "latest": "recovered on 2026-01-03",
+   "model": "beta:b1",
+   "task": "t-mul"
+  }
+ ],
+ "probe_alarms": [
+  {
+   "day": "2026-01-03",
+   "n_providers": 3,
+   "providers": [
+    "alpha",
+    "beta",
+    "gamma"
+   ],
+   "task": "t-add"
+  }
+ ],
+ "repeat_offenders": [
+  {
+   "flips": 2,
+   "latest": "broke on 2026-01-03",
+   "model": "alpha:a1",
+   "task": "t-sub"
+  }
+ ]
+}

@@ -1,0 +1,47 @@
+[
+ {
+  "id": "toy-blank",
+  "family": "truncation",
+  "polarity": "defect",
+  "op_type": "sanity",
+  "field": "output",
+  "defect_shape": "blank output in place of the answer",
+  "real_origin": "toy corpus: a grader that passed an empty reply"
+ },
+ {
+  "id": "toy-truncate",
+  "family": "truncation",
+  "polarity": "defect",
+  "op_type": "kill",
+  "field": "output",
+  "defect_shape": "reply cut off before it reaches the answer",
+  "real_origin": "toy corpus: a token-cap truncation shipped green"
+ },
+ {
+  "id": "toy-negate",
+  "family": "presence-proxy",
+  "polarity": "defect",
+  "op_type": "kill",
+  "field": "output",
+  "defect_shape": "the checked keyword appears, but negated",
+  "real_origin": "toy corpus: a gate that greps for a token its own block message contains"
+ },
+ {
+  "id": "toy-typeflip",
+  "family": "json",
+  "polarity": "defect",
+  "op_type": "diagnostic",
+  "field": "output",
+  "defect_shape": "json value type flipped under a key-presence check",
+  "real_origin": "toy corpus: a schema check that reads keys, never values"
+ },
+ {
+  "id": "toy-disclaimer",
+  "family": "equivalent",
+  "polarity": "equivalent",
+  "op_type": "kill",
+  "field": "output",
+  "defect_shape": "trailing disclaimer after a complete answer",
+  "real_origin": "toy corpus: a verbatim matcher that failed appended boilerplate"
+ }
+]

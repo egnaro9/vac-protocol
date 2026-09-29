@@ -12,9 +12,13 @@ must be impossible is a render showing numbers the payload does not support.
 """
 from __future__ import annotations
 
+import json
+import pathlib
+import shutil
+
 import pytest
 
-from vac.verify import _check_evalmut_render
+from vac.verify import _check_evalmut_render, _sha256, verify_bundle
 
 WANT = {"caught": 32, "applied": 35, "na": 150, "score_3": 0.914,
         "results": 185}
@@ -125,3 +129,73 @@ def test_a_field_the_profile_cannot_recompute_is_refused():
     assert _crun(CONTRACT, want) == [
         "artifact-unparsable: CONTRACT.md: contract names fixed, which this "
         "profile does not recompute"]
+
+
+# ── the read wrapper, end to end ────────────────────────────────────────────
+# Both comparators reach their render through read_text(encoding="utf-8")
+# inside `except (OSError, UnicodeDecodeError)`. The mutation sweep excluded
+# both appends as unreachable OSError wrappers, on the ground that a declared
+# render has already been opened and sha256'd by _verify_artifacts before the
+# check runs. That argument is about OSError. The hash pass reads BYTES, so a
+# render that is listed, correctly hashed and not valid UTF-8 reaches the
+# decode and the line fires. Deleting either append makes such a bundle verify
+# clean, and nothing noticed: not the suite, not the liveness control, not the
+# tamper corpus. The tests above call the comparators directly and cannot see
+# the wrapper at all, which is why these two go through verify_bundle().
+
+FIX = pathlib.Path(__file__).resolve().parents[1] / "fixtures"
+NOT_UTF8 = b"x \xff\xfe not utf-8\n"
+
+# (profile, render path, a render that agrees with fixtures/valid)
+WRAPPED = [
+    ("certlab-bundle-v1", "evidence/CONTRACT.md",
+     "# Capability contract\n\n**2/3 seeded defects fixed** under policy.\n"),
+    ("evalmut-run-v1", "evidence/evalmut_report.txt",
+     "  mutation score    57.1%   (4 caught / 7 applied; 1 n/a)\n"),
+]
+
+
+def _bundle_with_render(tmp_path, profile: str, rel: str,
+                        data: bytes) -> pathlib.Path:
+    """fixtures/valid with `data` written at `rel`, listed in evidence under
+    its REAL sha256, and declared as `profile`'s render.
+
+    The hash is honest on purpose. A stale one is refused by the artifact
+    pass, the check never runs, and a test leaning on that would pass without
+    reaching the line it claims to cover.
+    """
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "valid", b)
+    (b / rel).write_bytes(data)
+    p = b / "vac.json"
+    man = json.loads(p.read_text(encoding="utf-8"))
+    man["evidence"].append({"path": rel, "sha256": _sha256(b / rel)})
+    man["evidence"].sort(key=lambda e: e["path"])
+    for c in man["results"]["checks"]:
+        if c["profile"] == profile:
+            c["render"] = rel
+    p.write_text(json.dumps(man, indent=1) + "\n", encoding="utf-8")
+    return b
+
+
+@pytest.mark.parametrize("profile,rel", [(p, r) for p, r, _ in WRAPPED])
+def test_a_declared_render_that_is_not_utf8_is_refused(tmp_path, profile, rel):
+    """The wrapper, reached the only way a bundle can reach it. The message
+    text below the prefix is CPython's, so it is not pinned here; what is
+    pinned is that exactly one refusal fires, that it names the render, and
+    that it says the decode failed."""
+    out = verify_bundle(_bundle_with_render(tmp_path, profile, rel, NOT_UTF8))
+    assert len(out) == 1, out
+    assert out[0].startswith(f"artifact-unparsable: {rel}: "), out
+    assert "codec can't decode" in out[0], out
+
+
+@pytest.mark.parametrize("profile,rel,honest", WRAPPED)
+def test_a_decodable_agreeing_render_leaves_the_bundle_clean(tmp_path, profile,
+                                                             rel, honest):
+    """Liveness for the test above. Without it, a bundle broken by the
+    scaffolding, an unlisted file or a stale hash, would be refused for a
+    reason that has nothing to do with the encoding, and the test above would
+    pass while the wrapper was never reached."""
+    b = _bundle_with_render(tmp_path, profile, rel, honest.encode("utf-8"))
+    assert verify_bundle(b) == []

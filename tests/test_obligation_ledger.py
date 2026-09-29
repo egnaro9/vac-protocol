@@ -670,3 +670,54 @@ def test_the_json_nesting_clause_is_keyed_to_its_boundary_tests(ledger):
     assert ("tests/test_refusals_json_depth.py::"
             "test_a_manifest_one_level_past_the_limit_is_refused"
             in o["evaluation_sites"])
+
+
+# ── the ledger read from the other side ─────────────────────────────────────
+#
+# Every check above reads forward, from a clause in SPEC.md to the refusal that
+# enforces it, so none of them can see a refusal the ledger names nowhere. The
+# size of that residue was a number in prose that nothing regenerated.
+# tools/unkeyed_refusals.py enumerates it. These two run it against the
+# COMMITTED verifier and the COMMITTED ledger, which is why they belong in this
+# file: like everything else here they read vac/verify.py's emission sites, so
+# a mutant turns them red without any bundle getting past the verifier, and the
+# sweep deselects this file for exactly that reason.
+
+REVERSE = ROOT / "tools" / "unkeyed_refusals.py"
+
+
+def test_the_reverse_enumeration_runs_clean_on_the_committed_tree(tmp_path):
+    """One run is three agreements: the sweep's EXCLUDE table matches the
+    source as declared, the AST and the line pattern read the same appends,
+    and the population is still the one the sweep pins. Any of the three
+    failing makes every share the tool prints a figure about some other
+    population."""
+    out = tmp_path / "reverse.json"
+    p = subprocess.run([sys.executable, str(REVERSE), "--json", str(out)],
+                       capture_output=True, text=True, cwd=ROOT)
+    assert p.returncode == 0, p.stdout + p.stderr
+    assert "UNKEYED" in p.stdout
+    assert json.loads(out.read_text())["scored"]["population"] > 0
+
+
+def test_the_residue_is_the_emitted_codes_this_ledger_does_not_name(ledger,
+                                                                    tmp_path):
+    """The residue re-derived here from the same two artifacts. A tool that
+    reported a smaller one would be publishing coverage the ledger does not
+    have."""
+    out = tmp_path / "reverse.json"
+    subprocess.run([sys.executable, str(REVERSE), "--json", str(out)],
+                   capture_output=True, text=True, cwd=ROOT, check=True)
+    report = json.loads(out.read_text())
+    emitted = _ledger_sources().refusal_codes(
+        (ROOT / "vac" / "verify.py").read_text(encoding="utf-8"))
+    named = {o["refusal_site"] for o in ledger["obligations"]
+             if o["refusal_site"]}
+    assert sorted(r["code"] for r in report["unkeyed"]["by_code"]) == sorted(
+        set(emitted) - named)
+    assert report["unkeyed"]["emissions"] == sum(
+        len(lines) for code, lines in emitted.items() if code not in named)
+    # Counted by code, and one code dominates it. The paper cannot quote the
+    # residue as a count of uncovered rules while that is true.
+    rows = sorted(report["unkeyed"]["by_code"], key=lambda r: -r["sites"])
+    assert rows[0]["sites"] > sum(r["sites"] for r in rows[1:])

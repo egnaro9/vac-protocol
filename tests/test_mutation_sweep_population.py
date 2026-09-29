@@ -16,13 +16,17 @@ lock the sweep needs. That is why it is not in DESELECT.
 from __future__ import annotations
 
 import importlib.util
+import os
 import pathlib
+import re
 import sys
 
 import pytest
 
 REPO = pathlib.Path(__file__).resolve().parents[1]
 SWEEP = REPO / "tools" / "mutation_sweep.py"
+
+_CHECKOUT_VAR = re.compile(r"VAC_[A-Z0-9_]+_CHECKOUT")
 
 # Five refusal-shaped lines, one of which the synthetic EXCLUDE removes, so the
 # honest population is 5 raw / 4 scored.
@@ -46,7 +50,16 @@ def _load_sweep():
 @pytest.fixture
 def sweep(tmp_path, monkeypatch):
     """The sweep module pointed at the synthetic source, with a detector that
-    records whether it was reached and never runs anything."""
+    records whether it was reached and never runs anything.
+
+    Every VAC_*_CHECKOUT is cleared first. main() checks the issuer checkouts
+    before it reads the source, so a doubled value exported in the shell that
+    runs this file aborts every test here on that gate, and they fail on its
+    message instead of their own. None of these tests is about the checkouts.
+    """
+    for name in list(os.environ):
+        if _CHECKOUT_VAR.fullmatch(name):
+            monkeypatch.delenv(name, raising=False)
     mod = _load_sweep()
     src = tmp_path / "verify.py"
     src.write_text(SYNTHETIC_SRC, encoding="utf-8")
@@ -135,6 +148,10 @@ def test_expect_sites_derives_the_scored_count_for_a_one_off_run(sweep,
                "--expect-sites", "5")
     err = capsys.readouterr().err
     assert rc == 2
+    # The capture is this run's stderr, proven by the line the stubbed red
+    # baseline prints. Without that, the absence below also holds for an
+    # empty capture, and would pass whatever the run printed.
+    assert "baseline is not clean (stubbed-detector)" in err
     assert "refusal-site population" not in err
     assert sweep.detector_calls == ["liveness"]
 

@@ -222,3 +222,34 @@ def test_the_latest_observed_block_is_required_even_when_disqualified(
     _write(b, STAND, st)
     out = verify_bundle(b)
     assert any("latest_observed" in r for r in out), out
+
+
+def test_a_results_md_that_is_not_utf8_is_refused(tmp_path):
+    """The read wrapper on the floor check, reached from a bundle.
+
+    tools/mutation_sweep.py excludes this append from the denominator. The
+    reason it gave was unreachability: RESULTS.md is a declared ref, so it was
+    opened and sha256'd by _verify_artifacts before this check runs, and only
+    a filesystem race could make the second read fail. That covers OSError.
+    The handler is `except (OSError, UnicodeDecodeError)` and the hash pass
+    reads BYTES, so a correctly hashed RESULTS.md that is not valid UTF-8
+    reaches the decode and this line fires. Delete the append and the check
+    returns None with no reason of its own, which is what the fail-closed
+    backstop is insurance against.
+    """
+    b = _bundle(tmp_path)
+    p = b / MD
+    p.write_bytes(p.read_bytes() + b"\xff\xfe not utf-8\n")
+    man_path = b / "vac.json"
+    man = json.loads(man_path.read_text())
+    for e in man["evidence"]:
+        if e["path"] == MD:
+            e["sha256"] = _sha256(p)
+    man_path.write_text(json.dumps(man, indent=1) + "\n")
+    out = verify_bundle(b)
+    assert len(out) == 1, out
+    # CPython owns the text after the colon, so only the prefix is pinned.
+    assert out[0].startswith(
+        f"artifact-unparsable: {MD}: unreadable while checking the declared "
+        "reliability floor: "), out
+    assert "codec can't decode" in out[0], out

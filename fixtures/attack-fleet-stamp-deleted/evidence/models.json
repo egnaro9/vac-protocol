@@ -1,0 +1,27 @@
+[
+ {
+  "id": "mock:stable",
+  "label": "Mock (toy)",
+  "tier": "mock"
+ },
+ {
+  "id": "alpha:a1",
+  "label": "Alpha One",
+  "tier": "flagship"
+ },
+ {
+  "id": "beta:b1",
+  "label": "Beta One",
+  "tier": "mid"
+ },
+ {
+  "id": "gamma:g1",
+  "label": "Gamma One",
+  "tier": "small"
+ },
+ {
+  "id": "delta:d1",
+  "label": "Delta One",
+  "tier": "flagship"
+ }
+]

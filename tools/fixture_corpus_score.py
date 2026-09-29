@@ -41,9 +41,14 @@ import sys
 import tempfile
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
-from mutation_sweep import REFUSAL, span            # noqa: E402  same operator
+from mutation_sweep import (REFUSAL, TOOL, _sha256,  # noqa: E402
+                            site_identities, span,
+                            tree_digest)     # same operator, same key
 
 HERE = pathlib.Path(__file__).resolve().parent.parent
+# The two files whose bytes decide what a run here does: this one, and the
+# sweep it takes the operator and the site key from.
+TOOLS = (pathlib.Path(__file__).resolve(), TOOL)
 REV = "f59fb62"
 
 
@@ -64,14 +69,45 @@ def observe(repo: pathlib.Path, detector: str) -> tuple[bool, str]:
     return False, "SURVIVED"
 
 
-def sweep(repo: pathlib.Path, detector: str) -> tuple[list[dict], int]:
+def sweep(repo: pathlib.Path, detector: str) -> tuple[list[dict], int, dict]:
+    """(rows, site count, what was measured).
+
+    Rows carry the same position-independent site key as tools/mutation_sweep
+    builds, so a row here and a row there name the same site when they are the
+    same site, and a line shift between the two revisions does not say they
+    are different ones.
+
+    "measured" hashes fixtures/ as well as the source, because here the
+    fixture corpus IS the detector: the same verify.py scored against a
+    different corpus is a different number. It also hashes the tool bytes that
+    applied the operator. It records no issuer checkouts, unlike
+    tools/mutation_sweep.py: neither detector here runs a test, and
+    vac/verify.py reads no VAC_*_CHECKOUT variable and imports nothing that
+    does, so no checkout can change a verdict.
+    """
     src = repo / "vac" / "verify.py"
-    orig = src.read_text(encoding="utf-8")
+    raw = src.read_bytes()
+    orig = raw.decode("utf-8")
     lines = orig.splitlines(keepends=True)
+    identities = site_identities(lines)
     sites = [i for i, ln in enumerate(lines) if REFUSAL.match(ln)]
     fixtures = sorted((repo / "fixtures").glob("tamper-*"))
+    tests_sha, n_tests = tree_digest(repo / "tests")
+    fixtures_sha, n_fixtures = tree_digest(repo / "fixtures", "**/*")
+    measured = {"source": {"path": "vac/verify.py", "sha256": _sha256(raw)},
+                "tests": {"path": "tests", "files": n_tests,
+                          "sha256": tests_sha},
+                "fixtures": {"path": "fixtures", "files": n_fixtures,
+                             "sha256": fixtures_sha},
+                "tool": {p.relative_to(HERE).as_posix():
+                         _sha256(p.read_bytes()) for p in TOOLS}}
     print(f"{len(sites)} refusal sites, {len(fixtures)} tamper fixtures, "
           f"detector: {detector} alone")
+    print(f"measured vac/verify.py sha256 {measured['source']['sha256']}; "
+          f"tests ({n_tests} files) sha256 {tests_sha}; "
+          f"fixtures ({n_fixtures} files) sha256 {fixtures_sha}")
+    for path, sha in measured["tool"].items():
+        print(f"measured {path} sha256 {sha}")
 
     noticed, how = observe(repo, detector)
     if noticed:
@@ -92,13 +128,17 @@ def sweep(repo: pathlib.Path, detector: str) -> tuple[list[dict], int]:
                 caught, why = observe(repo, detector)
             except subprocess.TimeoutExpired:
                 caught, why = True, "timeout"
-            results.append({"line": a0 + 1, "caught": caught, "how": why,
+            ident = identities[i]
+            results.append({"key": ident["key"], "scope": ident["scope"],
+                            "statement": ident["statement"],
+                            "ordinal": ident["ordinal"],
+                            "line": a0 + 1, "caught": caught, "how": why,
                             "reason": lines[a0].strip()[:70]})
             print(f"  [{n}/{len(sites)}] L{a0 + 1} "
                   f"{'caught: ' + why if caught else 'survived'}", flush=True)
     finally:
         src.write_text(orig, encoding="utf-8")
-    return results, len(sites)
+    return results, len(sites), measured
 
 
 def main() -> int:
@@ -146,7 +186,7 @@ def main() -> int:
                             "--detach", str(repo), want], check=True,
                            capture_output=True, text=True)
         print(f"revision: {want[:7]} at {repo}")
-        results, total = sweep(repo, a.detector)
+        results, total, measured = sweep(repo, a.detector)
     finally:
         if tmp:
             subprocess.run(["git", "-C", str(HERE), "worktree", "remove",
@@ -164,7 +204,8 @@ def main() -> int:
     if a.json:
         a.json.write_text(json.dumps(
             {"rev": want, "detector": a.detector, "score": round(score, 4),
-             "caught": k, "total": total, "results": results}, indent=1))
+             "caught": k, "total": total, "measured": measured,
+             "results": results}, indent=1))
     return 0
 
 

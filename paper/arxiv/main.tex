@@ -59,8 +59,11 @@ found defects instead moved the aggregate count from 37/112 to 39/119. Because t
 archived sweep outputs do not preserve a stable per-site identity across these runs,
 I do not attribute that change to retained versus newly introduced sites.
 
-Seven times during this study my own measuring tools reported success while measuring
-nothing; four were built to detect this class, and one returned a perfect 1.000.
+Eight times during this study my own measuring tools reported success while measuring
+nothing; four were built to detect this class, and one returned a perfect 1.000. The obligation
+with no refusal site is now countable: a derived ledger over the specification's 40 normative
+obligations records three for which no executable evaluation site exists, two addressed to a
+registry and one to a human reviewer.
 
 Every number here is self-measured on a system I wrote, over a registry that is a closed loop
 of my own repositories; the one external data point is the audit of Section~\ref{sec:audit}.
@@ -1374,6 +1377,74 @@ verifier has not changed since \texttt{ba14203} (2026-08-16); the issuer bundles
 evalmut's re-emission reintroduced exactly the gap this rule exists to catch, which is a live
 datapoint in the rule's favour and an uncomfortable one for the project's release hygiene.
 
+\subsection{The obligation denominator}
+\label{sec:obligation-denominator}
+
+Every number above is scored over refusal sites that exist. The fourth forgery of
+Section~\ref{sec:forgeries} landed outside that population, in an obligation for which no site
+had been written, and Section~\ref{sec:threats} states the consequence: a refusal nobody wrote
+has no site to delete. That was an acknowledged blind spot with no size. This section gives it
+one.
+
+The trigger was external. A reader of the preprint, Nguyen Thanh Vinh, put the limitation more
+sharply than the paper had: a refusal-site score is bounded by the refusals that already exist,
+so the version that stays invisible is an obligation in the specification that no site was ever
+written for, because it never enters the denominator at all. He asked for the figure that bounds
+it. It did not exist.
+
+\paragraph{Construction.} \texttt{SPEC.md} carries 40 normative clauses, 38 \textsc{must} and 2
+\textsc{must not}. A generator extracts each clause with its line span and quoted text, and a
+hand-authored table binds each to the mechanism that fails when the obligation is violated: a
+refusal code the verifier emits, plus the tests that reference it. Only the table is human
+judgement. Spans, clause text and evaluation sites are derived from repository artifacts. The
+generator and checker refuse stale clause spans and references to nonexistent refusal codes or
+tests; they verify artifact correspondence, not the completeness of the human mapping
+judgement.
+
+\paragraph{Result.} Of the 40 obligations, 35 map to at least one executable evaluation site, 2
+are partially mapped, and 3 are explicitly unmeasured.
+
+The distribution is more informative than the ratio, so it is not reported as a percentage. Each
+obligation carries an \emph{addressee}, the party who must discharge it, derived from the
+property-token namespace where that mapping is exact and explicitly adjudicated where it is not:
+
+\begin{itemize}
+\item 36 obligations are addressed to the \textbf{verifier}. None is unmeasured. One,
+\texttt{SPEC-40}, is partially mapped: the verifier branches on declared versions where v0.1 and
+v0.2 differ, but no check establishes that every applicable rule consults the declared version.
+\item 3 are addressed to a \textbf{registry}. Two are unmeasured: a registry must not admit a
+summary number that only a free-text pool key supports, and a registry that skips the replay
+gate must say so on every entry. Nothing checks either.
+\item 1 is addressed to a \textbf{human reviewer}: \texttt{protocol.grading} must describe a
+deterministic process. Nothing reads that field beyond requiring it to be non-empty. No
+executable evaluation site assesses whether it actually describes a deterministic process, so it
+is recorded as a reviewer-addressed, unmeasured obligation.
+\end{itemize}
+
+\paragraph{What this does and does not license.} It does not license a coverage claim. A mapped
+obligation means some mechanism fails when that obligation is violated, not that the mechanism
+catches every violation of it, and the source-level proxy of Section~\ref{sec:threats} still
+bounds what a refusal site is. What it licenses is narrower and, I think, more useful: the
+blind spot the paper named now has a size and a shape, and the shape says where the next
+instrument belongs. Every obligation the verifier owns has at least one site. The three that are
+unmeasured are two addressed to a registry and one addressed to a human reviewer. That is a
+statement about which \emph{actor} lacks an instrument, which no coverage percentage can
+express.
+
+\paragraph{An eighth instrument failure.} Section~\ref{sec:instruments} counts seven occasions
+on which my own measuring tools reported success while measuring nothing. Building this ledger
+produced an eighth, and it is the same class one level up. The addressee field shipped with a
+checker that required the value to be permitted and the classification to be marked
+\texttt{adjudicated}. Both are presence checks. Flipping the reviewer obligation to
+\texttt{verifier} kept a permitted value and a legal marker, passed the checker, and produced
+one verifier-addressed obligation unmeasured: a direct counterexample to the ledger's reported
+verifier-side finding. It was found during an external review of the commits, by a different
+reader from the one who raised the limitation this section answers, and not by me.
+The repair binds each adjudication to a reviewed ruling and refuses any classification that
+disagrees with it; the mutation that formerly passed now fails by name. Requiring a field to be
+present is not requiring it to be correct, and ``someone adjudicated'' is a presence check
+wearing the clothes of a content check.
+
 \subsection{Host dependence of the measurement}
 \label{sec:host}
 
@@ -1482,6 +1553,16 @@ the issuers out and were never meant to, so it could not evidence anything about
 rather than an instrument failure: no tool returned success without measuring, I cited the
 wrong measurement. It is recorded here rather than silently repaired, and the underlying
 defect stands on the path arithmetic above, not on the line I misquoted.
+\item A checker I wrote to hold the obligation ledger of
+Section~\ref{sec:obligation-denominator} accountable validated that each obligation's addressee
+was a permitted value and that ambiguous classifications carried an \texttt{adjudicated} marker.
+Both are presence checks. Relabelling the reviewer-addressed obligation as verifier-addressed
+kept a permitted value and a legal marker, passed the checker, and produced one
+verifier-addressed unmeasured obligation: a direct counterexample to the finding the ledger
+reports. It was found during an external review of the commits, not by me, and repaired by
+binding each ambiguous classification to a reviewed ruling. Requiring a field to be present is
+not requiring it to be correct.
+
 \end{enumerate}
 
 Seven instrument failures in the system under study, all producing plausible output, plus one
@@ -1600,8 +1681,12 @@ exits 0 and prints \texttt{structural verification: PASS}, because the bytes has
 they simply live somewhere else on the verifying host. A verifier scoring 1.000 on this paper's
 operator accepts that bundle. The two facts are compatible rather than contradictory, and their
 compatibility is the point: the operator asks whether each refusal that exists can fire, and a
-refusal nobody wrote has no site to delete. Section~\ref{sec:fixes-open} carries it as open.
-The honest reading of 1.000 is that the enumerated obligation is discharged, and nothing more.
+refusal nobody wrote has no site to delete. Section~\ref{sec:fixes-open} carries this instance
+as open. Section~\ref{sec:obligation-denominator} bounds the class it belongs to: of the 40
+normative obligations in the specification, three are explicitly unmeasured, in that the ledger
+records no executable evaluation site for them. Two are addressed to a registry and one to a
+human reviewer. The honest reading of 1.000 is that the enumerated obligation is discharged, and
+nothing more.
 
 \paragraph{The denominator is a source-level proxy.} A refusal site is one \texttt{f.append(}
 statement. That misses rejections expressed as raises, early returns, assertions, or exit-code
@@ -1756,7 +1841,11 @@ refusal or a specification ambiguity, and either lands or publishes the blocker 
 than any further internal profile.
 \item \textbf{Climb the coverage ladder}: artifact-read (done) to field-binding (probed, gaps
 recorded) to claim coverage, where every externally visible claim names its evidence source and
-the verifier's obligation over it.
+the verifier's obligation over it. The claim-coverage rung is partly built:
+Section~\ref{sec:obligation-denominator} maps each specification obligation to the mechanism
+that fails when it is violated, which gives the denominator that rung needs. It does not
+complete the rung. A mapped obligation means some mechanism fails when the obligation is
+violated, not that the mechanism catches every violation of it.
 \item \textbf{Pre-register a second operator family} before running it: comparison inversion,
 boundary shifts, missing-key guard removal, enum and default perturbation, so the result is not
 chosen after seeing the score.
@@ -1860,6 +1949,14 @@ to pin a number in this paper to the exact code that produced it; the concept DO
 project rather than for a result. Every quantitative claim here names a commit for the same
 reason: a result belongs to the code that produced it, not to whatever \texttt{main} holds
 later.
+
+\paragraph{The obligation ledger.} The material in
+Section~\ref{sec:obligation-denominator} is at \texttt{c441011}:
+\texttt{obligations.json} is the ledger, \texttt{tools/build\_obligations.py} derives it from
+\texttt{SPEC.md} and the test suite, \texttt{tools/check\_obligations.py} refuses a ledger that
+has drifted from either, and \texttt{tests/test\_obligation\_ledger.py} holds the checker to its
+own standard, most of its cases being mutations the checker must reject. Rebuild the ledger to
+confirm the committed copy is what the generator emits.
 
 \paragraph{Commits.} Check out \texttt{92e4548} for every present-day figure in this paper.
 The pre-fix baseline for Section~\ref{sec:forgeries} and the 0.330 measurement is

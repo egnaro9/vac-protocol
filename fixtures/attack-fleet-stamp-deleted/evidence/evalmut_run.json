@@ -1,0 +1,177 @@
+{
+ "score": 0.5714285714285714,
+ "tally": {
+  "caught": 4,
+  "missed": 2,
+  "flagged": 1,
+  "error": 0,
+  "na": 1
+ },
+ "holes": {
+  "vacuous": [],
+  "blind": [
+   {
+    "case_name": "toy-contains",
+    "grader_id": "contains",
+    "operator_id": "toy-negate",
+    "family": "presence-proxy",
+    "polarity": "defect",
+    "op_type": "kill",
+    "outcome": "missed",
+    "real_origin": "toy corpus: a gate that greps for a token its own block message contains",
+    "defect_shape": "the checked keyword appears, but negated",
+    "detail": "needs all of ['capital']",
+    "mutant_preview": "I did NOT name the capital.",
+    "grader_error": null
+   }
+  ],
+  "error": [],
+  "brittle": [
+   {
+    "case_name": "toy-exact",
+    "grader_id": "exact",
+    "operator_id": "toy-disclaimer",
+    "family": "equivalent",
+    "polarity": "equivalent",
+    "op_type": "kill",
+    "outcome": "flagged",
+    "real_origin": "toy corpus: a verbatim matcher that failed appended boilerplate",
+    "defect_shape": "trailing disclaimer after a complete answer",
+    "detail": "failed a still-correct output",
+    "mutant_preview": "42 (not financial advice)",
+    "grader_error": null
+   }
+  ],
+  "coverage_gap": [
+   {
+    "case_name": "toy-contains",
+    "grader_id": "contains",
+    "operator_id": "toy-typeflip",
+    "family": "json",
+    "polarity": "defect",
+    "op_type": "diagnostic",
+    "outcome": "missed",
+    "real_origin": "toy corpus: a schema check that reads keys, never values",
+    "defect_shape": "json value type flipped under a key-presence check",
+    "detail": "value type flipped, key still present",
+    "mutant_preview": "",
+    "grader_error": null
+   }
+  ]
+ },
+ "baseline_failures": [],
+ "results": [
+  {
+   "case_name": "toy-exact",
+   "grader_id": "exact",
+   "operator_id": "toy-blank",
+   "family": "truncation",
+   "polarity": "defect",
+   "op_type": "sanity",
+   "outcome": "caught",
+   "real_origin": "toy corpus: a grader that passed an empty reply",
+   "defect_shape": "blank output in place of the answer",
+   "detail": "rejected blank",
+   "mutant_preview": "",
+   "grader_error": null
+  },
+  {
+   "case_name": "toy-exact",
+   "grader_id": "exact",
+   "operator_id": "toy-truncate",
+   "family": "truncation",
+   "polarity": "defect",
+   "op_type": "kill",
+   "outcome": "caught",
+   "real_origin": "toy corpus: a token-cap truncation shipped green",
+   "defect_shape": "reply cut off before it reaches the answer",
+   "detail": "rejected the cut-off reply",
+   "mutant_preview": "",
+   "grader_error": null
+  },
+  {
+   "case_name": "toy-exact",
+   "grader_id": "exact",
+   "operator_id": "toy-disclaimer",
+   "family": "equivalent",
+   "polarity": "equivalent",
+   "op_type": "kill",
+   "outcome": "flagged",
+   "real_origin": "toy corpus: a verbatim matcher that failed appended boilerplate",
+   "defect_shape": "trailing disclaimer after a complete answer",
+   "detail": "failed a still-correct output",
+   "mutant_preview": "42 (not financial advice)",
+   "grader_error": null
+  },
+  {
+   "case_name": "toy-exact",
+   "grader_id": "exact",
+   "operator_id": "toy-typeflip",
+   "family": "json",
+   "polarity": "defect",
+   "op_type": "diagnostic",
+   "outcome": "na",
+   "real_origin": "toy corpus: a schema check that reads keys, never values",
+   "defect_shape": "json value type flipped under a key-presence check",
+   "detail": "n/a: operator not applicable here",
+   "mutant_preview": "",
+   "grader_error": null
+  },
+  {
+   "case_name": "toy-contains",
+   "grader_id": "contains",
+   "operator_id": "toy-negate",
+   "family": "presence-proxy",
+   "polarity": "defect",
+   "op_type": "kill",
+   "outcome": "missed",
+   "real_origin": "toy corpus: a gate that greps for a token its own block message contains",
+   "defect_shape": "the checked keyword appears, but negated",
+   "detail": "needs all of ['capital']",
+   "mutant_preview": "I did NOT name the capital.",
+   "grader_error": null
+  },
+  {
+   "case_name": "toy-contains",
+   "grader_id": "contains",
+   "operator_id": "toy-typeflip",
+   "family": "json",
+   "polarity": "defect",
+   "op_type": "diagnostic",
+   "outcome": "missed",
+   "real_origin": "toy corpus: a schema check that reads keys, never values",
+   "defect_shape": "json value type flipped under a key-presence check",
+   "detail": "value type flipped, key still present",
+   "mutant_preview": "",
+   "grader_error": null
+  },
+  {
+   "case_name": "toy-contains",
+   "grader_id": "contains",
+   "operator_id": "toy-blank",
+   "family": "truncation",
+   "polarity": "defect",
+   "op_type": "sanity",
+   "outcome": "caught",
+   "real_origin": "toy corpus: a grader that passed an empty reply",
+   "defect_shape": "blank output in place of the answer",
+   "detail": "rejected blank",
+   "mutant_preview": "",
+   "grader_error": null
+  },
+  {
+   "case_name": "toy-contains",
+   "grader_id": "contains",
+   "operator_id": "toy-disclaimer",
+   "family": "equivalent",
+   "polarity": "equivalent",
+   "op_type": "kill",
+   "outcome": "caught",
+   "real_origin": "toy corpus: a verbatim matcher that failed appended boilerplate",
+   "defect_shape": "trailing disclaimer after a complete answer",
+   "detail": "accepted the equivalent",
+   "mutant_preview": "",
+   "grader_error": null
+  }
+ ]
+}

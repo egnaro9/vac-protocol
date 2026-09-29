@@ -25,22 +25,49 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      # The score is only comparable if the suite is. Without these checkouts
-      # the real-bundle tests SKIP, four mutants stop being caught, and the
-      # denominator changes -- a mutation score that depends on what happens
-      # to be on the machine is the same host-dependence class this verifier
-      # exists to refuse. Check them out so CI measures what a developer does.
+      # The score is only comparable if the suite is. Without these three
+      # checkouts, seven tests skip: the three real-bundle summary-outrun
+      # tests, the three real-bundle TODO-marker parameters, and the registry
+      # version test. A mutation score whose denominator depends on what
+      # happens to be on the machine is the same host-dependence class this
+      # verifier exists to refuse, so check them out. This does not make the
+      # job equal to a developer's run: VAC_CERTLAB_CHECKOUT and
+      # VAC_FLEET_CHECKOUT are not set here, so agent-certlab's seven registry
+      # entries, reference-fleet's one, and the four fleet-granularity tests
+      # are still out of reach.
+      # PINNED to the commits the archived sweep records name, so the
+      # measurement stops depending on what an issuer's main happens to be
+      # the day CI runs. Without a ref, actions/checkout takes the default
+      # branch, and issuer_checkouts() records that HEAD as part of the
+      # measurement identity: evalmut moved 5c94fe7 -> ddc37a6 and
+      # model-drift 118a7e6 -> 35b1a48 while this file said nothing. The
+      # bundles were byte-identical across both moves, so no number
+      # changed, but the record named a commit the rerun would not.
       - uses: actions/checkout@v4
-        with: {repository: egnaro9/crashkit, path: _issuers/crashkit}
+        with: {repository: egnaro9/crashkit, ref: 8553797083b2f0032ff5ac7315b51ddda84678ba, path: _issuers/crashkit}
       - uses: actions/checkout@v4
-        with: {repository: egnaro9/evalmut, path: _issuers/evalmut}
+        with: {repository: egnaro9/evalmut, ref: 5c94fe7c6a7f80265815e61b51c7e37d8dadebc8, path: _issuers/evalmut}
       - uses: actions/checkout@v4
-        with: {repository: egnaro9/model-drift, path: _issuers/model-drift}
+        with: {repository: egnaro9/model-drift, ref: 118a7e6344bd5317bb74d2092b62e09954cb5a22, path: _issuers/model-drift}
       - run: pip install -e ".[test]"
+      # Each value is the issuer's REPOSITORY root, byte-identical to the
+      # checkout path above. Every consumer appends the bundle sub-path
+      # itself (vac/registry.py ISSUERS[*]["bundles"]), so naming the bundle
+      # directory here resolves to _issuers/<repo>/vac/vac, which exists in no
+      # issuer repository: each skipif fires and the tests skip inside the one
+      # job that checked the repositories out. That was the state from 1674f4c
+      # on, the commit that added these checkouts: the consumers already
+      # appended the sub-path then, so the values were doubled from the day
+      # they were written, and CI stayed green through a real regression
+      # because of it.
+      # tools/mutation_sweep.py now aborts rather than scoring a suite in
+      # which a configured issuer resolved to nothing, and
+      # tests/test_ci_issuer_checkouts.py holds these three values to the
+      # checkout paths above.
       - env:
-          VAC_CRASHKIT_CHECKOUT: _issuers/crashkit/vac
-          VAC_EVALMUT_CHECKOUT: _issuers/evalmut/vac
-          VAC_MODELDRIFT_CHECKOUT: _issuers/model-drift/vac
+          VAC_CRASHKIT_CHECKOUT: _issuers/crashkit
+          VAC_EVALMUT_CHECKOUT: _issuers/evalmut
+          VAC_MODELDRIFT_CHECKOUT: _issuers/model-drift
         run: python tools/mutation_sweep.py --floor 0.99
 
   invalidation-liveness:
@@ -61,7 +88,7 @@ jobs:
           set -e
           for d in fixtures/tamper-*; do
             if python -m vac.verify "$d"; then
-              echo "LIVENESS FAILURE: $d verified clean — the gate cannot block"
+              echo "LIVENESS FAILURE: $d verified clean, so the gate cannot block"
               exit 1
             fi
           done

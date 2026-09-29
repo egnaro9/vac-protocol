@@ -1,4 +1,4 @@
-"""Deterministic generator for the committed verifier fixtures.
+"""Deterministic generator for the verifier fixtures.
 
 One VALID miniature bundle — fully synthetic (fictional issuer
 `example/toy-issuer`, fictional subject `toy-agent`), self-contained, and
@@ -82,6 +82,12 @@ variants and one completed attack, every one of them refused at 92e4548:
                                 revision; this one verifies CLEAN at
                                 f59fb62 and is refused at 92e4548 only
                                 because the labels themselves are read
+  attack-fleet-stamp-deleted    the fleet half of the stamp forgery:
+                                fleet_commit deleted from the aggregate and
+                                evidence/results.json re-pinned honestly.
+                                Verifies CLEAN at f59fb62, where both fleet
+                                stamp comparisons are guarded on the key
+                                existing, and is refused on both at 92e4548
   tamper-draft-incomplete       vac.draft's own output over the valid
                                 bundle's artifacts: mechanical fields
                                 (hashes, issuer, commit, clone/checkout)
@@ -92,7 +98,7 @@ variants and one completed attack, every one of them refused at 92e4548:
 
 Byte-reproducible by construction: no timestamps, no randomness, stable
 key order. `python fixtures/make_fixtures.py [out_dir]` regenerates
-everything; tests assert the committed fixtures match a fresh run.
+everything; tests assert the fixtures on disk match a fresh run.
 """
 
 from __future__ import annotations
@@ -1140,6 +1146,26 @@ def tampered_variants(valid: dict[str, str]) -> dict[str, dict[str, str]]:
         if e["path"] == art:
             e["sha256"] = _sha(files[art])
     out["tamper-stamp-deleted"] = {**files, "vac.json": _j(m)}
+
+    # The fleet half of the same forgery. tamper-stamp-deleted removes only
+    # the certlab stamps, so the two fleet comparisons (fleet_commit against
+    # protocol.issuer_commit, and against protocol.hashes.fleet_commit) had
+    # no committed bundle behind them, only a scratch one. Both are guarded on
+    # the aggregate carrying the key at all, so deleting it and re-pinning
+    # honestly skipped both at f59fb62. Named attack- like
+    # attack-crashkit-severity, so it stays outside the tamper-* glob and
+    # does not move the fixture detector's score. paper/replay_forgeries.py
+    # line-traces it.
+    files = dict(valid)
+    art = "evidence/results.json"
+    agg = json.loads(files[art])
+    del agg["fleet_commit"]
+    files[art] = _j(agg)
+    m = json.loads(files["vac.json"])
+    for e in m["evidence"]:                       # honest re-pin
+        if e["path"] == art:
+            e["sha256"] = _sha(files[art])
+    out["attack-fleet-stamp-deleted"] = {**files, "vac.json": _j(m)}
 
     # the scaffolder's own output over the valid bundle's artifacts:
     # mechanical fields derived (same hashes, same issuer/commit facts a

@@ -14,19 +14,71 @@ values in one pool.
 from __future__ import annotations
 
 import json
+import os
 import pathlib
 import shutil
 
 import pytest
 
+from vac.registry import ISSUERS
 from vac.verify import _summary_outruns, verify_bundle
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 FIX = ROOT / "fixtures"
-FLEET = (ROOT / "../reference-fleet/board/vac").resolve()
+
+# The fleet's own row in the table the registry generator reads, so the
+# variable name, the sibling default and the bundle sub-path cannot drift from
+# what vac/registry.py advertises.
+_FLEET_CFG = next(c for c in ISSUERS
+                  if c["repo"].rstrip("/").endswith("/reference-fleet"))
+
+
+def _fleet_bundle(env) -> pathlib.Path:
+    """`<VAC_FLEET_CHECKOUT or ../reference-fleet>/board/vac`, resolved the
+    way vac/registry.py scan_issuer and the real-bundle tests in
+    tests/test_verify.py resolve every issuer.
+
+    This used to be a hardcoded ROOT/"../reference-fleet/board/vac". The
+    registry advertises VAC_FLEET_CHECKOUT, and the checkout gate in
+    tools/mutation_sweep.py accepts it when it names a real clone, so a run
+    that set it passed the gate while the four tests below skipped. That is
+    the silently smaller suite the gate exists to stop.
+    """
+    return ((ROOT / (env.get(_FLEET_CFG["checkout_env"])
+                     or _FLEET_CFG["default_checkout"])).resolve()
+            / _FLEET_CFG["bundles"])
+
+
+FLEET = _fleet_bundle(os.environ)
 needs_fleet = pytest.mark.skipif(
     not (FLEET / "vac.json").is_file(),
-    reason="reference-fleet checkout not present")
+    reason=f"reference-fleet bundle not present at {FLEET}: clone "
+           f"{_FLEET_CFG['repo']} to {_FLEET_CFG['default_checkout']} or set "
+           f"{_FLEET_CFG['checkout_env']}")
+
+
+def test_the_fleet_bundle_follows_its_checkout_variable(tmp_path,
+                                                        monkeypatch):
+    """The four fleet tests skip on every machine without the fleet, CI
+    included, so none of them goes red if FLEET is hardcoded again. This
+    re-executes the module under a set and an unset variable and reads the
+    FLEET it computes, which does. The source is compiled and executed
+    directly rather than imported, so the run leaves no bytecode behind."""
+    var = _FLEET_CFG["checkout_env"]
+    src = pathlib.Path(__file__)
+
+    def fleet_under(value):
+        if value is None:
+            monkeypatch.delenv(var, raising=False)
+        else:
+            monkeypatch.setenv(var, value)
+        ns = {"__name__": "_fleet_granularity_reexec", "__file__": str(src)}
+        exec(compile(src.read_text(encoding="utf-8"), str(src), "exec"), ns)
+        return ns["FLEET"]
+
+    assert fleet_under(str(tmp_path)) == tmp_path.resolve() / "board" / "vac"
+    assert fleet_under(None) == (
+        ROOT / "../reference-fleet/board/vac").resolve()
 
 
 def _pools(bundle: pathlib.Path) -> dict[str, set]:
