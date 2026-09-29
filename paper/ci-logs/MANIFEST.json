@@ -1,0 +1,500 @@
+{
+  "schema": "vac-ci-log-archive/1",
+  "generated_utc": "2026-09-18T02:31:42Z",
+  "retention_days": 90,
+  "retention_source": "gh api repos/egnaro9/vac-protocol/actions/permissions/artifact-and-log-retention -> {\"days\":90,\"maximum_allowed_days\":90}",
+  "expiry_basis": "run_created_utc plus retention_days. GitHub measures retention from run completion, so the real expiry is at or after this estimate, never before it.",
+  "entries": [
+    {
+      "file": "model-drift/track-31249636235-13adeda.log",
+      "repo": "egnaro9/model-drift",
+      "run_id": 31249636235,
+      "run_attempt": 1,
+      "workflow": "track",
+      "event": "schedule",
+      "html_url": "https://github.com/egnaro9/model-drift/actions/runs/31249636235",
+      "head_sha": "13adeda3ca960da7550f0f89e643fc6befc584cc",
+      "head_branch": "main",
+      "run_created_utc": "2026-08-08T09:00:40Z",
+      "conclusion": "success",
+      "expires_utc_estimate": "2026-11-06T09:00:40Z",
+      "fetched_utc": "2026-09-18T02:31:42Z",
+      "bytes": 42116,
+      "sha256": "ddbbd22f499ada8ce2db8259bb584b89309923ddfceee2ca5425cf8365778386",
+      "ledger_items": [
+        "V2-42"
+      ],
+      "cited_by_v2": "conditional",
+      "must_contain": [
+        "TimeoutError"
+      ]
+    },
+    {
+      "file": "model-drift/track-31304963616-7a2f213.log",
+      "repo": "egnaro9/model-drift",
+      "run_id": 31304963616,
+      "run_attempt": 1,
+      "workflow": "track",
+      "event": "schedule",
+      "html_url": "https://github.com/egnaro9/model-drift/actions/runs/31304963616",
+      "head_sha": "7a2f2134b683b616bcafcc60bb9604d5f2b19e40",
+      "head_branch": "main",
+      "run_created_utc": "2026-08-09T09:02:39Z",
+      "conclusion": "success",
+      "expires_utc_estimate": "2026-11-07T09:02:39Z",
+      "fetched_utc": "2026-09-18T02:31:42Z",
+      "bytes": 42697,
+      "sha256": "0876f9b6a4ca582fcb678456409f157faf120c32d30d2b6b20b0a76c701f1183",
+      "ledger_items": [
+        "V2-42"
+      ],
+      "cited_by_v2": "conditional",
+      "must_contain": [
+        "prepayment credits are depleted",
+        "TimeoutError"
+      ]
+    },
+    {
+      "file": "model-drift/track-31376273128-abdb8f6.log",
+      "repo": "egnaro9/model-drift",
+      "run_id": 31376273128,
+      "run_attempt": 1,
+      "workflow": "track",
+      "event": "schedule",
+      "html_url": "https://github.com/egnaro9/model-drift/actions/runs/31376273128",
+      "head_sha": "abdb8f63260fe0b86c587adf7dd0475e375bb15d",
+      "head_branch": "main",
+      "run_created_utc": "2026-08-10T09:47:53Z",
+      "conclusion": "success",
+      "expires_utc_estimate": "2026-11-08T09:47:53Z",
+      "fetched_utc": "2026-09-18T02:31:42Z",
+      "bytes": 43985,
+      "sha256": "011beaee0db6a0d76a7e7af06c4a62471ed9e9cc88bb856900da9cbb8fa8002b",
+      "ledger_items": [
+        "V2-42"
+      ],
+      "cited_by_v2": "conditional",
+      "must_contain": [
+        "prepayment credits are depleted"
+      ]
+    },
+    {
+      "file": "model-drift/track-31787685327-8d0cd60.log",
+      "repo": "egnaro9/model-drift",
+      "run_id": 31787685327,
+      "run_attempt": 1,
+      "workflow": "track",
+      "event": "schedule",
+      "html_url": "https://github.com/egnaro9/model-drift/actions/runs/31787685327",
+      "head_sha": "8d0cd605a907a4f72dc271534f12c65bd117c7d7",
+      "head_branch": "main",
+      "run_created_utc": "2026-08-14T09:20:50Z",
+      "conclusion": "success",
+      "expires_utc_estimate": "2026-11-12T09:20:50Z",
+      "fetched_utc": "2026-09-18T02:31:42Z",
+      "bytes": 43715,
+      "sha256": "3c4d8ddb56a6881d6c01577426da677a84a7a643014d7906aea429569d7f1ff5",
+      "ledger_items": [
+        "V2-42"
+      ],
+      "cited_by_v2": "conditional",
+      "must_contain": [
+        "prepayment credits are depleted"
+      ]
+    },
+    {
+      "file": "model-drift/track-31937330672-9d41b76.log",
+      "repo": "egnaro9/model-drift",
+      "run_id": 31937330672,
+      "run_attempt": 1,
+      "workflow": "track",
+      "event": "schedule",
+      "html_url": "https://github.com/egnaro9/model-drift/actions/runs/31937330672",
+      "head_sha": "9d41b76d116147352fef92d61a9f0adf9f2c0a9f",
+      "head_branch": "main",
+      "run_created_utc": "2026-08-16T08:46:59Z",
+      "conclusion": "success",
+      "expires_utc_estimate": "2026-11-14T08:46:59Z",
+      "fetched_utc": "2026-09-18T02:31:42Z",
+      "bytes": 43616,
+      "sha256": "0141d00c0b82571bf0583982385312961f5efdd5bd3da76f7defaa18760e800e",
+      "ledger_items": [
+        "V2-42"
+      ],
+      "cited_by_v2": "conditional",
+      "must_contain": [
+        "prepayment credits are depleted"
+      ]
+    },
+    {
+      "file": "vac-protocol/vac-31927793408-a17af5c.log",
+      "repo": "egnaro9/vac-protocol",
+      "run_id": 31927793408,
+      "run_attempt": 1,
+      "workflow": "vac",
+      "event": "push",
+      "html_url": "https://github.com/egnaro9/vac-protocol/actions/runs/31927793408",
+      "head_sha": "a17af5cbcac6e503f8cefc94114299436063aae5",
+      "head_branch": "main",
+      "run_created_utc": "2026-08-16T04:55:51Z",
+      "conclusion": "failure",
+      "expires_utc_estimate": "2026-11-14T04:55:51Z",
+      "fetched_utc": "2026-09-18T02:31:42Z",
+      "bytes": 185663,
+      "sha256": "d321f01a9d1a6f7ced8573c35a7b246902c06a9d0b8c23f94947434c796712b0",
+      "ledger_items": [
+        "V2-34"
+      ],
+      "cited_by_v2": "planned",
+      "must_contain": [
+        "MUTATION SCORE: 123/133 = 0.925",
+        "baseline clean; 133 refusal sites (1 excluded, see EXCLUDE)",
+        "below the floor 0.940",
+        "[132/133] L1348 *** SURVIVED ***"
+      ]
+    },
+    {
+      "file": "vac-protocol/replay-32695974153-50e613e.log",
+      "repo": "egnaro9/vac-protocol",
+      "run_id": 32695974153,
+      "run_attempt": 1,
+      "workflow": "replay",
+      "event": "schedule",
+      "html_url": "https://github.com/egnaro9/vac-protocol/actions/runs/32695974153",
+      "head_sha": "50e613e29f2c47fbb3022dae17ecb70048c63b32",
+      "head_branch": "main",
+      "run_created_utc": "2026-08-24T06:06:50Z",
+      "conclusion": "failure",
+      "expires_utc_estimate": "2026-11-22T06:06:50Z",
+      "fetched_utc": "2026-09-18T02:31:42Z",
+      "bytes": 578955,
+      "sha256": "71c36ba21084d3016b2e91d1e5afe0cda6bd3574f50797274cc78f16040f00ca",
+      "ledger_items": [
+        "V2-46"
+      ],
+      "cited_by_v2": "planned",
+      "must_contain": [
+        "PENDING evalmut/vac: refused at generation: structural: evidence-unchecked",
+        "PENDING model-drift/vac: refused at generation: structural: raw-aggregate-mismatch",
+        "Process completed with exit code 1."
+      ]
+    },
+    {
+      "file": "vac-protocol/vac-33159814662-3f49c14.log",
+      "repo": "egnaro9/vac-protocol",
+      "run_id": 33159814662,
+      "run_attempt": 1,
+      "workflow": "vac",
+      "event": "push",
+      "html_url": "https://github.com/egnaro9/vac-protocol/actions/runs/33159814662",
+      "head_sha": "3f49c148dca7683885021e2c2c58fffe22cd6422",
+      "head_branch": "main",
+      "run_created_utc": "2026-08-28T09:32:49Z",
+      "conclusion": "success",
+      "expires_utc_estimate": "2026-11-26T09:32:49Z",
+      "fetched_utc": "2026-09-18T02:31:42Z",
+      "bytes": 201294,
+      "sha256": "23a64fdd45254e56589bc17a13a0431bdf71d4bb6e98027b8bb78fee0f312d4b",
+      "ledger_items": [
+        "V2-07"
+      ],
+      "cited_by_v2": "planned",
+      "must_contain": [
+        "MUTATION SCORE: 152/152 = 1.000"
+      ]
+    },
+    {
+      "file": "vac-protocol/vac-33161590378-0bca936.log",
+      "repo": "egnaro9/vac-protocol",
+      "run_id": 33161590378,
+      "run_attempt": 1,
+      "workflow": "vac",
+      "event": "push",
+      "html_url": "https://github.com/egnaro9/vac-protocol/actions/runs/33161590378",
+      "head_sha": "0bca93645ed09942ad64469509da701a67316cba",
+      "head_branch": "main",
+      "run_created_utc": "2026-08-28T09:59:18Z",
+      "conclusion": "success",
+      "expires_utc_estimate": "2026-11-26T09:59:18Z",
+      "fetched_utc": "2026-09-18T02:31:42Z",
+      "bytes": 201266,
+      "sha256": "de01406ba851726365c3d44653eb4d0118b5ff3116b70508995c02fb91145203",
+      "ledger_items": [
+        "V2-07"
+      ],
+      "cited_by_v2": "planned",
+      "must_contain": [
+        "MUTATION SCORE: 152/152 = 1.000"
+      ]
+    },
+    {
+      "file": "vac-protocol/vac-33163033473-2e5734b.log",
+      "repo": "egnaro9/vac-protocol",
+      "run_id": 33163033473,
+      "run_attempt": 1,
+      "workflow": "vac",
+      "event": "push",
+      "html_url": "https://github.com/egnaro9/vac-protocol/actions/runs/33163033473",
+      "head_sha": "2e5734b1bf26fd93ac1de7243c6d39348371a233",
+      "head_branch": "main",
+      "run_created_utc": "2026-08-28T10:21:16Z",
+      "conclusion": "success",
+      "expires_utc_estimate": "2026-11-26T10:21:16Z",
+      "fetched_utc": "2026-09-18T02:31:42Z",
+      "bytes": 201732,
+      "sha256": "ed3c9b4a973fdfbeb311f581f687685a515923dae8327976f9c7d69a5b1a95f6",
+      "ledger_items": [
+        "V2-07"
+      ],
+      "cited_by_v2": "planned",
+      "must_contain": [
+        "MUTATION SCORE: 157/157 = 1.000"
+      ]
+    },
+    {
+      "file": "vac-protocol/vac-33197719579-08f995b.log",
+      "repo": "egnaro9/vac-protocol",
+      "run_id": 33197719579,
+      "run_attempt": 1,
+      "workflow": "vac",
+      "event": "push",
+      "html_url": "https://github.com/egnaro9/vac-protocol/actions/runs/33197719579",
+      "head_sha": "08f995bd493a170cec01c153a5d9482317caaa0c",
+      "head_branch": "spec/v0.2-scope-binding",
+      "run_created_utc": "2026-08-28T18:05:35Z",
+      "conclusion": "success",
+      "expires_utc_estimate": "2026-11-26T18:05:35Z",
+      "fetched_utc": "2026-09-18T02:31:42Z",
+      "bytes": 238203,
+      "sha256": "0951fbabf613b2911088bebe58794e0675ec4db618f14436d6fb43c48224167f",
+      "ledger_items": [
+        "V2-07"
+      ],
+      "cited_by_v2": "planned",
+      "must_contain": [
+        "MUTATION SCORE: 161/161 = 1.000"
+      ]
+    },
+    {
+      "file": "vac-protocol/vac-33198957969-f1511f5.log",
+      "repo": "egnaro9/vac-protocol",
+      "run_id": 33198957969,
+      "run_attempt": 1,
+      "workflow": "vac",
+      "event": "push",
+      "html_url": "https://github.com/egnaro9/vac-protocol/actions/runs/33198957969",
+      "head_sha": "f1511f523e37aeb9304d9f69c5358610ad0666ec",
+      "head_branch": "main",
+      "run_created_utc": "2026-08-28T18:22:03Z",
+      "conclusion": "success",
+      "expires_utc_estimate": "2026-11-26T18:22:03Z",
+      "fetched_utc": "2026-09-18T02:31:42Z",
+      "bytes": 209819,
+      "sha256": "3b2b5d6d120a6f810ade2467a338c77fbdc44d4a2058d9a81e8a70a7d850ee90",
+      "ledger_items": [
+        "V2-07"
+      ],
+      "cited_by_v2": "planned",
+      "must_contain": [
+        "MUTATION SCORE: 161/161 = 1.000"
+      ]
+    },
+    {
+      "file": "vac-protocol/vac-33297411944-652e71b.log",
+      "repo": "egnaro9/vac-protocol",
+      "run_id": 33297411944,
+      "run_attempt": 1,
+      "workflow": "vac",
+      "event": "push",
+      "html_url": "https://github.com/egnaro9/vac-protocol/actions/runs/33297411944",
+      "head_sha": "652e71bc0dcf39aa26c01995d94741325325eff5",
+      "head_branch": "main",
+      "run_created_utc": "2026-08-30T06:39:56Z",
+      "conclusion": "success",
+      "expires_utc_estimate": "2026-11-28T06:39:56Z",
+      "fetched_utc": "2026-09-18T02:31:42Z",
+      "bytes": 210269,
+      "sha256": "3f30cf2d4271946098436013f8ada284f769dcdfc973cee1cba09a293ccf4835",
+      "ledger_items": [
+        "V2-07"
+      ],
+      "cited_by_v2": "planned",
+      "must_contain": [
+        "MUTATION SCORE: 166/166 = 1.000"
+      ]
+    },
+    {
+      "file": "vac-protocol/vac-33369255102-6a05245.log",
+      "repo": "egnaro9/vac-protocol",
+      "run_id": 33369255102,
+      "run_attempt": 1,
+      "workflow": "vac",
+      "event": "push",
+      "html_url": "https://github.com/egnaro9/vac-protocol/actions/runs/33369255102",
+      "head_sha": "6a05245337cbbcebf1e06180e798ad568848ad2e",
+      "head_branch": "main",
+      "run_created_utc": "2026-08-31T07:38:17Z",
+      "conclusion": "success",
+      "expires_utc_estimate": "2026-11-29T07:38:17Z",
+      "fetched_utc": "2026-09-18T02:31:42Z",
+      "bytes": 210550,
+      "sha256": "ff1cc1f5c56ca5a5ad1f65b520872537b185b67fbde2fbccfd67cc7ff551b705",
+      "ledger_items": [
+        "V2-07"
+      ],
+      "cited_by_v2": "planned",
+      "must_contain": [
+        "MUTATION SCORE: 166/166 = 1.000"
+      ]
+    },
+    {
+      "file": "vac-protocol/replay-33388729376-6a05245.log",
+      "repo": "egnaro9/vac-protocol",
+      "run_id": 33388729376,
+      "run_attempt": 1,
+      "workflow": "replay",
+      "event": "schedule",
+      "html_url": "https://github.com/egnaro9/vac-protocol/actions/runs/33388729376",
+      "head_sha": "6a05245337cbbcebf1e06180e798ad568848ad2e",
+      "head_branch": "main",
+      "run_created_utc": "2026-08-31T11:48:57Z",
+      "conclusion": "failure",
+      "expires_utc_estimate": "2026-11-29T11:48:57Z",
+      "fetched_utc": "2026-09-18T02:31:42Z",
+      "bytes": 643532,
+      "sha256": "17f1da73932fd1f9890c1089ea0555722031ee52e952b6198eb17497d975dde8",
+      "ledger_items": [
+        "V2-46"
+      ],
+      "cited_by_v2": "planned",
+      "must_contain": [
+        "RuntimeError: unexpected file in the closed bundle",
+        "Process completed with exit code 1."
+      ]
+    },
+    {
+      "file": "vac-protocol/replay-34112794528-6a05245.log",
+      "repo": "egnaro9/vac-protocol",
+      "run_id": 34112794528,
+      "run_attempt": 1,
+      "workflow": "replay",
+      "event": "schedule",
+      "html_url": "https://github.com/egnaro9/vac-protocol/actions/runs/34112794528",
+      "head_sha": "6a05245337cbbcebf1e06180e798ad568848ad2e",
+      "head_branch": "main",
+      "run_created_utc": "2026-09-07T10:41:54Z",
+      "conclusion": "failure",
+      "expires_utc_estimate": "2026-12-06T10:41:54Z",
+      "fetched_utc": "2026-09-18T02:31:42Z",
+      "bytes": 643511,
+      "sha256": "032c400e3c568c7481f398d155a8183dd8783bb6403eeb3b7836c73a93257bb6",
+      "ledger_items": [
+        "V2-46"
+      ],
+      "cited_by_v2": "planned",
+      "must_contain": [
+        "RuntimeError: unexpected file in the closed bundle",
+        "Process completed with exit code 1."
+      ]
+    },
+    {
+      "file": "vac-protocol/vac-34733162559-0b44bf2.log",
+      "repo": "egnaro9/vac-protocol",
+      "run_id": 34733162559,
+      "run_attempt": 1,
+      "workflow": "vac",
+      "event": "push",
+      "html_url": "https://github.com/egnaro9/vac-protocol/actions/runs/34733162559",
+      "head_sha": "0b44bf216a604a4e27926f6093898130cfe93b51",
+      "head_branch": "main",
+      "run_created_utc": "2026-09-13T02:29:11Z",
+      "conclusion": "success",
+      "expires_utc_estimate": "2026-12-12T02:29:11Z",
+      "fetched_utc": "2026-09-18T02:31:42Z",
+      "bytes": 210840,
+      "sha256": "863e7b7c3ad8f3970cf03de1b7ec23f3993926eff741118ffe439d8cf9bffefd",
+      "ledger_items": [
+        "V2-07"
+      ],
+      "cited_by_v2": "planned",
+      "must_contain": [
+        "MUTATION SCORE: 166/166 = 1.000"
+      ]
+    },
+    {
+      "file": "vac-protocol/replay-34835695565-0b44bf2.log",
+      "repo": "egnaro9/vac-protocol",
+      "run_id": 34835695565,
+      "run_attempt": 1,
+      "workflow": "replay",
+      "event": "schedule",
+      "html_url": "https://github.com/egnaro9/vac-protocol/actions/runs/34835695565",
+      "head_sha": "0b44bf216a604a4e27926f6093898130cfe93b51",
+      "head_branch": "main",
+      "run_created_utc": "2026-09-14T10:57:01Z",
+      "conclusion": "success",
+      "expires_utc_estimate": "2026-12-13T10:57:01Z",
+      "fetched_utc": "2026-09-18T02:31:42Z",
+      "bytes": 674653,
+      "sha256": "490678f4666accad1e9daa3a7467f84bb813edf9dc8178a6f58b8c80737f76d5",
+      "ledger_items": [
+        "V2-46"
+      ],
+      "cited_by_v2": "planned",
+      "must_contain": [
+        "PASS (bundle)",
+        "replay block at the pinned issuer_commit:"
+      ]
+    },
+    {
+      "file": "vac-protocol/vac-35261829754-c441011.log",
+      "repo": "egnaro9/vac-protocol",
+      "run_id": 35261829754,
+      "run_attempt": 1,
+      "workflow": "vac",
+      "event": "push",
+      "html_url": "https://github.com/egnaro9/vac-protocol/actions/runs/35261829754",
+      "head_sha": "c4410114a470d2aca19b9f277efc3895a87a0d80",
+      "head_branch": "main",
+      "run_created_utc": "2026-09-17T18:56:05Z",
+      "conclusion": "success",
+      "expires_utc_estimate": "2026-12-16T18:56:05Z",
+      "fetched_utc": "2026-09-18T02:31:42Z",
+      "bytes": 211309,
+      "sha256": "59cbbba41dd8c8403bdc4fd8a1b632f331c72952d754568b525c26591e17f3b5",
+      "ledger_items": [
+        "V2-07",
+        "V2-46"
+      ],
+      "cited_by_v2": "planned",
+      "must_contain": [
+        "MUTATION SCORE: 168/168 = 1.000",
+        "445 passed, 21 skipped, 4 xfailed"
+      ]
+    },
+    {
+      "file": "vac-protocol/registry-35261829963-c441011.log",
+      "repo": "egnaro9/vac-protocol",
+      "run_id": 35261829963,
+      "run_attempt": 1,
+      "workflow": "registry",
+      "event": "push",
+      "html_url": "https://github.com/egnaro9/vac-protocol/actions/runs/35261829963",
+      "head_sha": "c4410114a470d2aca19b9f277efc3895a87a0d80",
+      "head_branch": "main",
+      "run_created_utc": "2026-09-17T18:56:05Z",
+      "conclusion": "success",
+      "expires_utc_estimate": "2026-12-16T18:56:05Z",
+      "fetched_utc": "2026-09-18T02:31:42Z",
+      "bytes": 98499,
+      "sha256": "954688561404a0a42b1a7c464c927a0588829584f7b70f814ad2e171c4963453",
+      "ledger_items": [
+        "V2-46"
+      ],
+      "cited_by_v2": "planned",
+      "must_contain": [
+        "--check-fetched"
+      ]
+    }
+  ]
+}

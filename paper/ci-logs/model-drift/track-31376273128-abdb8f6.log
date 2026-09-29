@@ -1,0 +1,376 @@
+probe	UNKNOWN STEP	﻿2026-08-10T09:48:02.5729365Z Current runner version: '2.336.0'
+probe	UNKNOWN STEP	2026-08-10T09:48:02.5749450Z ##[group]Runner Image Provisioner
+probe	UNKNOWN STEP	2026-08-10T09:48:02.5750503Z Hosted Compute Agent
+probe	UNKNOWN STEP	2026-08-10T09:48:02.5751150Z Version: 20260707.563
+probe	UNKNOWN STEP	2026-08-10T09:48:02.5751791Z Commit: 02667638d2b423fbc733a8e32a88b44996a3ba6e
+probe	UNKNOWN STEP	2026-08-10T09:48:02.5752477Z Build Date: 2026-07-07T19:33:50Z
+probe	UNKNOWN STEP	2026-08-10T09:48:02.5753169Z Worker ID: {6cb9d21a-7049-42bd-a3ed-528f305dd710}
+probe	UNKNOWN STEP	2026-08-10T09:48:02.5753914Z Azure Region: westus3
+probe	UNKNOWN STEP	2026-08-10T09:48:02.5754486Z ##[endgroup]
+probe	UNKNOWN STEP	2026-08-10T09:48:02.5755725Z ##[group]Operating System
+probe	UNKNOWN STEP	2026-08-10T09:48:02.5756649Z Ubuntu
+probe	UNKNOWN STEP	2026-08-10T09:48:02.5757181Z 24.04.4
+probe	UNKNOWN STEP	2026-08-10T09:48:02.5757691Z LTS
+probe	UNKNOWN STEP	2026-08-10T09:48:02.5758255Z ##[endgroup]
+probe	UNKNOWN STEP	2026-08-10T09:48:02.5758786Z ##[group]Runner Image
+probe	UNKNOWN STEP	2026-08-10T09:48:02.5759403Z Image: ubuntu-24.04
+probe	UNKNOWN STEP	2026-08-10T09:48:02.5759956Z Version: 20260720.247.2
+probe	UNKNOWN STEP	2026-08-10T09:48:02.5761301Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260720.247/images/ubuntu/Ubuntu2404-Readme.md
+probe	UNKNOWN STEP	2026-08-10T09:48:02.5762709Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260720.247
+probe	UNKNOWN STEP	2026-08-10T09:48:02.5763663Z ##[endgroup]
+probe	UNKNOWN STEP	2026-08-10T09:48:02.5764811Z ##[group]GITHUB_TOKEN Permissions
+probe	UNKNOWN STEP	2026-08-10T09:48:02.5766852Z Contents: write
+probe	UNKNOWN STEP	2026-08-10T09:48:02.5767384Z Issues: write
+probe	UNKNOWN STEP	2026-08-10T09:48:02.5768021Z Metadata: read
+probe	UNKNOWN STEP	2026-08-10T09:48:02.5768613Z ##[endgroup]
+probe	UNKNOWN STEP	2026-08-10T09:48:02.5770881Z Secret source: Actions
+probe	UNKNOWN STEP	2026-08-10T09:48:02.5771883Z Prepare workflow directory
+probe	UNKNOWN STEP	2026-08-10T09:48:02.6023931Z Prepare all required actions
+probe	UNKNOWN STEP	2026-08-10T09:48:02.6066405Z Getting action download info
+probe	UNKNOWN STEP	2026-08-10T09:48:02.9064579Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+probe	UNKNOWN STEP	2026-08-10T09:48:03.5444095Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+probe	UNKNOWN STEP	2026-08-10T09:48:03.6372025Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+probe	UNKNOWN STEP	2026-08-10T09:48:03.8269464Z Complete job name: probe
+probe	UNKNOWN STEP	2026-08-10T09:48:03.8936654Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+probe	UNKNOWN STEP	2026-08-10T09:48:03.8944660Z ##[group]Run actions/checkout@v4
+probe	UNKNOWN STEP	2026-08-10T09:48:03.8945458Z with:
+probe	UNKNOWN STEP	2026-08-10T09:48:03.8946050Z   repository: egnaro9/model-drift
+probe	UNKNOWN STEP	2026-08-10T09:48:03.8949807Z   token: ***
+probe	UNKNOWN STEP	2026-08-10T09:48:03.8950497Z   ssh-strict: true
+probe	UNKNOWN STEP	2026-08-10T09:48:03.8951037Z   ssh-user: git
+probe	UNKNOWN STEP	2026-08-10T09:48:03.8951643Z   persist-credentials: true
+probe	UNKNOWN STEP	2026-08-10T09:48:03.8952199Z   clean: true
+probe	UNKNOWN STEP	2026-08-10T09:48:03.8952775Z   sparse-checkout-cone-mode: true
+probe	UNKNOWN STEP	2026-08-10T09:48:03.8953392Z   fetch-depth: 1
+probe	UNKNOWN STEP	2026-08-10T09:48:03.8953923Z   fetch-tags: false
+probe	UNKNOWN STEP	2026-08-10T09:48:03.8954503Z   show-progress: true
+probe	UNKNOWN STEP	2026-08-10T09:48:03.8955032Z   lfs: false
+probe	UNKNOWN STEP	2026-08-10T09:48:03.8955668Z   submodules: false
+probe	UNKNOWN STEP	2026-08-10T09:48:03.8956252Z   set-safe-directory: true
+probe	UNKNOWN STEP	2026-08-10T09:48:03.8956866Z   allow-unsafe-pr-checkout: false
+probe	UNKNOWN STEP	2026-08-10T09:48:03.8957658Z ##[endgroup]
+probe	UNKNOWN STEP	2026-08-10T09:48:03.9886367Z Syncing repository: egnaro9/model-drift
+probe	UNKNOWN STEP	2026-08-10T09:48:03.9888507Z ##[group]Getting Git version info
+probe	UNKNOWN STEP	2026-08-10T09:48:03.9889460Z Working directory is '/home/runner/work/model-drift/model-drift'
+probe	UNKNOWN STEP	2026-08-10T09:48:03.9891131Z [command]/usr/bin/git version
+probe	UNKNOWN STEP	2026-08-10T09:48:03.9920708Z git version 2.54.0
+probe	UNKNOWN STEP	2026-08-10T09:48:03.9939141Z ##[endgroup]
+probe	UNKNOWN STEP	2026-08-10T09:48:03.9955427Z Temporarily overriding HOME='/home/runner/work/_temp/57a5e0ce-be8e-445f-8ed1-a7dba8540adc' before making global git config changes
+probe	UNKNOWN STEP	2026-08-10T09:48:03.9958008Z Adding repository directory to the temporary git global config as a safe directory
+probe	UNKNOWN STEP	2026-08-10T09:48:03.9960596Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/model-drift/model-drift
+probe	UNKNOWN STEP	2026-08-10T09:48:03.9995042Z Deleting the contents of '/home/runner/work/model-drift/model-drift'
+probe	UNKNOWN STEP	2026-08-10T09:48:03.9998349Z ##[group]Initializing the repository
+probe	UNKNOWN STEP	2026-08-10T09:48:04.0004285Z [command]/usr/bin/git init /home/runner/work/model-drift/model-drift
+probe	UNKNOWN STEP	2026-08-10T09:48:04.0083042Z hint: Using 'master' as the name for the initial branch. This default branch name
+probe	UNKNOWN STEP	2026-08-10T09:48:04.0085043Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+probe	UNKNOWN STEP	2026-08-10T09:48:04.0087447Z hint: to use in all of your new repositories, which will suppress this warning,
+probe	UNKNOWN STEP	2026-08-10T09:48:04.0089080Z hint: call:
+probe	UNKNOWN STEP	2026-08-10T09:48:04.0089814Z hint:
+probe	UNKNOWN STEP	2026-08-10T09:48:04.0091023Z hint: 	git config --global init.defaultBranch <name>
+probe	UNKNOWN STEP	2026-08-10T09:48:04.0092964Z hint:
+probe	UNKNOWN STEP	2026-08-10T09:48:04.0094010Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+probe	UNKNOWN STEP	2026-08-10T09:48:04.0095491Z hint: 'development'. The just-created branch can be renamed via this command:
+probe	UNKNOWN STEP	2026-08-10T09:48:04.0096618Z hint:
+probe	UNKNOWN STEP	2026-08-10T09:48:04.0097429Z hint: 	git branch -m <name>
+probe	UNKNOWN STEP	2026-08-10T09:48:04.0098787Z hint:
+probe	UNKNOWN STEP	2026-08-10T09:48:04.0099590Z hint: Disable this message with "git config set advice.defaultBranchName false"
+probe	UNKNOWN STEP	2026-08-10T09:48:04.0101005Z Initialized empty Git repository in /home/runner/work/model-drift/model-drift/.git/
+probe	UNKNOWN STEP	2026-08-10T09:48:04.0103015Z [command]/usr/bin/git remote add origin https://github.com/egnaro9/model-drift
+probe	UNKNOWN STEP	2026-08-10T09:48:04.0123407Z ##[endgroup]
+probe	UNKNOWN STEP	2026-08-10T09:48:04.0124943Z ##[group]Disabling automatic garbage collection
+probe	UNKNOWN STEP	2026-08-10T09:48:04.0126232Z [command]/usr/bin/git config --local gc.auto 0
+probe	UNKNOWN STEP	2026-08-10T09:48:04.0152288Z ##[endgroup]
+probe	UNKNOWN STEP	2026-08-10T09:48:04.0153983Z ##[group]Setting up auth
+probe	UNKNOWN STEP	2026-08-10T09:48:04.0157593Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+probe	UNKNOWN STEP	2026-08-10T09:48:04.0185167Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+probe	UNKNOWN STEP	2026-08-10T09:48:04.0445513Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+probe	UNKNOWN STEP	2026-08-10T09:48:04.0472116Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+probe	UNKNOWN STEP	2026-08-10T09:48:04.0661751Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+probe	UNKNOWN STEP	2026-08-10T09:48:04.0691840Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+probe	UNKNOWN STEP	2026-08-10T09:48:04.0866741Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+probe	UNKNOWN STEP	2026-08-10T09:48:04.0894565Z ##[endgroup]
+probe	UNKNOWN STEP	2026-08-10T09:48:04.0896002Z ##[group]Fetching the repository
+probe	UNKNOWN STEP	2026-08-10T09:48:04.0903487Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +abdb8f63260fe0b86c587adf7dd0475e375bb15d:refs/remotes/origin/main
+probe	UNKNOWN STEP	2026-08-10T09:48:04.9115898Z From https://github.com/egnaro9/model-drift
+probe	UNKNOWN STEP	2026-08-10T09:48:04.9118681Z  * [new ref]         abdb8f63260fe0b86c587adf7dd0475e375bb15d -> origin/main
+probe	UNKNOWN STEP	2026-08-10T09:48:04.9139526Z ##[endgroup]
+probe	UNKNOWN STEP	2026-08-10T09:48:04.9141869Z ##[group]Determining the checkout info
+probe	UNKNOWN STEP	2026-08-10T09:48:04.9144161Z ##[endgroup]
+probe	UNKNOWN STEP	2026-08-10T09:48:04.9145958Z [command]/usr/bin/git sparse-checkout disable
+probe	UNKNOWN STEP	2026-08-10T09:48:04.9183839Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+probe	UNKNOWN STEP	2026-08-10T09:48:04.9213111Z ##[group]Checking out the ref
+probe	UNKNOWN STEP	2026-08-10T09:48:04.9216716Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+probe	UNKNOWN STEP	2026-08-10T09:48:04.9287156Z Switched to a new branch 'main'
+probe	UNKNOWN STEP	2026-08-10T09:48:04.9289380Z branch 'main' set up to track 'origin/main'.
+probe	UNKNOWN STEP	2026-08-10T09:48:04.9295736Z ##[endgroup]
+probe	UNKNOWN STEP	2026-08-10T09:48:04.9356378Z [command]/usr/bin/git log -1 --format=%H
+probe	UNKNOWN STEP	2026-08-10T09:48:04.9374767Z abdb8f63260fe0b86c587adf7dd0475e375bb15d
+probe	UNKNOWN STEP	2026-08-10T09:48:04.9687764Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+probe	UNKNOWN STEP	2026-08-10T09:48:04.9692868Z ##[group]Run actions/setup-python@v5
+probe	UNKNOWN STEP	2026-08-10T09:48:04.9693971Z with:
+probe	UNKNOWN STEP	2026-08-10T09:48:04.9694840Z   python-version: 3.12
+probe	UNKNOWN STEP	2026-08-10T09:48:04.9695852Z   check-latest: false
+probe	UNKNOWN STEP	2026-08-10T09:48:04.9704217Z   token: ***
+probe	UNKNOWN STEP	2026-08-10T09:48:04.9705127Z   update-environment: true
+probe	UNKNOWN STEP	2026-08-10T09:48:04.9706155Z   allow-prereleases: false
+probe	UNKNOWN STEP	2026-08-10T09:48:04.9707225Z   freethreaded: false
+probe	UNKNOWN STEP	2026-08-10T09:48:04.9708172Z ##[endgroup]
+probe	UNKNOWN STEP	2026-08-10T09:48:05.0834606Z ##[group]Installed versions
+probe	UNKNOWN STEP	2026-08-10T09:48:05.1365904Z (node:2031) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+probe	UNKNOWN STEP	2026-08-10T09:48:05.1370344Z (Use `node --trace-deprecation ...` to show where the warning was created)
+probe	UNKNOWN STEP	2026-08-10T09:48:05.1373036Z Successfully set up CPython (3.12.13)
+probe	UNKNOWN STEP	2026-08-10T09:48:05.1375412Z ##[endgroup]
+probe	UNKNOWN STEP	2026-08-10T09:48:05.1535817Z ##[group]Run pip install -e .
+probe	UNKNOWN STEP	2026-08-10T09:48:05.1537103Z ^[[36;1mpip install -e .^[[0m
+probe	UNKNOWN STEP	2026-08-10T09:48:05.2463798Z shell: /usr/bin/bash -e {0}
+probe	UNKNOWN STEP	2026-08-10T09:48:05.2464946Z env:
+probe	UNKNOWN STEP	2026-08-10T09:48:05.2466020Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+probe	UNKNOWN STEP	2026-08-10T09:48:05.2468040Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+probe	UNKNOWN STEP	2026-08-10T09:48:05.2469764Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+probe	UNKNOWN STEP	2026-08-10T09:48:05.2471455Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+probe	UNKNOWN STEP	2026-08-10T09:48:05.2473088Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+probe	UNKNOWN STEP	2026-08-10T09:48:05.2474604Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+probe	UNKNOWN STEP	2026-08-10T09:48:05.2475923Z ##[endgroup]
+probe	UNKNOWN STEP	2026-08-10T09:48:06.8132189Z Obtaining file:///home/runner/work/model-drift/model-drift
+probe	UNKNOWN STEP	2026-08-10T09:48:06.8144870Z   Installing build dependencies: started
+probe	UNKNOWN STEP	2026-08-10T09:48:07.6441410Z   Installing build dependencies: finished with status 'done'
+probe	UNKNOWN STEP	2026-08-10T09:48:07.6445307Z   Checking if build backend supports build_editable: started
+probe	UNKNOWN STEP	2026-08-10T09:48:07.9437060Z   Checking if build backend supports build_editable: finished with status 'done'
+probe	UNKNOWN STEP	2026-08-10T09:48:07.9442784Z   Getting requirements to build editable: started
+probe	UNKNOWN STEP	2026-08-10T09:48:08.2819964Z   Getting requirements to build editable: finished with status 'done'
+probe	UNKNOWN STEP	2026-08-10T09:48:08.2827667Z   Preparing editable metadata (pyproject.toml): started
+probe	UNKNOWN STEP	2026-08-10T09:48:08.4411836Z   Preparing editable metadata (pyproject.toml): finished with status 'done'
+probe	UNKNOWN STEP	2026-08-10T09:48:08.4439196Z Building wheels for collected packages: model-drift
+probe	UNKNOWN STEP	2026-08-10T09:48:08.4444989Z   Building editable for model-drift (pyproject.toml): started
+probe	UNKNOWN STEP	2026-08-10T09:48:08.6132895Z   Building editable for model-drift (pyproject.toml): finished with status 'done'
+probe	UNKNOWN STEP	2026-08-10T09:48:08.6138810Z   Created wheel for model-drift: filename=model_drift-0.1.0-0.editable-py3-none-any.whl size=3967 sha256=2db3d4861ae1b721f72eecae9ac006a4e0647f13fb66f54fcc50a49325e1cacb
+probe	UNKNOWN STEP	2026-08-10T09:48:08.6140305Z   Stored in directory: /tmp/pip-ephem-wheel-cache-9z_n2pha/wheels/3b/1c/26/eeba03a43413dfcbd0a499f2ec6eb43a2866fcc6674d7be3f7
+probe	UNKNOWN STEP	2026-08-10T09:48:08.6163575Z Successfully built model-drift
+probe	UNKNOWN STEP	2026-08-10T09:48:08.6218126Z Installing collected packages: model-drift
+probe	UNKNOWN STEP	2026-08-10T09:48:08.6371088Z Successfully installed model-drift-0.1.0
+probe	UNKNOWN STEP	2026-08-10T09:48:08.6378563Z 
+probe	UNKNOWN STEP	2026-08-10T09:48:08.6379057Z [notice] A new release of pip is available: 26.1.2 -> 26.2.1
+probe	UNKNOWN STEP	2026-08-10T09:48:08.6379699Z [notice] To update, run: pip install --upgrade pip
+probe	UNKNOWN STEP	2026-08-10T09:48:08.6906730Z ##[group]Run python -m modeldrift.identity
+probe	UNKNOWN STEP	2026-08-10T09:48:08.6907190Z ^[[36;1mpython -m modeldrift.identity^[[0m
+probe	UNKNOWN STEP	2026-08-10T09:48:08.6933299Z shell: /usr/bin/bash -e {0}
+probe	UNKNOWN STEP	2026-08-10T09:48:08.6933835Z env:
+probe	UNKNOWN STEP	2026-08-10T09:48:08.6934185Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+probe	UNKNOWN STEP	2026-08-10T09:48:08.6934733Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+probe	UNKNOWN STEP	2026-08-10T09:48:08.6935172Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+probe	UNKNOWN STEP	2026-08-10T09:48:08.6935629Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+probe	UNKNOWN STEP	2026-08-10T09:48:08.6936080Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+probe	UNKNOWN STEP	2026-08-10T09:48:08.6936536Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+probe	UNKNOWN STEP	2026-08-10T09:48:08.6937587Z   OPENAI_API_KEY: ***
+probe	UNKNOWN STEP	2026-08-10T09:48:08.6938179Z   ANTHROPIC_API_KEY: ***
+probe	UNKNOWN STEP	2026-08-10T09:48:08.6938628Z   GEMINI_API_KEY: ***
+probe	UNKNOWN STEP	2026-08-10T09:48:08.6939110Z   XAI_API_KEY: ***
+probe	UNKNOWN STEP	2026-08-10T09:48:08.6939671Z   GROQ_API_KEY: ***
+probe	UNKNOWN STEP	2026-08-10T09:48:08.6939957Z ##[endgroup]
+probe	UNKNOWN STEP	2026-08-10T09:49:16.5854803Z   Mock (stable)              ok — served mock
+probe	UNKNOWN STEP	2026-08-10T09:49:16.5857416Z   GPT-5                      ok — served gpt-5-2025-08-07
+probe	UNKNOWN STEP	2026-08-10T09:49:16.5858374Z   GPT-5 mini                 ok — served gpt-5-mini-2025-08-07
+probe	UNKNOWN STEP	2026-08-10T09:49:16.5859215Z   GPT-4o mini                ok — served gpt-4o-mini-2024-07-18
+probe	UNKNOWN STEP	2026-08-10T09:49:16.5860384Z   GPT-5 nano                 ok — served gpt-5-nano-2025-08-07
+probe	UNKNOWN STEP	2026-08-10T09:49:16.5861252Z   Claude Fable 5             ok — served claude-fable-5
+probe	UNKNOWN STEP	2026-08-10T09:49:16.5862186Z   Claude Opus 4.8            ok — served claude-opus-4-8
+probe	UNKNOWN STEP	2026-08-10T09:49:16.5863227Z   Claude Sonnet 5            ok — served claude-sonnet-5
+probe	UNKNOWN STEP	2026-08-10T09:49:16.5864196Z   Claude Haiku 4.5           ok — served claude-haiku-4-5-20251001
+probe	UNKNOWN STEP	2026-08-10T09:49:16.5866316Z   Gemini 3.1 Pro             — call failed (reliability, not identity): https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-pro-preview:generateContent?key=AQ.Ab8RN6Ia
+probe	UNKNOWN STEP	2026-08-10T09:49:16.5868174Z   Gemini 3.5 Flash           — call failed (reliability, not identity): https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=AQ.Ab8RN6IadeomJJ
+probe	UNKNOWN STEP	2026-08-10T09:49:16.5870042Z   Gemini 3.1 Flash-Lite      — call failed (reliability, not identity): https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent?key=AQ.Ab8RN6Iad
+probe	UNKNOWN STEP	2026-08-10T09:49:16.5871373Z   Grok 4.5                   ok — served grok-4.5
+probe	UNKNOWN STEP	2026-08-10T09:49:16.5872018Z   Grok 4.3                   ok — served grok-4.3
+probe	UNKNOWN STEP	2026-08-10T09:49:16.5872783Z   Grok 4 Fast                MISMATCH — asked 'grok-4-fast-non-reasoning', served 'grok-4.3'
+probe	UNKNOWN STEP	2026-08-10T09:49:16.5873539Z   Llama 3.3 70B              ok — served llama-3.3-70b-versatile
+probe	UNKNOWN STEP	2026-08-10T09:49:16.5874271Z   Llama 3.1 8B               ok — served llama-3.1-8b-instant
+probe	UNKNOWN STEP	2026-08-10T09:49:16.5874791Z 
+probe	UNKNOWN STEP	2026-08-10T09:49:16.5875027Z 17 checked · 1 mismatch(es) · 0 unverified
+probe	UNKNOWN STEP	2026-08-10T09:49:16.5981867Z ##[error]Process completed with exit code 1.
+probe	UNKNOWN STEP	2026-08-10T09:49:16.6029730Z ##[group]Run python -m modeldrift.run
+probe	UNKNOWN STEP	2026-08-10T09:49:16.6030421Z ^[[36;1mpython -m modeldrift.run^[[0m
+probe	UNKNOWN STEP	2026-08-10T09:49:16.6056002Z shell: /usr/bin/bash -e {0}
+probe	UNKNOWN STEP	2026-08-10T09:49:16.6056401Z env:
+probe	UNKNOWN STEP	2026-08-10T09:49:16.6056757Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+probe	UNKNOWN STEP	2026-08-10T09:49:16.6057365Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+probe	UNKNOWN STEP	2026-08-10T09:49:16.6057809Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+probe	UNKNOWN STEP	2026-08-10T09:49:16.6058257Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+probe	UNKNOWN STEP	2026-08-10T09:49:16.6058651Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+probe	UNKNOWN STEP	2026-08-10T09:49:16.6059061Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+probe	UNKNOWN STEP	2026-08-10T09:49:16.6060482Z   OPENAI_API_KEY: ***
+probe	UNKNOWN STEP	2026-08-10T09:49:16.6061050Z   ANTHROPIC_API_KEY: ***
+probe	UNKNOWN STEP	2026-08-10T09:49:16.6061493Z   GEMINI_API_KEY: ***
+probe	UNKNOWN STEP	2026-08-10T09:49:16.6062024Z   XAI_API_KEY: ***
+probe	UNKNOWN STEP	2026-08-10T09:49:16.6062410Z   GROQ_API_KEY: ***
+probe	UNKNOWN STEP	2026-08-10T09:49:16.6062905Z   EVAL_HISTORY_WRITE_KEY: ***
+probe	UNKNOWN STEP	2026-08-10T09:49:16.6063239Z ##[endgroup]
+probe	UNKNOWN STEP	2026-08-10T11:57:17.5998835Z suite 2026-07-v3 (e76f17b6c56e), 35 tasks
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6000348Z probing 17 model(s) x3 run(s); 0 skipped for lack of an API key
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6000666Z 
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6001959Z   Mock (stable)              acc 100%     ·     0ms ·    5c  (instruction-following 100%, factual-recall 100%, arithmetic 100%, reasoning 100%, formatting 100%, extraction 100%, refusal-calibration 100%, counting 100%, string-manipulation 100%)
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6003840Z   GPT-5                      acc 100%     ·  2324ms ·    5c  (instruction-following 100%, factual-recall 100%, arithmetic 100%, reasoning 100%, formatting 100%, extraction 100%, refusal-calibration 100%, counting 100%, string-manipulation 100%)
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6005633Z   GPT-5 mini                 acc 100%     ·  1649ms ·    5c  (instruction-following 100%, factual-recall 100%, arithmetic 100%, reasoning 100%, formatting 100%, extraction 100%, refusal-calibration 100%, counting 100%, string-manipulation 100%)
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6007394Z   GPT-4o mini                acc 80%     ·   559ms ·   10c  (instruction-following 71%, factual-recall 33%, arithmetic 75%, reasoning 75%, formatting 100%, extraction 100%, refusal-calibration 100%, counting 100%, string-manipulation 100%)
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6008995Z   GPT-5 nano                 acc 100%     ·  1818ms ·    5c  (instruction-following 100%, factual-recall 100%, arithmetic 100%, reasoning 100%, formatting 100%, extraction 100%, refusal-calibration 100%, counting 100%, string-manipulation 100%)
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6011104Z   Claude Fable 5             acc 94% ±3 ·  3635ms ·   14c  (instruction-following 100%, factual-recall 100%, arithmetic 100%, reasoning 100%, formatting 100%, extraction 50%, refusal-calibration 100%, counting 100%, string-manipulation 50%)
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6012347Z   Claude Opus 4.8            acc 94% ±3 ·  1194ms ·    7c  (instruction-following 100%, factual-recall 100%, arithmetic 75%, reasoning 100%, formatting 100%, extraction 100%, refusal-calibration 100%, counting 100%, string-manipulation 50%)
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6013541Z   Claude Sonnet 5            acc 80%     ·  2483ms ·   15c  (instruction-following 100%, factual-recall 33%, arithmetic 75%, reasoning 88%, formatting 100%, extraction 100%, refusal-calibration 100%, counting 0%, string-manipulation 50%)
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6014695Z   Claude Haiku 4.5           acc 86%     ·   680ms ·    7c  (instruction-following 57%, factual-recall 100%, arithmetic 75%, reasoning 88%, formatting 100%, extraction 100%, refusal-calibration 100%, counting 100%, string-manipulation 100%)
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6015833Z   Gemini 3.1 Pro             acc 0%     ·       — ·     —  (instruction-following 0%, factual-recall 0%, arithmetic 0%, reasoning 0%, formatting 0%, extraction 0%, refusal-calibration 0%, counting 0%, string-manipulation 0%)
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6018232Z       ↳ 35/35 failed — first error: https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-pro-preview:generateContent?key=*** -> 429: { "error": { "code": 429, "message": "Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. ", "status": "RESOURCE_EXHAUSTED" } }
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6019498Z       (every call failed — not recorded; fix the key/quota, not the model)
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6020618Z   Gemini 3.5 Flash           acc 0%     ·       — ·     —  (instruction-following 0%, factual-recall 0%, arithmetic 0%, reasoning 0%, formatting 0%, extraction 0%, refusal-calibration 0%, counting 0%, string-manipulation 0%)
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6022980Z       ↳ 35/35 failed — first error: https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=*** -> 429: { "error": { "code": 429, "message": "Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. ", "status": "RESOURCE_EXHAUSTED" } }
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6024296Z       (every call failed — not recorded; fix the key/quota, not the model)
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6025111Z   Gemini 3.1 Flash-Lite      acc 0%     ·       — ·     —  (instruction-following 0%, factual-recall 0%, arithmetic 0%, reasoning 0%, formatting 0%, extraction 0%, refusal-calibration 0%, counting 0%, string-manipulation 0%)
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6026980Z       ↳ 35/35 failed — first error: https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent?key=*** -> 429: { "error": { "code": 429, "message": "Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. ", "status": "RESOURCE_EXHAUSTED" } }
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6028174Z       (every call failed — not recorded; fix the key/quota, not the model)
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6029021Z   Grok 4.5                   acc 100% ±3 ·  2034ms ·    5c  (instruction-following 100%, factual-recall 100%, arithmetic 100%, reasoning 100%, formatting 100%, extraction 100%, refusal-calibration 100%, counting 100%, string-manipulation 100%)
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6030430Z   Grok 4.3                   acc 94% ±11 ·  2058ms ·   31c  (instruction-following 100%, factual-recall 100%, arithmetic 100%, reasoning 100%, formatting 100%, extraction 50%, refusal-calibration 100%, counting 50%, string-manipulation 100%)
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6031611Z   Grok 4 Fast                acc 91%     ·   509ms ·    5c  (instruction-following 100%, factual-recall 100%, arithmetic 100%, reasoning 75%, formatting 100%, extraction 100%, refusal-calibration 100%, counting 100%, string-manipulation 50%)
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6032792Z   Llama 3.3 70B              acc 80%     ·  2001ms ·    6c  (instruction-following 71%, factual-recall 67%, arithmetic 75%, reasoning 75%, formatting 100%, extraction 100%, refusal-calibration 100%, counting 50%, string-manipulation 100%)
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6033950Z   Llama 3.1 8B               acc 57%     ·  2005ms ·   19c  (instruction-following 43%, factual-recall 33%, arithmetic 50%, reasoning 38%, formatting 80%, extraction 100%, refusal-calibration 100%, counting 100%, string-manipulation 50%)
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6034494Z 
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6034623Z wrote latency/verbosity to dashboard/metrics.json
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6034926Z wrote 3 generated claim(s) to dashboard/narrative.json
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6035119Z 
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6035213Z --- per-task flips ---
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6035673Z PROBE ALARM — 102 task/day pair(s) failed across multiple providers at once; suspect the harness, not the models:
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6036189Z   2026-07-27  logic-syllogism  on 5 providers (anthropic, google, meta, openai, xai)
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6036615Z   2026-07-28  logic-syllogism  on 5 providers (anthropic, google, meta, openai, xai)
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6037102Z   2026-07-31  fact-planet  on 5 providers (anthropic, google, meta, openai, xai)
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6037512Z   2026-08-04  logic-syllogism  on 5 providers (anthropic, google, meta, openai, xai)
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6037922Z   2026-08-06  logic-syllogism  on 5 providers (anthropic, google, meta, openai, xai)
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6038406Z 77 task/model pair(s) flipped more than once — the candidates worth investigating:
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6038829Z   xai:grok-4-fast  nth-char  ×11  (broke on 2026-08-08)
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6039176Z   xai:grok-4.3  count-r  ×10  (recovered on 2026-08-10)
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6039525Z   xai:grok-4.3  days-feb-2024  ×8  (recovered on 2026-08-09)
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6039944Z   anthropic:claude-fable-5  float-subtract  ×7  (recovered on 2026-08-10)
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6040631Z   anthropic:claude-sonnet-5  count-s-mississippi  ×7  (broke on 2026-08-06)
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6041045Z   xai:grok-4-fast  logic-syllogism  ×7  (broke on 2026-08-10)
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6041421Z   xai:grok-4-fast  nth-word  ×7  (recovered on 2026-08-06)
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6041758Z   xai:grok-4.3  extract-year  ×7  (broke on 2026-08-10)
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6042319Z 19 single flip(s) — at 2.86 points per task on a 35-task suite, that is the instrument's resolution, not a finding.
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6043016Z     ^ a task failing across providers at once accuses the harness, not the models — check the prompt and grader before writing anything up.
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6138862Z ##[group]Run python -m modeldrift.report \
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6139200Z ^[[36;1mpython -m modeldrift.report \^[[0m
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6139453Z ^[[36;1m  --results RESULTS.md \^[[0m
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6139720Z ^[[36;1m  --alert "$RUNNER_TEMP/alert.md" \^[[0m
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6139989Z ^[[36;1m  --draft "$RUNNER_TEMP/draft.md" \^[[0m
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6140491Z ^[[36;1m  --notes dashboard/notes.json^[[0m
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6165300Z shell: /usr/bin/bash -e {0}
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6165548Z env:
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6165797Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6166173Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6166559Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6166887Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6167218Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6167589Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+probe	UNKNOWN STEP	2026-08-10T11:57:17.6167869Z ##[endgroup]
+probe	UNKNOWN STEP	2026-08-10T11:57:23.1329734Z wrote RESULTS.md
+probe	UNKNOWN STEP	2026-08-10T11:57:23.1330873Z ⚠ 4 regression(s) — writing alert + draft
+probe	UNKNOWN STEP	2026-08-10T11:57:23.1331616Z logged a stub Field Note to dashboard/notes.json
+probe	UNKNOWN STEP	2026-08-10T11:57:23.1501298Z ##[group]Run git config user.name  "github-actions[bot]"
+probe	UNKNOWN STEP	2026-08-10T11:57:23.1501751Z ^[[36;1mgit config user.name  "github-actions[bot]"^[[0m
+probe	UNKNOWN STEP	2026-08-10T11:57:23.1502212Z ^[[36;1mgit config user.email "github-actions[bot]@users.noreply.github.com"^[[0m
+probe	UNKNOWN STEP	2026-08-10T11:57:23.1502785Z ^[[36;1mgit add RESULTS.md dashboard/metrics.json dashboard/narrative.json dashboard/notes.json^[[0m
+probe	UNKNOWN STEP	2026-08-10T11:57:23.1503350Z ^[[36;1mgit diff --cached --quiet && { echo "nothing changed"; exit 0; }^[[0m
+probe	UNKNOWN STEP	2026-08-10T11:57:23.1503800Z ^[[36;1mgit commit -m "chore: update drift standings [skip ci]"^[[0m
+probe	UNKNOWN STEP	2026-08-10T11:57:23.1504248Z ^[[36;1m# A push landing on main while the probe was running used to lose the^[[0m
+probe	UNKNOWN STEP	2026-08-10T11:57:23.1504734Z ^[[36;1m# entire run: this push was rejected as non-fast-forward and `|| true`^[[0m
+probe	UNKNOWN STEP	2026-08-10T11:57:23.1505204Z ^[[36;1m# swallowed it, so a job that had just spent 560 API calls reported^[[0m
+probe	UNKNOWN STEP	2026-08-10T11:57:23.1505711Z ^[[36;1m# success and saved nothing. Rebase onto whatever arrived, then retry.^[[0m
+probe	UNKNOWN STEP	2026-08-10T11:57:23.1506103Z ^[[36;1mfor attempt in 1 2 3; do^[[0m
+probe	UNKNOWN STEP	2026-08-10T11:57:23.1506459Z ^[[36;1m  if git push; then echo "pushed on attempt $attempt"; exit 0; fi^[[0m
+probe	UNKNOWN STEP	2026-08-10T11:57:23.1506915Z ^[[36;1m  echo "push rejected - rebasing onto origin/main and retrying"^[[0m
+probe	UNKNOWN STEP	2026-08-10T11:57:23.1507299Z ^[[36;1m  git pull --rebase origin main || exit 1^[[0m
+probe	UNKNOWN STEP	2026-08-10T11:57:23.1507594Z ^[[36;1mdone^[[0m
+probe	UNKNOWN STEP	2026-08-10T11:57:23.1507906Z ^[[36;1mecho "::error::could not push this run's results after 3 attempts"^[[0m
+probe	UNKNOWN STEP	2026-08-10T11:57:23.1508253Z ^[[36;1mexit 1^[[0m
+probe	UNKNOWN STEP	2026-08-10T11:57:23.1536321Z shell: /usr/bin/bash -e {0}
+probe	UNKNOWN STEP	2026-08-10T11:57:23.1536611Z env:
+probe	UNKNOWN STEP	2026-08-10T11:57:23.1536906Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+probe	UNKNOWN STEP	2026-08-10T11:57:23.1537341Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+probe	UNKNOWN STEP	2026-08-10T11:57:23.1537769Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+probe	UNKNOWN STEP	2026-08-10T11:57:23.1538164Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+probe	UNKNOWN STEP	2026-08-10T11:57:23.1538547Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+probe	UNKNOWN STEP	2026-08-10T11:57:23.1538926Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+probe	UNKNOWN STEP	2026-08-10T11:57:23.1539251Z ##[endgroup]
+probe	UNKNOWN STEP	2026-08-10T11:57:23.1725716Z [main 3405ceb] chore: update drift standings [skip ci]
+probe	UNKNOWN STEP	2026-08-10T11:57:23.1726657Z  4 files changed, 398 insertions(+), 13 deletions(-)
+probe	UNKNOWN STEP	2026-08-10T11:57:24.4018054Z To https://github.com/egnaro9/model-drift
+probe	UNKNOWN STEP	2026-08-10T11:57:24.4018891Z    abdb8f6..3405ceb  main -> main
+probe	UNKNOWN STEP	2026-08-10T11:57:24.4048439Z pushed on attempt 1
+probe	UNKNOWN STEP	2026-08-10T11:57:24.4080597Z ##[group]Run title=$(head -1 "$RUNNER_TEMP/alert.md")
+probe	UNKNOWN STEP	2026-08-10T11:57:24.4081001Z ^[[36;1mtitle=$(head -1 "$RUNNER_TEMP/alert.md")^[[0m
+probe	UNKNOWN STEP	2026-08-10T11:57:24.4081332Z ^[[36;1mbody=$(tail -n +3 "$RUNNER_TEMP/alert.md")^[[0m
+probe	UNKNOWN STEP	2026-08-10T11:57:24.4081698Z ^[[36;1m# Ensure the label exists first. A missing 'drift' label made^[[0m
+probe	UNKNOWN STEP	2026-08-10T11:57:24.4082127Z ^[[36;1m# `gh issue create --label drift` fail, and the trailing `|| true`^[[0m
+probe	UNKNOWN STEP	2026-08-10T11:57:24.4082597Z ^[[36;1m# swallowed it — so a real regression opened no issue at all. Create^[[0m
+probe	UNKNOWN STEP	2026-08-10T11:57:24.4083053Z ^[[36;1m# it (idempotent), then let a genuine failure surface instead of hiding.^[[0m
+probe	UNKNOWN STEP	2026-08-10T11:57:24.4083455Z ^[[36;1mgh label create drift --color b7761a \^[[0m
+probe	UNKNOWN STEP	2026-08-10T11:57:24.4083904Z ^[[36;1m  --description "Automated model-drift regression alert" --force >/dev/null 2>&1 || true^[[0m
+probe	UNKNOWN STEP	2026-08-10T11:57:24.4084431Z ^[[36;1mgh issue create --title "$title" --body "$body" --label drift^[[0m
+probe	UNKNOWN STEP	2026-08-10T11:57:24.4113082Z shell: /usr/bin/bash -e {0}
+probe	UNKNOWN STEP	2026-08-10T11:57:24.4113349Z env:
+probe	UNKNOWN STEP	2026-08-10T11:57:24.4113646Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+probe	UNKNOWN STEP	2026-08-10T11:57:24.4114065Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+probe	UNKNOWN STEP	2026-08-10T11:57:24.4114470Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+probe	UNKNOWN STEP	2026-08-10T11:57:24.4114845Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+probe	UNKNOWN STEP	2026-08-10T11:57:24.4115206Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+probe	UNKNOWN STEP	2026-08-10T11:57:24.4115579Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+probe	UNKNOWN STEP	2026-08-10T11:57:24.4117811Z   GH_TOKEN: ***
+probe	UNKNOWN STEP	2026-08-10T11:57:24.4118042Z ##[endgroup]
+probe	UNKNOWN STEP	2026-08-10T11:57:25.9332648Z https://github.com/egnaro9/model-drift/issues/25
+probe	UNKNOWN STEP	2026-08-10T11:57:25.9427655Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+probe	UNKNOWN STEP	2026-08-10T11:57:25.9428823Z ##[group]Run actions/upload-artifact@v4
+probe	UNKNOWN STEP	2026-08-10T11:57:25.9429116Z with:
+probe	UNKNOWN STEP	2026-08-10T11:57:25.9429328Z   name: social-draft
+probe	UNKNOWN STEP	2026-08-10T11:57:25.9429579Z   path: /home/runner/work/_temp/draft.md
+probe	UNKNOWN STEP	2026-08-10T11:57:25.9429876Z   if-no-files-found: warn
+probe	UNKNOWN STEP	2026-08-10T11:57:25.9430333Z   compression-level: 6
+probe	UNKNOWN STEP	2026-08-10T11:57:25.9430589Z   overwrite: false
+probe	UNKNOWN STEP	2026-08-10T11:57:25.9430825Z   include-hidden-files: false
+probe	UNKNOWN STEP	2026-08-10T11:57:25.9431064Z env:
+probe	UNKNOWN STEP	2026-08-10T11:57:25.9431332Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+probe	UNKNOWN STEP	2026-08-10T11:57:25.9431739Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+probe	UNKNOWN STEP	2026-08-10T11:57:25.9432205Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+probe	UNKNOWN STEP	2026-08-10T11:57:25.9432572Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+probe	UNKNOWN STEP	2026-08-10T11:57:25.9432945Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+probe	UNKNOWN STEP	2026-08-10T11:57:25.9433311Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+probe	UNKNOWN STEP	2026-08-10T11:57:25.9433627Z ##[endgroup]
+probe	UNKNOWN STEP	2026-08-10T11:57:26.0982241Z (node:3048) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+probe	UNKNOWN STEP	2026-08-10T11:57:26.0982837Z (Use `node --trace-deprecation ...` to show where the warning was created)
+probe	UNKNOWN STEP	2026-08-10T11:57:26.1021985Z With the provided path, there will be 1 file uploaded
+probe	UNKNOWN STEP	2026-08-10T11:57:26.1044567Z Artifact name is valid!
+probe	UNKNOWN STEP	2026-08-10T11:57:26.1048653Z Root directory input is valid!
+probe	UNKNOWN STEP	2026-08-10T11:57:26.3936983Z Beginning upload of artifact content to blob storage
+probe	UNKNOWN STEP	2026-08-10T11:57:26.4076379Z (node:3048) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+probe	UNKNOWN STEP	2026-08-10T11:57:26.6241394Z Uploaded bytes 552
+probe	UNKNOWN STEP	2026-08-10T11:57:26.6804679Z Finished uploading artifact content to blob storage!
+probe	UNKNOWN STEP	2026-08-10T11:57:26.6805838Z SHA256 digest of uploaded artifact zip is 0c6426b203f8153d0860665f0616a92b899f930cc6fb5adb658ce6141f16da67
+probe	UNKNOWN STEP	2026-08-10T11:57:26.6806685Z Finalizing artifact upload
+probe	UNKNOWN STEP	2026-08-10T11:57:26.8854371Z Artifact social-draft.zip successfully finalized. Artifact ID 9061634489
+probe	UNKNOWN STEP	2026-08-10T11:57:26.8855952Z Artifact social-draft has been successfully uploaded! Final size is 552 bytes. Artifact ID is 9061634489
+probe	UNKNOWN STEP	2026-08-10T11:57:26.8863748Z Artifact download URL: https://github.com/egnaro9/model-drift/actions/runs/31376273128/artifacts/9061634489
+probe	UNKNOWN STEP	2026-08-10T11:57:26.9013520Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+probe	UNKNOWN STEP	2026-08-10T11:57:26.9014556Z Post job cleanup.
+probe	UNKNOWN STEP	2026-08-10T11:57:27.0213644Z (node:3062) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+probe	UNKNOWN STEP	2026-08-10T11:57:27.0214337Z (Use `node --trace-deprecation ...` to show where the warning was created)
+probe	UNKNOWN STEP	2026-08-10T11:57:27.0384345Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+probe	UNKNOWN STEP	2026-08-10T11:57:27.0386403Z Post job cleanup.
+probe	UNKNOWN STEP	2026-08-10T11:57:27.1123584Z [command]/usr/bin/git version
+probe	UNKNOWN STEP	2026-08-10T11:57:27.1157025Z git version 2.54.0
+probe	UNKNOWN STEP	2026-08-10T11:57:27.1190045Z Temporarily overriding HOME='/home/runner/work/_temp/e3a6ae75-df61-4579-96be-c90dd4d69575' before making global git config changes
+probe	UNKNOWN STEP	2026-08-10T11:57:27.1191277Z Adding repository directory to the temporary git global config as a safe directory
+probe	UNKNOWN STEP	2026-08-10T11:57:27.1195560Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/model-drift/model-drift
+probe	UNKNOWN STEP	2026-08-10T11:57:27.1226946Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+probe	UNKNOWN STEP	2026-08-10T11:57:27.1256630Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+probe	UNKNOWN STEP	2026-08-10T11:57:27.1434039Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+probe	UNKNOWN STEP	2026-08-10T11:57:27.1452749Z http.https://github.com/.extraheader
+probe	UNKNOWN STEP	2026-08-10T11:57:27.1463879Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+probe	UNKNOWN STEP	2026-08-10T11:57:27.1490844Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+probe	UNKNOWN STEP	2026-08-10T11:57:27.1676792Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+probe	UNKNOWN STEP	2026-08-10T11:57:27.1701964Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+probe	UNKNOWN STEP	2026-08-10T11:57:27.2013126Z Cleaning up orphan processes
+probe	UNKNOWN STEP	2026-08-10T11:57:27.2234271Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

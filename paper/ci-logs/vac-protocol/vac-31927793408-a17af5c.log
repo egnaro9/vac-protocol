@@ -1,0 +1,1353 @@
+test (3.12)	Set up job	﻿2026-08-16T04:55:55.8493571Z Current runner version: '2.336.0'
+test (3.12)	Set up job	2026-08-16T04:55:55.8546013Z ##[group]Runner Image Provisioner
+test (3.12)	Set up job	2026-08-16T04:55:55.8547031Z Hosted Compute Agent
+test (3.12)	Set up job	2026-08-16T04:55:55.8548327Z Version: 20260729.566
+test (3.12)	Set up job	2026-08-16T04:55:55.8549405Z Commit: cf7153fe6e25b664e8693c24944bf2b00355d109
+test (3.12)	Set up job	2026-08-16T04:55:55.8550209Z Build Date: 2026-07-29T19:17:02Z
+test (3.12)	Set up job	2026-08-16T04:55:55.8551028Z Worker ID: {ba9dd15f-2b35-49c8-a8f2-a0143933e1d5}
+test (3.12)	Set up job	2026-08-16T04:55:55.8551752Z Azure Region: eastus
+test (3.12)	Set up job	2026-08-16T04:55:55.8552410Z ##[endgroup]
+test (3.12)	Set up job	2026-08-16T04:55:55.8554392Z ##[group]Operating System
+test (3.12)	Set up job	2026-08-16T04:55:55.8555164Z Ubuntu
+test (3.12)	Set up job	2026-08-16T04:55:55.8555807Z 24.04.4
+test (3.12)	Set up job	2026-08-16T04:55:55.8556431Z LTS
+test (3.12)	Set up job	2026-08-16T04:55:55.8556976Z ##[endgroup]
+test (3.12)	Set up job	2026-08-16T04:55:55.8557623Z ##[group]Runner Image
+test (3.12)	Set up job	2026-08-16T04:55:55.8558254Z Image: ubuntu-24.04
+test (3.12)	Set up job	2026-08-16T04:55:55.8559217Z Version: 20260810.271.1
+test (3.12)	Set up job	2026-08-16T04:55:55.8560379Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260810.271/images/ubuntu/Ubuntu2404-Readme.md
+test (3.12)	Set up job	2026-08-16T04:55:55.8562254Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260810.271
+test (3.12)	Set up job	2026-08-16T04:55:55.8563233Z ##[endgroup]
+test (3.12)	Set up job	2026-08-16T04:55:55.8564452Z ##[group]GITHUB_TOKEN Permissions
+test (3.12)	Set up job	2026-08-16T04:55:55.8566805Z Contents: read
+test (3.12)	Set up job	2026-08-16T04:55:55.8567619Z Metadata: read
+test (3.12)	Set up job	2026-08-16T04:55:55.8568235Z Packages: read
+test (3.12)	Set up job	2026-08-16T04:55:55.8569114Z ##[endgroup]
+test (3.12)	Set up job	2026-08-16T04:55:55.8571521Z Secret source: Actions
+test (3.12)	Set up job	2026-08-16T04:55:55.8572675Z Prepare workflow directory
+test (3.12)	Set up job	2026-08-16T04:55:55.8919234Z Prepare all required actions
+test (3.12)	Set up job	2026-08-16T04:55:55.8968650Z Getting action download info
+test (3.12)	Set up job	2026-08-16T04:55:56.1339438Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+test (3.12)	Set up job	2026-08-16T04:55:56.2459274Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+test (3.12)	Set up job	2026-08-16T04:55:56.4361514Z Complete job name: test (3.12)
+test (3.12)	Run actions/checkout@v4	﻿2026-08-16T04:55:56.5204361Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.5213477Z ##[group]Run actions/checkout@v4
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.5214261Z with:
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.5214754Z   repository: egnaro9/vac-protocol
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.5219035Z   token: ***
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.5219504Z   ssh-strict: true
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.5219962Z   ssh-user: git
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.5220431Z   persist-credentials: true
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.5220928Z   clean: true
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.5221391Z   sparse-checkout-cone-mode: true
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.5221918Z   fetch-depth: 1
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.5222368Z   fetch-tags: false
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.5222810Z   show-progress: true
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.5223262Z   lfs: false
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.5223681Z   submodules: false
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.5224192Z   set-safe-directory: true
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.5224717Z   allow-unsafe-pr-checkout: false
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.5225540Z ##[endgroup]
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.6261232Z Syncing repository: egnaro9/vac-protocol
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.6263886Z ##[group]Getting Git version info
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.6265223Z Working directory is '/home/runner/work/vac-protocol/vac-protocol'
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.6267274Z [command]/usr/bin/git version
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.6364971Z git version 2.54.0
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.6404803Z ##[endgroup]
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.6414325Z Temporarily overriding HOME='/home/runner/work/_temp/9ba52c64-f59b-45df-8532-1a72ae401257' before making global git config changes
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.6416857Z Adding repository directory to the temporary git global config as a safe directory
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.6419422Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/vac-protocol/vac-protocol
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.6469883Z Deleting the contents of '/home/runner/work/vac-protocol/vac-protocol'
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.6480559Z ##[group]Initializing the repository
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.6487293Z [command]/usr/bin/git init /home/runner/work/vac-protocol/vac-protocol
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.6600730Z hint: Using 'master' as the name for the initial branch. This default branch name
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.6602670Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.6603678Z hint: to use in all of your new repositories, which will suppress this warning,
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.6604436Z hint: call:
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.6604851Z hint:
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.6605388Z hint: 	git config --global init.defaultBranch <name>
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.6606131Z hint:
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.6606736Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.6607920Z hint: 'development'. The just-created branch can be renamed via this command:
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.6609819Z hint:
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.6610572Z hint: 	git branch -m <name>
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.6611439Z hint:
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.6612732Z hint: Disable this message with "git config set advice.defaultBranchName false"
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.6614731Z Initialized empty Git repository in /home/runner/work/vac-protocol/vac-protocol/.git/
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.6624401Z [command]/usr/bin/git remote add origin https://github.com/egnaro9/vac-protocol
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.6707475Z ##[endgroup]
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.6709127Z ##[group]Disabling automatic garbage collection
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.6712716Z [command]/usr/bin/git config --local gc.auto 0
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.6758056Z ##[endgroup]
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.6759422Z ##[group]Setting up auth
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.6762046Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.6821160Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.7214689Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.7252319Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.7485381Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.7523968Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.7749648Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.7790789Z ##[endgroup]
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.7791880Z ##[group]Fetching the repository
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:56.7800917Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +a17af5cbcac6e503f8cefc94114299436063aae5:refs/remotes/origin/main
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:57.0537721Z From https://github.com/egnaro9/vac-protocol
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:57.0539997Z  * [new ref]         a17af5cbcac6e503f8cefc94114299436063aae5 -> origin/main
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:57.0573526Z ##[endgroup]
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:57.0575148Z ##[group]Determining the checkout info
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:57.0577086Z ##[endgroup]
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:57.0583697Z [command]/usr/bin/git sparse-checkout disable
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:57.0635217Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:57.0670618Z ##[group]Checking out the ref
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:57.0676081Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:57.0881616Z Switched to a new branch 'main'
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:57.0884500Z branch 'main' set up to track 'origin/main'.
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:57.0892539Z ##[endgroup]
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:57.0937178Z [command]/usr/bin/git log -1 --format=%H
+test (3.12)	Run actions/checkout@v4	2026-08-16T04:55:57.0964423Z a17af5cbcac6e503f8cefc94114299436063aae5
+test (3.12)	Run actions/setup-python@v5	﻿2026-08-16T04:55:57.1276541Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+test (3.12)	Run actions/setup-python@v5	2026-08-16T04:55:57.1280057Z ##[group]Run actions/setup-python@v5
+test (3.12)	Run actions/setup-python@v5	2026-08-16T04:55:57.1280672Z with:
+test (3.12)	Run actions/setup-python@v5	2026-08-16T04:55:57.1281133Z   python-version: 3.12
+test (3.12)	Run actions/setup-python@v5	2026-08-16T04:55:57.1281634Z   check-latest: false
+test (3.12)	Run actions/setup-python@v5	2026-08-16T04:55:57.1285711Z   token: ***
+test (3.12)	Run actions/setup-python@v5	2026-08-16T04:55:57.1286192Z   update-environment: true
+test (3.12)	Run actions/setup-python@v5	2026-08-16T04:55:57.1286721Z   allow-prereleases: false
+test (3.12)	Run actions/setup-python@v5	2026-08-16T04:55:57.1287234Z   freethreaded: false
+test (3.12)	Run actions/setup-python@v5	2026-08-16T04:55:57.1287710Z ##[endgroup]
+test (3.12)	Run actions/setup-python@v5	2026-08-16T04:55:57.2682755Z ##[group]Installed versions
+test (3.12)	Run actions/setup-python@v5	2026-08-16T04:55:57.2773940Z (node:2183) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+test (3.12)	Run actions/setup-python@v5	2026-08-16T04:55:57.2776334Z (Use `node --trace-deprecation ...` to show where the warning was created)
+test (3.12)	Run actions/setup-python@v5	2026-08-16T04:55:57.2777955Z Successfully set up CPython (3.12.13)
+test (3.12)	Run actions/setup-python@v5	2026-08-16T04:55:57.2779739Z ##[endgroup]
+test (3.12)	Run pip install -e ".[test]"	﻿2026-08-16T04:55:57.2989322Z ##[group]Run pip install -e ".[test]"
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:55:57.2990528Z ^[[36;1mpip install -e ".[test]"^[[0m
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:55:57.3057143Z shell: /usr/bin/bash -e {0}
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:55:57.3058063Z env:
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:55:57.3059241Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:55:57.3060728Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:55:57.3062180Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:55:57.3063539Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:55:57.3064916Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:55:57.3066310Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:55:57.3067492Z ##[endgroup]
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:55:58.1198614Z Obtaining file:///home/runner/work/vac-protocol/vac-protocol
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:55:58.1215500Z   Installing build dependencies: started
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:55:58.8757154Z   Installing build dependencies: finished with status 'done'
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:55:58.8763508Z   Checking if build backend supports build_editable: started
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:55:59.2423089Z   Checking if build backend supports build_editable: finished with status 'done'
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:55:59.2432079Z   Getting requirements to build editable: started
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:55:59.6100557Z   Getting requirements to build editable: finished with status 'done'
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:55:59.6108297Z   Preparing editable metadata (pyproject.toml): started
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:55:59.8149307Z   Preparing editable metadata (pyproject.toml): finished with status 'done'
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:55:59.9121303Z Collecting pytest (from vac-protocol==0.1.0)
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:55:59.9607922Z   Downloading pytest-9.1.1-py3-none-any.whl.metadata (7.6 kB)
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:55:59.9752729Z Collecting iniconfig>=1.0.1 (from pytest->vac-protocol==0.1.0)
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:55:59.9793522Z   Downloading iniconfig-2.3.0-py3-none-any.whl.metadata (2.5 kB)
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:55:59.9965051Z Collecting packaging>=22 (from pytest->vac-protocol==0.1.0)
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:56:00.0010332Z   Downloading packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:56:00.0150459Z Collecting pluggy<2,>=1.5 (from pytest->vac-protocol==0.1.0)
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:56:00.0192333Z   Downloading pluggy-1.6.0-py3-none-any.whl.metadata (4.8 kB)
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:56:00.0397146Z Collecting pygments>=2.7.2 (from pytest->vac-protocol==0.1.0)
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:56:00.0438082Z   Downloading pygments-2.20.0-py3-none-any.whl.metadata (2.5 kB)
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:56:00.0529164Z Downloading pytest-9.1.1-py3-none-any.whl (386 kB)
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:56:00.0754414Z Downloading pluggy-1.6.0-py3-none-any.whl (20 kB)
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:56:00.0818339Z Downloading iniconfig-2.3.0-py3-none-any.whl (7.5 kB)
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:56:00.0879964Z Downloading packaging-26.3-py3-none-any.whl (129 kB)
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:56:00.0945473Z Downloading pygments-2.20.0-py3-none-any.whl (1.2 MB)
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:56:00.1155243Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 65.1 MB/s  0:00:00
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:56:00.1329299Z Building wheels for collected packages: vac-protocol
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:56:00.1338245Z   Building editable for vac-protocol (pyproject.toml): started
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:56:00.3684294Z   Building editable for vac-protocol (pyproject.toml): finished with status 'done'
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:56:00.3692148Z   Created wheel for vac-protocol: filename=vac_protocol-0.1.0-0.editable-py3-none-any.whl size=7717 sha256=2eeccfd0275d1084dd8647ec83ae9e253f34af244e3720260b2417a28b1c543e
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:56:00.3694742Z   Stored in directory: /tmp/pip-ephem-wheel-cache-smbmmsrz/wheels/31/93/c0/4effb33ea68d4321a176d9cb097b94ea8b1be9d534ea861dec
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:56:00.3742841Z Successfully built vac-protocol
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:56:00.3975184Z Installing collected packages: vac-protocol, pygments, pluggy, packaging, iniconfig, pytest
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:56:01.5572815Z 
+test (3.12)	Run pip install -e ".[test]"	2026-08-16T04:56:01.5592842Z Successfully installed iniconfig-2.3.0 packaging-26.3 pluggy-1.6.0 pygments-2.20.0 pytest-9.1.1 vac-protocol-0.1.0
+test (3.12)	Run python -m pytest tests/ -q	﻿2026-08-16T04:56:01.6394252Z ##[group]Run python -m pytest tests/ -q
+test (3.12)	Run python -m pytest tests/ -q	2026-08-16T04:56:01.6394638Z ^[[36;1mpython -m pytest tests/ -q^[[0m
+test (3.12)	Run python -m pytest tests/ -q	2026-08-16T04:56:01.6433920Z shell: /usr/bin/bash -e {0}
+test (3.12)	Run python -m pytest tests/ -q	2026-08-16T04:56:01.6434164Z env:
+test (3.12)	Run python -m pytest tests/ -q	2026-08-16T04:56:01.6434429Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+test (3.12)	Run python -m pytest tests/ -q	2026-08-16T04:56:01.6434872Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+test (3.12)	Run python -m pytest tests/ -q	2026-08-16T04:56:01.6435298Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+test (3.12)	Run python -m pytest tests/ -q	2026-08-16T04:56:01.6435664Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+test (3.12)	Run python -m pytest tests/ -q	2026-08-16T04:56:01.6436031Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+test (3.12)	Run python -m pytest tests/ -q	2026-08-16T04:56:01.6436404Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+test (3.12)	Run python -m pytest tests/ -q	2026-08-16T04:56:01.6436715Z ##[endgroup]
+test (3.12)	Run python -m pytest tests/ -q	2026-08-16T04:56:02.7589637Z ........................................................................ [ 33%]
+test (3.12)	Run python -m pytest tests/ -q	2026-08-16T04:56:03.8381016Z ........................................................................ [ 67%]
+test (3.12)	Run python -m pytest tests/ -q	2026-08-16T04:56:04.3321778Z ......................s.ss.....sssssssssss..........................     [100%]
+test (3.12)	Run python -m pytest tests/ -q	2026-08-16T04:56:04.3322835Z 198 passed, 14 skipped in 2.39s
+test (3.12)	Post Run actions/setup-python@v5	﻿2026-08-16T04:56:04.3761329Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+test (3.12)	Post Run actions/setup-python@v5	2026-08-16T04:56:04.3762597Z Post job cleanup.
+test (3.12)	Post Run actions/setup-python@v5	2026-08-16T04:56:04.4989475Z (node:2679) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+test (3.12)	Post Run actions/setup-python@v5	2026-08-16T04:56:04.4990841Z (Use `node --trace-deprecation ...` to show where the warning was created)
+test (3.12)	Post Run actions/checkout@v4	﻿2026-08-16T04:56:04.5184770Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+test (3.12)	Post Run actions/checkout@v4	2026-08-16T04:56:04.5186076Z Post job cleanup.
+test (3.12)	Post Run actions/checkout@v4	2026-08-16T04:56:04.6090459Z [command]/usr/bin/git version
+test (3.12)	Post Run actions/checkout@v4	2026-08-16T04:56:04.6136448Z git version 2.54.0
+test (3.12)	Post Run actions/checkout@v4	2026-08-16T04:56:04.6214248Z Temporarily overriding HOME='/home/runner/work/_temp/c5c7a0ca-0257-4f72-bb33-47cfb20a0d1c' before making global git config changes
+test (3.12)	Post Run actions/checkout@v4	2026-08-16T04:56:04.6215675Z Adding repository directory to the temporary git global config as a safe directory
+test (3.12)	Post Run actions/checkout@v4	2026-08-16T04:56:04.6222277Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/vac-protocol/vac-protocol
+test (3.12)	Post Run actions/checkout@v4	2026-08-16T04:56:04.6268383Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+test (3.12)	Post Run actions/checkout@v4	2026-08-16T04:56:04.6310076Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+test (3.12)	Post Run actions/checkout@v4	2026-08-16T04:56:04.6582657Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+test (3.12)	Post Run actions/checkout@v4	2026-08-16T04:56:04.6614628Z http.https://github.com/.extraheader
+test (3.12)	Post Run actions/checkout@v4	2026-08-16T04:56:04.6627317Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+test (3.12)	Post Run actions/checkout@v4	2026-08-16T04:56:04.6664190Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+test (3.12)	Post Run actions/checkout@v4	2026-08-16T04:56:04.7007293Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+test (3.12)	Post Run actions/checkout@v4	2026-08-16T04:56:04.7062408Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+test (3.12)	Complete job	﻿2026-08-16T04:56:04.7572275Z Cleaning up orphan processes
+test (3.12)	Complete job	2026-08-16T04:56:04.7875730Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+invalidation-liveness	Set up job	﻿2026-08-16T04:55:56.5387566Z Current runner version: '2.336.0'
+invalidation-liveness	Set up job	2026-08-16T04:55:56.5436883Z ##[group]Runner Image Provisioner
+invalidation-liveness	Set up job	2026-08-16T04:55:56.5438046Z Hosted Compute Agent
+invalidation-liveness	Set up job	2026-08-16T04:55:56.5439211Z Version: 20260729.566
+invalidation-liveness	Set up job	2026-08-16T04:55:56.5439869Z Commit: cf7153fe6e25b664e8693c24944bf2b00355d109
+invalidation-liveness	Set up job	2026-08-16T04:55:56.5440577Z Build Date: 2026-07-29T19:17:02Z
+invalidation-liveness	Set up job	2026-08-16T04:55:56.5441339Z Worker ID: {fd7e7d0b-cb4a-40c7-9d52-b3e19c4f3493}
+invalidation-liveness	Set up job	2026-08-16T04:55:56.5442056Z Azure Region: westus2
+invalidation-liveness	Set up job	2026-08-16T04:55:56.5442684Z ##[endgroup]
+invalidation-liveness	Set up job	2026-08-16T04:55:56.5444202Z ##[group]Operating System
+invalidation-liveness	Set up job	2026-08-16T04:55:56.5444912Z Ubuntu
+invalidation-liveness	Set up job	2026-08-16T04:55:56.5445507Z 24.04.4
+invalidation-liveness	Set up job	2026-08-16T04:55:56.5446029Z LTS
+invalidation-liveness	Set up job	2026-08-16T04:55:56.5446558Z ##[endgroup]
+invalidation-liveness	Set up job	2026-08-16T04:55:56.5447161Z ##[group]Runner Image
+invalidation-liveness	Set up job	2026-08-16T04:55:56.5447957Z Image: ubuntu-24.04
+invalidation-liveness	Set up job	2026-08-16T04:55:56.5448577Z Version: 20260810.271.1
+invalidation-liveness	Set up job	2026-08-16T04:55:56.5449672Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260810.271/images/ubuntu/Ubuntu2404-Readme.md
+invalidation-liveness	Set up job	2026-08-16T04:55:56.5451414Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260810.271
+invalidation-liveness	Set up job	2026-08-16T04:55:56.5452404Z ##[endgroup]
+invalidation-liveness	Set up job	2026-08-16T04:55:56.5453570Z ##[group]GITHUB_TOKEN Permissions
+invalidation-liveness	Set up job	2026-08-16T04:55:56.5455645Z Contents: read
+invalidation-liveness	Set up job	2026-08-16T04:55:56.5456290Z Metadata: read
+invalidation-liveness	Set up job	2026-08-16T04:55:56.5456986Z Packages: read
+invalidation-liveness	Set up job	2026-08-16T04:55:56.5457628Z ##[endgroup]
+invalidation-liveness	Set up job	2026-08-16T04:55:56.5460214Z Secret source: Actions
+invalidation-liveness	Set up job	2026-08-16T04:55:56.5461617Z Prepare workflow directory
+invalidation-liveness	Set up job	2026-08-16T04:55:56.5800169Z Prepare all required actions
+invalidation-liveness	Set up job	2026-08-16T04:55:56.5850691Z Getting action download info
+invalidation-liveness	Set up job	2026-08-16T04:55:56.9296419Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+invalidation-liveness	Set up job	2026-08-16T04:55:57.0779186Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+invalidation-liveness	Set up job	2026-08-16T04:55:57.2610709Z Complete job name: invalidation-liveness
+invalidation-liveness	Run actions/checkout@v4	﻿2026-08-16T04:55:57.3447006Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.3455768Z ##[group]Run actions/checkout@v4
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.3456613Z with:
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.3457076Z   repository: egnaro9/vac-protocol
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.3461257Z   token: ***
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.3461692Z   ssh-strict: true
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.3462124Z   ssh-user: git
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.3462560Z   persist-credentials: true
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.3463043Z   clean: true
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.3463482Z   sparse-checkout-cone-mode: true
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.3463991Z   fetch-depth: 1
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.3464416Z   fetch-tags: false
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.3464851Z   show-progress: true
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.3465298Z   lfs: false
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.3465707Z   submodules: false
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.3466181Z   set-safe-directory: true
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.3466691Z   allow-unsafe-pr-checkout: false
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.3467473Z ##[endgroup]
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.4510297Z Syncing repository: egnaro9/vac-protocol
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.4512117Z ##[group]Getting Git version info
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.4512988Z Working directory is '/home/runner/work/vac-protocol/vac-protocol'
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.4514218Z [command]/usr/bin/git version
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.4602548Z git version 2.54.0
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.4658645Z ##[endgroup]
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.4674226Z Temporarily overriding HOME='/home/runner/work/_temp/ac4c5476-fa35-43ca-9aa2-5cc4268e3541' before making global git config changes
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.4676620Z Adding repository directory to the temporary git global config as a safe directory
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.4680143Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/vac-protocol/vac-protocol
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.4733769Z Deleting the contents of '/home/runner/work/vac-protocol/vac-protocol'
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.4737382Z ##[group]Initializing the repository
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.4742923Z [command]/usr/bin/git init /home/runner/work/vac-protocol/vac-protocol
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.4905323Z hint: Using 'master' as the name for the initial branch. This default branch name
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.4907104Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.4909171Z hint: to use in all of your new repositories, which will suppress this warning,
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.4910475Z hint: call:
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.4911166Z hint:
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.4912054Z hint: 	git config --global init.defaultBranch <name>
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.4913193Z hint:
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.4914195Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.4915780Z hint: 'development'. The just-created branch can be renamed via this command:
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.4917115Z hint:
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.4919322Z hint: 	git branch -m <name>
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.4920068Z hint:
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.4921234Z hint: Disable this message with "git config set advice.defaultBranchName false"
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.4923100Z Initialized empty Git repository in /home/runner/work/vac-protocol/vac-protocol/.git/
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.4926341Z [command]/usr/bin/git remote add origin https://github.com/egnaro9/vac-protocol
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.4975614Z ##[endgroup]
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.4976851Z ##[group]Disabling automatic garbage collection
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.4982224Z [command]/usr/bin/git config --local gc.auto 0
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.5016172Z ##[endgroup]
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.5017415Z ##[group]Setting up auth
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.5024391Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.5070334Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.5514114Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.5552030Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.5781171Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.5818286Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.6054746Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.6101310Z ##[endgroup]
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.6102831Z ##[group]Fetching the repository
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:57.6116839Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +a17af5cbcac6e503f8cefc94114299436063aae5:refs/remotes/origin/main
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:58.0350769Z From https://github.com/egnaro9/vac-protocol
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:58.0352601Z  * [new ref]         a17af5cbcac6e503f8cefc94114299436063aae5 -> origin/main
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:58.0394262Z ##[endgroup]
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:58.0395036Z ##[group]Determining the checkout info
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:58.0396172Z ##[endgroup]
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:58.0411334Z [command]/usr/bin/git sparse-checkout disable
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:58.0451858Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:58.0491071Z ##[group]Checking out the ref
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:58.0512200Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:58.0701959Z Switched to a new branch 'main'
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:58.0704658Z branch 'main' set up to track 'origin/main'.
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:58.0711882Z ##[endgroup]
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:58.0757096Z [command]/usr/bin/git log -1 --format=%H
+invalidation-liveness	Run actions/checkout@v4	2026-08-16T04:55:58.0784301Z a17af5cbcac6e503f8cefc94114299436063aae5
+invalidation-liveness	Run actions/setup-python@v5	﻿2026-08-16T04:55:58.1067286Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+invalidation-liveness	Run actions/setup-python@v5	2026-08-16T04:55:58.1070342Z ##[group]Run actions/setup-python@v5
+invalidation-liveness	Run actions/setup-python@v5	2026-08-16T04:55:58.1070874Z with:
+invalidation-liveness	Run actions/setup-python@v5	2026-08-16T04:55:58.1071275Z   python-version: 3.12
+invalidation-liveness	Run actions/setup-python@v5	2026-08-16T04:55:58.1071726Z   check-latest: false
+invalidation-liveness	Run actions/setup-python@v5	2026-08-16T04:55:58.1075558Z   token: ***
+invalidation-liveness	Run actions/setup-python@v5	2026-08-16T04:55:58.1075989Z   update-environment: true
+invalidation-liveness	Run actions/setup-python@v5	2026-08-16T04:55:58.1076475Z   allow-prereleases: false
+invalidation-liveness	Run actions/setup-python@v5	2026-08-16T04:55:58.1076947Z   freethreaded: false
+invalidation-liveness	Run actions/setup-python@v5	2026-08-16T04:55:58.1077375Z ##[endgroup]
+invalidation-liveness	Run actions/setup-python@v5	2026-08-16T04:55:58.2393280Z ##[group]Installed versions
+invalidation-liveness	Run actions/setup-python@v5	2026-08-16T04:55:58.2492616Z (node:2204) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+invalidation-liveness	Run actions/setup-python@v5	2026-08-16T04:55:58.2494442Z (Use `node --trace-deprecation ...` to show where the warning was created)
+invalidation-liveness	Run actions/setup-python@v5	2026-08-16T04:55:58.2496067Z Successfully set up CPython (3.12.13)
+invalidation-liveness	Run actions/setup-python@v5	2026-08-16T04:55:58.2497631Z ##[endgroup]
+invalidation-liveness	Run pip install -e .	﻿2026-08-16T04:55:58.2782333Z ##[group]Run pip install -e .
+invalidation-liveness	Run pip install -e .	2026-08-16T04:55:58.2783277Z ^[[36;1mpip install -e .^[[0m
+invalidation-liveness	Run pip install -e .	2026-08-16T04:55:58.2853895Z shell: /usr/bin/bash -e {0}
+invalidation-liveness	Run pip install -e .	2026-08-16T04:55:58.2854474Z env:
+invalidation-liveness	Run pip install -e .	2026-08-16T04:55:58.2855001Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+invalidation-liveness	Run pip install -e .	2026-08-16T04:55:58.2855837Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+invalidation-liveness	Run pip install -e .	2026-08-16T04:55:58.2856630Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+invalidation-liveness	Run pip install -e .	2026-08-16T04:55:58.2857342Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+invalidation-liveness	Run pip install -e .	2026-08-16T04:55:58.2858518Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+invalidation-liveness	Run pip install -e .	2026-08-16T04:55:58.2859298Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+invalidation-liveness	Run pip install -e .	2026-08-16T04:55:58.2860358Z ##[endgroup]
+invalidation-liveness	Run pip install -e .	2026-08-16T04:55:59.4722972Z Obtaining file:///home/runner/work/vac-protocol/vac-protocol
+invalidation-liveness	Run pip install -e .	2026-08-16T04:55:59.4738973Z   Installing build dependencies: started
+invalidation-liveness	Run pip install -e .	2026-08-16T04:56:00.3856464Z   Installing build dependencies: finished with status 'done'
+invalidation-liveness	Run pip install -e .	2026-08-16T04:56:00.3864430Z   Checking if build backend supports build_editable: started
+invalidation-liveness	Run pip install -e .	2026-08-16T04:56:00.7006859Z   Checking if build backend supports build_editable: finished with status 'done'
+invalidation-liveness	Run pip install -e .	2026-08-16T04:56:00.7014573Z   Getting requirements to build editable: started
+invalidation-liveness	Run pip install -e .	2026-08-16T04:56:01.0472769Z   Getting requirements to build editable: finished with status 'done'
+invalidation-liveness	Run pip install -e .	2026-08-16T04:56:01.0482209Z   Preparing editable metadata (pyproject.toml): started
+invalidation-liveness	Run pip install -e .	2026-08-16T04:56:01.2478302Z   Preparing editable metadata (pyproject.toml): finished with status 'done'
+invalidation-liveness	Run pip install -e .	2026-08-16T04:56:01.2515939Z Building wheels for collected packages: vac-protocol
+invalidation-liveness	Run pip install -e .	2026-08-16T04:56:01.2524337Z   Building editable for vac-protocol (pyproject.toml): started
+invalidation-liveness	Run pip install -e .	2026-08-16T04:56:01.4765064Z   Building editable for vac-protocol (pyproject.toml): finished with status 'done'
+invalidation-liveness	Run pip install -e .	2026-08-16T04:56:01.4789597Z   Created wheel for vac-protocol: filename=vac_protocol-0.1.0-0.editable-py3-none-any.whl size=7717 sha256=2eeccfd0275d1084dd8647ec83ae9e253f34af244e3720260b2417a28b1c543e
+invalidation-liveness	Run pip install -e .	2026-08-16T04:56:01.4791064Z   Stored in directory: /tmp/pip-ephem-wheel-cache-kxfnju7r/wheels/31/93/c0/4effb33ea68d4321a176d9cb097b94ea8b1be9d534ea861dec
+invalidation-liveness	Run pip install -e .	2026-08-16T04:56:01.4802876Z Successfully built vac-protocol
+invalidation-liveness	Run pip install -e .	2026-08-16T04:56:01.4938789Z Installing collected packages: vac-protocol
+invalidation-liveness	Run pip install -e .	2026-08-16T04:56:01.5027580Z Successfully installed vac-protocol-0.1.0
+invalidation-liveness	valid bundle verifies clean	﻿2026-08-16T04:56:01.5596836Z ##[group]Run python -m vac.verify fixtures/valid
+invalidation-liveness	valid bundle verifies clean	2026-08-16T04:56:01.5597364Z ^[[36;1mpython -m vac.verify fixtures/valid^[[0m
+invalidation-liveness	valid bundle verifies clean	2026-08-16T04:56:01.5635648Z shell: /usr/bin/bash -e {0}
+invalidation-liveness	valid bundle verifies clean	2026-08-16T04:56:01.5635954Z env:
+invalidation-liveness	valid bundle verifies clean	2026-08-16T04:56:01.5636268Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+invalidation-liveness	valid bundle verifies clean	2026-08-16T04:56:01.5636754Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+invalidation-liveness	valid bundle verifies clean	2026-08-16T04:56:01.5637235Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+invalidation-liveness	valid bundle verifies clean	2026-08-16T04:56:01.5638107Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+invalidation-liveness	valid bundle verifies clean	2026-08-16T04:56:01.5638541Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+invalidation-liveness	valid bundle verifies clean	2026-08-16T04:56:01.5638976Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+invalidation-liveness	valid bundle verifies clean	2026-08-16T04:56:01.5639332Z ##[endgroup]
+invalidation-liveness	valid bundle verifies clean	2026-08-16T04:56:01.6256248Z structural verification: PASS (valid)
+invalidation-liveness	valid bundle verifies clean	2026-08-16T04:56:01.6257381Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+invalidation-liveness	valid bundle verifies clean	2026-08-16T04:56:01.6258929Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+invalidation-liveness	valid bundle verifies clean	2026-08-16T04:56:01.6259990Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+invalidation-liveness	valid bundle verifies clean	2026-08-16T04:56:01.6260899Z   internally honest, not that the issuer's grader agrees. To re-earn the
+invalidation-liveness	valid bundle verifies clean	2026-08-16T04:56:01.6261758Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+invalidation-liveness	valid bundle verifies clean	2026-08-16T04:56:01.6262465Z     $ git clone https://github.com/example/toy-issuer issuer
+invalidation-liveness	valid bundle verifies clean	2026-08-16T04:56:01.6263006Z     $ git -C issuer checkout f1e2d3c
+invalidation-liveness	valid bundle verifies clean	2026-08-16T04:56:01.6263429Z     $ python -m pip install -e ./issuer
+invalidation-liveness	valid bundle verifies clean	2026-08-16T04:56:01.6263906Z     $ python -m toy_issuer.regrade evidence/bundle.json
+invalidation-liveness	valid bundle verifies clean	2026-08-16T04:56:01.6264528Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+invalidation-liveness	valid bundle verifies clean	2026-08-16T04:56:01.6265223Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+invalidation-liveness	valid bundle verifies clean	2026-08-16T04:56:01.6265935Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+invalidation-liveness	valid bundle verifies clean	2026-08-16T04:56:01.6266578Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+invalidation-liveness	valid bundle verifies clean	2026-08-16T04:56:01.6268411Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+invalidation-liveness	every tampered bundle is refused	﻿2026-08-16T04:56:01.6353993Z ##[group]Run set -e
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.6354343Z ^[[36;1mset -e^[[0m
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.6354632Z ^[[36;1mfor d in fixtures/tamper-*; do^[[0m
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.6354979Z ^[[36;1m  if python -m vac.verify "$d"; then^[[0m
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.6355460Z ^[[36;1m    echo "LIVENESS FAILURE: $d verified clean — the gate cannot block"^[[0m
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.6355886Z ^[[36;1m    exit 1^[[0m
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.6356125Z ^[[36;1m  fi^[[0m
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.6356349Z ^[[36;1mdone^[[0m
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.6394683Z shell: /usr/bin/bash -e {0}
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.6394986Z env:
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.6395297Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.6395786Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.6396254Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.6396677Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.6397098Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.6397579Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.6398258Z ##[endgroup]
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.6834414Z FAIL evidence-unchecked: evidence/bundle.json: listed in evidence but read by no check
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.6836299Z structural verification: FAIL — 1 named reason(s) (tamper-check-deleted)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.6837581Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.6839138Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.6840017Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.6840823Z   internally honest, not that the issuer's grader agrees. To re-earn the
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.6841548Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.6842252Z     $ git clone https://github.com/example/toy-issuer issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.6842892Z     $ git -C issuer checkout f1e2d3c
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.6843371Z     $ python -m pip install -e ./issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.6844164Z     $ python -m toy_issuer.regrade evidence/bundle.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.6844738Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.6845373Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.6845989Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.6846614Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.6848438Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7265810Z FAIL raw-aggregate-mismatch: evidence/eval_run.json: case 2 flagged flag contradicts its own passed/truncated pair
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7267877Z FAIL raw-aggregate-mismatch: evidence/eval_run.json: metrics.faithfulness declared 0.5, recomputed 0.75
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7269461Z FAIL raw-aggregate-mismatch: evidence/eval_run.json: metrics.precision@k declared 0.5, recomputed 0.75
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7270504Z FAIL raw-aggregate-mismatch: evidence/eval_run.json: metrics.recall@k declared 0.5, recomputed 0.75
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7271517Z FAIL raw-aggregate-mismatch: evidence/eval_run.json: metrics.citation_rate declared 0.5, recomputed 0.75
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7272614Z FAIL raw-aggregate-mismatch: evidence/eval_run.json: metrics.vulnerability_score declared 0.4545, recomputed 0.0909
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7273740Z FAIL raw-aggregate-mismatch: evidence/eval_run.json: per_kind['prompt-injection'] declared 0.5, recomputed 1.0
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7274598Z FAIL summary-mismatch: accuracy: declared 0.5, recomputed 0.75
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7275307Z FAIL summary-mismatch: vulnerability_score: declared 0.4545, recomputed 0.0909
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7276186Z FAIL summary-outruns-checks: summary.crash_vulnerability: declares 0.4545, no check recomputes it
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7277638Z structural verification: FAIL — 10 named reason(s) (tamper-crashkit-case)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7278592Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7279383Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7280158Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7280875Z   internally honest, not that the issuer's grader agrees. To re-earn the
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7281613Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7282267Z     $ git clone https://github.com/example/toy-issuer issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7282808Z     $ git -C issuer checkout f1e2d3c
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7283227Z     $ python -m pip install -e ./issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7283700Z     $ python -m toy_issuer.regrade evidence/bundle.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7284330Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7284845Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7285365Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7285871Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7287157Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7700589Z FAIL raw-aggregate-mismatch: evidence/eval_run.json: metrics.vulnerability_score declared 0.0909, recomputed 0.4545
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7702048Z structural verification: FAIL — 1 named reason(s) (tamper-crashkit-metrics)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7702911Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7703850Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7705135Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7705869Z   internally honest, not that the issuer's grader agrees. To re-earn the
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7706574Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7707231Z     $ git clone https://github.com/example/toy-issuer issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7708095Z     $ git -C issuer checkout f1e2d3c
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7708640Z     $ python -m pip install -e ./issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7709145Z     $ python -m toy_issuer.regrade evidence/bundle.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7709760Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7710416Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7711055Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7711723Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.7713465Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8128821Z FAIL artifact-unparsable: evidence/eval_run.json: severity 'Critical', 'Med' outside the profile's frozen table (none/low/med/high/critical)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8130281Z structural verification: FAIL — 1 named reason(s) (tamper-crashkit-severity)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8131102Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8131911Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8132708Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8133839Z   internally honest, not that the issuer's grader agrees. To re-earn the
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8134569Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8135247Z     $ git clone https://github.com/example/toy-issuer issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8135776Z     $ git -C issuer checkout f1e2d3c
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8136208Z     $ python -m pip install -e ./issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8136702Z     $ python -m toy_issuer.regrade evidence/bundle.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8137327Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8138208Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8138853Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8139507Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8141234Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8515730Z FAIL draft-incomplete: claim.capability is an unauthored TODO
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8516458Z FAIL draft-incomplete: claim.limitations[0] is an unauthored TODO
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8517044Z FAIL draft-incomplete: claim.scope is an unauthored TODO
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8517639Z FAIL draft-incomplete: protocol.control_policy is an unauthored TODO
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8518474Z FAIL draft-incomplete: protocol.grading is an unauthored TODO
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8519080Z FAIL draft-incomplete: protocol.hashes.TODO is an unauthored TODO
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8519666Z FAIL draft-incomplete: protocol.task is an unauthored TODO
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8520235Z FAIL draft-incomplete: replay.commands[2] is an unauthored TODO
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8520825Z FAIL draft-incomplete: replay.commands[3] is an unauthored TODO
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8521424Z FAIL draft-incomplete: replay.expected is an unauthored TODO
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8522305Z FAIL draft-incomplete: results.checks[0].TODO is an unauthored TODO
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8522966Z FAIL draft-incomplete: results.checks[0].profile is an unauthored TODO
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8523607Z FAIL draft-incomplete: results.summary.TODO is an unauthored TODO
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8524177Z FAIL draft-incomplete: subject.id is an unauthored TODO
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8524707Z FAIL draft-incomplete: subject.kind is an unauthored TODO
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8525288Z FAIL draft-incomplete: subject.version.TODO is an unauthored TODO
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8526172Z structural verification: FAIL — 16 named reason(s) (tamper-draft-incomplete)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8527034Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8527699Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8528695Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8529295Z   internally honest, not that the issuer's grader agrees. To re-earn the
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8529845Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8530372Z     $ git clone https://github.com/example/toy-issuer issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8530790Z     $ git -C issuer checkout f1e2d3c
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8531389Z     $ TODO(replay.commands): install, then run the issuer's deterministic regrader/audit over this bundle's artifacts
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8532247Z     $ TODO(replay.commands): byte-compare the regraded output against the committed artifacts; nonzero on any difference
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8533056Z     expected: TODO(replay.expected): the exact outcome — exit code and report text
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8954424Z FAIL empty-limitations
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8955572Z structural verification: FAIL — 1 named reason(s) (tamper-empty-limitations)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8956551Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8958161Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8959188Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8960103Z   internally honest, not that the issuer's grader agrees. To re-earn the
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8960951Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8961749Z     $ git clone https://github.com/example/toy-issuer issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8962380Z     $ git -C issuer checkout f1e2d3c
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8962900Z     $ python -m pip install -e ./issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8963463Z     $ python -m toy_issuer.regrade evidence/bundle.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8964176Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8964908Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8965630Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8966439Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.8968824Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9382851Z FAIL raw-aggregate-mismatch: evidence/evalmut_run.json: tally.caught declared 4, recomputed 5
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9384187Z FAIL raw-aggregate-mismatch: evidence/evalmut_run.json: tally.missed declared 2, recomputed 1
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9385491Z FAIL raw-aggregate-mismatch: evidence/evalmut_run.json: score declared 0.5714285714285714, recomputed 0.7142857142857143
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9387019Z FAIL raw-aggregate-mismatch: evidence/evalmut_run.json: holes.blind does not recompute from the rows (declared 1, recomputed 0)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9388529Z FAIL summary-mismatch: blind: declared 1, recomputed 0
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9389806Z FAIL summary-mismatch: caught: declared 4, recomputed 5
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9390502Z FAIL summary-mismatch: missed: declared 2, recomputed 1
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9391211Z FAIL summary-mismatch: score_3: declared 0.571, recomputed 0.714
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9392199Z FAIL summary-outruns-checks: summary.mutation_score_3: declares 0.571, no check recomputes it
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9393482Z structural verification: FAIL — 9 named reason(s) (tamper-evalmut-rows)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9394437Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9395436Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9396468Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9397388Z   internally honest, not that the issuer's grader agrees. To re-earn the
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9398552Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9399379Z     $ git clone https://github.com/example/toy-issuer issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9400013Z     $ git -C issuer checkout f1e2d3c
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9400517Z     $ python -m pip install -e ./issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9401087Z     $ python -m toy_issuer.regrade evidence/bundle.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9401726Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9402539Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9403301Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9404108Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9406183Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9815864Z FAIL raw-aggregate-mismatch: evidence/evalmut_run.json: tally.caught declared 5, recomputed 4
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9817486Z structural verification: FAIL — 1 named reason(s) (tamper-evalmut-summary)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9818759Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9819788Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9820799Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9821729Z   internally honest, not that the issuer's grader agrees. To re-earn the
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9822625Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9823433Z     $ git clone https://github.com/example/toy-issuer issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9824048Z     $ git -C issuer checkout f1e2d3c
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9824541Z     $ python -m pip install -e ./issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9825097Z     $ python -m toy_issuer.regrade evidence/bundle.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9825770Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9826593Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9827382Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9828449Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:01.9830674Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.0235998Z FAIL missing-artifact: evidence/bundle.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.0237202Z structural verification: FAIL — 1 named reason(s) (tamper-missing-artifact)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.0238403Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.0239406Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.0240743Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.0241679Z   internally honest, not that the issuer's grader agrees. To re-earn the
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.0242555Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.0243370Z     $ git clone https://github.com/example/toy-issuer issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.0243986Z     $ git -C issuer checkout f1e2d3c
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.0244470Z     $ python -m pip install -e ./issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.0245044Z     $ python -m toy_issuer.regrade evidence/bundle.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.0245738Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.0246464Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.0247244Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.0248301Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.0250528Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.0671613Z FAIL missing-issuer-commit
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.0672821Z structural verification: FAIL — 1 named reason(s) (tamper-missing-issuer-commit)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.0673777Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.0674710Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.0675623Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.0676509Z   internally honest, not that the issuer's grader agrees. To re-earn the
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.0678081Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.0678940Z     $ git clone https://github.com/example/toy-issuer issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.0679574Z     $ git -C issuer checkout f1e2d3c
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.0680090Z     $ python -m pip install -e ./issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.0680685Z     $ python -m toy_issuer.regrade evidence/bundle.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.0681407Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.0682186Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.0682844Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.0683644Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.0685802Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1113710Z FAIL raw-aggregate-mismatch: evidence/standings.json: alpha:a1: acc declared 0.5, recomputed 0.75
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1115339Z FAIL raw-aggregate-mismatch: evidence/standings.json: alpha:a1: delta declared -0.25, recomputed 0.0
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1116829Z FAIL raw-aggregate-mismatch: evidence/standings.json: alpha:a1: verdict declared 'regressed', recomputed 'unchanged'
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1118823Z FAIL raw-aggregate-mismatch: evidence/RESULTS.md: does not re-render byte-identically from the recomputed standings rows
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1120181Z FAIL summary-mismatch: regressed: declared 1, recomputed 0
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1121071Z FAIL summary-mismatch: unchanged: declared 1, recomputed 2
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1122140Z FAIL summary-outruns-checks: summary.drift.regressed: declares 1, recomputation gives 0
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1123581Z structural verification: FAIL — 7 named reason(s) (tamper-modeldrift-rows)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1124634Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1126233Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1127349Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1129027Z   internally honest, not that the issuer's grader agrees. To re-earn the
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1130409Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1131693Z     $ git clone https://github.com/example/toy-issuer issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1132664Z     $ git -C issuer checkout f1e2d3c
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1133527Z     $ python -m pip install -e ./issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1134176Z     $ python -m toy_issuer.regrade evidence/bundle.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1134875Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1135697Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1136561Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1137369Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1139753Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1561825Z FAIL raw-aggregate-mismatch: evidence/standings.json: alpha:a1: delta declared 0.0, recomputed -0.25
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1563385Z FAIL raw-aggregate-mismatch: evidence/standings.json: alpha:a1: verdict declared 'unchanged', recomputed 'regressed'
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1564952Z structural verification: FAIL — 2 named reason(s) (tamper-modeldrift-standings)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1565961Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1567009Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1568644Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1569613Z   internally honest, not that the issuer's grader agrees. To re-earn the
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1570525Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1571336Z     $ git clone https://github.com/example/toy-issuer issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1571991Z     $ git -C issuer checkout f1e2d3c
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1572444Z     $ python -m pip install -e ./issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1572993Z     $ python -m toy_issuer.regrade evidence/bundle.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1573748Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1574563Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1575417Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1576233Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1578712Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1997021Z FAIL raw-aggregate-mismatch: toy-suite/toy-defect-b: detected declared 3, recomputed 2
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.1998806Z FAIL raw-aggregate-mismatch: toy-suite/toy-defect-b: detection_rate declared 0.75, recomputed 0.5
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2000222Z structural verification: FAIL — 2 named reason(s) (tamper-raw-aggregate)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2001215Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2002294Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2003367Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2004417Z   internally honest, not that the issuer's grader agrees. To re-earn the
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2005806Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2006778Z     $ git clone https://github.com/example/toy-issuer issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2007536Z     $ git -C issuer checkout f1e2d3c
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2008427Z     $ python -m pip install -e ./issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2009006Z     $ python -m toy_issuer.regrade evidence/bundle.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2009835Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2010798Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2011684Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2012639Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2014879Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2435535Z FAIL stamp-mismatch: taskset_hash: named by protocol.hashes but absent from evidence/bundle.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2437028Z FAIL stamp-mismatch: prompt_hash: named by protocol.hashes but absent from evidence/bundle.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2438628Z FAIL stamp-mismatch: harness_commit: protocol declares issuer_commit but evidence/bundle.json carries no harness_commit
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2440199Z structural verification: FAIL — 3 named reason(s) (tamper-stamp-deleted)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2441283Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2442387Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2443517Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2444938Z   internally honest, not that the issuer's grader agrees. To re-earn the
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2445899Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2446715Z     $ git clone https://github.com/example/toy-issuer issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2447442Z     $ git -C issuer checkout f1e2d3c
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2448400Z     $ python -m pip install -e ./issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2449228Z     $ python -m toy_issuer.regrade evidence/bundle.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2449992Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2450782Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2451551Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2452410Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2454491Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2869152Z FAIL summary-outruns-checks: summary.fixed: declares 3, recomputation gives 2
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2870868Z structural verification: FAIL — 1 named reason(s) (tamper-summary-fixed)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2872066Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2873250Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2874479Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2876043Z   internally honest, not that the issuer's grader agrees. To re-earn the
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2877116Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2878429Z     $ git clone https://github.com/example/toy-issuer issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2879164Z     $ git -C issuer checkout f1e2d3c
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2879721Z     $ python -m pip install -e ./issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2880738Z     $ python -m toy_issuer.regrade evidence/bundle.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2881499Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2882344Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2883144Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2884001Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.2886173Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.3303134Z FAIL summary-outruns-checks: summary.detection_rate_min: declares 0.9, no check recomputes it
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.3304900Z structural verification: FAIL — 1 named reason(s) (tamper-summary-rate)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.3305889Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.3306893Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.3308170Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.3309092Z   internally honest, not that the issuer's grader agrees. To re-earn the
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.3309964Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.3310972Z     $ git clone https://github.com/example/toy-issuer issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.3311692Z     $ git -C issuer checkout f1e2d3c
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.3312189Z     $ python -m pip install -e ./issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.3312763Z     $ python -m toy_issuer.regrade evidence/bundle.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.3313498Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.3314668Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.3315479Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.3316258Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.3318732Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.3739892Z FAIL summary-outruns-checks: summary.mutation_score_3: declares 0.714, no check recomputes it
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.3741289Z structural verification: FAIL — 1 named reason(s) (tamper-summary-score)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.3741987Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.3742705Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.3743425Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.3744090Z   internally honest, not that the issuer's grader agrees. To re-earn the
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.3744703Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.3745280Z     $ git clone https://github.com/example/toy-issuer issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.3745733Z     $ git -C issuer checkout f1e2d3c
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.3746097Z     $ python -m pip install -e ./issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.3746514Z     $ python -m toy_issuer.regrade evidence/bundle.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.3747038Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.3747612Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.3748406Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.3748982Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.3750549Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.4163247Z FAIL summary-outruns-checks: summary.fixed: declares '9999' as a string; a numeric headline must be a JSON number so it can be recomputed
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.4164954Z structural verification: FAIL — 1 named reason(s) (tamper-summary-string)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.4165906Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.4166891Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.4168116Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.4169013Z   internally honest, not that the issuer's grader agrees. To re-earn the
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.4169886Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.4170678Z     $ git clone https://github.com/example/toy-issuer issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.4171273Z     $ git -C issuer checkout f1e2d3c
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.4171750Z     $ python -m pip install -e ./issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.4172227Z     $ python -m toy_issuer.regrade evidence/bundle.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.4172878Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.4173643Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.4174400Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.4175207Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.4177288Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.4588548Z FAIL summary-mismatch: fixed: declared 3, recomputed 2
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.4589457Z FAIL summary-outruns-checks: summary.fixed: declares 3, recomputation gives 2
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.4590665Z structural verification: FAIL — 2 named reason(s) (tamper-verdict-count)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.4591561Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.4592522Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.4593462Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.4594310Z   internally honest, not that the issuer's grader agrees. To re-earn the
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.4595133Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.4595899Z     $ git clone https://github.com/example/toy-issuer issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.4596487Z     $ git -C issuer checkout f1e2d3c
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.4596964Z     $ python -m pip install -e ./issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.4597527Z     $ python -m toy_issuer.regrade evidence/bundle.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.4598382Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.4599037Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.4599787Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.4600508Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.4602558Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.5011210Z FAIL sha256-mismatch: evidence/bundle.json: manifest 0000000000000000000000000000000000000000000000000000000000000000, file 64931fe8d466c2cfdbf3c15013d8aa013bc54a2e340fb89737972ef3612550d4
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.5013211Z structural verification: FAIL — 1 named reason(s) (tamper-wrong-sha256)
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.5014595Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.5015566Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.5016532Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.5017406Z   internally honest, not that the issuer's grader agrees. To re-earn the
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.5018436Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.5018889Z     $ git clone https://github.com/example/toy-issuer issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.5019231Z     $ git -C issuer checkout f1e2d3c
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.5019505Z     $ python -m pip install -e ./issuer
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.5019823Z     $ python -m toy_issuer.regrade evidence/bundle.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.5020225Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.5020672Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.5021097Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.5021516Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+invalidation-liveness	every tampered bundle is refused	2026-08-16T04:56:02.5022636Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+invalidation-liveness	fixtures regenerate byte-identically	﻿2026-08-16T04:56:02.5121622Z ##[group]Run python fixtures/make_fixtures.py
+invalidation-liveness	fixtures regenerate byte-identically	2026-08-16T04:56:02.5122012Z ^[[36;1mpython fixtures/make_fixtures.py^[[0m
+invalidation-liveness	fixtures regenerate byte-identically	2026-08-16T04:56:02.5122314Z ^[[36;1mgit diff --exit-code fixtures/^[[0m
+invalidation-liveness	fixtures regenerate byte-identically	2026-08-16T04:56:02.5161162Z shell: /usr/bin/bash -e {0}
+invalidation-liveness	fixtures regenerate byte-identically	2026-08-16T04:56:02.5161410Z env:
+invalidation-liveness	fixtures regenerate byte-identically	2026-08-16T04:56:02.5161667Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+invalidation-liveness	fixtures regenerate byte-identically	2026-08-16T04:56:02.5162095Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+invalidation-liveness	fixtures regenerate byte-identically	2026-08-16T04:56:02.5162529Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+invalidation-liveness	fixtures regenerate byte-identically	2026-08-16T04:56:02.5162900Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+invalidation-liveness	fixtures regenerate byte-identically	2026-08-16T04:56:02.5163274Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+invalidation-liveness	fixtures regenerate byte-identically	2026-08-16T04:56:02.5163645Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+invalidation-liveness	fixtures regenerate byte-identically	2026-08-16T04:56:02.5163957Z ##[endgroup]
+invalidation-liveness	fixtures regenerate byte-identically	2026-08-16T04:56:02.6118394Z tamper-check-deleted: 14 file(s)
+invalidation-liveness	fixtures regenerate byte-identically	2026-08-16T04:56:02.6119232Z tamper-crashkit-case: 14 file(s)
+invalidation-liveness	fixtures regenerate byte-identically	2026-08-16T04:56:02.6119621Z tamper-crashkit-metrics: 14 file(s)
+invalidation-liveness	fixtures regenerate byte-identically	2026-08-16T04:56:02.6120195Z tamper-crashkit-severity: 14 file(s)
+invalidation-liveness	fixtures regenerate byte-identically	2026-08-16T04:56:02.6120603Z tamper-draft-incomplete: 14 file(s)
+invalidation-liveness	fixtures regenerate byte-identically	2026-08-16T04:56:02.6121013Z tamper-empty-limitations: 14 file(s)
+invalidation-liveness	fixtures regenerate byte-identically	2026-08-16T04:56:02.6121419Z tamper-evalmut-rows: 14 file(s)
+invalidation-liveness	fixtures regenerate byte-identically	2026-08-16T04:56:02.6121791Z tamper-evalmut-summary: 14 file(s)
+invalidation-liveness	fixtures regenerate byte-identically	2026-08-16T04:56:02.6122175Z tamper-missing-artifact: 13 file(s)
+invalidation-liveness	fixtures regenerate byte-identically	2026-08-16T04:56:02.6122591Z tamper-missing-issuer-commit: 14 file(s)
+invalidation-liveness	fixtures regenerate byte-identically	2026-08-16T04:56:02.6123013Z tamper-modeldrift-rows: 14 file(s)
+invalidation-liveness	fixtures regenerate byte-identically	2026-08-16T04:56:02.6123407Z tamper-modeldrift-standings: 14 file(s)
+invalidation-liveness	fixtures regenerate byte-identically	2026-08-16T04:56:02.6123813Z tamper-raw-aggregate: 14 file(s)
+invalidation-liveness	fixtures regenerate byte-identically	2026-08-16T04:56:02.6124179Z tamper-stamp-deleted: 14 file(s)
+invalidation-liveness	fixtures regenerate byte-identically	2026-08-16T04:56:02.6124541Z tamper-summary-fixed: 14 file(s)
+invalidation-liveness	fixtures regenerate byte-identically	2026-08-16T04:56:02.6124899Z tamper-summary-rate: 14 file(s)
+invalidation-liveness	fixtures regenerate byte-identically	2026-08-16T04:56:02.6125256Z tamper-summary-score: 14 file(s)
+invalidation-liveness	fixtures regenerate byte-identically	2026-08-16T04:56:02.6125622Z tamper-summary-string: 14 file(s)
+invalidation-liveness	fixtures regenerate byte-identically	2026-08-16T04:56:02.6125994Z tamper-verdict-count: 14 file(s)
+invalidation-liveness	fixtures regenerate byte-identically	2026-08-16T04:56:02.6126347Z tamper-wrong-sha256: 14 file(s)
+invalidation-liveness	fixtures regenerate byte-identically	2026-08-16T04:56:02.6126675Z valid: 14 file(s)
+invalidation-liveness	Post Run actions/setup-python@v5	﻿2026-08-16T04:56:02.6449346Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+invalidation-liveness	Post Run actions/setup-python@v5	2026-08-16T04:56:02.6450799Z Post job cleanup.
+invalidation-liveness	Post Run actions/setup-python@v5	2026-08-16T04:56:02.7613649Z (node:2295) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+invalidation-liveness	Post Run actions/setup-python@v5	2026-08-16T04:56:02.7615213Z (Use `node --trace-deprecation ...` to show where the warning was created)
+invalidation-liveness	Post Run actions/checkout@v4	﻿2026-08-16T04:56:02.7815213Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+invalidation-liveness	Post Run actions/checkout@v4	2026-08-16T04:56:02.7816483Z Post job cleanup.
+invalidation-liveness	Post Run actions/checkout@v4	2026-08-16T04:56:02.8739666Z [command]/usr/bin/git version
+invalidation-liveness	Post Run actions/checkout@v4	2026-08-16T04:56:02.8784957Z git version 2.54.0
+invalidation-liveness	Post Run actions/checkout@v4	2026-08-16T04:56:02.8830071Z Temporarily overriding HOME='/home/runner/work/_temp/eba7dbc4-c32d-47ac-87c4-984aaebe59be' before making global git config changes
+invalidation-liveness	Post Run actions/checkout@v4	2026-08-16T04:56:02.8831441Z Adding repository directory to the temporary git global config as a safe directory
+invalidation-liveness	Post Run actions/checkout@v4	2026-08-16T04:56:02.8836362Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/vac-protocol/vac-protocol
+invalidation-liveness	Post Run actions/checkout@v4	2026-08-16T04:56:02.8878134Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+invalidation-liveness	Post Run actions/checkout@v4	2026-08-16T04:56:02.8915514Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+invalidation-liveness	Post Run actions/checkout@v4	2026-08-16T04:56:02.9183632Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+invalidation-liveness	Post Run actions/checkout@v4	2026-08-16T04:56:02.9211396Z http.https://github.com/.extraheader
+invalidation-liveness	Post Run actions/checkout@v4	2026-08-16T04:56:02.9223575Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+invalidation-liveness	Post Run actions/checkout@v4	2026-08-16T04:56:02.9261073Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+invalidation-liveness	Post Run actions/checkout@v4	2026-08-16T04:56:02.9540297Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+invalidation-liveness	Post Run actions/checkout@v4	2026-08-16T04:56:02.9582136Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+invalidation-liveness	Complete job	﻿2026-08-16T04:56:02.9981593Z Cleaning up orphan processes
+invalidation-liveness	Complete job	2026-08-16T04:56:03.0276268Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+test (3.11)	Set up job	﻿2026-08-16T04:55:55.8341237Z Current runner version: '2.336.0'
+test (3.11)	Set up job	2026-08-16T04:55:55.8395977Z ##[group]Runner Image Provisioner
+test (3.11)	Set up job	2026-08-16T04:55:55.8396975Z Hosted Compute Agent
+test (3.11)	Set up job	2026-08-16T04:55:55.8398079Z Version: 20260729.566
+test (3.11)	Set up job	2026-08-16T04:55:55.8398815Z Commit: cf7153fe6e25b664e8693c24944bf2b00355d109
+test (3.11)	Set up job	2026-08-16T04:55:55.8399551Z Build Date: 2026-07-29T19:17:02Z
+test (3.11)	Set up job	2026-08-16T04:55:55.8400284Z Worker ID: {8ef5d013-43ba-45e7-a49c-c7926d870e76}
+test (3.11)	Set up job	2026-08-16T04:55:55.8401081Z Azure Region: eastus2
+test (3.11)	Set up job	2026-08-16T04:55:55.8401682Z ##[endgroup]
+test (3.11)	Set up job	2026-08-16T04:55:55.8403836Z ##[group]Operating System
+test (3.11)	Set up job	2026-08-16T04:55:55.8404518Z Ubuntu
+test (3.11)	Set up job	2026-08-16T04:55:55.8405047Z 24.04.4
+test (3.11)	Set up job	2026-08-16T04:55:55.8405730Z LTS
+test (3.11)	Set up job	2026-08-16T04:55:55.8406260Z ##[endgroup]
+test (3.11)	Set up job	2026-08-16T04:55:55.8406857Z ##[group]Runner Image
+test (3.11)	Set up job	2026-08-16T04:55:55.8407496Z Image: ubuntu-24.04
+test (3.11)	Set up job	2026-08-16T04:55:55.8408082Z Version: 20260810.271.1
+test (3.11)	Set up job	2026-08-16T04:55:55.8409217Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260810.271/images/ubuntu/Ubuntu2404-Readme.md
+test (3.11)	Set up job	2026-08-16T04:55:55.8411090Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260810.271
+test (3.11)	Set up job	2026-08-16T04:55:55.8412072Z ##[endgroup]
+test (3.11)	Set up job	2026-08-16T04:55:55.8413365Z ##[group]GITHUB_TOKEN Permissions
+test (3.11)	Set up job	2026-08-16T04:55:55.8415757Z Contents: read
+test (3.11)	Set up job	2026-08-16T04:55:55.8416382Z Metadata: read
+test (3.11)	Set up job	2026-08-16T04:55:55.8417049Z Packages: read
+test (3.11)	Set up job	2026-08-16T04:55:55.8417628Z ##[endgroup]
+test (3.11)	Set up job	2026-08-16T04:55:55.8419789Z Secret source: Actions
+test (3.11)	Set up job	2026-08-16T04:55:55.8421564Z Prepare workflow directory
+test (3.11)	Set up job	2026-08-16T04:55:55.8757265Z Prepare all required actions
+test (3.11)	Set up job	2026-08-16T04:55:55.8806757Z Getting action download info
+test (3.11)	Set up job	2026-08-16T04:55:56.0782478Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+test (3.11)	Set up job	2026-08-16T04:55:56.2441564Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+test (3.11)	Set up job	2026-08-16T04:55:56.4311413Z Complete job name: test (3.11)
+test (3.11)	Run actions/checkout@v4	﻿2026-08-16T04:55:56.5119111Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.5128267Z ##[group]Run actions/checkout@v4
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.5128998Z with:
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.5129450Z   repository: egnaro9/vac-protocol
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.5133541Z   token: ***
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.5133978Z   ssh-strict: true
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.5134421Z   ssh-user: git
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.5134863Z   persist-credentials: true
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.5135349Z   clean: true
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.5135797Z   sparse-checkout-cone-mode: true
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.5136309Z   fetch-depth: 1
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.5136738Z   fetch-tags: false
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.5137177Z   show-progress: true
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.5137610Z   lfs: false
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.5138016Z   submodules: false
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.5138524Z   set-safe-directory: true
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.5139041Z   allow-unsafe-pr-checkout: false
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.5139775Z ##[endgroup]
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.6176811Z Syncing repository: egnaro9/vac-protocol
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.6179643Z ##[group]Getting Git version info
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.6180841Z Working directory is '/home/runner/work/vac-protocol/vac-protocol'
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.6182538Z [command]/usr/bin/git version
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.6209279Z git version 2.54.0
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.6272703Z ##[endgroup]
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.6281827Z Temporarily overriding HOME='/home/runner/work/_temp/8e66786d-ed28-45fd-beb1-36c86b12b2d7' before making global git config changes
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.6284727Z Adding repository directory to the temporary git global config as a safe directory
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.6286947Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/vac-protocol/vac-protocol
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.6337098Z Deleting the contents of '/home/runner/work/vac-protocol/vac-protocol'
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.6340991Z ##[group]Initializing the repository
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.6346072Z [command]/usr/bin/git init /home/runner/work/vac-protocol/vac-protocol
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.6427153Z hint: Using 'master' as the name for the initial branch. This default branch name
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.6429216Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.6430545Z hint: to use in all of your new repositories, which will suppress this warning,
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.6432175Z hint: call:
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.6432889Z hint:
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.6433878Z hint: 	git config --global init.defaultBranch <name>
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.6434924Z hint:
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.6435817Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.6437292Z hint: 'development'. The just-created branch can be renamed via this command:
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.6438453Z hint:
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.6439062Z hint: 	git branch -m <name>
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.6439775Z hint:
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.6440791Z hint: Disable this message with "git config set advice.defaultBranchName false"
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.6442467Z Initialized empty Git repository in /home/runner/work/vac-protocol/vac-protocol/.git/
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.6445276Z [command]/usr/bin/git remote add origin https://github.com/egnaro9/vac-protocol
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.6487507Z ##[endgroup]
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.6488821Z ##[group]Disabling automatic garbage collection
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.6491757Z [command]/usr/bin/git config --local gc.auto 0
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.6525665Z ##[endgroup]
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.6526947Z ##[group]Setting up auth
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.6533652Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.6580616Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.6925823Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.6969021Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.7240231Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.7280790Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.7530086Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.7572787Z ##[endgroup]
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.7574018Z ##[group]Fetching the repository
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:56.7582705Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +a17af5cbcac6e503f8cefc94114299436063aae5:refs/remotes/origin/main
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:57.0410484Z From https://github.com/egnaro9/vac-protocol
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:57.0412192Z  * [new ref]         a17af5cbcac6e503f8cefc94114299436063aae5 -> origin/main
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:57.0443720Z ##[endgroup]
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:57.0445200Z ##[group]Determining the checkout info
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:57.0446899Z ##[endgroup]
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:57.0453154Z [command]/usr/bin/git sparse-checkout disable
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:57.0505382Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:57.0543892Z ##[group]Checking out the ref
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:57.0548510Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:57.0756882Z Switched to a new branch 'main'
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:57.0758258Z branch 'main' set up to track 'origin/main'.
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:57.0765387Z ##[endgroup]
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:57.0812321Z [command]/usr/bin/git log -1 --format=%H
+test (3.11)	Run actions/checkout@v4	2026-08-16T04:55:57.0843160Z a17af5cbcac6e503f8cefc94114299436063aae5
+test (3.11)	Run actions/setup-python@v5	﻿2026-08-16T04:55:57.1152433Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+test (3.11)	Run actions/setup-python@v5	2026-08-16T04:55:57.1155796Z ##[group]Run actions/setup-python@v5
+test (3.11)	Run actions/setup-python@v5	2026-08-16T04:55:57.1156378Z with:
+test (3.11)	Run actions/setup-python@v5	2026-08-16T04:55:57.1156831Z   python-version: 3.11
+test (3.11)	Run actions/setup-python@v5	2026-08-16T04:55:57.1157335Z   check-latest: false
+test (3.11)	Run actions/setup-python@v5	2026-08-16T04:55:57.1161311Z   token: ***
+test (3.11)	Run actions/setup-python@v5	2026-08-16T04:55:57.1161782Z   update-environment: true
+test (3.11)	Run actions/setup-python@v5	2026-08-16T04:55:57.1162318Z   allow-prereleases: false
+test (3.11)	Run actions/setup-python@v5	2026-08-16T04:55:57.1162841Z   freethreaded: false
+test (3.11)	Run actions/setup-python@v5	2026-08-16T04:55:57.1163431Z ##[endgroup]
+test (3.11)	Run actions/setup-python@v5	2026-08-16T04:55:57.2491200Z ##[group]Installed versions
+test (3.11)	Run actions/setup-python@v5	2026-08-16T04:55:57.2573943Z (node:2197) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+test (3.11)	Run actions/setup-python@v5	2026-08-16T04:55:57.2576275Z (Use `node --trace-deprecation ...` to show where the warning was created)
+test (3.11)	Run actions/setup-python@v5	2026-08-16T04:55:57.2577803Z Successfully set up CPython (3.11.15)
+test (3.11)	Run actions/setup-python@v5	2026-08-16T04:55:57.2579395Z ##[endgroup]
+test (3.11)	Run pip install -e ".[test]"	﻿2026-08-16T04:55:57.2791798Z ##[group]Run pip install -e ".[test]"
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:55:57.2793001Z ^[[36;1mpip install -e ".[test]"^[[0m
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:55:57.2859532Z shell: /usr/bin/bash -e {0}
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:55:57.2860495Z env:
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:55:57.2861364Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.15/x64
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:55:57.2862820Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.15/x64/lib/pkgconfig
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:55:57.2864476Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:55:57.2865813Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:55:57.2867153Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:55:57.2868486Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.15/x64/lib
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:55:57.2869642Z ##[endgroup]
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:55:58.3611360Z Obtaining file:///home/runner/work/vac-protocol/vac-protocol
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:55:58.3629037Z   Installing build dependencies: started
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:55:59.1856331Z   Installing build dependencies: finished with status 'done'
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:55:59.1862343Z   Checking if build backend supports build_editable: started
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:55:59.5330540Z   Checking if build backend supports build_editable: finished with status 'done'
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:55:59.5339408Z   Getting requirements to build editable: started
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:55:59.8556726Z   Getting requirements to build editable: finished with status 'done'
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:55:59.8567881Z   Preparing editable metadata (pyproject.toml): started
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:56:00.0363489Z   Preparing editable metadata (pyproject.toml): finished with status 'done'
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:56:00.1306271Z Collecting pytest (from vac-protocol==0.1.0)
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:56:00.1903912Z   Downloading pytest-9.1.1-py3-none-any.whl.metadata (7.6 kB)
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:56:00.2067460Z Collecting iniconfig>=1.0.1 (from pytest->vac-protocol==0.1.0)
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:56:00.2143920Z   Downloading iniconfig-2.3.0-py3-none-any.whl.metadata (2.5 kB)
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:56:00.2336490Z Collecting packaging>=22 (from pytest->vac-protocol==0.1.0)
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:56:00.2413708Z   Downloading packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:56:00.2589365Z Collecting pluggy<2,>=1.5 (from pytest->vac-protocol==0.1.0)
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:56:00.2663078Z   Downloading pluggy-1.6.0-py3-none-any.whl.metadata (4.8 kB)
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:56:00.2880248Z Collecting pygments>=2.7.2 (from pytest->vac-protocol==0.1.0)
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:56:00.2958951Z   Downloading pygments-2.20.0-py3-none-any.whl.metadata (2.5 kB)
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:56:00.3082370Z Downloading pytest-9.1.1-py3-none-any.whl (386 kB)
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:56:00.3483034Z Downloading pluggy-1.6.0-py3-none-any.whl (20 kB)
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:56:00.3582484Z Downloading iniconfig-2.3.0-py3-none-any.whl (7.5 kB)
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:56:00.3682813Z Downloading packaging-26.3-py3-none-any.whl (129 kB)
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:56:00.3835894Z Downloading pygments-2.20.0-py3-none-any.whl (1.2 MB)
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:56:00.4413822Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 22.8 MB/s  0:00:00
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:56:00.4666277Z Building wheels for collected packages: vac-protocol
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:56:00.4673121Z   Building editable for vac-protocol (pyproject.toml): started
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:56:00.6650473Z   Building editable for vac-protocol (pyproject.toml): finished with status 'done'
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:56:00.6656810Z   Created wheel for vac-protocol: filename=vac_protocol-0.1.0-0.editable-py3-none-any.whl size=7717 sha256=2eeccfd0275d1084dd8647ec83ae9e253f34af244e3720260b2417a28b1c543e
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:56:00.6675095Z   Stored in directory: /tmp/pip-ephem-wheel-cache-2pdapfpn/wheels/c2/b6/47/ad3fc2a6b8a0cd36ac358c99afd0e641db30df633f424b77c4
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:56:00.6694723Z Successfully built vac-protocol
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:56:00.6875936Z Installing collected packages: vac-protocol, pygments, pluggy, packaging, iniconfig, pytest
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:56:01.6926245Z 
+test (3.11)	Run pip install -e ".[test]"	2026-08-16T04:56:01.6936966Z Successfully installed iniconfig-2.3.0 packaging-26.3 pluggy-1.6.0 pygments-2.20.0 pytest-9.1.1 vac-protocol-0.1.0
+test (3.11)	Run python -m pytest tests/ -q	﻿2026-08-16T04:56:01.7703881Z ##[group]Run python -m pytest tests/ -q
+test (3.11)	Run python -m pytest tests/ -q	2026-08-16T04:56:01.7704334Z ^[[36;1mpython -m pytest tests/ -q^[[0m
+test (3.11)	Run python -m pytest tests/ -q	2026-08-16T04:56:01.7748047Z shell: /usr/bin/bash -e {0}
+test (3.11)	Run python -m pytest tests/ -q	2026-08-16T04:56:01.7748333Z env:
+test (3.11)	Run python -m pytest tests/ -q	2026-08-16T04:56:01.7748625Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.15/x64
+test (3.11)	Run python -m pytest tests/ -q	2026-08-16T04:56:01.7749086Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.15/x64/lib/pkgconfig
+test (3.11)	Run python -m pytest tests/ -q	2026-08-16T04:56:01.7749534Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
+test (3.11)	Run python -m pytest tests/ -q	2026-08-16T04:56:01.7749929Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
+test (3.11)	Run python -m pytest tests/ -q	2026-08-16T04:56:01.7750318Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.15/x64
+test (3.11)	Run python -m pytest tests/ -q	2026-08-16T04:56:01.7750701Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.15/x64/lib
+test (3.11)	Run python -m pytest tests/ -q	2026-08-16T04:56:01.7751038Z ##[endgroup]
+test (3.11)	Run python -m pytest tests/ -q	2026-08-16T04:56:02.9126706Z ........................................................................ [ 33%]
+test (3.11)	Run python -m pytest tests/ -q	2026-08-16T04:56:03.9187044Z ........................................................................ [ 67%]
+test (3.11)	Run python -m pytest tests/ -q	2026-08-16T04:56:04.2833567Z ......................s.ss.....sssssssssss..........................     [100%]
+test (3.11)	Run python -m pytest tests/ -q	2026-08-16T04:56:04.2834494Z 198 passed, 14 skipped in 2.06s
+test (3.11)	Post Run actions/setup-python@v5	﻿2026-08-16T04:56:04.3238168Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+test (3.11)	Post Run actions/setup-python@v5	2026-08-16T04:56:04.3239405Z Post job cleanup.
+test (3.11)	Post Run actions/setup-python@v5	2026-08-16T04:56:04.4453928Z (node:2689) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+test (3.11)	Post Run actions/setup-python@v5	2026-08-16T04:56:04.4455119Z (Use `node --trace-deprecation ...` to show where the warning was created)
+test (3.11)	Post Run actions/checkout@v4	﻿2026-08-16T04:56:04.4635470Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+test (3.11)	Post Run actions/checkout@v4	2026-08-16T04:56:04.4636707Z Post job cleanup.
+test (3.11)	Post Run actions/checkout@v4	2026-08-16T04:56:04.5560975Z [command]/usr/bin/git version
+test (3.11)	Post Run actions/checkout@v4	2026-08-16T04:56:04.5605675Z git version 2.54.0
+test (3.11)	Post Run actions/checkout@v4	2026-08-16T04:56:04.5642001Z Temporarily overriding HOME='/home/runner/work/_temp/170f464d-7872-492a-970f-6195aec6a44e' before making global git config changes
+test (3.11)	Post Run actions/checkout@v4	2026-08-16T04:56:04.5643741Z Adding repository directory to the temporary git global config as a safe directory
+test (3.11)	Post Run actions/checkout@v4	2026-08-16T04:56:04.5649275Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/vac-protocol/vac-protocol
+test (3.11)	Post Run actions/checkout@v4	2026-08-16T04:56:04.5694451Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+test (3.11)	Post Run actions/checkout@v4	2026-08-16T04:56:04.5735296Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+test (3.11)	Post Run actions/checkout@v4	2026-08-16T04:56:04.6024998Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+test (3.11)	Post Run actions/checkout@v4	2026-08-16T04:56:04.6055092Z http.https://github.com/.extraheader
+test (3.11)	Post Run actions/checkout@v4	2026-08-16T04:56:04.6085642Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+test (3.11)	Post Run actions/checkout@v4	2026-08-16T04:56:04.6109739Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+test (3.11)	Post Run actions/checkout@v4	2026-08-16T04:56:04.6382306Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+test (3.11)	Post Run actions/checkout@v4	2026-08-16T04:56:04.6428024Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+test (3.11)	Complete job	﻿2026-08-16T04:56:04.6931884Z Cleaning up orphan processes
+test (3.11)	Complete job	2026-08-16T04:56:04.7226920Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+refusal-coverage	Set up job	﻿2026-08-16T04:55:56.7578303Z Current runner version: '2.336.0'
+refusal-coverage	Set up job	2026-08-16T04:55:56.7628358Z ##[group]Runner Image Provisioner
+refusal-coverage	Set up job	2026-08-16T04:55:56.7629328Z Hosted Compute Agent
+refusal-coverage	Set up job	2026-08-16T04:55:56.7629908Z Version: 20260729.566
+refusal-coverage	Set up job	2026-08-16T04:55:56.7630588Z Commit: cf7153fe6e25b664e8693c24944bf2b00355d109
+refusal-coverage	Set up job	2026-08-16T04:55:56.7631311Z Build Date: 2026-07-29T19:17:02Z
+refusal-coverage	Set up job	2026-08-16T04:55:56.7631985Z Worker ID: {bbd5fe4d-fe8f-453e-9d40-082f62c22201}
+refusal-coverage	Set up job	2026-08-16T04:55:56.7633090Z Azure Region: westus
+refusal-coverage	Set up job	2026-08-16T04:55:56.7633660Z ##[endgroup]
+refusal-coverage	Set up job	2026-08-16T04:55:56.7635415Z ##[group]Operating System
+refusal-coverage	Set up job	2026-08-16T04:55:56.7636159Z Ubuntu
+refusal-coverage	Set up job	2026-08-16T04:55:56.7636666Z 24.04.4
+refusal-coverage	Set up job	2026-08-16T04:55:56.7637196Z LTS
+refusal-coverage	Set up job	2026-08-16T04:55:56.7637757Z ##[endgroup]
+refusal-coverage	Set up job	2026-08-16T04:55:56.7638316Z ##[group]Runner Image
+refusal-coverage	Set up job	2026-08-16T04:55:56.7638960Z Image: ubuntu-24.04
+refusal-coverage	Set up job	2026-08-16T04:55:56.7639517Z Version: 20260810.271.1
+refusal-coverage	Set up job	2026-08-16T04:55:56.7640547Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260810.271/images/ubuntu/Ubuntu2404-Readme.md
+refusal-coverage	Set up job	2026-08-16T04:55:56.7642327Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260810.271
+refusal-coverage	Set up job	2026-08-16T04:55:56.7643323Z ##[endgroup]
+refusal-coverage	Set up job	2026-08-16T04:55:56.7644965Z ##[group]GITHUB_TOKEN Permissions
+refusal-coverage	Set up job	2026-08-16T04:55:56.7647287Z Contents: read
+refusal-coverage	Set up job	2026-08-16T04:55:56.7647940Z Metadata: read
+refusal-coverage	Set up job	2026-08-16T04:55:56.7648458Z Packages: read
+refusal-coverage	Set up job	2026-08-16T04:55:56.7649061Z ##[endgroup]
+refusal-coverage	Set up job	2026-08-16T04:55:56.7651547Z Secret source: Actions
+refusal-coverage	Set up job	2026-08-16T04:55:56.7653005Z Prepare workflow directory
+refusal-coverage	Set up job	2026-08-16T04:55:56.8003387Z Prepare all required actions
+refusal-coverage	Set up job	2026-08-16T04:55:56.8053433Z Getting action download info
+refusal-coverage	Set up job	2026-08-16T04:55:57.1764940Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+refusal-coverage	Set up job	2026-08-16T04:55:57.3559174Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+refusal-coverage	Set up job	2026-08-16T04:55:57.5416460Z Complete job name: refusal-coverage
+refusal-coverage	Run actions/checkout@v4	﻿2026-08-16T04:55:57.6248620Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.6257783Z ##[group]Run actions/checkout@v4
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.6258547Z with:
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.6259002Z   repository: egnaro9/vac-protocol
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.6262984Z   token: ***
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.6263414Z   ssh-strict: true
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.6264154Z   ssh-user: git
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.6264809Z   persist-credentials: true
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.6265305Z   clean: true
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.6265750Z   sparse-checkout-cone-mode: true
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.6266277Z   fetch-depth: 1
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.6266712Z   fetch-tags: false
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.6267154Z   show-progress: true
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.6267594Z   lfs: false
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.6268004Z   submodules: false
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.6268495Z   set-safe-directory: true
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.6269009Z   allow-unsafe-pr-checkout: false
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.6269868Z ##[endgroup]
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.7285583Z Syncing repository: egnaro9/vac-protocol
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.7288160Z ##[group]Getting Git version info
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.7289364Z Working directory is '/home/runner/work/vac-protocol/vac-protocol'
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.7291062Z [command]/usr/bin/git version
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.7390953Z git version 2.54.0
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.7449401Z ##[endgroup]
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.7466136Z Temporarily overriding HOME='/home/runner/work/_temp/08b80c30-f94a-4fe1-b827-130b32015b5e' before making global git config changes
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.7468628Z Adding repository directory to the temporary git global config as a safe directory
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.7471879Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/vac-protocol/vac-protocol
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.7526755Z Deleting the contents of '/home/runner/work/vac-protocol/vac-protocol'
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.7534662Z ##[group]Initializing the repository
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.7539266Z [command]/usr/bin/git init /home/runner/work/vac-protocol/vac-protocol
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.7659959Z hint: Using 'master' as the name for the initial branch. This default branch name
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.7662019Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.7663778Z hint: to use in all of your new repositories, which will suppress this warning,
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.7665985Z hint: call:
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.7666713Z hint:
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.7678954Z hint: 	git config --global init.defaultBranch <name>
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.7686129Z hint:
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.7687335Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.7689064Z hint: 'development'. The just-created branch can be renamed via this command:
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.7690488Z hint:
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.7691346Z hint: 	git branch -m <name>
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.7692337Z hint:
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.7694035Z hint: Disable this message with "git config set advice.defaultBranchName false"
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.7696328Z Initialized empty Git repository in /home/runner/work/vac-protocol/vac-protocol/.git/
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.7700233Z [command]/usr/bin/git remote add origin https://github.com/egnaro9/vac-protocol
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.7755791Z ##[endgroup]
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.7757135Z ##[group]Disabling automatic garbage collection
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.7760996Z [command]/usr/bin/git config --local gc.auto 0
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.7795694Z ##[endgroup]
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.7797123Z ##[group]Setting up auth
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.7804798Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.7854698Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.8270559Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.8312893Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.8574503Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.8617061Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.8886567Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.8928324Z ##[endgroup]
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.8929206Z ##[group]Fetching the repository
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:57.8938911Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +a17af5cbcac6e503f8cefc94114299436063aae5:refs/remotes/origin/main
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:58.3823640Z From https://github.com/egnaro9/vac-protocol
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:58.3825033Z  * [new ref]         a17af5cbcac6e503f8cefc94114299436063aae5 -> origin/main
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:58.3862699Z ##[endgroup]
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:58.3864202Z ##[group]Determining the checkout info
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:58.3870691Z ##[endgroup]
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:58.3871796Z [command]/usr/bin/git sparse-checkout disable
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:58.3923372Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:58.3958549Z ##[group]Checking out the ref
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:58.3963034Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:58.4202700Z Switched to a new branch 'main'
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:58.4204538Z branch 'main' set up to track 'origin/main'.
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:58.4207680Z ##[endgroup]
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:58.4246309Z [command]/usr/bin/git log -1 --format=%H
+refusal-coverage	Run actions/checkout@v4	2026-08-16T04:55:58.4275733Z a17af5cbcac6e503f8cefc94114299436063aae5
+refusal-coverage	Run actions/setup-python@v5	﻿2026-08-16T04:55:58.4599467Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+refusal-coverage	Run actions/setup-python@v5	2026-08-16T04:55:58.4603635Z ##[group]Run actions/setup-python@v5
+refusal-coverage	Run actions/setup-python@v5	2026-08-16T04:55:58.4604461Z with:
+refusal-coverage	Run actions/setup-python@v5	2026-08-16T04:55:58.4604889Z   python-version: 3.12
+refusal-coverage	Run actions/setup-python@v5	2026-08-16T04:55:58.4605404Z   check-latest: false
+refusal-coverage	Run actions/setup-python@v5	2026-08-16T04:55:58.4610618Z   token: ***
+refusal-coverage	Run actions/setup-python@v5	2026-08-16T04:55:58.4611081Z   update-environment: true
+refusal-coverage	Run actions/setup-python@v5	2026-08-16T04:55:58.4611640Z   allow-prereleases: false
+refusal-coverage	Run actions/setup-python@v5	2026-08-16T04:55:58.4612182Z   freethreaded: false
+refusal-coverage	Run actions/setup-python@v5	2026-08-16T04:55:58.4612677Z ##[endgroup]
+refusal-coverage	Run actions/setup-python@v5	2026-08-16T04:55:58.5974605Z ##[group]Installed versions
+refusal-coverage	Run actions/setup-python@v5	2026-08-16T04:55:58.6079060Z (node:2232) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+refusal-coverage	Run actions/setup-python@v5	2026-08-16T04:55:58.6082126Z (Use `node --trace-deprecation ...` to show where the warning was created)
+refusal-coverage	Run actions/setup-python@v5	2026-08-16T04:55:58.6084357Z Successfully set up CPython (3.12.13)
+refusal-coverage	Run actions/setup-python@v5	2026-08-16T04:55:58.6086390Z ##[endgroup]
+refusal-coverage	Run pip install -e ".[test]"	﻿2026-08-16T04:55:58.6307945Z ##[group]Run pip install -e ".[test]"
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:55:58.6308758Z ^[[36;1mpip install -e ".[test]"^[[0m
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:55:58.6367675Z shell: /usr/bin/bash -e {0}
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:55:58.6368761Z env:
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:55:58.6369580Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:55:58.6370638Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:55:58.6371674Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:55:58.6372747Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:55:58.6374480Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:55:58.6376040Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:55:58.6377342Z ##[endgroup]
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:55:59.5716657Z Obtaining file:///home/runner/work/vac-protocol/vac-protocol
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:55:59.5732862Z   Installing build dependencies: started
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:56:00.4051908Z   Installing build dependencies: finished with status 'done'
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:56:00.4059027Z   Checking if build backend supports build_editable: started
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:56:00.7842064Z   Checking if build backend supports build_editable: finished with status 'done'
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:56:00.7850537Z   Getting requirements to build editable: started
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:56:01.1441761Z   Getting requirements to build editable: finished with status 'done'
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:56:01.1452893Z   Preparing editable metadata (pyproject.toml): started
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:56:01.3416862Z   Preparing editable metadata (pyproject.toml): finished with status 'done'
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:56:01.4398775Z Collecting pytest (from vac-protocol==0.1.0)
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:56:01.5172660Z   Downloading pytest-9.1.1-py3-none-any.whl.metadata (7.6 kB)
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:56:01.5298941Z Collecting iniconfig>=1.0.1 (from pytest->vac-protocol==0.1.0)
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:56:01.5418219Z   Downloading iniconfig-2.3.0-py3-none-any.whl.metadata (2.5 kB)
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:56:01.5558256Z Collecting packaging>=22 (from pytest->vac-protocol==0.1.0)
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:56:01.5678380Z   Downloading packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:56:01.5806856Z Collecting pluggy<2,>=1.5 (from pytest->vac-protocol==0.1.0)
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:56:01.5928351Z   Downloading pluggy-1.6.0-py3-none-any.whl.metadata (4.8 kB)
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:56:01.6114596Z Collecting pygments>=2.7.2 (from pytest->vac-protocol==0.1.0)
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:56:01.6237154Z   Downloading pygments-2.20.0-py3-none-any.whl.metadata (2.5 kB)
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:56:01.6417402Z Downloading pytest-9.1.1-py3-none-any.whl (386 kB)
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:56:01.7007538Z Downloading pluggy-1.6.0-py3-none-any.whl (20 kB)
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:56:01.7151831Z Downloading iniconfig-2.3.0-py3-none-any.whl (7.5 kB)
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:56:01.7292490Z Downloading packaging-26.3-py3-none-any.whl (129 kB)
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:56:01.7444673Z Downloading pygments-2.20.0-py3-none-any.whl (1.2 MB)
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:56:01.7820914Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 39.3 MB/s  0:00:00
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:56:01.7995753Z Building wheels for collected packages: vac-protocol
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:56:01.8003688Z   Building editable for vac-protocol (pyproject.toml): started
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:56:02.0156536Z   Building editable for vac-protocol (pyproject.toml): finished with status 'done'
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:56:02.0162194Z   Created wheel for vac-protocol: filename=vac_protocol-0.1.0-0.editable-py3-none-any.whl size=7717 sha256=2eeccfd0275d1084dd8647ec83ae9e253f34af244e3720260b2417a28b1c543e
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:56:02.0164094Z   Stored in directory: /tmp/pip-ephem-wheel-cache-a174b24_/wheels/31/93/c0/4effb33ea68d4321a176d9cb097b94ea8b1be9d534ea861dec
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:56:02.0194907Z Successfully built vac-protocol
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:56:02.0462864Z Installing collected packages: vac-protocol, pygments, pluggy, packaging, iniconfig, pytest
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:56:03.2280645Z 
+refusal-coverage	Run pip install -e ".[test]"	2026-08-16T04:56:03.2293699Z Successfully installed iniconfig-2.3.0 packaging-26.3 pluggy-1.6.0 pygments-2.20.0 pytest-9.1.1 vac-protocol-0.1.0
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	﻿2026-08-16T04:56:03.2912722Z ##[group]Run python tools/mutation_sweep.py --floor 0.94
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:03.2913180Z ^[[36;1mpython tools/mutation_sweep.py --floor 0.94^[[0m
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:03.2952942Z shell: /usr/bin/bash -e {0}
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:03.2953195Z env:
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:03.2953464Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:03.2954061Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:03.2954492Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:03.2954870Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:03.2955246Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:03.2955625Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:03.2955941Z ##[endgroup]
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:07.4184881Z baseline clean; 133 refusal sites (1 excluded, see EXCLUDE)
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:07.4185730Z   [1/133] L94 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:08.1613445Z   [2/133] L109 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:10.4026026Z   [3/133] L114 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:12.2756569Z   [4/133] L125 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:13.0356181Z   [5/133] L130 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:13.8675869Z   [6/133] L134 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:14.6997682Z   [7/133] L144 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:15.4801039Z   [8/133] L149 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:16.2635179Z   [9/133] L154 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:17.1017636Z   [10/133] L158 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:17.9775708Z   [11/133] L161 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:18.7876226Z   [12/133] L167 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:19.6074390Z   [13/133] L170 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:21.9593219Z   [14/133] L175 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:24.1290487Z   [15/133] L180 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:26.0803099Z   [16/133] L186 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:27.0453518Z   [17/133] L188 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:27.9381409Z   [18/133] L193 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:28.8328875Z   [19/133] L196 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:30.7811416Z   [20/133] L213 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:32.0814294Z   [21/133] L219 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:34.2539470Z   [22/133] L228 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:35.2967884Z   [23/133] L245 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:37.6995696Z   [24/133] L249 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:38.7495014Z   [25/133] L262 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:39.6074914Z   [26/133] L272 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:40.6152830Z   [27/133] L277 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:42.6239101Z   [28/133] L280 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:43.5215623Z   [29/133] L291 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:44.4317520Z   [30/133] L294 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:45.3873243Z   [31/133] L299 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:47.5828352Z   [32/133] L302 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:50.9402886Z   [33/133] L325 *** SURVIVED ***
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:51.9728863Z   [34/133] L348 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:53.0504755Z   [35/133] L354 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:56.4710047Z   [36/133] L362 *** SURVIVED ***
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:57.4450454Z   [37/133] L369 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:56:58.4050112Z   [38/133] L372 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:57:00.8752188Z   [39/133] L378 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:57:04.2268590Z   [40/133] L384 *** SURVIVED ***
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:57:06.1980661Z   [41/133] L389 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:57:09.5916826Z   [42/133] L393 *** SURVIVED ***
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:57:10.5835532Z   [43/133] L398 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:57:11.5567414Z   [44/133] L402 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:57:12.5432923Z   [45/133] L411 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:57:13.4571774Z   [46/133] L414 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:57:16.7943928Z   [47/133] L461 *** SURVIVED ***
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:57:20.1696590Z   [48/133] L466 *** SURVIVED ***
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:57:23.4995509Z   [49/133] L470 *** SURVIVED ***
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:57:25.7023732Z   [50/133] L485 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:57:26.8028676Z   [51/133] L490 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:57:27.9329460Z   [52/133] L494 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:57:30.1778808Z   [53/133] L502 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:57:32.1161273Z   [54/133] L509 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:57:34.1171063Z   [55/133] L514 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:57:36.1157925Z   [56/133] L529 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:57:37.2222210Z   [57/133] L552 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:57:38.3133163Z   [58/133] L558 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:57:39.4211119Z   [59/133] L565 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:57:42.7364250Z   [60/133] L572 *** SURVIVED ***
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:57:44.8801068Z   [61/133] L579 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:57:48.2076851Z   [62/133] L592 *** SURVIVED ***
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:57:49.1288421Z   [63/133] L598 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:57:50.1454985Z   [64/133] L603 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:57:52.1701923Z   [65/133] L606 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:57:52.9241532Z   [66/133] L641 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:57:53.6804672Z   [67/133] L651 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:57:54.4820706Z   [68/133] L657 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:57:55.5341721Z   [69/133] L670 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:57:56.6124861Z   [70/133] L674 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:57:57.6836399Z   [71/133] L678 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:57:59.7467435Z   [72/133] L687 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:01.7050133Z   [73/133] L694 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:02.7968484Z   [74/133] L711 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:04.7995843Z   [75/133] L733 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:06.7602178Z   [76/133] L738 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:08.6787291Z   [77/133] L747 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:09.6156255Z   [78/133] L756 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:10.6482276Z   [79/133] L760 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:12.8283791Z   [80/133] L763 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:13.6933701Z   [81/133] L767 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:14.6812844Z   [82/133] L772 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:16.6608183Z   [83/133] L775 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:17.7327545Z   [84/133] L928 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:18.8211328Z   [85/133] L933 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:19.9563318Z   [86/133] L937 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:21.0622502Z   [87/133] L945 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:22.1497063Z   [88/133] L958 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:23.2697436Z   [89/133] L979 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:24.3638742Z   [90/133] L983 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:25.4684560Z   [91/133] L987 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:26.0267299Z   [92/133] L1011 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:26.5850563Z   [93/133] L1017 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:27.1497339Z   [94/133] L1025 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:27.7251920Z   [95/133] L1030 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:28.2665513Z   [96/133] L1035 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:28.8278643Z   [97/133] L1040 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:29.3815682Z   [98/133] L1056 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:29.9563739Z   [99/133] L1062 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:30.5246572Z   [100/133] L1066 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:31.1042091Z   [101/133] L1070 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:31.6877127Z   [102/133] L1074 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:32.2890630Z   [103/133] L1077 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:32.8979042Z   [104/133] L1081 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:33.5257945Z   [105/133] L1087 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:34.1569573Z   [106/133] L1090 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:34.7971621Z   [107/133] L1093 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:35.4410397Z   [108/133] L1099 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:36.0954476Z   [109/133] L1105 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:36.7571036Z   [110/133] L1109 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:38.7989463Z   [111/133] L1114 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:39.4668736Z   [112/133] L1129 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:40.1491857Z   [113/133] L1133 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:40.9045195Z   [114/133] L1137 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:42.8120600Z   [115/133] L1144 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:43.5102208Z   [116/133] L1149 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:45.4214692Z   [117/133] L1159 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:46.1830979Z   [118/133] L1165 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:46.9061620Z   [119/133] L1173 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:47.6938328Z   [120/133] L1178 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:48.4215678Z   [121/133] L1186 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:50.5296784Z   [122/133] L1190 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:51.2839873Z   [123/133] L1197 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:53.3834270Z   [124/133] L1203 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:54.3006978Z   [125/133] L1227 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:55.2533035Z   [126/133] L1232 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:58:57.2445638Z   [127/133] L1235 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:59:00.4479999Z   [128/133] L1288 caught: sweep:tamper-summary-string
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:59:02.3752973Z   [129/133] L1297 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:59:04.3117366Z   [130/133] L1300 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:59:05.3577965Z   [131/133] L1336 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:59:08.6794873Z   [132/133] L1348 *** SURVIVED ***
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:59:09.5595014Z   [133/133] L1361 caught: tests
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:59:09.5599150Z 
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:59:09.5599386Z FAIL: 0.925 is below the floor 0.940
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:59:09.5600836Z 
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:59:09.5601019Z MUTATION SCORE: 123/133 = 0.925
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:59:09.5601734Z SURVIVORS (10) — refusals nothing tests:
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:59:09.5602072Z   vac/verify.py:325  artifact-unparsable
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:59:09.5602388Z   vac/verify.py:362  raw-aggregate-mismatch
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:59:09.5602684Z   vac/verify.py:384  raw-aggregate-mismatch
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:59:09.5602984Z   vac/verify.py:393  raw-aggregate-mismatch
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:59:09.5603272Z   vac/verify.py:461  artifact-unparsable
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:59:09.5603550Z   vac/verify.py:466  artifact-unparsable
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:59:09.5604016Z   vac/verify.py:470  raw-aggregate-mismatch
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:59:09.5604332Z   vac/verify.py:572  raw-aggregate-mismatch
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:59:09.5604623Z   vac/verify.py:592  artifact-unparsable
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:59:09.5604912Z   vac/verify.py:1348  artifact-unparsable
+refusal-coverage	Run python tools/mutation_sweep.py --floor 0.94	2026-08-16T04:59:09.5669853Z ##[error]Process completed with exit code 1.
+refusal-coverage	Post Run actions/checkout@v4	﻿2026-08-16T04:59:09.5812767Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+refusal-coverage	Post Run actions/checkout@v4	2026-08-16T04:59:09.5814329Z Post job cleanup.
+refusal-coverage	Post Run actions/checkout@v4	2026-08-16T04:59:09.6679165Z [command]/usr/bin/git version
+refusal-coverage	Post Run actions/checkout@v4	2026-08-16T04:59:09.6725033Z git version 2.54.0
+refusal-coverage	Post Run actions/checkout@v4	2026-08-16T04:59:09.6768635Z Temporarily overriding HOME='/home/runner/work/_temp/e7a1860d-c3e3-4773-a1ee-fa743d921dd7' before making global git config changes
+refusal-coverage	Post Run actions/checkout@v4	2026-08-16T04:59:09.6769978Z Adding repository directory to the temporary git global config as a safe directory
+refusal-coverage	Post Run actions/checkout@v4	2026-08-16T04:59:09.6774864Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/vac-protocol/vac-protocol
+refusal-coverage	Post Run actions/checkout@v4	2026-08-16T04:59:09.6818152Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+refusal-coverage	Post Run actions/checkout@v4	2026-08-16T04:59:09.6855103Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+refusal-coverage	Post Run actions/checkout@v4	2026-08-16T04:59:09.7126859Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+refusal-coverage	Post Run actions/checkout@v4	2026-08-16T04:59:09.7157042Z http.https://github.com/.extraheader
+refusal-coverage	Post Run actions/checkout@v4	2026-08-16T04:59:09.7168906Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+refusal-coverage	Post Run actions/checkout@v4	2026-08-16T04:59:09.7205531Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+refusal-coverage	Post Run actions/checkout@v4	2026-08-16T04:59:09.7521701Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+refusal-coverage	Post Run actions/checkout@v4	2026-08-16T04:59:09.7568459Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+refusal-coverage	Complete job	﻿2026-08-16T04:59:09.8004279Z Cleaning up orphan processes
+refusal-coverage	Complete job	2026-08-16T04:59:09.8308264Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

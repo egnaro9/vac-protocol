@@ -1,0 +1,838 @@
+verify	UNKNOWN STEP	﻿2026-09-17T18:56:10.3829646Z Current runner version: '2.337.0'
+verify	UNKNOWN STEP	2026-09-17T18:56:10.3853775Z ##[group]Runner Image Provisioner
+verify	UNKNOWN STEP	2026-09-17T18:56:10.3854680Z Hosted Compute Agent
+verify	UNKNOWN STEP	2026-09-17T18:56:10.3855258Z Version: 20260828.587
+verify	UNKNOWN STEP	2026-09-17T18:56:10.3855988Z Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+verify	UNKNOWN STEP	2026-09-17T18:56:10.3856754Z Build Date: 2026-08-28T16:44:25Z
+verify	UNKNOWN STEP	2026-09-17T18:56:10.3857504Z Worker ID: {afd8ad5a-fc9b-4056-b900-3772e7f0fb9b}
+verify	UNKNOWN STEP	2026-09-17T18:56:10.3858259Z Azure Region: eastus
+verify	UNKNOWN STEP	2026-09-17T18:56:10.3858822Z ##[endgroup]
+verify	UNKNOWN STEP	2026-09-17T18:56:10.3860437Z ##[group]Operating System
+verify	UNKNOWN STEP	2026-09-17T18:56:10.3861641Z Ubuntu
+verify	UNKNOWN STEP	2026-09-17T18:56:10.3862203Z 24.04.5
+verify	UNKNOWN STEP	2026-09-17T18:56:10.3862796Z LTS
+verify	UNKNOWN STEP	2026-09-17T18:56:10.3863304Z ##[endgroup]
+verify	UNKNOWN STEP	2026-09-17T18:56:10.3864247Z ##[group]Runner Image
+verify	UNKNOWN STEP	2026-09-17T18:56:10.3864924Z Image: ubuntu-24.04
+verify	UNKNOWN STEP	2026-09-17T18:56:10.3865501Z Version: 20260907.300.1
+verify	UNKNOWN STEP	2026-09-17T18:56:10.3866783Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260907.300/images/ubuntu/Ubuntu2404-Readme.md
+verify	UNKNOWN STEP	2026-09-17T18:56:10.3868420Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260907.300
+verify	UNKNOWN STEP	2026-09-17T18:56:10.3869498Z ##[endgroup]
+verify	UNKNOWN STEP	2026-09-17T18:56:10.3870687Z ##[group]GITHUB_TOKEN Permissions
+verify	UNKNOWN STEP	2026-09-17T18:56:10.3873162Z Contents: read
+verify	UNKNOWN STEP	2026-09-17T18:56:10.3873747Z Metadata: read
+verify	UNKNOWN STEP	2026-09-17T18:56:10.3874431Z Pages: write
+verify	UNKNOWN STEP	2026-09-17T18:56:10.3874976Z ##[endgroup]
+verify	UNKNOWN STEP	2026-09-17T18:56:10.3877156Z Secret source: Actions
+verify	UNKNOWN STEP	2026-09-17T18:56:10.3878105Z Cache mode: write
+verify	UNKNOWN STEP	2026-09-17T18:56:10.3879364Z Prepare workflow directory
+verify	UNKNOWN STEP	2026-09-17T18:56:10.4205171Z Prepare all required actions
+verify	UNKNOWN STEP	2026-09-17T18:56:10.4252871Z Getting action download info
+verify	UNKNOWN STEP	2026-09-17T18:56:10.6509336Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+verify	UNKNOWN STEP	2026-09-17T18:56:10.7580398Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+verify	UNKNOWN STEP	2026-09-17T18:56:10.9366042Z Complete job name: verify
+verify	UNKNOWN STEP	2026-09-17T18:56:11.0167059Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+verify	UNKNOWN STEP	2026-09-17T18:56:11.0175859Z ##[group]Run actions/checkout@v4
+verify	UNKNOWN STEP	2026-09-17T18:56:11.0176702Z with:
+verify	UNKNOWN STEP	2026-09-17T18:56:11.0177159Z   repository: egnaro9/vac-protocol
+verify	UNKNOWN STEP	2026-09-17T18:56:11.0180843Z   token: ***
+verify	UNKNOWN STEP	2026-09-17T18:56:11.0181565Z   ssh-strict: true
+verify	UNKNOWN STEP	2026-09-17T18:56:11.0182004Z   ssh-user: git
+verify	UNKNOWN STEP	2026-09-17T18:56:11.0182445Z   persist-credentials: true
+verify	UNKNOWN STEP	2026-09-17T18:56:11.0182937Z   clean: true
+verify	UNKNOWN STEP	2026-09-17T18:56:11.0183379Z   sparse-checkout-cone-mode: true
+verify	UNKNOWN STEP	2026-09-17T18:56:11.0183914Z   fetch-depth: 1
+verify	UNKNOWN STEP	2026-09-17T18:56:11.0184350Z   fetch-tags: false
+verify	UNKNOWN STEP	2026-09-17T18:56:11.0184781Z   show-progress: true
+verify	UNKNOWN STEP	2026-09-17T18:56:11.0185216Z   lfs: false
+verify	UNKNOWN STEP	2026-09-17T18:56:11.0185650Z   submodules: false
+verify	UNKNOWN STEP	2026-09-17T18:56:11.0186096Z   set-safe-directory: true
+verify	UNKNOWN STEP	2026-09-17T18:56:11.0186599Z   allow-unsafe-pr-checkout: false
+verify	UNKNOWN STEP	2026-09-17T18:56:11.0187412Z ##[endgroup]
+verify	UNKNOWN STEP	2026-09-17T18:56:11.1187585Z Syncing repository: egnaro9/vac-protocol
+verify	UNKNOWN STEP	2026-09-17T18:56:11.1190233Z ##[group]Getting Git version info
+verify	UNKNOWN STEP	2026-09-17T18:56:11.1191708Z Working directory is '/home/runner/work/vac-protocol/vac-protocol'
+verify	UNKNOWN STEP	2026-09-17T18:56:11.1192854Z [command]/usr/bin/git version
+verify	UNKNOWN STEP	2026-09-17T18:56:11.1343190Z git version 2.55.0
+verify	UNKNOWN STEP	2026-09-17T18:56:11.1374860Z ##[endgroup]
+verify	UNKNOWN STEP	2026-09-17T18:56:11.1383673Z Temporarily overriding HOME='/home/runner/work/_temp/d7350afd-10a6-4062-b5b6-5b2238afe345' before making global git config changes
+verify	UNKNOWN STEP	2026-09-17T18:56:11.1386169Z Adding repository directory to the temporary git global config as a safe directory
+verify	UNKNOWN STEP	2026-09-17T18:56:11.1389335Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/vac-protocol/vac-protocol
+verify	UNKNOWN STEP	2026-09-17T18:56:11.1446024Z Deleting the contents of '/home/runner/work/vac-protocol/vac-protocol'
+verify	UNKNOWN STEP	2026-09-17T18:56:11.1449350Z ##[group]Initializing the repository
+verify	UNKNOWN STEP	2026-09-17T18:56:11.1455785Z [command]/usr/bin/git init /home/runner/work/vac-protocol/vac-protocol
+verify	UNKNOWN STEP	2026-09-17T18:56:11.1589668Z hint: Using 'master' as the name for the initial branch. This default branch name
+verify	UNKNOWN STEP	2026-09-17T18:56:11.1591565Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+verify	UNKNOWN STEP	2026-09-17T18:56:11.1593107Z hint: to use in all of your new repositories, which will suppress this warning,
+verify	UNKNOWN STEP	2026-09-17T18:56:11.1594387Z hint: call:
+verify	UNKNOWN STEP	2026-09-17T18:56:11.1595063Z hint:
+verify	UNKNOWN STEP	2026-09-17T18:56:11.1595874Z hint: 	git config --global init.defaultBranch <name>
+verify	UNKNOWN STEP	2026-09-17T18:56:11.1596856Z hint:
+verify	UNKNOWN STEP	2026-09-17T18:56:11.1597820Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+verify	UNKNOWN STEP	2026-09-17T18:56:11.1599363Z hint: 'development'. The just-created branch can be renamed via this command:
+verify	UNKNOWN STEP	2026-09-17T18:56:11.1600645Z hint:
+verify	UNKNOWN STEP	2026-09-17T18:56:11.1601480Z hint: 	git branch -m <name>
+verify	UNKNOWN STEP	2026-09-17T18:56:11.1602264Z hint:
+verify	UNKNOWN STEP	2026-09-17T18:56:11.1603275Z hint: Disable this message with "git config set advice.defaultBranchName false"
+verify	UNKNOWN STEP	2026-09-17T18:56:11.1605094Z Initialized empty Git repository in /home/runner/work/vac-protocol/vac-protocol/.git/
+verify	UNKNOWN STEP	2026-09-17T18:56:11.1607832Z [command]/usr/bin/git remote add origin https://github.com/egnaro9/vac-protocol
+verify	UNKNOWN STEP	2026-09-17T18:56:11.1662784Z ##[endgroup]
+verify	UNKNOWN STEP	2026-09-17T18:56:11.1664235Z ##[group]Disabling automatic garbage collection
+verify	UNKNOWN STEP	2026-09-17T18:56:11.1666611Z [command]/usr/bin/git config --local gc.auto 0
+verify	UNKNOWN STEP	2026-09-17T18:56:11.1701902Z ##[endgroup]
+verify	UNKNOWN STEP	2026-09-17T18:56:11.1703014Z ##[group]Setting up auth
+verify	UNKNOWN STEP	2026-09-17T18:56:11.1709123Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+verify	UNKNOWN STEP	2026-09-17T18:56:11.1744700Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+verify	UNKNOWN STEP	2026-09-17T18:56:11.2140902Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+verify	UNKNOWN STEP	2026-09-17T18:56:11.2176438Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+verify	UNKNOWN STEP	2026-09-17T18:56:11.2428528Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+verify	UNKNOWN STEP	2026-09-17T18:56:11.2464632Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+verify	UNKNOWN STEP	2026-09-17T18:56:11.2688079Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+verify	UNKNOWN STEP	2026-09-17T18:56:11.2727959Z ##[endgroup]
+verify	UNKNOWN STEP	2026-09-17T18:56:11.2729403Z ##[group]Fetching the repository
+verify	UNKNOWN STEP	2026-09-17T18:56:11.2739453Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +c4410114a470d2aca19b9f277efc3895a87a0d80:refs/remotes/origin/main
+verify	UNKNOWN STEP	2026-09-17T18:56:11.6262940Z From https://github.com/egnaro9/vac-protocol
+verify	UNKNOWN STEP	2026-09-17T18:56:11.6264955Z  * [new ref]         c4410114a470d2aca19b9f277efc3895a87a0d80 -> origin/main
+verify	UNKNOWN STEP	2026-09-17T18:56:11.6277590Z ##[endgroup]
+verify	UNKNOWN STEP	2026-09-17T18:56:11.6278664Z ##[group]Determining the checkout info
+verify	UNKNOWN STEP	2026-09-17T18:56:11.6279650Z ##[endgroup]
+verify	UNKNOWN STEP	2026-09-17T18:56:11.6280240Z [command]/usr/bin/git sparse-checkout disable
+verify	UNKNOWN STEP	2026-09-17T18:56:11.6330255Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+verify	UNKNOWN STEP	2026-09-17T18:56:11.6360664Z ##[group]Checking out the ref
+verify	UNKNOWN STEP	2026-09-17T18:56:11.6364190Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+verify	UNKNOWN STEP	2026-09-17T18:56:11.6664472Z Switched to a new branch 'main'
+verify	UNKNOWN STEP	2026-09-17T18:56:11.6670463Z branch 'main' set up to track 'origin/main'.
+verify	UNKNOWN STEP	2026-09-17T18:56:11.6676668Z ##[endgroup]
+verify	UNKNOWN STEP	2026-09-17T18:56:11.6720048Z [command]/usr/bin/git log -1 --format=%H
+verify	UNKNOWN STEP	2026-09-17T18:56:11.6746910Z c4410114a470d2aca19b9f277efc3895a87a0d80
+verify	UNKNOWN STEP	2026-09-17T18:56:11.7112903Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+verify	UNKNOWN STEP	2026-09-17T18:56:11.7118822Z ##[group]Run actions/setup-python@v5
+verify	UNKNOWN STEP	2026-09-17T18:56:11.7119940Z with:
+verify	UNKNOWN STEP	2026-09-17T18:56:11.7120756Z   python-version: 3.12
+verify	UNKNOWN STEP	2026-09-17T18:56:11.7121950Z   check-latest: false
+verify	UNKNOWN STEP	2026-09-17T18:56:11.7131511Z   token: ***
+verify	UNKNOWN STEP	2026-09-17T18:56:11.7132402Z   update-environment: true
+verify	UNKNOWN STEP	2026-09-17T18:56:11.7133463Z   allow-prereleases: false
+verify	UNKNOWN STEP	2026-09-17T18:56:11.7134486Z   freethreaded: false
+verify	UNKNOWN STEP	2026-09-17T18:56:11.7135392Z ##[endgroup]
+verify	UNKNOWN STEP	2026-09-17T18:56:11.8441285Z ##[group]Installed versions
+verify	UNKNOWN STEP	2026-09-17T18:56:11.8543484Z (node:2186) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+verify	UNKNOWN STEP	2026-09-17T18:56:11.8548080Z (Use `node --trace-deprecation ...` to show where the warning was created)
+verify	UNKNOWN STEP	2026-09-17T18:56:11.8551260Z Successfully set up CPython (3.12.14)
+verify	UNKNOWN STEP	2026-09-17T18:56:11.8553029Z ##[endgroup]
+verify	UNKNOWN STEP	2026-09-17T18:56:11.8860466Z ##[group]Run pip install -e .
+verify	UNKNOWN STEP	2026-09-17T18:56:11.8862459Z ^[[36;1mpip install -e .^[[0m
+verify	UNKNOWN STEP	2026-09-17T18:56:11.8931581Z shell: /usr/bin/bash -e {0}
+verify	UNKNOWN STEP	2026-09-17T18:56:11.8932642Z env:
+verify	UNKNOWN STEP	2026-09-17T18:56:11.8933674Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.14/x64
+verify	UNKNOWN STEP	2026-09-17T18:56:11.8935484Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.14/x64/lib/pkgconfig
+verify	UNKNOWN STEP	2026-09-17T18:56:11.8937255Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+verify	UNKNOWN STEP	2026-09-17T18:56:11.8938833Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+verify	UNKNOWN STEP	2026-09-17T18:56:11.8940446Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+verify	UNKNOWN STEP	2026-09-17T18:56:11.8942261Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.14/x64/lib
+verify	UNKNOWN STEP	2026-09-17T18:56:11.8943601Z ##[endgroup]
+verify	UNKNOWN STEP	2026-09-17T18:56:12.8051884Z Obtaining file:///home/runner/work/vac-protocol/vac-protocol
+verify	UNKNOWN STEP	2026-09-17T18:56:12.8067555Z   Installing build dependencies: started
+verify	UNKNOWN STEP	2026-09-17T18:56:13.5062572Z   Installing build dependencies: finished with status 'done'
+verify	UNKNOWN STEP	2026-09-17T18:56:13.5067880Z   Checking if build backend supports build_editable: started
+verify	UNKNOWN STEP	2026-09-17T18:56:13.8247026Z   Checking if build backend supports build_editable: finished with status 'done'
+verify	UNKNOWN STEP	2026-09-17T18:56:13.8257051Z   Getting requirements to build editable: started
+verify	UNKNOWN STEP	2026-09-17T18:56:14.1575790Z   Getting requirements to build editable: finished with status 'done'
+verify	UNKNOWN STEP	2026-09-17T18:56:14.1585860Z   Preparing editable metadata (pyproject.toml): started
+verify	UNKNOWN STEP	2026-09-17T18:56:14.3484091Z   Preparing editable metadata (pyproject.toml): finished with status 'done'
+verify	UNKNOWN STEP	2026-09-17T18:56:14.3520396Z Building wheels for collected packages: vac-protocol
+verify	UNKNOWN STEP	2026-09-17T18:56:14.3528646Z   Building editable for vac-protocol (pyproject.toml): started
+verify	UNKNOWN STEP	2026-09-17T18:56:14.5701587Z   Building editable for vac-protocol (pyproject.toml): finished with status 'done'
+verify	UNKNOWN STEP	2026-09-17T18:56:14.5708236Z   Created wheel for vac-protocol: filename=vac_protocol-0.1.0-0.editable-py3-none-any.whl size=8850 sha256=3379ad844f68e3af8643e0b27d6737f39e56cb1aa7a6ddc7b7425c301929765e
+verify	UNKNOWN STEP	2026-09-17T18:56:14.5710464Z   Stored in directory: /tmp/pip-ephem-wheel-cache-2z2av6j3/wheels/31/93/c0/4effb33ea68d4321a176d9cb097b94ea8b1be9d534ea861dec
+verify	UNKNOWN STEP	2026-09-17T18:56:14.5735731Z Successfully built vac-protocol
+verify	UNKNOWN STEP	2026-09-17T18:56:14.5867916Z Installing collected packages: vac-protocol
+verify	UNKNOWN STEP	2026-09-17T18:56:14.5955141Z Successfully installed vac-protocol-0.1.0
+verify	UNKNOWN STEP	2026-09-17T18:56:14.6512179Z ##[group]Run python -m vac.verify fixtures/valid
+verify	UNKNOWN STEP	2026-09-17T18:56:14.6512657Z ^[[36;1mpython -m vac.verify fixtures/valid^[[0m
+verify	UNKNOWN STEP	2026-09-17T18:56:14.6512996Z ^[[36;1mfor d in fixtures/tamper-*; do^[[0m
+verify	UNKNOWN STEP	2026-09-17T18:56:14.6513316Z ^[[36;1m  if python -m vac.verify "$d"; then^[[0m
+verify	UNKNOWN STEP	2026-09-17T18:56:14.6513749Z ^[[36;1m    echo "LIVENESS FAILURE: $d verified clean — the gate cannot block"^[[0m
+verify	UNKNOWN STEP	2026-09-17T18:56:14.6514192Z ^[[36;1m    exit 1^[[0m
+verify	UNKNOWN STEP	2026-09-17T18:56:14.6514647Z ^[[36;1m  fi^[[0m
+verify	UNKNOWN STEP	2026-09-17T18:56:14.6514844Z ^[[36;1mdone^[[0m
+verify	UNKNOWN STEP	2026-09-17T18:56:14.6552736Z shell: /usr/bin/bash -e {0}
+verify	UNKNOWN STEP	2026-09-17T18:56:14.6553013Z env:
+verify	UNKNOWN STEP	2026-09-17T18:56:14.6553294Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.14/x64
+verify	UNKNOWN STEP	2026-09-17T18:56:14.6553770Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.14/x64/lib/pkgconfig
+verify	UNKNOWN STEP	2026-09-17T18:56:14.6554237Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+verify	UNKNOWN STEP	2026-09-17T18:56:14.6554635Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+verify	UNKNOWN STEP	2026-09-17T18:56:14.6555097Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+verify	UNKNOWN STEP	2026-09-17T18:56:14.6555538Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.14/x64/lib
+verify	UNKNOWN STEP	2026-09-17T18:56:14.6555875Z ##[endgroup]
+verify	UNKNOWN STEP	2026-09-17T18:56:14.7243384Z structural verification: PASS (valid)
+verify	UNKNOWN STEP	2026-09-17T18:56:14.7244148Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+verify	UNKNOWN STEP	2026-09-17T18:56:14.7244893Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+verify	UNKNOWN STEP	2026-09-17T18:56:14.7245676Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+verify	UNKNOWN STEP	2026-09-17T18:56:14.7246342Z   internally honest, not that the issuer's grader agrees. To re-earn the
+verify	UNKNOWN STEP	2026-09-17T18:56:14.7246966Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+verify	UNKNOWN STEP	2026-09-17T18:56:14.7247556Z     $ git clone https://github.com/example/toy-issuer issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:14.7248011Z     $ git -C issuer checkout f1e2d3c
+verify	UNKNOWN STEP	2026-09-17T18:56:14.7248402Z     $ python -m pip install -e ./issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:14.7248832Z     $ python -m toy_issuer.regrade evidence/bundle.json
+verify	UNKNOWN STEP	2026-09-17T18:56:14.7249361Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+verify	UNKNOWN STEP	2026-09-17T18:56:14.7249970Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:14.7250536Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:14.7251333Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+verify	UNKNOWN STEP	2026-09-17T18:56:14.7252943Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+verify	UNKNOWN STEP	2026-09-17T18:56:14.7682953Z FAIL evidence-unchecked: evidence/bundle.json: listed in evidence but read by no check
+verify	UNKNOWN STEP	2026-09-17T18:56:14.7683980Z structural verification: FAIL — 1 named reason(s) (tamper-check-deleted)
+verify	UNKNOWN STEP	2026-09-17T18:56:14.7684707Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+verify	UNKNOWN STEP	2026-09-17T18:56:14.7685448Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+verify	UNKNOWN STEP	2026-09-17T18:56:14.7686170Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+verify	UNKNOWN STEP	2026-09-17T18:56:14.7686837Z   internally honest, not that the issuer's grader agrees. To re-earn the
+verify	UNKNOWN STEP	2026-09-17T18:56:14.7687470Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+verify	UNKNOWN STEP	2026-09-17T18:56:14.7688084Z     $ git clone https://github.com/example/toy-issuer issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:14.7688560Z     $ git -C issuer checkout f1e2d3c
+verify	UNKNOWN STEP	2026-09-17T18:56:14.7688937Z     $ python -m pip install -e ./issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:14.7689369Z     $ python -m toy_issuer.regrade evidence/bundle.json
+verify	UNKNOWN STEP	2026-09-17T18:56:14.7689922Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+verify	UNKNOWN STEP	2026-09-17T18:56:14.7690518Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:14.7691493Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:14.7692096Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+verify	UNKNOWN STEP	2026-09-17T18:56:14.7693651Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8114848Z FAIL raw-aggregate-mismatch: evidence/eval_run.json: case 2 flagged flag contradicts its own passed/truncated pair
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8116028Z FAIL raw-aggregate-mismatch: evidence/eval_run.json: metrics.faithfulness declared 0.5, recomputed 0.75
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8117031Z FAIL raw-aggregate-mismatch: evidence/eval_run.json: metrics.precision@k declared 0.5, recomputed 0.75
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8117976Z FAIL raw-aggregate-mismatch: evidence/eval_run.json: metrics.recall@k declared 0.5, recomputed 0.75
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8118977Z FAIL raw-aggregate-mismatch: evidence/eval_run.json: metrics.citation_rate declared 0.5, recomputed 0.75
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8120006Z FAIL raw-aggregate-mismatch: evidence/eval_run.json: metrics.vulnerability_score declared 0.4545, recomputed 0.0909
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8121237Z FAIL raw-aggregate-mismatch: evidence/eval_run.json: per_kind['prompt-injection'] declared 0.5, recomputed 1.0
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8122039Z FAIL summary-mismatch: accuracy: declared 0.5, recomputed 0.75
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8122693Z FAIL summary-mismatch: vulnerability_score: declared 0.4545, recomputed 0.0909
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8123507Z FAIL summary-outruns-checks: summary.crash_vulnerability: declares 0.4545, no check recomputes it
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8124583Z structural verification: FAIL — 10 named reason(s) (tamper-crashkit-case)
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8125293Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8125989Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8126545Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8127063Z   internally honest, not that the issuer's grader agrees. To re-earn the
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8127550Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8128028Z     $ git clone https://github.com/example/toy-issuer issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8128423Z     $ git -C issuer checkout f1e2d3c
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8128839Z     $ python -m pip install -e ./issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8129179Z     $ python -m toy_issuer.regrade evidence/bundle.json
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8129596Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8130045Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8130486Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8131102Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8132299Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8623658Z FAIL raw-aggregate-mismatch: evidence/eval_run.json: metrics.vulnerability_score declared 0.0909, recomputed 0.4545
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8625246Z structural verification: FAIL — 1 named reason(s) (tamper-crashkit-metrics)
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8626245Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8627277Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8628269Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8629153Z   internally honest, not that the issuer's grader agrees. To re-earn the
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8630369Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8631640Z     $ git clone https://github.com/example/toy-issuer issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8632496Z     $ git -C issuer checkout f1e2d3c
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8632988Z     $ python -m pip install -e ./issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8633540Z     $ python -m toy_issuer.regrade evidence/bundle.json
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8634232Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8635210Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8635949Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8636746Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+verify	UNKNOWN STEP	2026-09-17T18:56:14.8638476Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9082687Z FAIL artifact-unparsable: evidence/eval_run.json: severity 'Critical', 'Med' outside the profile's frozen table (none/low/med/high/critical)
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9084850Z structural verification: FAIL — 1 named reason(s) (tamper-crashkit-severity)
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9086309Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9087752Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9089156Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9090404Z   internally honest, not that the issuer's grader agrees. To re-earn the
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9091798Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9093100Z     $ git clone https://github.com/example/toy-issuer issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9094097Z     $ git -C issuer checkout f1e2d3c
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9094960Z     $ python -m pip install -e ./issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9095625Z     $ python -m toy_issuer.regrade evidence/bundle.json
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9096369Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9097189Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9097958Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9098742Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9100726Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9473896Z FAIL draft-incomplete: claim.capability is an unauthored TODO
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9474718Z FAIL draft-incomplete: claim.limitations[0] is an unauthored TODO
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9475469Z FAIL draft-incomplete: claim.scope is an unauthored TODO
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9476212Z FAIL draft-incomplete: protocol.control_policy is an unauthored TODO
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9477015Z FAIL draft-incomplete: protocol.grading is an unauthored TODO
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9477819Z FAIL draft-incomplete: protocol.hashes.TODO is an unauthored TODO
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9478615Z FAIL draft-incomplete: protocol.task is an unauthored TODO
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9479434Z FAIL draft-incomplete: replay.commands[2] is an unauthored TODO
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9480216Z FAIL draft-incomplete: replay.commands[3] is an unauthored TODO
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9481263Z FAIL draft-incomplete: replay.expected is an unauthored TODO
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9482065Z FAIL draft-incomplete: results.checks[0].TODO is an unauthored TODO
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9482893Z FAIL draft-incomplete: results.checks[0].profile is an unauthored TODO
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9483938Z FAIL draft-incomplete: results.summary.TODO is an unauthored TODO
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9484714Z FAIL draft-incomplete: subject.id is an unauthored TODO
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9485382Z FAIL draft-incomplete: subject.kind is an unauthored TODO
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9486192Z FAIL draft-incomplete: subject.version.TODO is an unauthored TODO
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9487376Z structural verification: FAIL — 16 named reason(s) (tamper-draft-incomplete)
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9488337Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9489519Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9490467Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9491569Z   internally honest, not that the issuer's grader agrees. To re-earn the
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9492348Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9493151Z     $ git clone https://github.com/example/toy-issuer issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9493816Z     $ git -C issuer checkout f1e2d3c
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9494664Z     $ TODO(replay.commands): install, then run the issuer's deterministic regrader/audit over this bundle's artifacts
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9496095Z     $ TODO(replay.commands): byte-compare the regraded output against the committed artifacts; nonzero on any difference
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9497368Z     expected: TODO(replay.expected): the exact outcome — exit code and report text
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9923964Z FAIL empty-limitations
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9925076Z structural verification: FAIL — 1 named reason(s) (tamper-empty-limitations)
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9926108Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9927088Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9928124Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9929108Z   internally honest, not that the issuer's grader agrees. To re-earn the
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9930034Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9930913Z     $ git clone https://github.com/example/toy-issuer issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9932175Z     $ git -C issuer checkout f1e2d3c
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9932669Z     $ python -m pip install -e ./issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9933243Z     $ python -m toy_issuer.regrade evidence/bundle.json
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9933963Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9934751Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9935492Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9936163Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+verify	UNKNOWN STEP	2026-09-17T18:56:14.9938140Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+verify	UNKNOWN STEP	2026-09-17T18:56:15.0372358Z FAIL artifact-unparsable: evidence/evalmut_run.json: applied == 0, so this run has no score. A payload that applied no mutation has measured nothing; it does not score 1.0 by default
+verify	UNKNOWN STEP	2026-09-17T18:56:15.0374320Z structural verification: FAIL — 1 named reason(s) (tamper-evalmut-all-error)
+verify	UNKNOWN STEP	2026-09-17T18:56:15.0375284Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+verify	UNKNOWN STEP	2026-09-17T18:56:15.0376297Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+verify	UNKNOWN STEP	2026-09-17T18:56:15.0377255Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+verify	UNKNOWN STEP	2026-09-17T18:56:15.0378146Z   internally honest, not that the issuer's grader agrees. To re-earn the
+verify	UNKNOWN STEP	2026-09-17T18:56:15.0378958Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+verify	UNKNOWN STEP	2026-09-17T18:56:15.0379722Z     $ git clone https://github.com/example/toy-issuer issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:15.0380609Z     $ git -C issuer checkout f1e2d3c
+verify	UNKNOWN STEP	2026-09-17T18:56:15.0381274Z     $ python -m pip install -e ./issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:15.0381847Z     $ python -m toy_issuer.regrade evidence/bundle.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.0382523Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.0383310Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.0384070Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.0385091Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.0387147Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+verify	UNKNOWN STEP	2026-09-17T18:56:15.0801526Z FAIL artifact-unparsable: evidence/evalmut_run.json: applied == 0, so this run has no score. A payload that applied no mutation has measured nothing; it does not score 1.0 by default
+verify	UNKNOWN STEP	2026-09-17T18:56:15.0803240Z structural verification: FAIL — 1 named reason(s) (tamper-evalmut-empty-rows)
+verify	UNKNOWN STEP	2026-09-17T18:56:15.0804104Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+verify	UNKNOWN STEP	2026-09-17T18:56:15.0804940Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+verify	UNKNOWN STEP	2026-09-17T18:56:15.0805766Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+verify	UNKNOWN STEP	2026-09-17T18:56:15.0806551Z   internally honest, not that the issuer's grader agrees. To re-earn the
+verify	UNKNOWN STEP	2026-09-17T18:56:15.0807275Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+verify	UNKNOWN STEP	2026-09-17T18:56:15.0807945Z     $ git clone https://github.com/example/toy-issuer issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:15.0808460Z     $ git -C issuer checkout f1e2d3c
+verify	UNKNOWN STEP	2026-09-17T18:56:15.0808871Z     $ python -m pip install -e ./issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:15.0809395Z     $ python -m toy_issuer.regrade evidence/bundle.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.0809997Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.0810643Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.0811416Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.0811988Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.0813539Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1283023Z FAIL raw-aggregate-mismatch: evidence/evalmut_run.json: tally.caught declared 4, recomputed 5
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1284337Z FAIL raw-aggregate-mismatch: evidence/evalmut_run.json: tally.missed declared 2, recomputed 1
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1285802Z FAIL raw-aggregate-mismatch: evidence/evalmut_run.json: score declared 0.5714285714285714, recomputed 0.7142857142857143
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1287421Z FAIL raw-aggregate-mismatch: evidence/evalmut_run.json: holes.blind does not recompute from the rows (declared 1, recomputed 0)
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1288650Z FAIL summary-mismatch: blind: declared 1, recomputed 0
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1289418Z FAIL summary-mismatch: caught: declared 4, recomputed 5
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1290163Z FAIL summary-mismatch: missed: declared 2, recomputed 1
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1291147Z FAIL summary-mismatch: score_3: declared 0.571, recomputed 0.714
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1292199Z FAIL summary-outruns-checks: summary.mutation_score_3: declares 0.571, no check recomputes it
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1293463Z structural verification: FAIL — 9 named reason(s) (tamper-evalmut-rows)
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1294477Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1295824Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1296894Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1297869Z   internally honest, not that the issuer's grader agrees. To re-earn the
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1298841Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1299698Z     $ git clone https://github.com/example/toy-issuer issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1300428Z     $ git -C issuer checkout f1e2d3c
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1301523Z     $ python -m pip install -e ./issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1302143Z     $ python -m toy_issuer.regrade evidence/bundle.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1302949Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1303758Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1304601Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1305461Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1307435Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1724669Z FAIL raw-aggregate-mismatch: evidence/evalmut_run.json: tally.caught declared 5, recomputed 4
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1726032Z structural verification: FAIL — 1 named reason(s) (tamper-evalmut-summary)
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1726996Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1728013Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1728987Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1729870Z   internally honest, not that the issuer's grader agrees. To re-earn the
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1730737Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1731721Z     $ git clone https://github.com/example/toy-issuer issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1732313Z     $ git -C issuer checkout f1e2d3c
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1732789Z     $ python -m pip install -e ./issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1733342Z     $ python -m toy_issuer.regrade evidence/bundle.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1733978Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1734682Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1735436Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1736188Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.1738222Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+verify	UNKNOWN STEP	2026-09-17T18:56:15.2169014Z FAIL missing-artifact: evidence/bundle.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.2170105Z structural verification: FAIL — 1 named reason(s) (tamper-missing-artifact)
+verify	UNKNOWN STEP	2026-09-17T18:56:15.2171199Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+verify	UNKNOWN STEP	2026-09-17T18:56:15.2172073Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+verify	UNKNOWN STEP	2026-09-17T18:56:15.2172911Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+verify	UNKNOWN STEP	2026-09-17T18:56:15.2173723Z   internally honest, not that the issuer's grader agrees. To re-earn the
+verify	UNKNOWN STEP	2026-09-17T18:56:15.2174478Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+verify	UNKNOWN STEP	2026-09-17T18:56:15.2175192Z     $ git clone https://github.com/example/toy-issuer issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:15.2175759Z     $ git -C issuer checkout f1e2d3c
+verify	UNKNOWN STEP	2026-09-17T18:56:15.2176224Z     $ python -m pip install -e ./issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:15.2176772Z     $ python -m toy_issuer.regrade evidence/bundle.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.2177747Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.2178457Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.2179170Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.2179874Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.2181999Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+verify	UNKNOWN STEP	2026-09-17T18:56:15.2613712Z FAIL missing-issuer-commit
+verify	UNKNOWN STEP	2026-09-17T18:56:15.2614927Z structural verification: FAIL — 1 named reason(s) (tamper-missing-issuer-commit)
+verify	UNKNOWN STEP	2026-09-17T18:56:15.2616182Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+verify	UNKNOWN STEP	2026-09-17T18:56:15.2617219Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+verify	UNKNOWN STEP	2026-09-17T18:56:15.2617898Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+verify	UNKNOWN STEP	2026-09-17T18:56:15.2618513Z   internally honest, not that the issuer's grader agrees. To re-earn the
+verify	UNKNOWN STEP	2026-09-17T18:56:15.2619096Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+verify	UNKNOWN STEP	2026-09-17T18:56:15.2619641Z     $ git clone https://github.com/example/toy-issuer issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:15.2620077Z     $ git -C issuer checkout f1e2d3c
+verify	UNKNOWN STEP	2026-09-17T18:56:15.2620426Z     $ python -m pip install -e ./issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:15.2620814Z     $ python -m toy_issuer.regrade evidence/bundle.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.2621669Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.2622312Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.2622830Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.2623360Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.2624795Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3054451Z FAIL raw-aggregate-mismatch: evidence/standings.json: alpha:a1: acc declared 0.5, recomputed 0.75
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3055545Z FAIL raw-aggregate-mismatch: evidence/standings.json: alpha:a1: delta declared -0.25, recomputed 0.0
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3056581Z FAIL raw-aggregate-mismatch: evidence/standings.json: alpha:a1: verdict declared 'regressed', recomputed 'unchanged'
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3057696Z FAIL raw-aggregate-mismatch: evidence/RESULTS.md: does not re-render byte-identically from the recomputed standings rows
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3058538Z FAIL summary-mismatch: regressed: declared 1, recomputed 0
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3059074Z FAIL summary-mismatch: unchanged: declared 1, recomputed 2
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3059747Z FAIL summary-outruns-checks: summary.drift.regressed: declares 1, recomputation gives 0
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3060722Z structural verification: FAIL — 7 named reason(s) (tamper-modeldrift-rows)
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3061641Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3062372Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3063102Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3063773Z   internally honest, not that the issuer's grader agrees. To re-earn the
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3064401Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3064980Z     $ git clone https://github.com/example/toy-issuer issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3065429Z     $ git -C issuer checkout f1e2d3c
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3065720Z     $ python -m pip install -e ./issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3066302Z     $ python -m toy_issuer.regrade evidence/bundle.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3066731Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3067179Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3067609Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3068047Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3069355Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3484572Z FAIL raw-aggregate-mismatch: evidence/standings.json: alpha:a1: delta declared 0.0, recomputed -0.25
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3486012Z FAIL raw-aggregate-mismatch: evidence/standings.json: alpha:a1: verdict declared 'unchanged', recomputed 'regressed'
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3487482Z structural verification: FAIL — 2 named reason(s) (tamper-modeldrift-standings)
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3488467Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3489458Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3490417Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3491533Z   internally honest, not that the issuer's grader agrees. To re-earn the
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3492353Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3493131Z     $ git clone https://github.com/example/toy-issuer issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3493718Z     $ git -C issuer checkout f1e2d3c
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3494122Z     $ python -m pip install -e ./issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3494637Z     $ python -m toy_issuer.regrade evidence/bundle.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3495355Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3496114Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3496879Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3497661Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3499718Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3925225Z FAIL raw-aggregate-mismatch: toy-suite/toy-defect-b: detected declared 3, recomputed 2
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3926457Z FAIL raw-aggregate-mismatch: toy-suite/toy-defect-b: detection_rate declared 0.75, recomputed 0.5
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3927790Z structural verification: FAIL — 2 named reason(s) (tamper-raw-aggregate)
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3928733Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3929720Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3930693Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3931792Z   internally honest, not that the issuer's grader agrees. To re-earn the
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3932642Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3933418Z     $ git clone https://github.com/example/toy-issuer issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3933992Z     $ git -C issuer checkout f1e2d3c
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3934432Z     $ python -m pip install -e ./issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3934893Z     $ python -m toy_issuer.regrade evidence/bundle.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3935603Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3936339Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3937373Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3938166Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.3940221Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+verify	UNKNOWN STEP	2026-09-17T18:56:15.4358823Z FAIL stamp-mismatch: taskset_hash: named by protocol.hashes but absent from evidence/bundle.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.4360063Z FAIL stamp-mismatch: prompt_hash: named by protocol.hashes but absent from evidence/bundle.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.4361611Z FAIL stamp-mismatch: harness_commit: protocol declares issuer_commit but evidence/bundle.json carries no harness_commit
+verify	UNKNOWN STEP	2026-09-17T18:56:15.4363059Z structural verification: FAIL — 3 named reason(s) (tamper-stamp-deleted)
+verify	UNKNOWN STEP	2026-09-17T18:56:15.4364028Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+verify	UNKNOWN STEP	2026-09-17T18:56:15.4364993Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+verify	UNKNOWN STEP	2026-09-17T18:56:15.4365956Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+verify	UNKNOWN STEP	2026-09-17T18:56:15.4366804Z   internally honest, not that the issuer's grader agrees. To re-earn the
+verify	UNKNOWN STEP	2026-09-17T18:56:15.4367647Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+verify	UNKNOWN STEP	2026-09-17T18:56:15.4368315Z     $ git clone https://github.com/example/toy-issuer issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:15.4368911Z     $ git -C issuer checkout f1e2d3c
+verify	UNKNOWN STEP	2026-09-17T18:56:15.4369386Z     $ python -m pip install -e ./issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:15.4369929Z     $ python -m toy_issuer.regrade evidence/bundle.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.4370640Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.4371655Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.4372427Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.4373202Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.4375285Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+verify	UNKNOWN STEP	2026-09-17T18:56:15.4832137Z FAIL summary-outruns-checks: summary.fixed: declares 3, recomputation gives 2
+verify	UNKNOWN STEP	2026-09-17T18:56:15.4833360Z structural verification: FAIL — 1 named reason(s) (tamper-summary-fixed)
+verify	UNKNOWN STEP	2026-09-17T18:56:15.4834261Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+verify	UNKNOWN STEP	2026-09-17T18:56:15.4835211Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+verify	UNKNOWN STEP	2026-09-17T18:56:15.4836163Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+verify	UNKNOWN STEP	2026-09-17T18:56:15.4837067Z   internally honest, not that the issuer's grader agrees. To re-earn the
+verify	UNKNOWN STEP	2026-09-17T18:56:15.4837914Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+verify	UNKNOWN STEP	2026-09-17T18:56:15.4838690Z     $ git clone https://github.com/example/toy-issuer issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:15.4839301Z     $ git -C issuer checkout f1e2d3c
+verify	UNKNOWN STEP	2026-09-17T18:56:15.4839788Z     $ python -m pip install -e ./issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:15.4840335Z     $ python -m toy_issuer.regrade evidence/bundle.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.4841264Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.4841929Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.4842647Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.4843382Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.4845753Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+verify	UNKNOWN STEP	2026-09-17T18:56:15.5265514Z FAIL summary-outruns-checks: summary.detection_rate_min: declares 0.9, no check recomputes it
+verify	UNKNOWN STEP	2026-09-17T18:56:15.5266853Z structural verification: FAIL — 1 named reason(s) (tamper-summary-rate)
+verify	UNKNOWN STEP	2026-09-17T18:56:15.5267764Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+verify	UNKNOWN STEP	2026-09-17T18:56:15.5269295Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+verify	UNKNOWN STEP	2026-09-17T18:56:15.5270271Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+verify	UNKNOWN STEP	2026-09-17T18:56:15.5271389Z   internally honest, not that the issuer's grader agrees. To re-earn the
+verify	UNKNOWN STEP	2026-09-17T18:56:15.5272228Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+verify	UNKNOWN STEP	2026-09-17T18:56:15.5273010Z     $ git clone https://github.com/example/toy-issuer issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:15.5273594Z     $ git -C issuer checkout f1e2d3c
+verify	UNKNOWN STEP	2026-09-17T18:56:15.5274067Z     $ python -m pip install -e ./issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:15.5274592Z     $ python -m toy_issuer.regrade evidence/bundle.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.5275175Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.5275956Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.5276660Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.5277435Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.5279493Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+verify	UNKNOWN STEP	2026-09-17T18:56:15.5696116Z FAIL summary-outruns-checks: summary.mutation_score_3: declares 0.714, no check recomputes it
+verify	UNKNOWN STEP	2026-09-17T18:56:15.5697447Z structural verification: FAIL — 1 named reason(s) (tamper-summary-score)
+verify	UNKNOWN STEP	2026-09-17T18:56:15.5698380Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+verify	UNKNOWN STEP	2026-09-17T18:56:15.5699361Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+verify	UNKNOWN STEP	2026-09-17T18:56:15.5700351Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+verify	UNKNOWN STEP	2026-09-17T18:56:15.5701504Z   internally honest, not that the issuer's grader agrees. To re-earn the
+verify	UNKNOWN STEP	2026-09-17T18:56:15.5702392Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+verify	UNKNOWN STEP	2026-09-17T18:56:15.5703179Z     $ git clone https://github.com/example/toy-issuer issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:15.5703782Z     $ git -C issuer checkout f1e2d3c
+verify	UNKNOWN STEP	2026-09-17T18:56:15.5704252Z     $ python -m pip install -e ./issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:15.5704802Z     $ python -m toy_issuer.regrade evidence/bundle.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.5705452Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.5706144Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.5706889Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.5707650Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.5709735Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6124312Z FAIL summary-outruns-checks: summary.fixed: declares '9999' as a string; a numeric headline must be a JSON number so it can be recomputed
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6125853Z structural verification: FAIL — 1 named reason(s) (tamper-summary-string)
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6126793Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6128073Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6129070Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6129960Z   internally honest, not that the issuer's grader agrees. To re-earn the
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6130814Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6131812Z     $ git clone https://github.com/example/toy-issuer issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6132403Z     $ git -C issuer checkout f1e2d3c
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6133076Z     $ python -m pip install -e ./issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6133532Z     $ python -m toy_issuer.regrade evidence/bundle.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6134206Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6134949Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6135713Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6136492Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6138547Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6562784Z FAIL summary-outruns-checks: summary.eval_run.vulnerability_score: declares 0.0, recomputation gives 0.4545
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6564230Z FAIL summary-outruns-checks: summary.eval_run_safe.vulnerability_score: declares 0.4545, recomputation gives 0.0
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6565637Z structural verification: FAIL — 2 named reason(s) (tamper-v02-swapped-arms)
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6566597Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6567572Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6568529Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6569439Z   internally honest, not that the issuer's grader agrees. To re-earn the
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6570236Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6571231Z     $ git clone https://github.com/example/toy-issuer issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6571802Z     $ git -C issuer checkout f1e2d3c
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6572201Z     $ python -m pip install -e ./issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6572760Z     $ python -m toy_issuer.regrade evidence/bundle.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6573448Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6574238Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6575011Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6575778Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6577833Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6993254Z FAIL summary-mismatch: fixed: declared 3, recomputed 2
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6994146Z FAIL summary-outruns-checks: summary.fixed: declares 3, recomputation gives 2
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6995296Z structural verification: FAIL — 2 named reason(s) (tamper-verdict-count)
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6996261Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6997230Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6998213Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6999124Z   internally honest, not that the issuer's grader agrees. To re-earn the
+verify	UNKNOWN STEP	2026-09-17T18:56:15.6999982Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+verify	UNKNOWN STEP	2026-09-17T18:56:15.7001268Z     $ git clone https://github.com/example/toy-issuer issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:15.7001902Z     $ git -C issuer checkout f1e2d3c
+verify	UNKNOWN STEP	2026-09-17T18:56:15.7002374Z     $ python -m pip install -e ./issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:15.7002863Z     $ python -m toy_issuer.regrade evidence/bundle.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.7003511Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.7004272Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.7005243Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.7006026Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.7008104Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+verify	UNKNOWN STEP	2026-09-17T18:56:15.7416853Z FAIL sha256-mismatch: evidence/bundle.json: manifest 0000000000000000000000000000000000000000000000000000000000000000, file 64931fe8d466c2cfdbf3c15013d8aa013bc54a2e340fb89737972ef3612550d4
+verify	UNKNOWN STEP	2026-09-17T18:56:15.7418711Z structural verification: FAIL — 1 named reason(s) (tamper-wrong-sha256)
+verify	UNKNOWN STEP	2026-09-17T18:56:15.7419635Z   proved offline: manifest schema, artifact presence + sha256, bundle closure,
+verify	UNKNOWN STEP	2026-09-17T18:56:15.7420663Z   stated limitations, stamp agreement, declared results recomputed from artifacts.
+verify	UNKNOWN STEP	2026-09-17T18:56:15.7421880Z semantic replay: NOT run by this tool. A structural PASS means the bundle is
+verify	UNKNOWN STEP	2026-09-17T18:56:15.7422769Z   internally honest, not that the issuer's grader agrees. To re-earn the
+verify	UNKNOWN STEP	2026-09-17T18:56:15.7423627Z   verdicts, run the bundle's replay block at the pinned issuer_commit:
+verify	UNKNOWN STEP	2026-09-17T18:56:15.7424382Z     $ git clone https://github.com/example/toy-issuer issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:15.7424977Z     $ git -C issuer checkout f1e2d3c
+verify	UNKNOWN STEP	2026-09-17T18:56:15.7425440Z     $ python -m pip install -e ./issuer
+verify	UNKNOWN STEP	2026-09-17T18:56:15.7425917Z     $ python -m toy_issuer.regrade evidence/bundle.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.7426597Z     $ python issuer/audit/run_audit.py --check evidence/results.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.7427349Z     $ python -m toy_issuer.mutrun --check evidence/evalmut_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.7428113Z     $ python -m toy_issuer.crashrun --check evidence/eval_run.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.7428892Z     $ python -m toy_issuer.driftboard --check evidence/standings.json
+verify	UNKNOWN STEP	2026-09-17T18:56:15.7431159Z     expected: regrade exits 0 reporting 'consistent'; audit, mutrun, crashrun, and driftboard reproduce results.json, evalmut_run.json, eval_run.json, and the drift board artifacts byte-identically at the stamped commit (mutrun exits 1 by design: the toy suite has holes)
+verify	UNKNOWN STEP	2026-09-17T18:56:15.7519741Z ##[group]Run python -m vac.registry --check-fetched
+verify	UNKNOWN STEP	2026-09-17T18:56:15.7520186Z ^[[36;1mpython -m vac.registry --check-fetched^[[0m
+verify	UNKNOWN STEP	2026-09-17T18:56:15.7556657Z shell: /usr/bin/bash -e {0}
+verify	UNKNOWN STEP	2026-09-17T18:56:15.7556914Z env:
+verify	UNKNOWN STEP	2026-09-17T18:56:15.7557187Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.14/x64
+verify	UNKNOWN STEP	2026-09-17T18:56:15.7557642Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.14/x64/lib/pkgconfig
+verify	UNKNOWN STEP	2026-09-17T18:56:15.7558102Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+verify	UNKNOWN STEP	2026-09-17T18:56:15.7558517Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+verify	UNKNOWN STEP	2026-09-17T18:56:15.7558932Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+verify	UNKNOWN STEP	2026-09-17T18:56:15.7559341Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.14/x64/lib
+verify	UNKNOWN STEP	2026-09-17T18:56:15.7559671Z ##[endgroup]
+verify	UNKNOWN STEP	2026-09-17T18:56:22.2310079Z check-fetched: PASS — registry.json regenerates byte-identically from fetched artifacts
+verify	UNKNOWN STEP	2026-09-17T18:56:22.2523867Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+verify	UNKNOWN STEP	2026-09-17T18:56:22.2525126Z Post job cleanup.
+verify	UNKNOWN STEP	2026-09-17T18:56:22.3706160Z (node:2276) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+verify	UNKNOWN STEP	2026-09-17T18:56:22.3707140Z (Use `node --trace-deprecation ...` to show where the warning was created)
+verify	UNKNOWN STEP	2026-09-17T18:56:22.3913717Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+verify	UNKNOWN STEP	2026-09-17T18:56:22.3915139Z Post job cleanup.
+verify	UNKNOWN STEP	2026-09-17T18:56:22.4772621Z [command]/usr/bin/git version
+verify	UNKNOWN STEP	2026-09-17T18:56:22.4816167Z git version 2.55.0
+verify	UNKNOWN STEP	2026-09-17T18:56:22.4858554Z Temporarily overriding HOME='/home/runner/work/_temp/089e29f0-57ba-40dc-8aba-cc43924b13d6' before making global git config changes
+verify	UNKNOWN STEP	2026-09-17T18:56:22.4860124Z Adding repository directory to the temporary git global config as a safe directory
+verify	UNKNOWN STEP	2026-09-17T18:56:22.4864240Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/vac-protocol/vac-protocol
+verify	UNKNOWN STEP	2026-09-17T18:56:22.4903055Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+verify	UNKNOWN STEP	2026-09-17T18:56:22.4938533Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+verify	UNKNOWN STEP	2026-09-17T18:56:22.5192496Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+verify	UNKNOWN STEP	2026-09-17T18:56:22.5223345Z http.https://github.com/.extraheader
+verify	UNKNOWN STEP	2026-09-17T18:56:22.5235574Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+verify	UNKNOWN STEP	2026-09-17T18:56:22.5275858Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+verify	UNKNOWN STEP	2026-09-17T18:56:22.5570891Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+verify	UNKNOWN STEP	2026-09-17T18:56:22.5649110Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+verify	UNKNOWN STEP	2026-09-17T18:56:22.6060435Z Cleaning up orphan processes
+verify	UNKNOWN STEP	2026-09-17T18:56:22.6330028Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+deploy	UNKNOWN STEP	﻿2026-09-17T18:56:28.8241063Z Current runner version: '2.337.0'
+deploy	UNKNOWN STEP	2026-09-17T18:56:28.8275086Z ##[group]Runner Image Provisioner
+deploy	UNKNOWN STEP	2026-09-17T18:56:28.8276512Z Hosted Compute Agent
+deploy	UNKNOWN STEP	2026-09-17T18:56:28.8277419Z Version: 20260828.587
+deploy	UNKNOWN STEP	2026-09-17T18:56:28.8278557Z Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+deploy	UNKNOWN STEP	2026-09-17T18:56:28.8279789Z Build Date: 2026-08-28T16:44:25Z
+deploy	UNKNOWN STEP	2026-09-17T18:56:28.8280952Z Worker ID: {947e6f58-298f-4d02-8c06-82bca2eb2a5f}
+deploy	UNKNOWN STEP	2026-09-17T18:56:28.8282493Z Azure Region: eastus
+deploy	UNKNOWN STEP	2026-09-17T18:56:28.8283885Z ##[endgroup]
+deploy	UNKNOWN STEP	2026-09-17T18:56:28.8286363Z ##[group]Operating System
+deploy	UNKNOWN STEP	2026-09-17T18:56:28.8287362Z Ubuntu
+deploy	UNKNOWN STEP	2026-09-17T18:56:28.8288233Z 24.04.5
+deploy	UNKNOWN STEP	2026-09-17T18:56:28.8289204Z LTS
+deploy	UNKNOWN STEP	2026-09-17T18:56:28.8290158Z ##[endgroup]
+deploy	UNKNOWN STEP	2026-09-17T18:56:28.8291107Z ##[group]Runner Image
+deploy	UNKNOWN STEP	2026-09-17T18:56:28.8292052Z Image: ubuntu-24.04
+deploy	UNKNOWN STEP	2026-09-17T18:56:28.8293370Z Version: 20260907.300.1
+deploy	UNKNOWN STEP	2026-09-17T18:56:28.8295486Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260907.300/images/ubuntu/Ubuntu2404-Readme.md
+deploy	UNKNOWN STEP	2026-09-17T18:56:28.8298234Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260907.300
+deploy	UNKNOWN STEP	2026-09-17T18:56:28.8299890Z ##[endgroup]
+deploy	UNKNOWN STEP	2026-09-17T18:56:28.8301987Z ##[group]GITHUB_TOKEN Permissions
+deploy	UNKNOWN STEP	2026-09-17T18:56:28.8305070Z Contents: read
+deploy	UNKNOWN STEP	2026-09-17T18:56:28.8306131Z Metadata: read
+deploy	UNKNOWN STEP	2026-09-17T18:56:28.8307080Z Pages: write
+deploy	UNKNOWN STEP	2026-09-17T18:56:28.8308057Z ##[endgroup]
+deploy	UNKNOWN STEP	2026-09-17T18:56:28.8311042Z Secret source: Actions
+deploy	UNKNOWN STEP	2026-09-17T18:56:28.8312936Z Cache mode: write
+deploy	UNKNOWN STEP	2026-09-17T18:56:28.8314366Z Prepare workflow directory
+deploy	UNKNOWN STEP	2026-09-17T18:56:28.8788528Z Prepare all required actions
+deploy	UNKNOWN STEP	2026-09-17T18:56:28.8858859Z Getting action download info
+deploy	UNKNOWN STEP	2026-09-17T18:56:29.1005479Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+deploy	UNKNOWN STEP	2026-09-17T18:56:29.1956304Z Download action repository 'actions/upload-pages-artifact@v3' (SHA:56afc609e74202658d3ffba0e8f6dda462b719fa)
+deploy	UNKNOWN STEP	2026-09-17T18:56:29.3041155Z Download action repository 'actions/deploy-pages@v4' (SHA:d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e)
+deploy	UNKNOWN STEP	2026-09-17T18:56:29.5801040Z Getting action download info
+deploy	UNKNOWN STEP	2026-09-17T18:56:29.6630898Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+deploy	UNKNOWN STEP	2026-09-17T18:56:29.7928411Z Complete job name: deploy
+deploy	UNKNOWN STEP	2026-09-17T18:56:29.8748414Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+deploy	UNKNOWN STEP	2026-09-17T18:56:29.8757737Z ##[group]Run actions/checkout@v4
+deploy	UNKNOWN STEP	2026-09-17T18:56:29.8758485Z with:
+deploy	UNKNOWN STEP	2026-09-17T18:56:29.8758948Z   repository: egnaro9/vac-protocol
+deploy	UNKNOWN STEP	2026-09-17T18:56:29.8762871Z   token: ***
+deploy	UNKNOWN STEP	2026-09-17T18:56:29.8763364Z   ssh-strict: true
+deploy	UNKNOWN STEP	2026-09-17T18:56:29.8763813Z   ssh-user: git
+deploy	UNKNOWN STEP	2026-09-17T18:56:29.8764265Z   persist-credentials: true
+deploy	UNKNOWN STEP	2026-09-17T18:56:29.8764775Z   clean: true
+deploy	UNKNOWN STEP	2026-09-17T18:56:29.8765249Z   sparse-checkout-cone-mode: true
+deploy	UNKNOWN STEP	2026-09-17T18:56:29.8765792Z   fetch-depth: 1
+deploy	UNKNOWN STEP	2026-09-17T18:56:29.8766231Z   fetch-tags: false
+deploy	UNKNOWN STEP	2026-09-17T18:56:29.8766689Z   show-progress: true
+deploy	UNKNOWN STEP	2026-09-17T18:56:29.8767141Z   lfs: false
+deploy	UNKNOWN STEP	2026-09-17T18:56:29.8767592Z   submodules: false
+deploy	UNKNOWN STEP	2026-09-17T18:56:29.8768054Z   set-safe-directory: true
+deploy	UNKNOWN STEP	2026-09-17T18:56:29.8768559Z   allow-unsafe-pr-checkout: false
+deploy	UNKNOWN STEP	2026-09-17T18:56:29.8769365Z ##[endgroup]
+deploy	UNKNOWN STEP	2026-09-17T18:56:29.9783328Z Syncing repository: egnaro9/vac-protocol
+deploy	UNKNOWN STEP	2026-09-17T18:56:29.9786175Z ##[group]Getting Git version info
+deploy	UNKNOWN STEP	2026-09-17T18:56:29.9787570Z Working directory is '/home/runner/work/vac-protocol/vac-protocol'
+deploy	UNKNOWN STEP	2026-09-17T18:56:29.9789834Z [command]/usr/bin/git version
+deploy	UNKNOWN STEP	2026-09-17T18:56:29.9863297Z git version 2.55.0
+deploy	UNKNOWN STEP	2026-09-17T18:56:29.9898409Z ##[endgroup]
+deploy	UNKNOWN STEP	2026-09-17T18:56:29.9909704Z Temporarily overriding HOME='/home/runner/work/_temp/246e9a7d-860a-4386-af67-030c04122616' before making global git config changes
+deploy	UNKNOWN STEP	2026-09-17T18:56:29.9912471Z Adding repository directory to the temporary git global config as a safe directory
+deploy	UNKNOWN STEP	2026-09-17T18:56:29.9916594Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/vac-protocol/vac-protocol
+deploy	UNKNOWN STEP	2026-09-17T18:56:29.9969537Z Deleting the contents of '/home/runner/work/vac-protocol/vac-protocol'
+deploy	UNKNOWN STEP	2026-09-17T18:56:29.9974081Z ##[group]Initializing the repository
+deploy	UNKNOWN STEP	2026-09-17T18:56:29.9977869Z [command]/usr/bin/git init /home/runner/work/vac-protocol/vac-protocol
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.0091783Z hint: Using 'master' as the name for the initial branch. This default branch name
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.0093628Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.0095553Z hint: to use in all of your new repositories, which will suppress this warning,
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.0096781Z hint: call:
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.0097415Z hint:
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.0098207Z hint: 	git config --global init.defaultBranch <name>
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.0099190Z hint:
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.0100263Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.0101793Z hint: 'development'. The just-created branch can be renamed via this command:
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.0103203Z hint:
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.0103852Z hint: 	git branch -m <name>
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.0104652Z hint:
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.0105761Z hint: Disable this message with "git config set advice.defaultBranchName false"
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.0107754Z Initialized empty Git repository in /home/runner/work/vac-protocol/vac-protocol/.git/
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.0110861Z [command]/usr/bin/git remote add origin https://github.com/egnaro9/vac-protocol
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.0159934Z ##[endgroup]
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.0161328Z ##[group]Disabling automatic garbage collection
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.0164155Z [command]/usr/bin/git config --local gc.auto 0
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.0197450Z ##[endgroup]
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.0198639Z ##[group]Setting up auth
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.0206569Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.0253842Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.0618086Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.0658792Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.0887917Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.0926990Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.1156902Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.1197611Z ##[endgroup]
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.1198559Z ##[group]Fetching the repository
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.1207908Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +c4410114a470d2aca19b9f277efc3895a87a0d80:refs/remotes/origin/main
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.4664390Z From https://github.com/egnaro9/vac-protocol
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.4666615Z  * [new ref]         c4410114a470d2aca19b9f277efc3895a87a0d80 -> origin/main
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.4676680Z ##[endgroup]
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.4678736Z ##[group]Determining the checkout info
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.4681120Z ##[endgroup]
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.4687549Z [command]/usr/bin/git sparse-checkout disable
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.4742864Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.4773861Z ##[group]Checking out the ref
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.4777527Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.5072376Z Switched to a new branch 'main'
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.5079379Z branch 'main' set up to track 'origin/main'.
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.5085077Z ##[endgroup]
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.5127351Z [command]/usr/bin/git log -1 --format=%H
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.5154375Z c4410114a470d2aca19b9f277efc3895a87a0d80
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.5413513Z ##[group]Run mkdir _site
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.5414712Z ^[[36;1mmkdir _site^[[0m
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.5415767Z ^[[36;1mcp index.html registry.json _site/^[[0m
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.5457590Z shell: /usr/bin/bash -e {0}
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.5458680Z ##[endgroup]
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.5904675Z ##[group]Run actions/upload-pages-artifact@v3
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.5905957Z with:
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.5906728Z   path: _site/
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.5907581Z   name: github-pages
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.5908475Z   retention-days: 1
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.5909332Z ##[endgroup]
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.5984673Z ##[start-action display=Archive artifact;id=__actions_upload-pages-artifact.__run]
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.6053437Z ##[group]Run echo ::group::Archive artifact
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.6054709Z ^[[36;1mecho ::group::Archive artifact^[[0m
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.6055778Z ^[[36;1mtar \^[[0m
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.6056689Z ^[[36;1m  --dereference --hard-dereference \^[[0m
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.6057951Z ^[[36;1m  --directory "$INPUT_PATH" \^[[0m
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.6059114Z ^[[36;1m  -cvf "$RUNNER_TEMP/artifact.tar" \^[[0m
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.6060252Z ^[[36;1m  --exclude=.git \^[[0m
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.6061196Z ^[[36;1m  --exclude=.github \^[[0m
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.6062296Z ^[[36;1m  .^[[0m
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.6063130Z ^[[36;1mecho ::endgroup::^[[0m
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.6112728Z shell: /usr/bin/sh -e {0}
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.6113632Z env:
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.6114350Z   INPUT_PATH: _site/
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.6115174Z ##[endgroup]
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.6184443Z ##[group]Archive artifact
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.6196963Z ./
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.6198136Z ./registry.json
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.6198964Z ./index.html
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.6201372Z ##[endgroup]
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.6220025Z ##[end-action id=__actions_upload-pages-artifact.__run;outcome=success;conclusion=success;duration_ms=23]
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.6228078Z ##[start-action display=Archive artifact;id=__actions_upload-pages-artifact.__run_2]
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.6241093Z ##[end-action id=__actions_upload-pages-artifact.__run_2;outcome=skipped;conclusion=skipped;duration_ms=0]
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.6248887Z ##[start-action display=Archive artifact;id=__actions_upload-pages-artifact.__run_3]
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.6260473Z ##[end-action id=__actions_upload-pages-artifact.__run_3;outcome=skipped;conclusion=skipped;duration_ms=0]
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.6267183Z ##[start-action display=Upload artifact;id=__actions_upload-pages-artifact.upload-artifact]
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.6385882Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.6391281Z ##[group]Run actions/upload-artifact@v4
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.6392606Z with:
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.6393350Z   name: github-pages
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.6394271Z   path: /home/runner/work/_temp/artifact.tar
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.6395361Z   retention-days: 1
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.6396192Z   if-no-files-found: error
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.6397098Z   compression-level: 6
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.6397930Z   overwrite: false
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.6398761Z   include-hidden-files: false
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.6399701Z ##[endgroup]
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.8095697Z (node:2264) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.8097083Z (Use `node --trace-deprecation ...` to show where the warning was created)
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.8142640Z With the provided path, there will be 1 file uploaded
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.8150151Z Artifact name is valid!
+deploy	UNKNOWN STEP	2026-09-17T18:56:30.8151974Z Root directory input is valid!
+deploy	UNKNOWN STEP	2026-09-17T18:56:31.0319589Z Beginning upload of artifact content to blob storage
+deploy	UNKNOWN STEP	2026-09-17T18:56:31.0524371Z (node:2264) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+deploy	UNKNOWN STEP	2026-09-17T18:56:31.0880530Z Uploaded bytes 9852
+deploy	UNKNOWN STEP	2026-09-17T18:56:31.1097774Z Finished uploading artifact content to blob storage!
+deploy	UNKNOWN STEP	2026-09-17T18:56:31.1100306Z SHA256 digest of uploaded artifact zip is efb589e97ab66a99321457bdfd47893238ebad75fa6cbd00eed420feb3f3b3ab
+deploy	UNKNOWN STEP	2026-09-17T18:56:31.1102459Z Finalizing artifact upload
+deploy	UNKNOWN STEP	2026-09-17T18:56:31.3076090Z Artifact github-pages.zip successfully finalized. Artifact ID 10515110330
+deploy	UNKNOWN STEP	2026-09-17T18:56:31.3077355Z Artifact github-pages has been successfully uploaded! Final size is 9852 bytes. Artifact ID is 10515110330
+deploy	UNKNOWN STEP	2026-09-17T18:56:31.3082100Z Artifact download URL: https://github.com/egnaro9/vac-protocol/actions/runs/35261829963/artifacts/10515110330
+deploy	UNKNOWN STEP	2026-09-17T18:56:31.3187337Z ##[end-action id=__actions_upload-pages-artifact.upload-artifact;outcome=success;conclusion=success;duration_ms=691]
+deploy	UNKNOWN STEP	2026-09-17T18:56:31.3286887Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+deploy	UNKNOWN STEP	2026-09-17T18:56:31.3288608Z ##[group]Run actions/deploy-pages@v4
+deploy	UNKNOWN STEP	2026-09-17T18:56:31.3289110Z with:
+deploy	UNKNOWN STEP	2026-09-17T18:56:31.3292004Z   token: ***
+deploy	UNKNOWN STEP	2026-09-17T18:56:31.3292788Z   timeout: 600000
+deploy	UNKNOWN STEP	2026-09-17T18:56:31.3293238Z   error_count: 10
+deploy	UNKNOWN STEP	2026-09-17T18:56:31.3293705Z   reporting_interval: 5000
+deploy	UNKNOWN STEP	2026-09-17T18:56:31.3294200Z   artifact_name: github-pages
+deploy	UNKNOWN STEP	2026-09-17T18:56:31.3294681Z   preview: false
+deploy	UNKNOWN STEP	2026-09-17T18:56:31.3295109Z ##[endgroup]
+deploy	UNKNOWN STEP	2026-09-17T18:56:31.5103930Z (node:2277) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+deploy	UNKNOWN STEP	2026-09-17T18:56:31.5106090Z (Use `node --trace-deprecation ...` to show where the warning was created)
+deploy	UNKNOWN STEP	2026-09-17T18:56:31.5839647Z Fetching artifact metadata for "github-pages" in this workflow run
+deploy	UNKNOWN STEP	2026-09-17T18:56:31.6556269Z Found 1 artifact(s)
+deploy	UNKNOWN STEP	2026-09-17T18:56:31.6569563Z Creating Pages deployment with payload:
+deploy	UNKNOWN STEP	2026-09-17T18:56:31.6570938Z {
+deploy	UNKNOWN STEP	2026-09-17T18:56:31.6571337Z 	"artifact_id": 10515110330,
+deploy	UNKNOWN STEP	2026-09-17T18:56:31.6571943Z 	"pages_build_version": "c4410114a470d2aca19b9f277efc3895a87a0d80",
+deploy	UNKNOWN STEP	2026-09-17T18:56:31.6611815Z 	"oidc_token": "***"
+deploy	UNKNOWN STEP	2026-09-17T18:56:31.6612614Z }
+deploy	UNKNOWN STEP	2026-09-17T18:56:32.0318327Z Created deployment for c4410114a470d2aca19b9f277efc3895a87a0d80, ID: c4410114a470d2aca19b9f277efc3895a87a0d80
+deploy	UNKNOWN STEP	2026-09-17T18:56:37.0337959Z Getting Pages deployment status...
+deploy	UNKNOWN STEP	2026-09-17T18:56:37.1670912Z Reported success!
+deploy	UNKNOWN STEP	2026-09-17T18:56:37.1964918Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+deploy	UNKNOWN STEP	2026-09-17T18:56:37.1966280Z Post job cleanup.
+deploy	UNKNOWN STEP	2026-09-17T18:56:37.2831132Z [command]/usr/bin/git version
+deploy	UNKNOWN STEP	2026-09-17T18:56:37.2877004Z git version 2.55.0
+deploy	UNKNOWN STEP	2026-09-17T18:56:37.2921919Z Temporarily overriding HOME='/home/runner/work/_temp/6eebbd43-37df-4eb4-a3de-972bb95942db' before making global git config changes
+deploy	UNKNOWN STEP	2026-09-17T18:56:37.2923736Z Adding repository directory to the temporary git global config as a safe directory
+deploy	UNKNOWN STEP	2026-09-17T18:56:37.2928076Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/vac-protocol/vac-protocol
+deploy	UNKNOWN STEP	2026-09-17T18:56:37.2969167Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+deploy	UNKNOWN STEP	2026-09-17T18:56:37.3012601Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+deploy	UNKNOWN STEP	2026-09-17T18:56:37.3270873Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+deploy	UNKNOWN STEP	2026-09-17T18:56:37.3298990Z http.https://github.com/.extraheader
+deploy	UNKNOWN STEP	2026-09-17T18:56:37.3311049Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+deploy	UNKNOWN STEP	2026-09-17T18:56:37.3346304Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+deploy	UNKNOWN STEP	2026-09-17T18:56:37.3599581Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+deploy	UNKNOWN STEP	2026-09-17T18:56:37.3643589Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+deploy	UNKNOWN STEP	2026-09-17T18:56:37.4038605Z Evaluate and set environment url
+deploy	UNKNOWN STEP	2026-09-17T18:56:37.4042623Z Evaluated environment url: http://erikhill.dev/vac-protocol/
+deploy	UNKNOWN STEP	2026-09-17T18:56:37.4043618Z Cleaning up orphan processes
+deploy	UNKNOWN STEP	2026-09-17T18:56:37.4354153Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/deploy-pages@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
