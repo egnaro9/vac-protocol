@@ -736,6 +736,20 @@ its form, a registry MUST reject a claim when any of the following holds:
    profile check over committed artifacts.
 7. **Failing structural verification**: the verifier's exit code is the
    floor, not the bar.
+8. **A protocol version below the registry's admission floor**, even
+   though it verifies. Verifying and being admitted are different
+   questions. This repo's verifier supports `0.1` indefinitely and
+   deliberately, so a bundle issued under it never stops verifying; but
+   `vac_version` is written by the issuer, and `0.1` merges its summary
+   pools by bare field name, so a member-level `1.0` satisfies a
+   suite-level rate (2.5.1). A registry that admitted `0.1` would let an
+   issuer opt out of scope binding by relabelling their own manifest, and
+   recording the version it was accepted under is not a gate against
+   that. This registry admits `0.2` only
+   (`vac.registry.MIN_ADMITTED_VERSION`); a bundle below the floor
+   becomes a pending record naming `version-not-admitted`, never a silent
+   drop. Raising the floor is a registry decision and does not change
+   what the verifier accepts.
 
 Acceptance is two-gated: structural verification (machine, this repo's
 tool) then semantic replay (machine, issuer's tool, run by registry CI).

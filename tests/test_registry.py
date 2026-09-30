@@ -62,7 +62,25 @@ def _cfg(repo, url="https://github.com/example/toy-issuer") -> dict:
             "default_checkout": str(repo), "bundles": "certifications/*"}
 
 
-def test_valid_committed_bundle_is_accepted(tmp_path):
+@pytest.fixture
+def admits_v01(monkeypatch):
+    """Admit the 0.1 `fixtures/valid` corpus for tests that are NOT about
+    admission.
+
+    Production admits 0.2 only (registry.MIN_ADMITTED_VERSION), because the
+    version lives in the issuer-controlled manifest and 0.1 merges its
+    summary pools by bare field name. The shared test corpus is still a 0.1
+    bundle, and re-emitting it at 0.2 means editing metrics.json and
+    re-pinning its sha256, which is a deliberate separate change. Until then
+    a test that asks for this fixture is saying "this is about hashing /
+    issuer binding / fetch drift, not about which version is admitted", and
+    the two tests that ARE about admission take the real default.
+    """
+    import vac.registry as R
+    monkeypatch.setattr(R, "MIN_ADMITTED_VERSION", "0.1")
+
+
+def test_valid_committed_bundle_is_accepted(tmp_path, admits_v01):
     repo = _issuer(tmp_path)
     doc = build([_cfg(repo)])
     assert [p["name"] for p in doc["pending"]] == []
@@ -120,7 +138,7 @@ def test_absent_bundle_dir_is_pending_not_dropped(tmp_path):
     assert "sha256" not in json.dumps(p)  # nothing invented for a pending row
 
 
-def test_registry_hashes_committed_bytes_not_the_working_tree(tmp_path):
+def test_registry_hashes_committed_bytes_not_the_working_tree(tmp_path, admits_v01):
     repo = _issuer(tmp_path)
     (repo / BP / "evidence/bundle.json").write_text("{\"cooked\": true}\n")
     (e,) = build([_cfg(repo)])["entries"]
@@ -148,7 +166,7 @@ def test_foreign_issuer_identity_is_refused(tmp_path):
     assert "issuer-mismatch" in doc["pending"][0]["reason"]
 
 
-def test_host_prefixed_issuer_binds_to_the_same_identity(tmp_path):
+def test_host_prefixed_issuer_binds_to_the_same_identity(tmp_path, admits_v01):
     def mangle(dest):
         man = json.loads((dest / "vac.json").read_text())
         man["protocol"]["issuer"] = "github.com/example/toy-issuer"
@@ -187,7 +205,7 @@ def test_check_fetched_round_trips(tmp_path):
     assert check_fetched(reg, fetch=_served_by(repo)) == []
 
 
-def test_check_fetched_names_drifted_bytes(tmp_path):
+def test_check_fetched_names_drifted_bytes(tmp_path, admits_v01):
     repo = _issuer(tmp_path)
     reg = tmp_path / "registry.json"
     reg.write_text(_j(build([_cfg(repo)])))
@@ -201,7 +219,7 @@ def test_check_fetched_names_drifted_bytes(tmp_path):
                             "evidence/bundle.json") for f in failures)
 
 
-def test_check_fetched_names_the_unfetchable_artifact(tmp_path):
+def test_check_fetched_names_the_unfetchable_artifact(tmp_path, admits_v01):
     repo = _issuer(tmp_path)
     reg = tmp_path / "registry.json"
     reg.write_text(_j(build([_cfg(repo)])))
@@ -213,7 +231,7 @@ def test_check_fetched_names_the_unfetchable_artifact(tmp_path):
     assert failures and all("HTTP 404" in f for f in failures)
 
 
-def test_check_fetched_flags_a_hand_edited_registry(tmp_path):
+def test_check_fetched_flags_a_hand_edited_registry(tmp_path, admits_v01):
     """The committed registry must be exactly what the artifacts regenerate —
     a hand-sweetened capability line is registry-drift, not an edit."""
     repo = _issuer(tmp_path)
@@ -225,7 +243,7 @@ def test_check_fetched_flags_a_hand_edited_registry(tmp_path):
     assert failures and failures[0].startswith("registry-drift:")
 
 
-def test_fetch_bundle_refuses_drift_and_unknown_names(tmp_path):
+def test_fetch_bundle_refuses_drift_and_unknown_names(tmp_path, admits_v01):
     repo = _issuer(tmp_path)
     reg = tmp_path / "registry.json"
     reg.write_text(_j(build([_cfg(repo)])))
@@ -242,7 +260,7 @@ def test_fetch_bundle_refuses_drift_and_unknown_names(tmp_path):
                         fetch=served)[0].startswith("no accepted entry")
 
 
-def test_matrix_carries_exactly_what_replay_needs(tmp_path):
+def test_matrix_carries_exactly_what_replay_needs(tmp_path, admits_v01):
     doc = build([_cfg(_issuer(tmp_path))])
     (m,) = matrix(doc)
     assert m == {"name": "toy-issuer/toy-2026-08-14",
@@ -391,6 +409,45 @@ def test_every_entry_publishes_the_version_its_own_manifest_declares():
         # a different route and does run on CI.
         pytest.skip("no issuer checked out locally; --check-fetched covers "
                     "this claim on CI")
+
+
+def test_the_registry_admits_02_only_and_names_why(tmp_path):
+    """A 0.1 bundle VERIFIES and is still not ADMITTED.
+
+    This is the hole that recording the version did not close. verify.py
+    keeps supporting 0.1 indefinitely and on purpose, so old bundles never
+    stop verifying. But 0.1 merges recomputation pools by bare field name, so
+    a member-level 1.0 satisfies a suite-level rate (SPEC 2.5.1), and
+    vac_version is written by the ISSUER. An issuer able to publish at 0.1
+    would therefore opt out of the scope binding by relabelling their own
+    manifest, and the registry would have recorded the downgrade rather than
+    refused it.
+
+    No fixture override here: this asserts the production default.
+    """
+    b = _valid_copy(tmp_path)          # fixtures/valid, still 0.1
+    man = json.loads((b / "vac.json").read_text())
+    assert man["vac_version"] == "0.1", "fixture moved; rewrite this test"
+    issuer = "/".join(man["protocol"]["issuer"].rstrip("/").split("/")[-2:])
+    entry, reasons = _entry(issuer, f"https://github.com/{issuer}", "vac", b,
+                            sorted(p.relative_to(b).as_posix()
+                                   for p in b.rglob("*") if p.is_file()),
+                            "c" * 40)
+    assert entry is None, "a 0.1 bundle was admitted"
+    assert any(r.startswith("version-not-admitted:") for r in reasons), reasons
+    # the reason has to say what to do, not just that it said no
+    assert any("0.2" in r for r in reasons), reasons
+
+
+def test_a_refused_version_becomes_a_pending_record_not_a_silent_drop(
+        tmp_path):
+    """Non-acceptance is RECORDED. The registry regenerates mechanically, so
+    a bundle it will not admit must appear with its reason rather than
+    vanishing and leaving the issuer to guess."""
+    doc = build([_cfg(_issuer(tmp_path))])
+    assert doc["entries"] == [], "a 0.1 bundle reached the accepted list"
+    (pend,) = doc["pending"]
+    assert "version-not-admitted" in pend["reason"], pend["reason"]
 
 
 @pytest.mark.parametrize("bad", ["0.3", "", "__absent__"])

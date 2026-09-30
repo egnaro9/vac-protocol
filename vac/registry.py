@@ -109,6 +109,17 @@ class RegistryError(Exception):
     pass
 
 
+# The protocol version an entry must be issued under to be ADMITTED, as
+# distinct from the versions the verifier still understands. verify.py keeps
+# supporting 0.1 indefinitely and deliberately, so old bundles never stop
+# verifying; but 0.1 merges its recomputation pools by bare field name, so a
+# member-level 1.0 satisfies a suite-level rate (SPEC 2.5.1), and the version
+# lives in the ISSUER-CONTROLLED manifest. An issuer who could publish at 0.1
+# would therefore opt out of the scope binding by relabelling their own
+# manifest. Recording the version was never a gate; this is.
+MIN_ADMITTED_VERSION = "0.2"
+
+
 def _j(obj) -> str:
     return json.dumps(obj, indent=1) + "\n"
 
@@ -153,8 +164,18 @@ def _bundle_dirs(pattern: str, head_files: list[str]) -> list[str]:
 
 def _entry(issuer: str, repo_url: str, bundle_path: str,
            bundle_dir: pathlib.Path, rels: list[str],
-           pinned_commit: str) -> tuple[dict | None, list[str]]:
+           pinned_commit: str,
+           min_version: str | None = None,
+           ) -> tuple[dict | None, list[str]]:
     """One registry entry from a MATERIALIZED bundle dir, or named reasons.
+
+    `min_version` overrides the admission floor and is read from
+    MIN_ADMITTED_VERSION at CALL time when absent, so the constant stays the
+    single place the floor is stated. No production caller passes it. The
+    override exists so tests exercising this builder's OTHER properties
+    (committed-bytes hashing, issuer binding, fetch drift) can keep using the
+    0.1 `fixtures/valid` corpus without that corpus first being re-emitted at
+    0.2, which is a deliberate separate change.
 
     The verifier's exit code is the floor (SPEC.md section 5 rule 7): a
     bundle that fails structural verification produces no entry, and a
@@ -173,6 +194,15 @@ def _entry(issuer: str, repo_url: str, bundle_path: str,
         return None, [f"issuer-mismatch: manifest protocol.issuer "
                       f"{man['protocol']['issuer']!r} != configured issuer "
                       f"{issuer!r}"]
+    floor = MIN_ADMITTED_VERSION if min_version is None else min_version
+    if man["vac_version"] != floor:
+        return None, [f"version-not-admitted: vac_version "
+                      f"{man['vac_version']!r} verifies, but this registry "
+                      f"admits {floor!r} only. "
+                      f"{man['vac_version']!r} merges summary pools by bare "
+                      "field name (SPEC 2.5.1), and the version is written "
+                      "by the issuer, so admitting it would let an issuer "
+                      "relabel their own manifest out of the scope binding"]
     return {
         "name": f"{issuer.split('/')[1]}/{bundle_path.rsplit('/', 1)[-1]}",
         "issuer": issuer,
