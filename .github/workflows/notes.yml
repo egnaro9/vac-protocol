@@ -44,7 +44,25 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add notes/findings.json notes/baseline.json
+          # ADD ONLY WHAT EXISTS. `git add` on a missing pathspec is fatal, exit 128,
+          # and it ran BEFORE the "nothing changed" guard that was supposed to handle
+          # this case. notes/findings.json is written only when the outcome CHANGES,
+          # and the comment at the top of this file says most weeks it writes nothing,
+          # so the healthy week was the failing week: run 37331181221 on 2026-10-05 died
+          # with `fatal: pathspec 'notes/findings.json' did not match any files`.
+          # Same shape as the egnaro9.github.io notes workflow fixed on 2026-10-03,
+          # where `git diff --quiet` could not see an untracked file: in both the guard
+          # was written after the step that crashes, so it never got to decide.
+          # `if` rather than `[ -f ] && ...` for clarity only. I first wrote this
+          # comment claiming the `&&` form would die under `bash -e` when the last
+          # iteration's test is false, then measured it: both forms reach the next line
+          # with exit 0, because set -e exempts a command that precedes a `&&`. The
+          # claim was wrong and is recorded here rather than quietly deleted, since a
+          # comment asserting a bug that does not exist is worse than the line it
+          # justifies.
+          for f in notes/findings.json notes/baseline.json; do
+            if [ -f "$f" ]; then git add "$f"; fi
+          done
           git diff --cached --quiet && { echo "nothing changed"; exit 0; }
           git commit -m "notes: replay outcome changed [skip ci]"
           for attempt in 1 2 3; do
