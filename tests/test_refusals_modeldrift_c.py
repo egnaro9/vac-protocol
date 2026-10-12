@@ -137,3 +137,72 @@ def test_suite_hash_stamp_binds_the_protocol_to_the_fingerprint(tmp_path):
     assert verify_bundle(b) == [
         "stamp-mismatch: suite_hash: protocol 0011223344556677, "
         "artifact ffeeddcc99887766"]
+
+
+# --- the reliability floor applies to flips, not only to standings ---------------
+#
+# Found 2026-10-12 by verifying model-drift's committed bundle: 9 refusals, all one
+# cause. model-drift has filtered outage points (reliability below rel_floor) out of
+# its flip analysis since 2026-10-05, because 268 of 895 recorded flips were
+# manufactured by 19 outage points. This profile already read the floor and applied
+# it to the standings, then recomputed flips over the raw series and refused every
+# bundle the issuer had cut since. A recompute that applies the floor to one derived
+# view and not the other is not a recompute of the board; it is a second board.
+
+def _cook_v02_metrics(tmp_path: pathlib.Path, mutate) -> pathlib.Path:
+    """Copy the 0.2 fixture, add one stored point to alpha:a1, and re-pin
+    everything an honest issuer would have re-pinned with it: the evidence
+    sha256, the protocol's metrics_sha256 stamp, and the declared raw point
+    count. Nothing derived (standings, flips) is touched, which is the point."""
+    b = tmp_path / "b"
+    shutil.copytree(FIX / "v02-twin-arms", b)
+    rel = "evidence/metrics.json"
+    art = b / rel
+    data = json.loads(art.read_text())
+    mutate(data)
+    art.write_text(json.dumps(data, indent=1) + "\n")
+    _rehash(b, rel)
+    man_path = b / "vac.json"
+    man = json.loads(man_path.read_text())
+    man["protocol"]["hashes"]["metrics_sha256"] = _sha256(art)
+    for c in man["results"]["checks"]:
+        if c.get("profile") == "modeldrift-board-v1" and "points" in c.get("expect", {}):
+            c["expect"]["points"] += 1
+    for v in man["results"].get("summary", {}).values():
+        if isinstance(v, dict) and "points" in v:
+            v["points"] += 1
+    man_path.write_text(json.dumps(man, indent=1) + "\n")
+    return b
+
+
+def _outage_point(reliability: float) -> dict:
+    """A point between alpha:a1's first and second runs whose fails set differs
+    from both neighbours, so it would manufacture two flips if counted. It is
+    not the newest point, so the standings never see it either way."""
+    return {"t": "2026-01-01T12:00:00Z", "acc": 0.0, "latency_ms": 120.0,
+            "reliability": reliability, "refusal_rate": 0.0,
+            "fails": ["t-add", "t-sub", "t-mul", "t-div"]}
+
+
+def test_a_point_below_the_floor_manufactures_no_flip(tmp_path):
+    """Under rel_floor 0.5 an outage point is excluded from the flip
+    recomputation exactly as it is from the standings, so the committed flips
+    artifact, derived without it, still verifies."""
+    def add_outage(m):
+        m["series"]["alpha:a1"].insert(1, _outage_point(0.1))
+    b = _cook_v02_metrics(tmp_path, add_outage)
+    assert verify_bundle(b) == []
+
+
+def test_the_same_point_at_full_reliability_is_a_real_flip(tmp_path):
+    """The negative case the fix needs: the floor is why the point is ignored,
+    not that the recompute stopped looking. Raise its reliability and the
+    committed flips artifact is refused for not containing what the vectors
+    now show."""
+    def add_measured(m):
+        m["series"]["alpha:a1"].insert(1, _outage_point(1.0))
+    b = _cook_v02_metrics(tmp_path, add_measured)
+    assert verify_bundle(b) == [
+        "raw-aggregate-mismatch: evidence/flips.json: repeat_offenders does "
+        "not recompute from the fails vectors: declared 1 rows, recomputed 3",
+        "summary-mismatch: repeat_offenders: declared 1, recomputed 3"]

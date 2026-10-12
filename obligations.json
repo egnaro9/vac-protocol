@@ -416,10 +416,10 @@
    "addressee_basis": "derived-from-token-prefix",
    "refusal_site": "raw-aggregate-mismatch",
    "evaluation_sites": [
+    "tests/test_refusals_modeldrift_c.py::test_the_same_point_at_full_reliability_is_a_real_flip",
     "tests/test_refusals_last_five.py::test_a_raw_line_whose_detected_flag_contradicts_its_own_pair",
     "tests/test_refusals_last_five.py::test_an_evalmut_row_naming_an_operator_outside_the_catalog",
-    "tests/test_refusals_modeldrift_a.py::test_fingerprint_task_count_must_match_its_task_ids",
-    "tests/test_refusals_modeldrift_a.py::test_point_acc_must_be_a_unit_fraction"
+    "tests/test_refusals_modeldrift_a.py::test_fingerprint_task_count_must_match_its_task_ids"
    ],
    "status": "mapped",
    "rationale": "reliability is recomputed as (cases - errors - truncations) / cases."
@@ -534,7 +534,7 @@
   },
   {
    "obligation_id": "SPEC-32",
-   "source_span": "SPEC.md:566",
+   "source_span": "SPEC.md:571",
    "section": "3.5 `modeldrift-board-v1`",
    "normative_text": "Every key in `expect` MUST name a recomputed field and equal its value",
    "property_token": "modeldrift.expect.names_a_recomputed_field",
@@ -543,16 +543,16 @@
    "refusal_site": "summary-mismatch",
    "evaluation_sites": [
     "tests/test_refusals_stamps_summary.py::test_modeldrift_expect_key_must_be_recomputable",
+    "tests/test_refusals_modeldrift_c.py::test_the_same_point_at_full_reliability_is_a_real_flip",
     "tests/test_refusals_stamps_summary.py::test_certlab_expect_key_must_be_recomputable",
-    "tests/test_refusals_stamps_summary.py::test_crashkit_expect_key_must_be_recomputable",
-    "tests/test_refusals_stamps_summary.py::test_evalmut_expect_key_must_be_recomputable"
+    "tests/test_refusals_stamps_summary.py::test_crashkit_expect_key_must_be_recomputable"
    ],
    "status": "mapped",
    "rationale": "expect keys must name a recomputed field and equal it."
   },
   {
    "obligation_id": "SPEC-33",
-   "source_span": "SPEC.md:573",
+   "source_span": "SPEC.md:578",
    "section": "3.5 `modeldrift-board-v1`",
    "normative_text": "Each flips row MUST carry `latest`, compared by whole-object equality,",
    "property_token": "modeldrift.flips_row_latest_whole_object_equality",
@@ -570,7 +570,7 @@
   },
   {
    "obligation_id": "SPEC-34",
-   "source_span": "SPEC.md:581",
+   "source_span": "SPEC.md:586",
    "section": "3.5 `modeldrift-board-v1`",
    "normative_text": "Stamp binding per \u00a72.3: `protocol.hashes.suite_hash` MUST equal the",
    "property_token": "modeldrift.suite_hash_equals_fingerprint",
@@ -588,7 +588,7 @@
   },
   {
    "obligation_id": "SPEC-35",
-   "source_span": "SPEC.md:583",
+   "source_span": "SPEC.md:588",
    "section": "3.5 `modeldrift-board-v1`",
    "normative_text": "`registry_sha256` MUST equal the evidence hashes of the `metrics` /",
    "property_token": "modeldrift.registry_sha256_equals_evidence_hashes",
@@ -606,7 +606,7 @@
   },
   {
    "obligation_id": "SPEC-36",
-   "source_span": "SPEC.md:693",
+   "source_span": "SPEC.md:698",
    "section": "4. Structural verification vs semantic replay",
    "normative_text": "A verifier MUST refuse, as `invalid-json`, any JSON document whose arrays and objects nest deeper than 256 levels, and MUST decide this before parsing, so the verdict does not depend on the host.",
    "property_token": "verifier.json_nesting_past_the_limit_refused_on_every_host",
@@ -624,7 +624,7 @@
   },
   {
    "obligation_id": "SPEC-37",
-   "source_span": "SPEC.md:712",
+   "source_span": "SPEC.md:717",
    "section": "5. Registry rules",
    "normative_text": "its form, a registry MUST reject a claim when any of the following holds:",
    "property_token": "registry.rejects_claim_on_listed_conditions",
@@ -642,7 +642,7 @@
   },
   {
    "obligation_id": "SPEC-38",
-   "source_span": "SPEC.md:756",
+   "source_span": "SPEC.md:761",
    "section": "5. Registry rules",
    "normative_text": "A registry that skips the replay gate MUST say so on every entry.",
    "property_token": "registry.discloses_skipped_replay_gate_per_entry",
@@ -655,7 +655,7 @@
   },
   {
    "obligation_id": "SPEC-39",
-   "source_span": "SPEC.md:825",
+   "source_span": "SPEC.md:830",
    "section": "8. Versioning",
    "normative_text": "`vac_version` is the format contract. A verifier MUST refuse a version",
    "property_token": "verifier.refuses_unimplemented_vac_version",
@@ -673,7 +673,7 @@
   },
   {
    "obligation_id": "SPEC-40",
-   "source_span": "SPEC.md:826",
+   "source_span": "SPEC.md:831",
    "section": "8. Versioning",
    "normative_text": "it does not implement rather than guess, and MUST apply that version's",
    "property_token": "verifier.applies_declared_version_semantics",
