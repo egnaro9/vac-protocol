@@ -558,6 +558,11 @@ rows:
   UTC day, sorted by (−n_providers, day, task);
   `models_with_enough_history` = series (mock included) with >= 2
   fails-bearing points: MUST equal the committed `flips` artifact.
+  At vac_version 0.2 the whole flip recomputation runs over the points
+  at or above the declared `rel_floor`, the same floor the standings
+  are derived under: a point below it is an outage, not a measurement,
+  and manufactures no flip. `models_with_enough_history` counts the
+  filtered series the same way.
 - **narrative** internal coherence: `claims_fired` == `len(sentences)`
   and `text` == the whitespace-normalized, tag-stripped `html`.
   Byte-identical REGENERATION of the narrative is the replay block's job

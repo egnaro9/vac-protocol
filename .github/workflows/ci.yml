@@ -43,12 +43,16 @@ jobs:
       # model-drift 118a7e6 -> 35b1a48 while this file said nothing. The
       # bundles were byte-identical across both moves, so no number
       # changed, but the record named a commit the rerun would not.
+      # MOVED 2026-10-12 with the rel_floor fix: a model-drift bundle cut before
+      # its 2026-10-05 outage fix declares flips computed over the raw series, so
+      # the fixed verifier refuses it (9 reasons), and the registry now pins the
+      # issuers' current bundles. The sweep must measure against the same ones.
       - uses: actions/checkout@v4
-        with: {repository: egnaro9/crashkit, ref: 8553797083b2f0032ff5ac7315b51ddda84678ba, path: _issuers/crashkit}
+        with: {repository: egnaro9/crashkit, ref: 878a0efaeae024754af665b879e0cb44646cfec5, path: _issuers/crashkit}
       - uses: actions/checkout@v4
-        with: {repository: egnaro9/evalmut, ref: 5c94fe7c6a7f80265815e61b51c7e37d8dadebc8, path: _issuers/evalmut}
+        with: {repository: egnaro9/evalmut, ref: d92f24fe3b66886ef8d01c52a9cfa6988b272dd5, path: _issuers/evalmut}
       - uses: actions/checkout@v4
-        with: {repository: egnaro9/model-drift, ref: 118a7e6344bd5317bb74d2092b62e09954cb5a22, path: _issuers/model-drift}
+        with: {repository: egnaro9/model-drift, ref: 83f8eed5ebceeeaecd8d79e373a7fe0464c6fa3f, path: _issuers/model-drift}
       - run: pip install -e ".[test]"
       # Each value is the issuer's REPOSITORY root, byte-identical to the
       # checkout path above. Every consumer appends the bundle sub-path
