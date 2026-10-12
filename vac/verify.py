@@ -1707,8 +1707,21 @@ def _check_modeldrift(bundle_dir: pathlib.Path, check: dict, proto: dict,
                               rel_floor).encode() != md:
         f.append(f"raw-aggregate-mismatch: {md_rel}: does not re-render "
                  "byte-identically from the recomputed standings rows")
-    # flip analysis, re-earned from the stored fails vectors
-    want_flips = _modeldrift_flips(series)
+    # flip analysis, re-earned from the stored fails vectors, over the same
+    # points the standings are derived from. A point below the declared
+    # reliability floor is an outage, not a measurement: model-drift found 268
+    # of 895 recorded flips were manufactured by 19 outage points, and its
+    # emitter has filtered them since 2026-10-05. Recomputing over the raw
+    # series refused every bundle it has cut since, for the one reason that
+    # this profile already knew the floor and applied it to standings only.
+    flip_series = series
+    if rel_floor is not None:
+        flip_series = {
+            mid: [p for p in pts
+                  if p.get("reliability") is None
+                  or p["reliability"] >= rel_floor]
+            for mid, pts in series.items()}
+    want_flips = _modeldrift_flips(flip_series)
     mw = want_flips["models_with_enough_history"]
     if flips.get("models_with_enough_history") != mw:
         f.append(f"raw-aggregate-mismatch: {flips_rel}: "
