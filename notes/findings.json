@@ -1,0 +1,39 @@
+{
+ "schema": "drift-notes/finding@1",
+ "source": "vac-protocol",
+ "generated": "2026-10-19",
+ "findings": [
+  {
+   "kind": "replay-change",
+   "about": "harness",
+   "subject": "registry-replay",
+   "headline": "1 registry entry stopped replaying: model-drift/vac",
+   "run_key": [
+    "replay@1c0a93c9a984ed00"
+   ],
+   "when": "2026-10-19",
+   "evidence": [
+    {
+     "claim": "the weekly independent replay outcome changed",
+     "how": "run 39243050498 on 2026-10-19, workflow replay.yml, overall failure"
+    },
+    {
+     "claim": "model-drift/vac went from success to failure",
+     "how": "job 'model-drift/vac' in replay run 39243050498; the baseline recorded success"
+    },
+    {
+     "claim": "agent-certlab/claude-code-cloud-2026-10-11 appears in the replay for the first time",
+     "how": "absent from notes/baseline.json, present in run 39243050498"
+    },
+    {
+     "claim": "1 entry is not currently replaying",
+     "how": "not-success conclusions: model-drift/vac"
+    },
+    {
+     "claim": "the cause is not established by this signal alone",
+     "how": "a job conclusion records that the gate refused, not which of its steps refused; the run log distinguishes them"
+    }
+   ]
+  }
+ ]
+}
